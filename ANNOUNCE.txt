@@ -1,0 +1,47 @@
+=========================
+Announcing ViTables 1.2.4
+=========================
+
+We are proud to present ViTables 1.2.4, the latest release of our viewer for
+PyTables/HDF5 files.
+
+As it happens with the entire PyTables family, the main strength of ViTables is
+its ability to manage really large datasets in a fast and comfortable manner.
+For example, with ViTables you can open a table with one thousand million rows
+in a few tenths of second, with very low memory requirements. Also important is
+the fact that it is designed to be a multiplatform application, i.e. it runs
+flawlessly in Unix (and hence, GNU/Linux), Mac OS X and Windows. The fact that
+it runs on top of PyTables ensures its speed and memory efficiency.
+
+In this release you will find some bug fixes and usability enhancements, but
+the most important change is that ViTables is now Free Software, licensed
+under GPL v3.
+
+Platforms
+---------
+
+At the moment, ViTables has been fully tested only on GNU/Linux, Windows
+and MacOS X platforms, but as it is made on top of Python, PyQt and
+PyTables, its portability should be really good and it should work just
+fine in other Unices.
+
+How to get it
+-------------
+
+Go to:
+
+http://www.vitables.org
+
+and click the link 'downloads area' to find the available packages.
+
+
+Share your experience
+---------------------
+
+We are very interested in your feedback about ViTables. Please send your
+opinions, suggestions, bugs, etc. to the ViTables Users Group at
+http://tech.groups.yahoo.com/group/vitables-users.
+
+Thank you!
+
+Enjoy Data with ViTables, the troll of the PyTables family!

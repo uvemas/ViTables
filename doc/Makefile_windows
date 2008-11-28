@@ -1,0 +1,42 @@
+# MingW makefile for the doc subdirectory
+
+# Get all .png files
+pngs_images := $(wildcard images/*.png)
+allpngs := $(addprefix images\, $(notdir $(svgs_images)))
+
+# Title page SVG
+TPSVG=.\images\title_page_plain.svg
+
+# HTML guide stuff
+HTMLDIR=html
+IMAGESDIR=html\images
+CSS=pytables_style.css
+
+# PDF guide stuff
+XML_CATALOG_FILES=.\custom_layer\pytables_catalog_windows.xml
+XML_DEBUG_CATALOG=1
+export XML_CATALOG_FILES XML_DEBUG_CATALOG
+
+.PHONY:		all clean
+
+all:		usersguide.pdf html/%.html
+
+clean:
+	rmdir /q /s $(HTMLDIR)
+	del /q usersguide.fo
+	del /q usersguide.pdf
+
+# User's Guide in PDF format (1 file)
+usersguide.pdf: usersguide.xml $(TPSVG) $(allpngs)
+	xsltproc -o usersguide.fo pytables_fo.xsl usersguide.xml
+	fop -q -c fop_conf.xml usersguide.fo usersguide.pdf
+
+# User's Guide in HTML format (1 chapter per file. Stored in $HTMLDIR)
+html/%.html: usersguide.xml $(allpngs)
+	xsltproc pytables_html.xsl usersguide.xml
+	mkdir $(IMAGESDIR)
+	copy *.html $(HTMLDIR)
+	copy $(CSS) $(HTMLDIR)
+	copy images\*.png $(IMAGESDIR)
+	del /q *.html
+	copy not_found.html.in $(HTMLDIR)\not_found.html

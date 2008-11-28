@@ -1,0 +1,1298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+          "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book lang="en">
+  <bookinfo>
+
+  <!-- Page title -->
+  <mediaobject>
+    <imageobject>
+      <imagedata valign="middle" align="center" scale="120"
+        fileref="images/title_page_plain.svg" format="SVG"/>
+    </imageobject>
+  </mediaobject>
+  <title><application>ViTables 1.2.4</application> User's Guide</title>
+  <author>
+
+  <!-- Next page -->
+  <firstname>Vicent</firstname><surname>Mas</surname>
+  </author>
+  <edition>User's Guide version 14.2 for ViTables 1.2.4</edition>
+  <pubdate>July, 18, 2008</pubdate>
+  <copyright>
+  <year>2005-2007</year>
+  <holder>Cárabos Coop. V. All rights reserved.</holder>
+  </copyright>
+  <copyright>
+  <year>2008</year>
+  <holder>Vicent Mas. All rights reserved.</holder>
+  </copyright>
+
+  <!-- ViTables copyright notice -->
+  <legalnotice>
+  <para><emphasis role="bold">Copyright Notice and Statement for the
+  <application>ViTables</application> User's Guide</emphasis>.</para>
+  <para>This manual is part of the Licensed Software included in the
+  <application>ViTables</application> package. For detailed information see the
+  LICENSE.txt file.</para>
+  </legalnotice>
+
+  <!-- Qt copyright notice -->
+  <legalnotice>
+  <para><emphasis role="bold">Copyright Notice and Statement for the
+  Qt library</emphasis>.</para>
+  <para>Trolltech, Qt and the Trolltech logo are registered trademarks of
+  Trolltech.</para>
+  </legalnotice>
+
+  <!-- PyQt copyright notice -->
+  <legalnotice>
+  <para><emphasis role="bold">Copyright Notice and Statement for the
+  PyQt library</emphasis>.</para>
+  <para>PyQt library Copyright by Riverbank Computing Limited.</para>
+  </legalnotice>
+
+</bookinfo>
+
+  <chapter id='Ch1_Introduction'>
+  <title>Introduction</title>
+
+    <section id='Ch1_Overview'>
+      <title>Overview</title>
+
+      <para><application>ViTables</application> is a member of the PyTables
+      family. It's a graphical tool for browsing and editing files in both
+      PyTables and HDF5 formats. With <application>ViTables</application> you
+      can easily navigate through data hierarchies, request metadata, view
+      real data and much more.</para>
+
+      <para><application>ViTables</application> is being developed using Python
+      and PyQt, the bindings of Qt libraries, so it can run on any platform
+      that
+      supports these components (which includes Windows, MacOSX, Linux and many
+      other Unices). The interface and features will remain the same on all
+      platforms.</para>
+
+      <para>Efficiency and low memory requirements are guaranteed by the fact
+      that data is loaded only when the object that contains it is opened and
+      by the use of data buffers for dealing with large datasets.</para>
+
+    </section>
+
+    <section id='Ch1_Capabilities'>
+      <title>Capabilities</title>
+
+      <para>The current release provides browsing, editing and querying
+      capabilities. Most of them are listed below. Details are discussed in the
+      related chapters.</para>
+
+      <section id='Ch1_Browsing_Capabilities'>
+        <title>Browsing Capabilities</title>
+
+        <itemizedlist>
+          <listitem><para>Display data hierarchy as a fully browsable object
+          tree.</para></listitem>
+
+          <listitem><para>Open several files simultaneously.</para></listitem>
+
+          <listitem><para>Open files in write mode as well as in read-only
+          mode, disabling all editing functions.</para></listitem>
+
+          <listitem><para>Display file information (path, size, number of
+          nodes...).</para></listitem>
+
+          <listitem><para>Display node (group or leaf) properties, including
+          metadata and attributes.</para></listitem>
+
+          <listitem><para>Display numerical arrays, i.e. homogeneous tables.
+          </para></listitem>
+
+          <listitem><para>Display heterogeneous table entities, i.e. records.
+          </para></listitem>
+
+          <listitem><para>Display multidimensional table cells.
+          </para></listitem>
+        </itemizedlist>
+      </section>
+
+      <section id='Ch1_Editing_Capabilities'>
+        <title>Editing Capabilities</title>
+
+        <para>These editing features have been implemented for the object tree
+        <footnote><para>Dataset edition capabilities have not yet been
+        implemented.</para></footnote>.
+
+        <itemizedlist>
+          <listitem><para>File creation and renaming.</para></listitem>
+
+          <listitem><para>Node creation (only for groups), renaming and
+            deletion.</para>
+          </listitem>
+
+          <listitem><para>Ability to copy and move nodes from their location to
+          a different one, even in different files.</para></listitem>
+
+          <listitem><para>Attribute creation, renaming and deletion.</para>
+          </listitem>
+        </itemizedlist>
+        </para>
+
+        <para>All these changes automatically update the database (i.e. the
+        file) to which the nodes belong.</para>
+
+      </section>
+
+      <section id='Ch1_Other'>
+        <title>Other</title>
+
+        <para>Other nice features include:
+
+        <itemizedlist>
+          <listitem><para><emphasis>Ability to view really large
+          datasets</emphasis>.
+          </para></listitem>
+          <listitem><para>Support for complex table queries.
+          </para></listitem>
+          <listitem><para>Flexible and fast dataset navigation.
+          </para></listitem>
+
+          <listitem><para>A logger area, where the result of
+          user requested operations is printed.
+          </para></listitem>
+
+          <listitem><para>Several levels of help are available: contextual help
+          , tooltips, status bar...</para></listitem>
+          <listitem><para>Configurable look and feel.
+          </para></listitem>
+        </itemizedlist>
+
+        We have paid special attention to usability issues so making use
+        of these features is intuitive and pleasant. Nevertheless, and
+        just in case, we are providing this guide :-).
+        </para>
+
+      </section>
+
+    </section>
+
+    <section id='Ch1_System_Requirements'>
+        <title>System Requirements</title>
+
+      <para>To run <application>ViTables</application> you need to install
+      Python <symbol role="geq">&#x2265;</symbol> 2.4, PyTables <symbol
+      role="geq">&#x2265;</symbol> 2.0 (so you have to fulfill its own
+      requirements), the Qt3 <symbol role="geq">&#x2265;</symbol> 3.3 library
+      and PyQt3 <symbol role="geq">&#x2265;</symbol> 3.15.</para>
+
+      <para>At the moment, <application>ViTables</application> has been fully
+      tested on Linux, Mac OS X and Windows XP platforms. Other Unices should
+      run just fine when using the Unix version of
+      <application>ViTables</application> because all the software that
+      <application>ViTables</application> relies on (i.e. Python, Qt, PyQt,
+      HDF5 and PyTables) is known to run fine on many Unix platforms as well.
+      </para>
+
+    </section>
+
+    <section id='Ch1_Installation'>
+      <title>Installation</title>
+
+        <section id='Ch1_Unix'>
+          <title>Unix</title>
+
+          <para>The Distutils module (part of the standard
+          <ulink url="http://www.python.org">Python</ulink> distribution) has
+          been used to prepare an installer for
+          <application>ViTables</application>. It makes easy to get the
+          application up and running.</para>
+
+          <para>At the moment no binary versions of the installer exist, so the
+          software has to be installed from sources.</para>
+
+          <para>Provided that your system fulfills the requirements listed in
+          the above sections, installing the package is really easy. Just
+          uncompress the package, change to the distribution directory and
+          execute
+
+          <screen><![CDATA[$ python setup.py install]]></screen>
+          </para>
+
+          <para>By default <application>ViTables</application> will be
+          installed
+          in the system-protected area where your system installs third party
+          Python packages, so you will need superuser privileges. If you prefer
+          to install the package in a different location (for instance, your
+          home directory, so that you can complete the installation as a
+          non-privileged user), you can do it using the
+          <markup>--prefix</markup> tag:
+
+          <screen><![CDATA[$ python setup.py install --prefix=/home/myuser/mystuff]]></screen>
+
+          Please remember that installing Python modules in non-standard
+          locations makes it necessary to set the <markup>PYTHONPATH</markup>
+          environment variable properly so that the Python interpreter can find
+          the installed modules.</para>
+
+          <para>If you need further customizations, please have a look at the
+          output of the command
+
+          <screen><![CDATA[$python setup.py install --help]]></screen>
+
+          to see the available options. Complete information about these
+          options can be found in the Distutils documentation.</para>
+
+        </section>
+
+        <section id='Ch1_Windows_Binary_Installers'>
+          <title>Windows Binary Installers</title>
+
+          <para>Because of license issues, there is no Windows binary
+          installer for ViTables. So it has to be installed from sources
+          following the instructions given in the previous sections.</para>
+        </section>
+
+        <section id='Ch1_Mac_OS_X_Binary_Installers'>
+          <title>Mac OS X Binary Installers</title>
+
+          <para>You can use the general Unix procedure to install
+          <application>ViTables</application> on Mac OS X, but
+          generating a double-clickable application bundle is
+          recommended. Simply untar the source package, change to the
+          distribution directory and execute
+
+          <screen><![CDATA[$ cd macosxapp
+$ ./make.sh]]></screen>
+
+          </para>
+
+
+      </section>
+
+      <section id='Ch1_Further_Reading'>
+        <title>Further Reading</title>
+
+        <para>General information about PyTables can be found at the
+        <ulink
+        url="http://www.carabos.com/products/pytables.html">project
+        site</ulink>.
+        For more information on HDF5, please visit its
+        <ulink url="http://hdf.ncsa.uiuc.edu/HDF5/">web site</ulink>.
+        Information about <application>ViTables</application> is available
+        <ulink
+        url="http://www.carabos.com/products/vitables.html">here</ulink>.
+        </para>
+
+        <para>Questions and feedback can be mailed to the developers.</para>
+
+      </section>
+
+    </section>
+
+  </chapter>
+
+  <chapter id='Ch2_First_Steps'>
+    <title>First Steps</title>
+
+    <para>In this chapter we are going to describe briefly the main elements
+    that you will meet throughout your working sessions.</para>
+
+    <section id='Ch2_How_to_Start'>
+      <title>How to Start</title>
+
+      <para>Normally <application>ViTables</application> is started by running
+      the <literal>vitables</literal> program under X (from a terminal emulator
+      or directly from your desktop). If you are using a terminal then you can
+      give some arguments to the command line<footnote><para>Currently command
+      line arguments are available only in Linux platforms.</para></footnote>.
+      You can get the available arguments by issuing the command:
+
+      <screen><![CDATA[$ vitables --help
+$ usage: vitables [options] [h5file]
+
+options:
+--version             show program's version number and exit
+-h, --help            show this help message and exit
+-mMODE, --mode=MODE   mode access for a database
+-dh5list, --dblist=h5list
+    a file with the list of databases to be open]]></screen>
+
+      Basically you can specify a file to open or a file containing a list of
+      files to open. For example:
+
+      <screen><![CDATA[$ vitables myh5file]]></screen>
+
+      will start <application>ViTables</application> and open the file myh5file
+      in read-write mode. If you want to open it in read-only mode then execute
+      the command:
+
+      <screen><![CDATA[$ vitables -m r myh5file]]></screen>
+
+      In order to open a set of files at once put them in a list file with the
+      syntax
+
+      <screen><![CDATA[mode path]]></screen>
+
+      (one pair per line) and execute:
+
+      <screen><![CDATA[$ vitables -d h5list]]></screen>
+      </para>
+
+      <para>Once the application is running the
+      <link linkend="main_window">main window</link> appears. It consists
+      of a menu bar, a set of tool bars, a viewing area and a status bar.
+      </para>
+
+      <para>The viewing area of the window is divided into three parts. The
+      tree
+      viewer is the narrow region placed at top left side. It will display a
+      tree representation of the data hierarchies we want to access. The big
+      panel next to the tree viewer is called the workspace, and will display
+      the real data contained in a given node of the data hierarchy. Finally,
+      the bottom region is the logger, a kind of text non interactive console
+      where information about your requested operations will be shown.</para>
+
+      <para>As usual, you can launch commands from the menu bar, from
+      contextual menus or, if a shortcut button is available, from the toolbar.
+      </para>
+
+      <figure id="main_window">
+        <title>The main window</title>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="40"
+            fileref="images/mainWindow.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center" 
+            fileref="images/mainWindow.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+    </section>
+
+    <section id='Ch2_The_Menu_Bar'>
+      <title>The Menu Bar</title>
+
+      <para>The menu bar is placed at top of the main window. It is composed of
+      six pulldown menus.</para>
+
+
+      <bridgehead renderas="sect3">File menu</bridgehead>
+
+      <para>This menu contains commands to manipulate files in several ways:
+      open, close, create, save and so on. It also gives to you quick access to
+      the most recently opened files.</para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/fileMenu.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center" 
+            fileref="images/fileMenu.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+      <bridgehead renderas="sect3">Node menu</bridgehead>
+
+      <para>The Node menu contains commands to manipulate nodes. From this menu
+      you can edit nodes in a variety of ways as well as access their
+      properties.</para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/nodeMenu.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center" 
+            fileref="images/nodeMenu.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+      <bridgehead renderas="sect3">Query menu</bridgehead>
+
+      <para>With this menu you can make selects in any table. The result of
+      your selects will be available under the Query Results hierarchy in the
+      tree pane.</para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/queryMenu.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center" 
+            fileref="images/queryMenu.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+      <bridgehead renderas="sect3">Windows menu</bridgehead>
+
+      <para>The Windows menu can be used to change the arrangement of the
+      workspace contents, sorting the open windows as a cascade or as a tile.
+      By selecting a window name from this menu, you can raise (bring to the
+      front) that window. Any open window can be closed from this menu.</para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/windowsMenu.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/windowsMenu.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+      <bridgehead renderas="sect3">Tools menu</bridgehead>
+
+      <para>This is the menu from which the application can be customized.
+      Customization includes behavior and look and feel. See
+			<xref linkend="A1_The_Configuration_File" xrefstyle="select: label"/> for more
+      information on this subject. From this menu you can also show, hide and
+      line up the application toolbars. At the moment three toolbars are
+      available: <guimenuitem>File</guimenuitem>,
+      <guimenuitem>Node</guimenuitem> and <guimenuitem>Help</guimenuitem>.
+      </para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/toolsMenu.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/toolsMenu.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+      <bridgehead renderas="sect3">Help menu</bridgehead>
+
+      <para>The Help menu displays this User's Guide in HTML4 format and a
+      couple of <emphasis>About</emphasis> boxes. The <guimenuitem>Show
+      Versions</guimenuitem> entry shows the version numbers of the libraries
+      being used by <application>ViTables</application> (including PyTables
+      related libraries, like Zlib or UCL). Finally, from this menu you can
+      enter the <emphasis>What's This</emphasis> mode for contextual
+      help.</para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/helpMenu.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/helpMenu.png" format="PNG"/>                         
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+    </section>
+
+    <section id='Ch2_The_Viewing_Area'>
+      <title>The Viewing Area</title>
+
+      <para>As mentioned before, the viewing area is
+      divided into three regions: the object tree viewer (also called tree
+      pane), the workspace and the
+      logger. Now we are going to describe these regions in more detail.</para>
+
+      <section id='Ch2_The_Tree_Viewer'>
+        <title>The Tree Viewer</title>
+
+        <para>After starting your session, you are likely to open some files.
+        Just drag the file(s) you want to open into the tree viewer and they
+        will be opened in read-write mode. Opening can be done from the file
+        manager dialog too; simply issue an open command,
+
+        <menuchoice>
+        <shortcut><keycombo>
+        <keycap>Ctrl</keycap><keycap>O</keycap>
+        </keycombo></shortcut>
+        <guimenu>File</guimenu><guimenuitem>Open File</guimenuitem>
+        </menuchoice>
+        
+        <footnote><para>Remember that files can be opened in two different
+        modes: read-write and read-only. In read-only mode all editing
+        functions
+        are disabled, so files cannot be modified. The opening mode of a file
+        can be inferred from the icon of its root node, see
+        <xref linkend="node_symbols" xrefstyle="select: label"/>
+        </para></footnote>
+
+        and choose a file.</para>
+
+        <para><screenshot>
+          <mediaobject>
+            <imageobject role="fo">
+              <imagedata valign="middle" align="center" scale="60"
+                fileref="images/fileManager.png" format="PNG"/>
+            </imageobject>
+            <imageobject role="html">
+              <imagedata valign="middle" align="center"
+                fileref="images/fileManager.png" format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+        <para>Due to the hierarchical model of the underlying HDF5 library,
+        PyTables files store their data on disk in a tree-like structure. Every
+        time you open a PyTables file, its so-called object tree (a
+        representation of the data hierarchy) is dynamically created. The
+        object tree is made of nodes which can be classified as follows:
+        </para>
+
+        <glosslist>
+        <?dbfo glosslist-presentation="list" ?>
+            <glossentry>
+            <glossterm><emphasis role="bold">The root
+            node</emphasis></glossterm>
+            <glossdef><para>It is the node from
+            which all other nodes hang.</para></glossdef>
+            </glossentry>
+
+            <glossentry>
+            <glossterm><emphasis role="bold">Groups</emphasis></glossterm>
+            <glossdef> <para>Groups are nodes that contain other nodes.
+            </para></glossdef>
+            </glossentry>
+
+            <glossentry>
+            <glossterm><emphasis role="bold">Leaves</emphasis></glossterm>
+            <glossdef> <para>Leaves are nodes that contain real data. They can
+            be tables or arrays.</para> </glossdef>
+            </glossentry>
+        </glosslist>
+
+        <para>Once the object tree has been created, its root node is added to
+        the tree viewer (see <xref linkend="tree_viewer" xrefstyle="select:
+        label"/>), at the top left side of the viewing area. By double-clicking
+        on it, the root node is opened, and the tree structure below it is
+        displayed. This way you can easily browse and manage the different
+        nodes stored in the PyTables file.</para>
+
+        <para><emphasis> Since PyTables-1.2 the object tree of an opened file
+        is made on demand: nodes are added to the tree when they are accessed.
+        <application>ViTables</application> makes use of this feature, which
+        results in stunningly fast opening times for files with a large number
+        of nodes. </emphasis> </para>
+
+        <para>Working with object trees is really easy. Groups are presented as
+        folders. They can be expanded with a double-click, giving you immediate
+        access to their contents. A group can contain groups and/or leaves (or
+        may be empty). A double click on a leave will display its content in
+        the workspace. You can access the available options for a given node
+        just with a right mouse click on it. A contextual menu will appear from
+        which commands can be launched. The contents of the menu depend on the
+        kind of
+        node being clicked (root nodes, groups, tables and arrays have all of
+        them their own contextual menu). Alternatively you can select the node
+        with a single mouse click and choose a command from the
+        <guimenu>Node</guimenu> menu. Finally, there is also a contextual menu
+        for the tree pane itself that will pop up by right-clicking any empty
+        area of the tree viewer.</para>
+
+        <figure id="tree_viewer">
+          <title>The tree viewer</title>
+            <mediaobject>
+              <imageobject role="fo">
+                <imagedata valign="middle" align="center" scale="70"
+                    fileref="images/objectTree.png" format="PNG"/>
+              </imageobject>
+              <imageobject role="html">
+                <imagedata valign="middle" align="center"
+                fileref="images/objectTree.png" format="PNG"/>
+              </imageobject>
+            </mediaobject>
+        </figure>
+
+        <para>Every node in a given object tree has an associated icon that
+        allows you to identify its type quickly. The following icons are
+        available:</para>
+
+        <figure id="node_symbols">
+          <title>The node symbols</title>
+            <mediaobject>
+              <imageobject role="fo">
+                <imagedata valign="middle" align="center" scale="70"
+                fileref="images/treeSymbols.png" format="PNG"/>
+              </imageobject>
+              <imageobject role="html">
+                <imagedata valign="middle" align="center"
+                fileref="images/treeSymbols.png" format="PNG"/>
+              </imageobject>
+            </mediaobject>
+        </figure>
+
+      </section>
+
+      <section id='Ch2_The_Workspace'>
+        <title>The Workspace</title>
+
+        <para>At this point you should have one or more files opened, and their
+        object trees displayed in the tree viewer. Your next step will be to
+        select a leaf and display its data. Remember that the object tree
+        imitates the structure on disk, which makes it very easy to browse the
+        hierarchy of the file and locate the leaf you want to open.</para>
+
+        <para>A double-click on a leaf of your choice will open it and display
+        its contents in a window (a <emphasis>view</emphasis> in the
+        <application>ViTables</application> jargon) placed in the
+        <link linkend="workspace">workspace</link> (the big panel placed at the
+        top right side of the viewing area).</para>
+
+        <para>Note that the tree viewer and the workspace are always
+        synchronized: if you select a node in the tree viewer and that node has
+        a view, then that view becomes the active view in the workspace. The
+        opposite is also true, click on a view in the workspace and its node
+        will be automatically selected in the tree viewer.</para>
+
+        <para>The <guimenu>Windows</guimenu> popup menu provides some
+        additional commands that will help you to manage and arrange the opened
+        views. From
+        this menu you can, for instance, rearrange the opened views, see the
+        list of open views (which is particularly useful when the workspace is
+        cluttered with so many open views that it's difficult to find the one
+        you want) or close all open views at once. This menu is also available
+        as a contextual menu.</para>
+
+        <figure id="workspace">
+          <title>A workspace with 3 opened leaves</title>
+            <mediaobject>
+              <imageobject role="fo">
+                <imagedata valign="middle" align="center" scale="50"
+                fileref="images/workspace.png" format="PNG"/>
+              </imageobject>
+              <imageobject role="html">
+                <imagedata valign="middle" align="center"
+                fileref="images/workspace.png" format="PNG"/>
+              </imageobject>
+            </mediaobject>
+        </figure>
+
+      </section>
+
+      <section id='Ch2_The_Logger'>
+        <title>The Logger</title>
+
+        <para>The logger is the long region placed at the bottom of the viewing
+        area, see <xref linkend="logger" xrefstyle="select: label"/>. It is an
+        info panel where <application>ViTables</application> reports the result
+        of requested operations (for instance, if they were successful or
+        not).
+        Also runtime errors are caught and reported to you through the logger
+        (so you can mail the error to <application>ViTables</application>
+        developers and help to improve the quality of the package :-). Errors
+        and warning messages are highlighted in red and orange respectively.
+        </para>
+
+        <para>Of course there is also a contextual menu for the logger that
+        provides you with some handy operations, like to copy selected text or
+        to empty the logger.</para>
+
+        <figure id="logger">
+          <title>The logger</title>
+            <mediaobject>
+              <imageobject role="fo">
+                <imagedata valign="middle" align="center" scale="55"
+                fileref="images/logger.png" format="PNG"/>
+              </imageobject>
+              <imageobject role="html">
+                <imagedata valign="middle" align="center"
+                fileref="images/logger.png" format="PNG"/>
+              </imageobject>
+          </mediaobject>
+        </figure>
+
+        </section>
+
+      </section>
+
+  </chapter>
+
+  <chapter id='Ch3_Browsing_and_Querying_Datasets'>
+    <title>Browsing and Querying Datasets</title>
+
+    <para>In this chapter we are going to describe how the information
+    contained in a dataset can be navigated and selected.</para>
+
+    <section id='Ch3_Browsing_Datasets'>
+      <title>Browsing Datasets</title>
+
+      <para>A noticeable aspect of views is the visualization speed. Views show
+      data nearly as quickly as PyTables accesses them. As a consequence, very
+      large datasets (with up to 2^64 rows) can be browsed stunningly fast.
+      </para>
+
+      <para>Datasets are displayed in views, that are spreadsheet-like windows.
+        As usual, views can be navigated in a variety of ways:
+
+      <itemizedlist>
+        <listitem><para>one line steps with cursor keys
+        </para></listitem>
+
+        <listitem><para>small number of lines steps wheeling the mouse over the
+        cells area</para></listitem>
+
+        <listitem><para>one page steps with Prior/Next Page keys
+        </para></listitem>
+
+        <listitem><para>large number of lines steps wheeling the mouse over the
+        vertical scrollbar
+        </para></listitem>
+
+        <listitem><para>any number of lines dragging the slider of the vertical
+        scrollbar
+        </para></listitem>
+      </itemizedlist>
+
+      Not very exciting... until you try the last method on a large dataset,
+      and realize that very large tables can be navigated as quickly as small ones.
+      When the slider is being dragged on large tables, a row indicator is
+      shown
+      close to it, thus making it very easy to locate and display a given
+      section of the dataset<footnote><para>The row indicator content is
+      formatted according to your system locale.</para></footnote>.</para>
+
+      <para>Another interesting feature of views is the ability to zoom in on
+      cells that contain multidimensional data. When you double-click in a
+      cell,
+      a zoomed cell is displayed in its own view, reducing by two the number of
+      dimensions of the displayed data. For instance, a cell containing a
+      vector
+      is displayed as a one column table of scalars. A cell that contains
+      two-dimensional data will be shown as a bidimensional table of scalars.
+      And so on. In general, a cell containing N-dimensional data will be
+      displayed as a table of N-2 dimensions data. Zoom can be applied as many
+      times as needed, so that multi-dimensional cells can be inspected until
+      you get a table of scalars. Finally, if you try to zoom in on a cell that
+      contains a scalar value, this value will be presented alone in a view;
+      this can be useful to visualize large scalar values (for example, large
+      strings) that doesn't fit on regular columns.</para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="50"
+            fileref="images/browseDataset.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/browseDataset.png" format="PNG"/>
+          </imageobject>
+          <caption><simpara>Browsing a large dataset</simpara></caption>
+        </mediaobject>
+      </screenshot></para>
+
+    </section>
+
+    <section id='Ch3_Getting_Info'>
+      <title>Getting Info</title>
+
+      <para>For a given node two kinds of information are available: metadata
+      and data. From their metadata you can retrieve information about the
+      objects on disk, such as table and column names, titles, number of rows,
+      data types in columns or attributes, among others.</para>
+
+      <para>The available metadata about a given node (group or leaf) can be
+      accessed by right-clicking the mouse on the node and launching the
+      <guimenuitem>Properties</guimenuitem> command from the contextual menu
+      that appears. This can also be achieved from the <guimenu>Node</guimenu>
+      menu. Then the <link linkend="properties_dialog">Properties
+      dialog</link>,
+      that contains the requested metadata, is displayed. The dialog is made of
+      three tabs labelled as General, System attributes and User attributes.
+      The General tab contains generic information about the selected node,
+      i.e. file the node belongs to, name, path, etc. The System and User tabs
+      contain tables that describe the attributes of the node.</para>
+
+      <figure id="properties_dialog">
+        <title>The Properties dialog</title>
+         <mediaobject>
+            <imageobject role="fo">
+              <imagedata valign="middle" align="center" scale="60"
+                fileref="images/propertiesDlg.png" format="PNG"/>
+            </imageobject>
+            <imageobject role="html">
+              <imagedata valign="middle" align="center"
+                fileref="images/propertiesDlg.png" format="PNG"/>
+            </imageobject>
+          </mediaobject>
+      </figure>
+
+      <para>Aside from the Properties dialog, you can request information in
+      several other ways.</para>
+
+      <para>By pointing at a tree node with the mouse for more than two
+      seconds,
+      the full path of this node is displayed in the status bar. This can be
+      useful when the object tree is large and guessing a full path is not
+      easy.
+      </para>
+
+      <para>An interesting aspect of views is that, besides displaying the real
+      data contained in a leaf, they provide quick access to metadata of this
+      leaf. The top left icon of the view shows the kind of displayed data
+      (array or table). The info button close to the icon can be used in two
+      ways. By pointing at it with the mouse a tooltip will appear showing some
+      useful info (full path of the file where data is stored, full path of the
+      leaf, title and shape of the leaf). By clicking the button, the leaf
+      Properties dialog will be opened.</para>
+
+      <para>Finally, some generic information can be obtained by launching the
+      command
+      <menuchoice>
+      <guimenu>Help</guimenu><guimenuitem>WhatIsThis</guimenuitem>
+      </menuchoice>
+      (or clicking the appropriate button on the corresponding toolbar).</para>
+
+      <para>The <link linkend="extra_info">next figure</link> shows some of
+      these mechanisms in action.</para>
+
+      <figure id="extra_info">
+        <title>A common working session with <application>ViTables</application>
+        </title>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="50"
+            fileref="images/extraInfo.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/extraInfo.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+    </section>
+
+    <section id='Ch3_Querying_Tables'>
+      <title>Querying Tables</title>
+
+      <para>An interesting feature of <application>ViTables</application> is
+      its
+      capability to make table selections. This means that we can select a set
+      of table rows that fulfill a given condition. You can filter any table
+      (even if it is closed) by issuing the command
+
+      <menuchoice>
+      <guimenu>Query</guimenu><guimenuitem>New...</guimenuitem>
+      </menuchoice>
+      A dialog (see <xref linkend="query_dlg" xrefstyle="select: label"/> will
+      be displayed where you can create a query and select the range of rows to
+      which the query will apply. Notice that, <emphasis>you can make
+      complex queries, i.e. queries that involve more than one table field.
+      However the queried fields cannot be multidimensional or contain data
+      with Complex data type</emphasis>.</para>
+
+      <para>The selected rows are stored in a new table (but not removed from
+      its original location) that we will call filtered table from here on.
+      Filtered tables are stored in a temporary database
+
+      <footnote>
+      <para>Every time a <application>ViTables</application> session starts, a
+      new temporary database is created from scratch. This database is stored
+      with a unique name in a temporary directory so the operating system will
+      remove it every time the directory is cleaned.</para>
+      </footnote>
+
+      with a flat structure. This database is always displayed in the tree
+      viewer under the label Query Results. Filtered tables can be edited as
+      any
+      other leaf opened in read-write mode.</para>
+
+      <para>The views related to filtered tables are easily distinguished from
+      the other views because of their title: it is made with the query used to
+      get the filtered table. In addition, these tables have three user
+      attributes that are, in principle, only defined for filtered tables.
+      These attributes are:
+
+      <glosslist>
+      <?dbfo glosslist-presentation="list" ?>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">query</emphasis></glossterm>
+        <glossdef> <para>the applied query</para> </glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">query_path</emphasis></glossterm>
+        <glossdef> <para>the full path of the queried file</para> </glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">query_table</emphasis></glossterm>
+        <glossdef> <para>the full path of the queried table in the object tree
+        hierarchy</para> </glossdef>
+        </glossentry>
+      </glosslist>
+
+      </para>
+
+      <figure id="query_dlg">
+        <title>The New Query dialog</title>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/newFilteredTable.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/newFilteredTable.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+    </section>
+
+  </chapter>
+
+  <chapter id='Ch4_Editing_Files'>
+    <title>Editing Files</title>
+
+    <para>In this chapter we are going to describe briefly the editing
+    capabilities of <application>ViTables</application>.</para>
+
+    <section id='Ch4_Creating_Complex_Hierarchies'>
+      <title>Creating Complex Hierarchies</title>
+
+      <para><application>ViTables</application> supports a complete set of
+      editing operations on files and nodes. The result of these operations is
+      made immediately visible in the tree view.</para>
+
+      <para>To create a new file in write mode, just issue the command
+      <menuchoice>
+      <shortcut>
+      <keycombo><keycap>Ctrl</keycap><keycap>N</keycap></keycombo>
+      </shortcut>
+      <guimenu>File</guimenu><guimenuitem>New</guimenuitem>
+      </menuchoice>.
+      By default, the file will be created with a <literal>.h5</literal>
+      extension but you can provide your desired extension.</para>
+
+      <para>You can add new empty groups to a writable file as easily as you
+      create a new file. Simply select a group in the the tree view and launch
+      the command
+      <menuchoice>
+      <guimenu>Node</guimenu><guimenuitem>New</guimenuitem>
+      </menuchoice>.
+      A new, empty group will be added to the previously selected group. By
+      combining this operation with file creation, you can easily create
+      complex hierarchies. Later on, you can populate the hierarchies with real
+      data using your PyTables programs.</para>
+
+      <para><screenshot>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="50"
+            fileref="images/groupCreation.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/groupCreation.png" format="PNG"/>
+          </imageobject>
+          <caption><simpara>Creating a new group</simpara></caption>
+        </mediaobject>
+      </screenshot></para>
+
+    </section>
+
+    <section id='Ch4_Editing_Object_Trees'>
+      <title>Editing Object Trees</title>
+
+      <para>Files opened in write mode can be modified by moving their nodes
+      (groups and leaves) around. From the
+      <menuchoice><guimenu>Node</guimenu></menuchoice>
+      menu you can copy, paste, rename or delete any selected node
+      (except root groups). Typical keyboard shortcuts are available for copy
+      and paste operations. Of course, you can drag and drop nodes from one
+      location to a different one using the mouse.</para>
+
+      <para>Nodes can be moved to a different location in the object tree, but
+      can also be reallocated in a different file. This way you can
+      <emphasis>merge</emphasis> open files in a very flexible and comfortable
+      way.</para>
+
+      <para>As usual, while an operation is being performed on a given node,
+      the shape of the mouse cursor will change into a clock, reminding you
+      that a PyTables operation is being executed.</para>
+
+      <para>Once you have created a node you can edit its user attributes from
+      the User attributes page
+      (see <xref linkend="editing_user_attributes" xrefstyle="select: label"/>)
+      in the node Properties dialog. This page contains the user attributes
+      table. You can add and remove attributes with the respective buttons or
+      you can edit any existing attribute by clicking the table cell that you
+      want to modify and introducing the new value. This way you can change
+      name, value and type of any existing attribute.</para>
+
+      <para><emphasis>Please note that multidimensional attribute values are
+      not supported by <application>ViTables</application>. Also be aware that
+      scalar attributes will be saved as scalar Numpy objects instead of
+      serialized using cPickle (which used to be the default PyTables
+      behavior). This
+      way you will be able to read them using generic HDF5 tools, not just
+      PyTables.</emphasis> </para>
+
+      <para>Finally, the value of the TITLE system attribute can also be
+      edited.
+      Just click its cell in the System Attributes tab and enter the desired
+      value.</para>
+
+      <figure id="editing_user_attributes">
+        <title>Editing user attributes</title>
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="50"
+            fileref="images/editingUserAttrs.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/editingUserAttrs.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+    </section>
+
+    <section id='Ch4_Editing_Leaves'>
+      <title>Editing Leaves</title>
+
+      <para>At the moment of writing, editing the real data stored in leaves
+      has not yet been implemented.</para>
+
+    </section>
+
+  </chapter>
+
+  <appendix id="A1_The_Configuration_File">
+    <title>The Configuration File</title>
+
+    <para>Many aspects of the <application>ViTables</application> behaviour can
+    be customized by you through the
+    <menuchoice>
+    <guimenu>Tools</guimenu><guimenuitem>Preferences</guimenuitem>
+    </menuchoice>
+    command. It shows a tabbed dialog, offering you several customization
+    possibilities. The dialog is made of two pages,
+    <guilabel>General</guilabel>
+    and <guilabel>Look &amp; Feel</guilabel>.</para>
+
+    <para>The <guilabel>General</guilabel> page allows to change the
+    <application>ViTables</application> behavior at startup. You can set the
+    initial working directory to be that one from which ViTables is starting or
+    to be the last used
+    working directory. And you can recover your last working session.</para>
+
+    <para>The <guilabel>Look &amp; Feel</guilabel> page allows to change visual
+    aspects of the application such as fonts, colors or even the general style,
+    so you can adapt the global aspect of <application>ViTables</application>
+    to what would be expected on your platform.</para>
+
+    <para>New settings can be tested with the <guibutton>Apply</guibutton>
+    button. Clicking this button will apply the changes so that you can see how
+    they work, but will not close the Preferences dialog. This way, if you are
+    not satisfied with the changes made, you can revert to the original
+    situation by clicking the <guibutton>Cancel</guibutton> button. This will
+    close the dialog and undo any changes.</para>
+
+    <para>The <guibutton>OK</guibutton> button will apply the new settings and
+    make them permanent by saving them in the Windows registry or in a
+    configuration file (on Unix platforms). The full path of this file will be
+    <filename>$HOME/.vitables/vitablesrc</filename>. Although it is a plain
+    text
+    file and <application>ViTables</application> could be configured by editing
+    it by hand, this is not recommended. Some settings, like fonts or geometry
+
+    <footnote><para>Entries in the Geometry section allow for keeping the
+    aspect, size and position of the application window between
+    sessions.</para></footnote>
+
+    settings, are stored in a way not really intended to be modified manually.
+    </para>
+
+    <para>The configuration file is divided into sections, labeled as
+    <literal>[section_name]</literal>. Every section is made of subsections
+    written as key/value pairs and representing the item that is being
+    customized. Both sections and subsections are alphabetically sorted.
+    Currently the following sections/subsections are available: </para>
+
+    <glosslist>
+    <?dbfo glosslist-presentation="list" ?>
+        <glossentry>
+        <glossterm><emphasis role="bold">[Geometry] hsplitter</emphasis>
+        </glossterm>
+        <glossdef><para>the size of the horizontal splitter</para></glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">[Geometry] position</emphasis>
+        </glossterm>
+        <glossdef>
+        <para>the position and size of the application window</para>
+        </glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">[Geometry] vsplitter</emphasis>
+        </glossterm>
+        <glossdef><para>the size of the vertical splitter</para></glossdef>
+        </glossentry>
+        
+        <glossentry>
+        <glossterm><emphasis role="bold">[HelpBrowser] bookmarks</emphasis>
+        </glossterm>
+        <glossdef><para>the list of current bookmarks of the help browser
+        </para></glossdef>
+        </glossentry>
+        
+        <glossentry>
+        <glossterm><emphasis role="bold">[HelpBrowser] history</emphasis>
+        </glossterm>
+        <glossdef><para>the navigation history of the help browser</para>
+        </glossdef>
+        </glossentry>
+        
+        <glossentry>
+        <glossterm><emphasis role="bold">[Logger] font</emphasis></glossterm>
+        <glossdef><para>the logger font</para></glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">[Logger] paper</emphasis></glossterm>
+        <glossdef><para>the logger background color</para></glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">[Logger] text</emphasis></glossterm>
+        <glossdef><para>the logger text color</para></glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm><emphasis role="bold">[Look] currentStyle</emphasis>
+        </glossterm>
+        <glossdef><para>the style that defines the application look &amp; feel.
+        Available styles fit the most common platforms, i.e., Windows, Unix
+        (Motif and SGI flavors), and Macintosh</para></glossdef>
+        </glossentry>
+        
+        <glossentry>
+        <glossterm><emphasis role="bold">[Recent] files</emphasis></glossterm>
+        <glossdef><para>the list of files recently opened</para></glossdef>
+        </glossentry>
+        
+        <glossentry>
+        <glossterm><emphasis role="bold">[Session] files</emphasis></glossterm>
+        <glossdef><para>the list of files and views that were open the last
+        time ViTables was closed</para></glossdef>
+        </glossentry>
+        
+        <glossentry>
+        <glossterm>
+            <emphasis role="bold">[Startup] lastWorkingDirectory</emphasis>
+        </glossterm>
+        <glossdef><para>The last directory accessed from within ViTables
+        via Open File dialog</para></glossdef>
+        </glossentry>
+        
+        <glossentry>
+        <glossterm>
+            <emphasis role="bold">[Startup] restoreLastSession</emphasis>
+        </glossterm>
+        <glossdef><para>The last working session is restored (if possible)
+        which means that both files and leaves that were open in the last
+        session will be reopen at application startup.</para></glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm>
+            <emphasis role="bold">[Startup] startupWorkingDirectory</emphasis>
+        </glossterm>
+        <glossdef><para>possible values are <emphasis>current</emphasis>, and
+        <emphasis>last</emphasis>. These values indicate how the application
+        will setup the startup working directory.</para></glossdef>
+        </glossentry>
+
+        <glossentry>
+        <glossterm>
+            <emphasis role="bold">[Workspace] background</emphasis>
+        </glossterm>
+        <glossdef><para>the workspace background color</para></glossdef>
+        </glossentry>
+
+    </glosslist>
+
+  </appendix>
+
+  <appendix id='A2_The_Help_Browser'>
+    <title>The Help Browser</title>
+
+    <para><application>ViTables</application> comes with its own
+    fully-integrated documentation browser. It allows the
+    <application>ViTables</application> User's Guide to be browsed without
+    leaving the current working session and without opening external
+    applications. You can start the browser issuing the
+    <menuchoice>
+    <guimenu>Help</guimenu><guimenuitem>User's Guide</guimenuitem>
+    </menuchoice>
+    command or from the toolbar.</para>
+
+    <para>The help browser is a small HTML browser for
+    <emphasis>local</emphasis> documents. Despite its small size it exhibits
+    some nice features</para>
+
+    <itemizedlist>
+      <listitem><para>capable of multiple views</para></listitem>
+
+      <listitem>
+        <para>bookmarks
+            <footnote><para>A nice feature of bookmarks is
+            that they can be navigated while they are being edited with the
+            Bookmarks Editing dialog. Simply double click on a bookmark and it
+            will be displayed in the browser.</para></footnote>
+        </para>
+      </listitem>
+
+      <listitem><para>session history</para></listitem>
+
+      <listitem><para>list of most recently opened files</para></listitem>
+
+      <listitem><para>easy document navigation through navigation
+      buttons</para></listitem>
+    </itemizedlist>
+
+    <para><screenshot>
+       <mediaobject>
+          <imageobject role="fo">
+            <imagedata valign="middle" align="center" scale="60"
+            fileref="images/helpBrowser.png" format="PNG"/>
+          </imageobject>
+          <imageobject role="html">
+            <imagedata valign="middle" align="center"
+            fileref="images/helpBrowser.png" format="PNG"/>
+          </imageobject>
+        <caption><simpara>The documentation browser</simpara></caption>
+        </mediaobject>
+    </screenshot></para>
+
+  </appendix>
+</book>
+
+<!--  Local Variables: -->
+<!--  fill-column: 78 -->
+<!--  End: -->

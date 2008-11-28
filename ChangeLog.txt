@@ -1,0 +1,899 @@
+ViTables ChangeLog
+==================
+
+** Mar 28, 2008**
+  A note has been attached to the start of every source file of ViTables.
+  In this note it is specified how the ViTables program is licensed.
+  
+  The queries dialog has been modified: range selectors don't use spinboxes
+  anymore, just textboxes. The reason is that spinboxes do not support
+  unsigned Int64, just Int32. As a consequence, large tables could not be
+  managed by this dialog. 
+
+** Mar 27, 2008**
+  License files: ported r1013 from branch porting_pyqt4.
+  
+  ViTables? logo: ported r1015 from branch porting_pyqt4. 
+  
+** Dec 13, 2007**
+  The editing of user attributes has been improved. Overflow cases are now
+  properly detected and a ValueError is raised. Although this is not the
+  default behavior of numpy arrays (which are silently converted to the
+  apropriate dtype when an overflow occurs) it seems more adequated for an end
+  user application as ViTables.
+  
+  Fixed a bug in the editing of the TITLE system attribute (accents raised
+  errors).
+  
+** Nov 29, 2007**
+  Drag and drop of nodes has been debugged. Cut and paste has been improved. I hope that editing nodes is now implemented in a quite robust way.
+
+** Nov 28, 2007**
+  The behaviour of the documentation browser has been improved.
+  A couple of bugs have been fixed:
+  - canceling the Open File... command works fine now
+  - opening a new documentation browser doesn't give errors due to not found
+    documents
+  - trying to open a document that doesn't exist don't shows a blank page but a
+    page with the message 'Document Not found'
+
+  A mess due to the use of backslashes still happened on Windows platforms,
+  specially in the list of recent files and in the navigation browser history
+  and	bookmarks. This problem has been hopefully solved.
+
+  The copy and paste operation has been enhanced. Now a node can be copied and
+  pasted in its parent group. The overwrite dialog is raised, giving you the
+  chance to rename the pasted node. If you decide to overwrite, the operation
+  fails (a PyTable exception is raised) because a node cannot be overwritten
+  by itself.
+
+
+** Nov 27, 2007**
+  The template script that generates the Windows installer has been updated.
+  Now it takes care of the available translations.
+
+  Unittests have been updated.
+
+  The search method for locating the application settings has been improved on
+  Mac OS X platforms.
+
+
+** Nov 26, 2007**
+  Spanish translation added.
+
+  A couple of minor problems have been fixed:
+  - the .vitables directory is not created on Mac OS X platforms anymore
+  - the message raised when a directory is dropped on the tree viewer is now
+    clearer
+
+  The User's Guide has been updated.
+
+
+** Nov 23, 2007**
+  Displaying of objects in tables widgets has been enhanced. Now cell contents
+  are dynamically adapted to the available room. It means that how the content
+  of a given cell is displayed depends on the column width. As a consequence,
+  the displaying of multidimensional objects has been greatly improved.
+
+  Some changes aimed to improve the i18n have been done.
+
+
+** Nov 21, 2007**
+  Fixed a bug in the creation of user attributes with dtype float32.
+
+  Errors raised during user attributes editing are displayed in the attributes
+  editing dialog, not in the logger. This make easier to user to realise that
+  an error has been raised.
+
+
+** Nov 19, 2007**
+  The release version has been updated.
+
+  The User's Guide source has been updated.
+
+  The DocBrowser behavior has been enhanced. Opening a file for the very first
+  time in the DocBrowser uses the home directory as a working directory.
+  Before it used the installation directory which was ugly.
+
+
+** Nov 02, 2007**
+  Fixed a bug in the access to VLArrays elements. The bug avoided the creation
+  of views for VLArrays.
+
+  VERSION has been updated in vtSite.py. This is required in order to run
+  properly on Mac OS X platforms because on these platforms the module is NOT
+  overwritten by setup.py.
+
+  The temporary database is not removed when quitting ViTables because on
+  Windows platforms a Permission denied error is raised.
+
+
+**Oct 31, 2007**
+  Explicit support for addressing 64 bit space has been added. Now ViTables
+  can display tables with more than 2**32 rows with no problem.
+
+  A small bug has been fixed (hopefully) in the node paste operation: pasting
+  a node on an expanded group doesn't refresh the object tree i.e. the pasted
+  node is not visible.
+
+  The whole unittest directory has been updated/refactored/debugged.
+
+  I forgot to update tests/test_all.py in the previous commit :-(
+
+  Fixed a small bug in the File Save As... procedure. The file extension of
+  the new file was generated in a wrong way because the full filepath was used
+  to determine the extension. The right thing is to use the filename.
+
+**Oct 30, 2007**
+  The Users' Guide has been updated.
+
+  A specific icons has been given to the toobar button in charge of opening
+  files so that users can appreciate that it can show a popup menu now.
+
+  Fixed a bug in File --> Close All and Query --> Delete All. Closing a set of
+  non selected nodes caused a wrong update of the QAction in charge of
+  closing all open files. Deleting a set of non selected filtered tables
+  caused a wrong update of the QAction in charge of deleting all filtered
+  tables.
+
+  Fixed a bug in the procedure used to close a database. A race condition has
+  been removed.
+
+  A new icon has been added.
+
+  Fixed a bug in the updating of query QActions. The bug couldn't be
+  appreciated by users because it happened when the application was about to
+  exit.
+
+**Oct 26, 2007**
+  The VERSION file has been updated.
+
+  A new usability enhancement has been added. The Open button of the File
+  toolbar is able now to open the file of Recent files too.
+
+**Oct 22, 2007**
+  Fixed a bug in the initial setup of the application.
+
+  Fixed a bug in the Properties dialog of empty groups.
+
+  Creating and renaming node operations have been made more robust.
+
+  Fixed a small problem of name qualification when accessing to a couple of
+  PyQt attributes.
+
+**Oct 19, 2007**
+  Usability of Properties dialog has been improved by fixing the visual
+  behavior of attributes editing.
+
+  The format given to catched errors has changed again. Now the readability of
+  Syntax Errors is better.
+
+  In the Filter Table dialog ValueErrors are explicitely catched now.
+
+**Oct 18, 2007**
+  Some classes still were instantiated via apply(qt.QSomeWidget.__init__,
+  (self,args)). Now qt.QSomeWidget.__init__(self, args) is used.
+
+  The behavior of tables shown in the Properties dialog has been improved.
+  Tables have been resized so that they occupy all the available horizontal
+  space leaving no (anoying) gaps.
+
+**Oct 17, 2007**
+  Fixed a small bug in the console that produced a wrong color update in some
+  situations.
+
+  Wild imports have been completely removed.
+
+  The examples directory has been updated.
+
+**Oct 16, 2007**
+  The management of application preferences and configuration has been
+  improved. The code has been simplified and a small bug has been fixed.
+
+  Fixed a bug in the Preferences dialog that made the Cancel button useless.
+
+  Some error and warning messages have been changed in order to ensure that all
+  of them have a consistent format.
+
+**Oct 15, 2007**
+  The resize mode of the Tree Viewer widget has been fixed so that the widget's
+  header resizes properly its sections when the widget is resized.
+
+  A subtle bug has been fixed in the setup of the default configuration of the
+  application.
+
+**Oct 11, 2007**
+  Some logger messatges have been changed in order to make them
+  self-explanatories.
+
+  The installer template script has been modified. The name of the installer
+  includes the kind of license now.
+
+  Fixed a small bug in the File Save As... command. It avoided open files
+  overwriting on Windows platforms.
+
+  The format used for display catched exceptions has changed. Now it is more
+  readable (although provides less information).
+
+**Oct 10, 2007**
+  The format of docstrings has been updated. Now every docstring has a
+  restructured text format.
+
+  Docstrings of every module have been updated. In particular the updated
+  sections are those that listed the names of classes, methods, functions and
+  global variables contained in the modules.
+
+  Code for moving a node from one location to a different one has been changed
+  in order to improve the performance.
+
+**Oct 04, 2007**
+  Fixed a bug in the paste node procedure.
+
+**Oct 03, 2007**
+  The behavior of the Query results node of the tree view has been setup
+  accordingly to its aim.
+
+  A subtle bug has been fixed in the dbView.py module. When dealing with
+  nodepaths os.path.join should be avoided in favour of tables.utils.joinPath.
+  The reason: in Windows platforms os.path.join can produce paths with a mix of
+  slashes and backslashes.
+
+  A small bug in the template installer script has been fixed. The uninstaller
+  didn't remove completely the ViTables entry from the Start menu.
+
+  Fixed a bug in the opening file process. When the open file dialog was
+  called for the first time (i.e. application startup) and the dialog was
+  cancelled then later calls of this dialog were unusable.
+
+  The procedure for saving a file with a different name has been slightly
+  changed to avoid a nasty HDF5 error. The error was raised when the new file
+  name was filename (with no extension) and a filename.h5 file already existed.
+
+**Oct 02, 2007**
+  As no evaluation versions are going to be distributed the dbManager template
+  is not needed now. That's why it has been renamed to dbManager.py
+
+  Unneeded and obsolete files have been removed.
+
+  A small bug has been fixed in vitables/nodes/leafView.py. The bug was raised
+  by a bug in the underlying PyTables 2.0.1
+
+  The ViTables configuration has been updated. The Startup option `start in
+  current directory` is now `start in home directory` to avoid opening
+  unexpected directories in Windows and Mac OS X when ViTables is launched by
+  double clicking its desktop icon.
+
+  Fixed a small bug that prevented to start ViTables in the home directory
+  (when configured to do it) in Windows platforms.
+
+  The template script for generating installers has been modified to add more
+  items to the Start menu: links to documentation (in both PDF and HTML4
+  formats) and to the examples directory.
+
+**Oct 01, 2007**
+  The users' guide has been updated.
+
+  A check has been added to several methods in vtapp.py, to ensure that
+  filepaths do not contain backslashes because they produce a real mess in the
+  Windows registry and the list of recent files.
+
+**Sep 30, 2007**
+  Added a button for group creation to the Node toolbar.
+
+**Sep 29, 2007**
+  Fixed a bug in the drag and drop of a node from a read-only file to a
+  read-write one.
+
+**Sep 28, 2007**
+  QActions updating and synchronizating panels strikes back!
+  The last approache has been discarded because it didn't encompass every
+  possible case. The new approache seems to work better and it is simpler.
+
+  Fixed a bug that prevented empty nodes to be added to the object tree when
+  the tree was expanded.
+
+  Fixed a bug in the creation of new groups. Now the new group can overwrite
+  any node with the same name placed in its parent group. Before only groups
+  could be overwriten.
+
+**Sep 27, 2007**
+  The Help Browser history and bookmarks are now stored in the configuration
+  file instead of in their own files.
+
+  Fixed a bug in the updating of the QActions state.
+
+**Sep 26, 2007**
+  The list of recent files is now stored in the configuration file (or in the
+  Windows registry) instead of in its own file.
+
+  The last session is now stored in the configuration file (or in the
+  Windows registry) instead of in its own file.
+
+  unittests have been updated.
+
+**Sep 25, 2007**
+  The configuration file lastdir, used to store the last opened directory has
+  been removed. Now this information is stored in the application configuration
+  file (or in the Windows registry).
+
+**Sep 24, 2007**
+  Fixed a small bug in the recovering last session process.
+
+**Sep 23, 2007**
+  Unittests have been updated.
+
+**Sep 22, 2007**
+  Added a new usability improvement: the tree view pane and the workspace keep
+  now their selection state synchronized.
+
+  Several keyboard accelerators added.
+
+**Sep 21, 2007**
+  A couple of small usability improvements has been added. The action
+  Node-->New group has a keyboard accelerator now.
+
+**Sep 20, 2007**
+  The dialog raised when a node editing leads to a naming problem is now more
+  readable a.k.a useful.
+
+  Added permission to create groups under the Query results root node.
+
+  Fixed a bug that appeared when a node was moved from one file to a different
+  one.
+
+  Fixed a bug that appeared when a node was copied from one file and pasted
+  into a different one.
+
+**Sep 18, 2007**
+  A small bug has been fixed in the renameDlg.py module.
+
+  Fixed a bug in the implementation of tables queries. The bug caused wrong
+  values to be displayed in the query indices field (if requested) when the
+  range of rows to be queried was other than (start=1, stop=n, step=1)..
+
+**Sep 17, 2007**
+  A small bug has been fixed in the dbView.py module.
+
+  The unittests under tests/h5db have been updated.
+
+**Sep 13, 2007**
+  The dialog raised when a naming problem appears has been enhanced. Now,
+  detailed information about the operation being executed is displayed and
+  buttons text is self-explanatory.
+
+  Fixed a small bug that affected the File Save as... operation.
+
+  Added support for overwriting nodes when a new group is being created.
+
+  Docstrings of dbMananger_template have been updated.
+
+  Fixed a small bug in renameDlg.py.
+
+**Aug 09, 2007**
+  Fixed a serious bug in node deletions procedure.
+
+**Aug 08, 2007**
+  New, clearer descriptions are used in the Properties dialog, in help texts
+  and in buttons text.
+
+  Unneeded messages are not passed to the logger anymore.
+
+  Management of filenames extensions has been improved.
+
+  The Query menu has been simplified.
+
+  The HelpBrowser toolbar layout has changed. It is clearer now.
+
+**Aug 03, 2007**
+  All unittest modules have been refactored and debugged.
+
+  __init__.py files have been added to the tests directory and its
+  subdirectories.
+
+  test_all.py module has been added so that all unittests can be executed
+  easily.
+
+  testingHOWTO.txt has been updated and moved to the tests directory.
+
+**Jul 31, 2007**
+  Unittest module test_query.py has been added.
+
+  The tables query implementation has been modified in order to make it more
+  suitable for testing it with unittests.
+
+  Fixed a bug that was hitting every module in the tests/nodes directory.
+
+  Unittests in the tests/preferences directory have been updated.
+
+  Unittest module root_package/test_commandLine.py updated.
+
+**Jul 25, 2007**
+  Updated Mac packaging instructions to avoid linking sip/PyQt against wrong
+  Python.
+
+**Jul 24, 2007**
+
+  INSTALL.txt and ChangeLog.txt have been updated.
+
+  VTApp.slotHelpAbout method changed. The info displayed in the About tab has
+  been updated.
+
+  Support for VLArrays has been enhanced. VLArrays with pseudo-atom of kind
+  vlunicode are now supported.
+
+  Module zoomCell.py has been updated accordingly to the recoded cell
+  formatting methods of utils.py
+
+**Jul 23, 2007**
+
+  Use a `make.sh` script instead of `make` to build Mac OS X DMG images.
+  The process is not complete yet, since the license is not shown on opening
+  the DMG image.  That's why the `SLA.*` files are still in place.
+
+  Makefile_windows and the template NSIS installer script have been updated.
+  Now they take care of the LICENSE.html file.
+
+  Makefile for unix has been simplified.
+
+  Added RTF readme to DMG image with important details for Mac OS X.
+
+  Removed the files for the Mac OS X DMG resource fork.
+
+  The license file in the DMG root is enough and easier to place. ;)
+
+  The Linux packaging system has been updated so that licenses are properly
+  managed.
+
+**Jul 21, 2007**
+  Fix the Mac OS X app not finding the `qt.so` extension in the appdir.
+  Thanks to Doug Anderson from the PythonMac-SIG list for the solution.
+
+**July 19, 2007**
+  Added a bunch of tests for testing that the actions of menu items if File,
+  Node and Query menus are properly enabled/disabled depending on the kind and
+  number of selected nodes in the tree viewer.
+
+**July 12, 2007**
+  The way of saving settings in the windows registry has changed. Now settings
+  are stored under the key Carabos/Vitables/Version/PythonXX. No changes have
+  been introduced for Unix and Mac OS X platforms.
+
+  The management of application settings has been improved. Some annoyances
+  regarding the geometry of the main window and viewer panels have been fixed.
+
+**July 06, 2007**
+  Module subprocess.py has been removed. Since no packages for Python 2.3 are
+  built now the module is not required.
+
+  Bug fixed in scripts/vitables. The order of the import sentences was wrong.
+
+**July 03, 2007**
+  Screenshots for the User's Guide have been updated.
+
+  Support for personal and site licenses has been added.
+
+**July 02, 2007**
+  Makefile_windows slightly modified to ensure that del behaves like rm.
+
+  hpViewport.py module has been changed in order to fix the speed problem
+  hitting PyQt >=3.16.
+
+  The PNG file vitables_wm.png has changed. It has been converted from RGB to
+  indexed mode. This way transparency is properly handled in Windows boxes.
+
+**June 28, 2007**
+  The 3rd_party_licenses directory has been removed. The MANIFEST.in,
+  LICENSE.txt and utils.py files have been modified accordingly.
+
+  The User's Guide includes now a copyright notice for Qt and PyQt.
+
+**June 27, 2007**
+  Package Mac OS X app as a semi-standalone application (incomplete).
+
+  The PNG used in ViTables windows as application icon has been updated.
+
+  References to the evaluation version have been removed from ANNOUNCE.txt and
+  README.txt.
+
+**June 25, 2007**
+  The docBrowser subpackage has been refactored and debugged.
+
+  The script used to generate the treeSymbols.png image has been updated. The
+  icon for compressed arrays has been included in the script. The image
+  treeSymbols.png itself has been updated too.
+
+  The xml source of the User's Guide has been updated.
+
+**June 20, 2007**
+  The mingwm10.dll library must be included in the installed ViTables because
+  qt and pyqt have been compiled dinamically with the MinGW compiler. The
+  Makefile mswindows/Makefile_windows and the template NSIS script
+  mswindows/vitables.nsi.in have been modified to take care of this dependency.
+
+**June 15, 2007**
+  Added a Confirm Uninstall page to the template NSIS script.
+
+  Several changes intended to allow for generating user's guide in a Windows
+  box have been introduced.
+
+**June 14, 2007**
+  A small inconsistency in the ViTables behavior has been fixed: files are now
+  open in read-write mode by default.
+
+  The template NSIS script for the Windows installer has been updated and
+  refactored.
+
+**June 13, 2007**
+  A working version of the new Windows installer is ready. Refactoring will
+  start in brief :-)
+
+**May 29, 2007**
+  A new set of unittests has been added to the h5db subpackage.
+
+**May 27, 2007**
+  Some minor changes introduced in the h5db subpackage.
+
+**May 26, 2007**
+  Unittests for the h5db subpackage has been refactored and debugged.
+
+**May 24, 2007**
+  Unittests for the h5db subpackage has been rewritten from scratch.
+
+**May 21, 2007**
+  The Windows installer making process is being updated. Compilation is done
+  with MinGW.
+
+**May 18, 2007**
+  The Properties dialog for files has been slightly enhanced: the access mode
+  is shown now in the database groupbox.
+
+  A small bug has been fixed in the dataspace groupbox. The bug produced bad
+  dataspace groupboxes when the number of children of the group was zero.
+
+  Class NodeDoc and its descendants have a new, simpler signature.
+
+  The preferences subpackage has been slightly refactored.
+
+  Unittests are being updated.
+
+**May 17, 2007**
+  The operations Node Rename and File Save as... have been enhanced and
+  debugged.
+
+  The dialogs involved in node renaming and file saving have been modified to
+  make them more suitable for the new behavior of those operations.
+
+**May 15, 2007**
+  The File Save as... operation has been refactored.
+
+  We have got rid of the `h5file` attribute of root nodes in the tree view
+  pane. It is not needed anymore due to the recent changes in the code.
+
+  We have got rid of the parent widget argument in most of the application
+  dialog ctors because this widget uses to be the application main widget,
+  which is always accessible through the qt.qApp.mainWidget method.
+
+**May 14, 2007**
+  The methods for iterating over tree views have been refactored.
+
+  The mechanism for querying tables has been refactored and reorganized. Some
+  modules have moved to different locations, some methods have moved to
+  different modules, etc. The result is much more consistent than the previous
+  implementation.
+
+  Functionality provided by the xxxEditor modules of the treeEditor subpackage
+  has been moved to other modules. The xxxEditor modules have been removed from
+  the project.
+
+**May 12, 2007**
+  Fixed an annoying bug that produced lots of error messages when a new
+  database was created/open. It was caused by a bad interaction between
+  VTApp.slotUpdateActions and DBManager.openDB methods.
+
+  Several internal operations have been simplified. The code of the whole
+  application is now clearer.
+
+**May 11, 2007**
+  The utils.py module has changed. The function getNode has been moved to
+  dbDoc.py module. Several modules are affected by this change.
+
+  A bug has been fixed in the NodeDoc.move method. The bug caused that views of
+  small tables werent properly displayed after a drag and drop operation.
+
+  The way of accessing the DBDoc instance tied to a given item of the tree view
+  item (i.e tied to a TreeNode instance) has been simplified.
+
+**May 10, 2007**
+  Node editing reimplementation has finished. After a new refactorisation
+  everything seems to work fine now.
+
+**May 09, 2007**
+  Drag and drop of nodes has been reimplemented. Now it takes care of properly
+  overwriting nodes and updating views.
+
+**May 08, 2007**
+  Node editing refactoring is still on. Delete and paste operations have been
+  reimplemented.
+
+**May 05, 2007**
+  The mechanism for renaming and deleting nodes has been enhanced and debugged.
+
+  A translate method has been added to some modules that (due to recent
+  changes) need it now.
+
+  The mechanism for cutting and copying nodes has been reimplemented. Now it is
+  simpler and more stable.
+
+**May 04, 2007**
+  The coupling between leavesManager.py and dbManager.py modules has been
+  removed.
+
+  Started a heavy refactorisation of the treeEditor subpackage.
+
+  The group creation and renaming of tree view items in-place have been
+  completely recoded.
+
+**May 02, 2007**
+  Fixed a bug in node deletion: deleting a group with views didn't close the
+  views.
+
+  Module nameConflictDlg.py strongly refactored.
+
+**Apr 30, 2007**
+  Drag and drop management is now simpler:
+    we have got rid of the nodeDrag module
+    information about drags is now encoded via QTextDrag method
+
+**Apr 27, 2007**
+  Some methods of treeView module have been moved to the utils module.
+
+  The vtInputBox module has a changed. Now it can be called more easily and
+  used in a more consistent way.
+
+  The implementation of the model-view-controller in the leaves manager has
+  been fixed for renaming and dropping operations. Some minor changes have
+  been done to descendants of NodeDoc class.
+
+**Apr 23, 2007**
+  The queries management has been enhanced in several ways. On the one hand
+  performance of the filling of the result table has been increased when a
+  column for selected indices is required by user. On the other hand usability
+  of the query dialog has been improved in some aspects.
+
+**Apr 20, 2007**
+  Added a help system to the user's attributes page of the node properties
+  dialog. Also the query dialog has been enhanced with a help system.
+
+  The splash screen has been updated.
+
+  Management of configuration exceptions has been simplified by reducing the
+  number of classes to deal with.
+
+**Apr 19, 2007**
+  The support for complex queries has been enhanced. Now columns whose names
+  contain blanks can be queried too.
+
+**Apr 18, 2007**
+  The preferences subpackage has been refactored and simplified.
+
+**Apr 15, 2007**
+  Added support for complex queries.
+
+**Apr 14, 2007**
+  A couple of bugs have been fixed:
+
+  - the action Close view is inactive when the selected item is a group.
+    However there was a LeavesManager.closeGroup method designed for closing
+    every opened view under the selected group when the Close view action was
+    launched.
+
+  - the icons dictionary was recreated every time an icon was required by the
+    application. It caused the openRecentFile action not to work at all. On the
+    other hand the nodeProperties subpackage has been refactored and
+    simplified.
+
+**Apr 11, 2007**
+  The nodes subpackage has been refactored and simplified.
+
+**Apr 10, 2007**
+  The h5db subpackage has been refactored and simplified.
+
+**Apr 09, 2007**
+  The application exiting code has been refactored.
+  Applied a workaround to a bug that hangs the application during the quit
+  process: calls to methods Table.where and Table.whereAppend have been
+  replaced by calls to Table.readWhere.
+
+**Apr 07, 2007**
+  The queryDlg.py module has been heavily refactored.
+
+**Apr 06, 2007**
+  The management of tables queries is still under revision.
+
+**Apr 03, 2007**
+  The tables query syntax has changed in PyTables 2.0. Methods involved in
+  querying tables have been updated.
+
+**Mar 31, 2007**
+  The module resources.py has been renamed to utils.py.
+
+**Mar 30, 2007**
+  Management of the application icons have been simplified.
+
+**Mar 29, 2007**
+  The code for opening a node from the tree view has been refactored and
+  simplified.
+
+  Management of empty datasets has been improved.
+
+**Mar 28, 2007**
+  Added support for CArrays. Until now CArrays were managed as regular Arrays:
+  they shared the same icon and looked the same in Properties dialogs. Now an
+  icon has been created for CArrays and they are explicitely identified in
+  Properties dialogs.
+
+  The attributes editing stuff have been refactored and simplified.
+
+**Mar 27, 2007**
+  The editing code of the TITLE system attribute has been simplified.
+
+  The directory vtBoxes has been renamed to vtWidgets. It is aimed to contain
+  widgets specifically designed for ViTables and widely used for it. The
+  following modules have been moved to this directory:
+
+  - zoomCell.py
+  - vtTableItem.py
+
+**Mar 26, 2007**
+  The VTTableItem class has been refactored.
+
+  The getNodeInfo method has been changed in classes derived from NodeDoc.
+  As a consequence a more convenient way to access the info returned by this
+  method is achieved. It means that the code that use the returned info is now
+  simpler. Several modules are affected by this change.
+
+  The copyright line at top section of every python module of the project has
+  been updated.
+
+  The General page of the Properties dialog has been slightly refactored.
+
+**Mar 24, 2007**
+  Most of calls to vitables.resources.getAttr have been changed. The simpler
+  form, object.attribute, is preferred unless the attribute name is stored in
+  a variable. In this case only the first form can be used. A bunch of modules
+  is affected by these changes.
+
+  vitables.resources.getNode function rewritten.
+
+  The methods for dinamically building the object tree (tree view) of a given
+  database have been refactored and greatly simplified.
+
+  zoomCell.py module refactored.
+
+  The management of empty databases has been debugged.
+
+  Fixed a bugg in the management of UnImplemented datasets.
+
+**Mar 23, 2007**
+  In PyTables 2.0 some Table attributes have been renamed, other have
+  disappeared and other have been added. In order to see if a Table has nested
+  field the colnames attribute cannot be used anymore. One can use the
+  colpathnames attribute for that purpose.
+
+  zoomCell.py and buffer.py modules refactored.
+
+**Mar 22, 2007**
+  zoomCell.py and buffer.py modules refactored.
+
+  The methods for painting cells in a table widget have been updated and
+  optimised.
+
+  Debugged management of VLArrays with vlstring and object atoms.
+
+**Mar 21, 2007**
+  The properties dialog of leaves has been updated. Several issues concerning
+  with PyTables 2.0 have been fixed.
+
+  Management of PyTables scalar arrays improved in the buffer.py module.
+
+**Mar 20, 2207**
+  Fixed several minor issues in some help texts. 
+
+  ViTables dependencies on numarray package are being removed. The numarray
+  functionality is now provided by numpy. As a consequence numarray will not be
+  included anymore in the ViTables installer for Windows. Instead numpy will
+  be included so the numarray license has been substituted by the numpy one in
+  the 3rd_party_licenses directory.
+
+  The examples directory has been updated. Most of the .h5 files are now
+  PyTables 2.0 files.
+
+**Mar 19, 2007**
+  ViTables dependencies on numarray package are being removed.
+
+  Management of PyTables user and system attributes has been updated. At the
+  moment only PyTables.2.0 attributes are supported.
+  The names of the supported data types are still outdated.
+
+**Mar 17, 2006**
+  Ensure that both PyTables format version 1.x and 2.x are supported in the
+  case of VLArrays.
+
+  zoomCell.py module has been heavily refactored and debugged.
+
+**Mar 16, 2007**
+  Starts the adaptation to PyTables 2.0.
+
+  buffer.py module refactored.
+
+**June 01, 2006**
+  Solved a couple of bugs that were apparent only on Mac OS X.
+
+  Several usability enhancements added: warning messages are highlighted in
+  orange color, files with read-only access permissions are automatically
+opened
+  in read-only mode, improved bookmarks management in the documentation
+  browser...
+
+**May 23, 2006**
+  New splash screen behavior. Now it provides the users with feedback that the
+  application is loading.
+
+**May 19, 2006**
+  Application geometry is now kept between sessions. It includes the position
+  and size of the application window and the sizes of the components of the
+  viewing area, i.e. the tree viewer, the workspace and the logger.
+
+**May 18, 2006**
+  A new indicator has been added to the status bar. The indicator permanently
+  shows the path of the item currently selected (if any) in the tree viewer.
+
+**May 16, 2006**
+  A view for the selected leaf (if any) of the tree viewer can be opened/closed
+  by pressing the plus/minus keys, in the very same way that group nodes can be
+  expanded/collapsed.
+
+**May 15, 2006**
+  Keyboard focus indicators have been added to the tree viewer and the logger
+  in order to improve the application usablility, specially if you are moving
+  around using the keyboard instead of the mouse.
+
+**April 28, 2006**
+  Added in-place node renaming capabilities. Now a selected node of a given
+  object tree can be renamed in-place as well as via Rename dialog.
+
+**April 27, 2006**
+  Several contextual menus enhanced and debugged.
+
+**April 26, 2006**
+  Added support for the cut node operation.
+
+**April 19, 2006**
+  A PDF version of the User's Guide has been added.
+
+**April 07, 2006**
+  Files opening has been made easier. Now, a file can be opened by dragging it
+  into the tree viewer.
+
+**March 14, 2006**
+  The query dialog has been improved. Now it remembers the last entered query
+  and uses it to set the initial values of the query if it applies.
+
+**March 10, 2006**
+  Added support for any file extension to the File Browser.
+
+  When a table is queried, if the result table is empty, a suitable message is
+  logged.
+
+**March 08, 2006**
+  Implemented a mechanism to ensure that, if an error occurs when a dataset is
+  being accessed, the application cursor will not remain frozen in its clock
+  shape.
+
+  The tables query dialog has been debugged. Empty strings are not valid names
+  for the column of indices.
+
+**March 01, 2006**
+  Node renaming has been debugged.
+
+  User's Guide has been updated.

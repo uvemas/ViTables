@@ -1,0 +1,320 @@
+#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008 Vicent Mas. All rights reserved
+#       Author:  Vicent Mas - vmas@vitables.org
+#
+# This script is intended to generate a binary installer for sources imported
+# from a ViTables repository. It is not intended for distribution.
+
+# Use Modern User Interface style
+!include "MUI.nsh"
+
+!include Library.nsh
+!include Sections.nsh
+!include LogicLib.nsh
+
+# Select the compressor that will compress the installer
+SetCompressor bzip2
+
+# The name of the installer
+Name "ViTables @VERSION@ (@LICENSE@)"
+
+# The file where the installer will be saved
+OutFile "ViTables-@VERSION@-@LICENSE@.win32-py@DOTPYTHONVERSION@.exe"
+
+# The installer icons as used by MUI (see NSIS FAQ)
+!define MUI_ICON "@SVN_VITABLES@\icons\vtinstaller.ico"
+!define MUI_UNICON "@SVN_VITABLES@\icons\vtinstaller.ico"
+
+# Use the new XP style
+XPStyle on
+
+# Variables declaration
+Var VITABLES_KEY
+Var VITABLES_SUBKEY
+Var HDF5FILE_SUBKEY
+Var HDF5SHELL_SUBKEY
+Var STARTMENU_FOLDER
+Var MUI_TEMP
+Var PYTHONDIR
+
+###########################################################
+#	PART I: INSTALLER
+###########################################################
+
+# --------------------------------
+# Functions
+# --------------------------------
+
+Function .onInit
+	# The registry key where application settings will be stored
+	StrCpy $VITABLES_KEY "SOFTWARE\Carabos\ViTables\@VERSION@"
+	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
+	StrCpy $STARTMENU_FOLDER "ViTables @VERSION@ for Python @DOTPYTHONVERSION@"
+
+	# Check the tables installation
+	ExecWait "C:\python@PYTHONVERSION@\pythonw.exe -c $\"import tables$\""
+	IfErrors 0 +3
+	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyTables is not \
+	  installed. Aborting the ViTables installation process."
+	  Abort
+FunctionEnd
+
+Function preInstallDir
+  # Default installation directory
+  StrCpy $INSTDIR "$PROGRAMFILES\Carabos\$STARTMENU_FOLDER"
+FunctionEnd
+
+Function prePythonDir
+  # Default Python interpreter
+  StrCpy $PYTHONDIR "C:\Python@PYTHONVERSION@"
+FunctionEnd
+
+Function postPythonDir
+  IfFileExists $PYTHONDIR\pythonw.exe +3 0
+  MessageBox MB_YESNO "Cannot find a valid Python@DOTPYTHONVERSION@ interpreter in \
+$PYTHONDIR.$\r$\nYou can install ViTables there, but it will not run \
+without Python@DOTPYTHONVERSION@ installed in the same directory tree.$\r$\nContinue \
+anyway?" IDYES +2 IDNO 0
+  Abort
+FunctionEnd
+
+# --------------------------------
+# Pages
+# --------------------------------
+
+# Welcome page
+!insertmacro MUI_PAGE_WELCOME
+
+# License summary page
+!define MUI_PAGE_HEADER_TEXT "License Summary"
+!define MUI_PAGE_HEADER_SUBTEXT "Just for lazy people :-)"
+!define MUI_LICENSEPAGE_TEXT_TOP " "
+!define MUI_LICENSEPAGE_TEXT_BOTTOM " "
+!define MUI_LICENSEPAGE_BUTTON "I'm warned"
+!insertmacro MUI_PAGE_LICENSE @SVN_VITABLES@\LICENSE_SUMMARY.txt
+
+# License page
+!insertmacro MUI_PAGE_LICENSE @SVN_VITABLES@\@LICENSEFILENAME@
+
+# Components selection page
+#!insertmacro MUI_PAGE_COMPONENTS
+
+# Installation directory page for ViTables data files
+!define MUI_PAGE_CUSTOMFUNCTION_PRE preInstallDir
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Setup will install ViTables @VERSION@ data \
+files in the following folder. To install in a different folder, click \
+Browse and select another folder. Click Next to Continue."
+!insertmacro MUI_PAGE_DIRECTORY
+
+# Installation directory page for ViTables modules and scripts
+!define MUI_PAGE_CUSTOMFUNCTION_PRE prePythonDir
+!define MUI_PAGE_CUSTOMFUNCTION_LEAVE postPythonDir
+!define MUI_PAGE_HEADER_TEXT "Choose the Python-@DOTPYTHONVERSION@ interpreter"
+!define MUI_PAGE_HEADER_SUBTEXT "Choose the folder in which the Python-@DOTPYTHONVERSION@ \
+interpreter is located."
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Setup will install ViTables @VERSION@ modules and \
+scripts under the following folder. To install in a different folder, click \
+Browse and select another folder. Click Next to Continue."
+!define MUI_DIRECTORYPAGE_VARIABLE $PYTHONDIR
+!insertmacro MUI_PAGE_DIRECTORY
+
+
+# Start Menu Folder Page Configuration
+!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
+!define MUI_STARTMENUPAGE_REGISTRY_KEY $VITABLES_SUBKEY
+!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+!insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
+
+# Install selected components page
+!insertmacro MUI_PAGE_INSTFILES
+
+# The stuff to install a.k.a. Sections
+# ------------------------------------------
+
+Section "ViTables @VERSION@" VT
+
+  # Copy the MingW, Qt and PyQt libraries in the installation directory
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\pyqt
+  File @MINGWDIR@\bin\mingwm10.dll
+  File @QTDIR@\bin\qt-mt336.dll
+  File @PYQTDIR@\*.pyd
+
+  # Copy the ViTables script in the Python Scripts directory
+  SetOutPath $PYTHONDIR\Scripts
+  File vitables.exe
+
+  # Copy the ViTables sources in the Python site-packages directory
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables
+  File /r /x .svn @SVN_VITABLES@\vitables\*.py
+
+  # The text files: TODO.txt, INSTALL.txt and stuff like that
+  SetOutPath $INSTDIR
+  File /x testingHOWTO.txt /x packagingHOWTO.txt /x LICENSE-* @SVN_VITABLES@\*.txt
+  File @SVN_VITABLES@\@LICENSEFILENAME@
+  Rename @LICENSEFILENAME@ LICENSE.txt
+  File LICENSE.html
+
+  # The documentation directory
+  SetOutPath $INSTDIR\doc\html
+  File /r /x .svn @SVN_VITABLES@\doc\html\*
+  SetOutPath $INSTDIR\doc
+  File @SVN_VITABLES@\doc\usersguide.pdf
+
+  # The examples directory
+  SetOutPath $INSTDIR\examples
+  File @SVN_VITABLES@\examples\*.h5
+  SetOutPath $INSTDIR\examples\scripts
+  File /r /x .svn @SVN_VITABLES@\examples\scripts\*
+
+  # The translations directory
+  SetOutPath $INSTDIR\translations
+  File @SVN_VITABLES@\translations\*.txt
+  File @SVN_VITABLES@\translations\*.qm
+
+  # The icons directory
+  SetOutPath $INSTDIR\icons
+  File /r /x .svn @SVN_VITABLES@\icons\*
+
+  # Create the uninstaller and put it in the aplication directory
+  WriteUninstaller "$INSTDIR\Uninstall.exe"
+
+  # Save the installation directory in the module vitables.vtSite.py
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables
+  FileOpen $1 "vtSite.py" w
+  FileWrite $1 INSTALLDIR="$PYTHONDIR\\Lib\\site-packages\\vitables"
+  FileWrite $1 "$\r$\n"
+  FileWrite $1 DATADIR="$INSTDIR"
+  FileWrite $1 "$\r$\n"
+  FileWrite $1 VERSION="@VERSION@"
+  FileWrite $1 "$\r$\n"
+  FileClose $1
+
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+
+    # Create shortcuts
+    CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Examples.lnk" "$INSTDIR\examples"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (PDF).lnk" "$INSTDIR\doc\usersguide.pdf"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (HTML).lnk" "$INSTDIR\doc\html\index.html"
+    CreateShortCut "$DESKTOP\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
+
+  !insertmacro MUI_STARTMENU_WRITE_END
+
+  # Update the registry
+  WriteRegStr HKLM $VITABLES_SUBKEY "INSTDIR" $INSTDIR
+  WriteRegStr HKLM $VITABLES_SUBKEY "PYTHONDIR" $PYTHONDIR
+
+  # Remove the existing file association (if any) for the .h5 extension
+  DeleteRegKey HKCR ".h5"
+  # Map the .h5 extension to ViTables
+  StrCpy $HDF5FILE_SUBKEY "Carabos\ViTables\@VERSION@\HDF5File"
+  WriteRegStr HKCR ".h5" "" $HDF5FILE_SUBKEY
+  # Default settings for the .h5 extension 
+  WriteRegStr HKCR $HDF5FILE_SUBKEY "" "HDF5 file"
+  WriteRegStr HKCR $HDF5FILE_SUBKEY\DefaultIcon "" "$INSTDIR\icons\vitables_file.ico"
+  WriteRegStr HKCR $HDF5FILE_SUBKEY\shell "" ""
+  StrCpy $HDF5SHELL_SUBKEY "$HDF5FILE_SUBKEY\shell"
+  WriteRegStr HKCR $HDF5SHELL_SUBKEY\open "" "Open with ViTables"
+  WriteRegStr HKCR $HDF5SHELL_SUBKEY\open\command "" \
+    '$PYTHONDIR\Scripts\vitables.exe "%1"'
+
+SectionEnd
+
+# Set descriptions for Section 0 (VT section)
+LangString DESC_VT $(LANG_ENGLISH) "A GUI for PyTables. It allows for very \
+fast opening and navigation of arbitrarely large PyTables files."
+
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT 0 $(DESC_VT)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+###########################################################
+#	PART II: UNINSTALLER
+###########################################################
+
+
+# --------------------------------
+# Pages
+# --------------------------------
+
+# Welcome page
+!insertmacro MUI_UNPAGE_CONFIRM
+
+# Uninstall page: execute uninstall sections
+!define MUI_INSTFILESPAGE_FINISHHEADER_TEXT "Uninstallation complete"
+!define MUI_INSTFILESPAGE_FINISHHEADER_SUBTEXT "ViTables deletion completed \
+succesfully."
+!define MUI_UNFINSIHPAGE_NOAUTOCLOSE 1
+!insertmacro MUI_UNPAGE_INSTFILES
+
+# Eventually the LANGUAGE macro must be inserted 
+!insertmacro MUI_LANGUAGE "English"
+
+# --------------------------------
+# Uninstaller Sections
+# --------------------------------
+
+Section "Un.Vitables uninstall" UVT
+
+  ReadRegStr $PYTHONDIR HKLM $VITABLES_SUBKEY "PYTHONDIR"
+  ReadRegStr $INSTDIR HKLM $VITABLES_SUBKEY "INSTDIR"
+
+  # Remove the application directory
+  RMDir /r $INSTDIR
+
+  # Remove the vitables package
+  RMDir /r "$PYTHONDIR\Lib\site-packages\vitables"
+  Delete "$PYTHONDIR\Scripts\vitables.exe"
+
+  # Remove the application entry in the Start Menu
+  !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
+
+  Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
+  Delete "$SMPROGRAMS\$MUI_TEMP\ViTables.lnk"
+  Delete "$SMPROGRAMS\$MUI_TEMP\Examples.lnk"
+  Delete "$SMPROGRAMS\$MUI_TEMP\User's Guide (PDF).lnk"
+  Delete "$SMPROGRAMS\$MUI_TEMP\User's Guide (HTML).lnk"
+  Delete "$DESKTOP\ViTables.lnk"
+
+  # Delete empty start menu parent diretories
+  StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
+
+  startMenuDeleteLoop:
+	ClearErrors
+    RMDir $MUI_TEMP
+    GetFullPathName $MUI_TEMP "$MUI_TEMP\.."
+
+    IfErrors startMenuDeleteLoopDone
+
+    StrCmp $MUI_TEMP $SMPROGRAMS startMenuDeleteLoopDone startMenuDeleteLoop
+  startMenuDeleteLoopDone:
+
+  # Delete the ViTables key from the registry
+  DeleteRegKey HKLM $VITABLES_SUBKEY
+
+  # File association
+  ReadRegStr $1 HKCR ".h5" ""
+  # If .h5 extension not mapped to ViTables then do nothing
+  ${If} $1 == "Carabos\ViTables\@VERSION@\HDF5File"
+    DeleteRegKey HKCR ".h5"
+    DeleteRegKey HKCR "Carabos"
+  ${EndIf}
+
+
+SectionEnd
+
+
+# --------------------------------
+# Functions
+# --------------------------------
+
+Function un.onInit
+  # Variables set in installer functions are not available here so we must set
+  # them again
+	StrCpy $VITABLES_KEY "SOFTWARE\Carabos\ViTables\@VERSION@"
+	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
+FunctionEnd
+
+

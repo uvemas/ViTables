@@ -1,0 +1,51 @@
+System requirements
+-------------------
+
+To run ViTables you need install Python >= 2.4, PyTables >= 2.0 (so
+you have to fullfill its own requirements), the Qt3 >= 3.3 library, and
+PyQt3 >= 3.14.
+
+Installation on Linux and Widows platforms
+------------------------------------------
+
+The Python Distutils are used to build and install ViTables. Provided your
+system fullfills the requirements listed in the above section, installing
+the package is really easy. Just uncompress it, change to the distribution
+directory and execute (as root)
+
+ $ python setup.py install
+
+If you are doing this on a MacOS X platform, please make sure that the
+DYLD_LIBRARY_PATH environment variable has been setup properly.
+
+By default ViTables will be installed in the system-protected area where
+your system installs third party Python packages so you will need superuser
+privileges. If you prefer to install the package in a different location
+(for instance, your home directory) so that the installation can be done by
+non privileged users, you can do it using the --prefix (or --home) tag
+
+ $ python setup.py install --prefix=/home/myuser/mystuff
+
+Please, remember that installing Python modules in non-standard locations
+makes it necessary to setup properly the PYTHONPATH environment variable so
+that the Python interpreter can find the new modules.
+
+If you need further customizations, please have a look to the output of the
+command
+
+ $python setup.py install --help
+
+to see all the available options. Complete information about them can be
+found in the Distutils documentation.
+
+Installation on MacOS X platforms
+---------------------------------
+For getting a double-clickable application bundle do the following:
+
+- uncompress the tarball
+- change to the distribution directory
+- change to the macosxapp directory
+- execute the make.sh script
+
+If you prefer to launch ViTables from the command line then install it
+following the instructions given in the previous section.

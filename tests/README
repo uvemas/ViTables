@@ -1,0 +1,12 @@
+Before executing the tests do the following:
+
+- $ rm samples.h5
+- $ python create_samples.py
+- make sure that root_owned.h5 is owned by root.root
+
+In order to execute the tests::
+
+   $ cd ..
+   $ PYTHONPATH=.:tests python tests/test_all.py
+
+
