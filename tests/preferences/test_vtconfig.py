@@ -2,14 +2,15 @@ import unittest
 import sys
 import os
 
-import qt
+import PyQt4.QtCore as qtCore
+import PyQt4.QtGui as qtGui
 
 import vitables.vtSite as vtSite
 
 class ConfigTestCase(unittest.TestCase):
     """Test case for the Config class.
 
-    This method assumes that a configuration file $HOME/.vitables/vitablesrc
+    This method assumes that a configuration file $HOME/.vitables/Carabos/vitables.conf
     exists.
     Warning: I don't know how to check the dictionary of default values.
     """
@@ -132,17 +133,17 @@ class ConfigTestCase(unittest.TestCase):
             # Mac OS X saves settings in a properties list stored in a
             # standard location (either on a global or user basis).
             # QSettings will create the appropriate plist file com.ViTables.plist
-            config_path = os.path.join(qt.QDir.homeDirPath().latin1(),
+            config_path = os.path.join(str(qtCore.QDir.homePath()),
                 'Library/Preferences/com.carabos.ViTables.plist')
             self.assert_(os.path.isfile(config_path),
                 'The configuration plist com.carabos.ViTables.plist cannot be found.')
         else:
             # On Unix systems settings will be stored in a plain text
             # file (see the module docstring for name conventions)
-            config_path = os.path.join(qt.QDir.homeDirPath().latin1(),
-                '.vitables/vitablesrc')
+            config_path = os.path.join(str(qtCore.QDir.homePath()),
+                '.vitables/Carabos/ViTables.conf')
             self.assert_(os.path.isfile(config_path),
-                'The configuration file vitablesrc cannot be found.')
+                'The configuration file ViTables.conf cannot be found.')
 
 
     def test09_WriteProperty(self):
@@ -160,16 +161,16 @@ class ConfigTestCase(unittest.TestCase):
         vss = [400, 50]
         self.config.writeProperty('Geometry/vsplitter', vss)
         # Write Logger Paper
-        lp = qt.QBrush(qt.QColor('green'))
+        lp = qtGui.QBrush(qtGui.QColor('green'))
         self.config.writeProperty('Logger/paper', lp)
         # Write Logger Text Color
-        ltc = qt.QColor('blue')
+        ltc = qtGui.QColor('blue')
         self.config.writeProperty('Logger/text', ltc)
         # Write Logger Text Font
-        ltf = qt.QFont('Helvetica', 10, -1)
+        ltf = qtGui.QFont('Helvetica', 10, -1)
         self.config.writeProperty('Logger/font', ltf)
         # Write Workspace Background
-        wbg = qt.QColor('yellow')
+        wbg = qtGui.QColor('yellow')
         self.config.writeProperty('Workspace/background', wbg)
         # Write Style
         style = 'Motif'
@@ -234,10 +235,10 @@ class ConfigTestCase(unittest.TestCase):
 
         # Read the Logger/paper key from the test configuration file
         paper = self.config.readLoggerPaper()
-        self.assert_(isinstance(paper, qt.QColor),
+        self.assert_(isinstance(paper, qtGui.QColor),
             'readLoggerPaper() method should return a QColor instance')
-        bg = paper.name().latin1()
-        expected = '#00ff00'
+        bg = str(paper.name())
+        expected = '#008000'
         self.assert_(bg == expected,
             'The logger paper should be green.')
 
@@ -248,10 +249,10 @@ class ConfigTestCase(unittest.TestCase):
 
         # Read the Logger/text key from the test configuration file
         fg = self.config.readLoggerText()
-        self.assert_(isinstance(fg, qt.QColor),
+        self.assert_(isinstance(fg, qtGui.QColor),
             'readLoggerText() method should return a QColor instance')
         expected = '#0000ff'
-        self.assert_(fg.name().latin1() == expected,
+        self.assert_(str(fg.name()) == expected,
             'The logger text should be blue.')
 
 
@@ -261,11 +262,11 @@ class ConfigTestCase(unittest.TestCase):
 
         # Read the Logger/font key from the test configuration file
         f1 = self.config.readLoggerFont()
-        self.assert_(isinstance(f1, qt.QFont),
+        self.assert_(isinstance(f1, qtGui.QFont),
             'readFont() method should return a QFont instance')
-        expected = qt.QFont('Helvetica', 10, -1)
+        expected = qtGui.QFont('Helvetica', 10, -1)
         self.assert_(f1 == expected,
-            'The font should be Helvetica, 10 points, weight normal, not italic.')
+            'The font should be Helvetica, 10 points, weight normal, non italic.')
 
 
     def test16_ReadWorkspaceBackground(self):
@@ -274,10 +275,10 @@ class ConfigTestCase(unittest.TestCase):
 
         # Read the Workspace/background key from the test configuration file
         bg = self.config.readWorkspaceBackground()
-        self.assert_(isinstance(bg, qt.QColor),
+        self.assert_(isinstance(bg, qtGui.QColor),
             'readWorkspaceBackground() method should return a QColor instance')
         expected = '#ffff00'
-        self.assert_(bg.name().latin1() == expected,
+        self.assert_(str(bg.name()) == expected,
             'readWorkspaceBackground() method should return a yelow color')
 
 
@@ -394,13 +395,10 @@ def globalSetup():
 
     # Avoid <QApplication: There should be max one application object> errors:
     # if an instance of QApplication already exists then use a pointer to it
-    try:
-        qt.qApp.argv()
-        QTAPP = qt.qApp
-    except RuntimeError:
-        QTAPP = qt.QApplication(sys.argv)
+    QTAPP = qtGui.qApp
+    if QTAPP.type() != 1:
+        QTAPP = qtGui.QApplication(sys.argv)
     import vitables.preferences.vtconfig as vtconfig
-    QTAPP.setMainWidget(qt.QWidget())
 
 
 def suite():

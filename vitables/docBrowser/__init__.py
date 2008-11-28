@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["bookmarksDlg", "browserGUI", "helpBrowser", "vtTextBrowser"]
+__all__ = ["bookmarksDlg", "browserGUI", "helpBrowser"]

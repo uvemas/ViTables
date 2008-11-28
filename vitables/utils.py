@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -21,7 +23,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: utils.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: utils.py 1070 2008-10-17 06:02:34Z vmas $
 #
 ########################################################################
 
@@ -30,254 +32,213 @@ Here is defined the resources module.
 
 Functions:
 
-* getHomeDir()
-* createIcons()
-* getIcons()
-* customizeWidgetButtons(widget, icons=None)
+* addActions(target, actions, actions_dict)
 * addRow(label, text, parent)
-* makeLineEdit(text, parent, read_write = False, frame = False)
+* createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
+                checkable=False)
+* createIcons(large_icons, small_icons, icons_dict)
 * formatArrayContent(content)
+* formatExceptionInfo(limit=1)
 * formatObjectContent(content)
 * formatStringContent(content)
-* formatExceptionInfo()
-* getLicense()
 * forwardPath(path)
+* getFinalName(nodename, sibling, pattern, info)
+* getHBIcons()
+* getHomeDir()
+* getIcons()
+* getLicense()
 
 Misc variables:
 
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import sys
 import os
 import traceback
+import sets
 
 import numpy
-import tables.exceptions
 
-import qt
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
 import vitables.vtSite
+import vitables.vtWidgets.renameDlg as renameDlg
 
 ICONS_DICT = {}
+HB_ICONS_DICT = {}
 
 #
-# Widget related functions
+# Icons related functions
 #
-
-
-def getHomeDir():
-    """
-    Get the user's home directory.
-
-    How the directory is obtained depends on the platform. The returned
-    path is used in QFileDialog calls.
-    """
-
-    if sys.platform.startswith('win'):
-        home = os.getenv('HOMEDRIVE') + os.getenv('HOMEPATH')
-        home = forwardPath(home)
-    else:
-        home = os.getenv('HOME')
-    return home
-
-
-def createIcons():
+def createIcons(large_icons, small_icons, icons_dict):
     """
     Create icons for different components of the GUI.
 
     The method creates sets of icons for the popup menus and the
-    toolbar. It also creates icons for the QListViewItems of the
-    object tree and for the windows displaying leaves.
+    toolbar. It also creates icons for the tree of databases view
+    and for the windows displaying leaves.
+
+    :Parameters:
+
+    - `large_icons`: the list of names of icons with size 22x22
+    - `small_icons`: the list of names of icons with size 16x16
+    - `icons_dict`: the icons dictionary to be updated
     """
 
+    all_icons = large_icons.union(small_icons)
     icons_directory = '%s/icons' % vitables.vtSite.DATADIR
 
-    large_icons = [
-        # Icons for toolbars
-        'fileclose', 'filenew', 'fileopen', 'fileopen_popup', 'filesaveas', 'exit',
-        'editcopy', 'editcut', 'editdelete','editpaste', 'usersguide',
-        # Icons for tree pane items
-        'file_ro', 'file_rw', 'dbfilters', 'folder', 'folder_open']
-        
-    small_icons = [
-        # Icons for menu items
-        'fileclose', 'filenew', 'fileopen', 'filesaveas', 'exit',
-        'editcut', 'editcopy','editdelete','editpaste', 'info', 'folder_new',
-        'new_filter',
-        'appearance',
-        'usersguide',
-        # Icons for tree pane items
-        'unimplemented',
-        'array', 'carray', 'earray', 'object',
-        'vlarray', 'vlstring','table',
-        # Icons for node views
-        'zoom',
-        # Icons for buttons
-        'cancel', 'ok']
-
-    all_icons = [
-        'fileclose', 'filenew', 'fileopen', 'fileopen_popup', 'file_ro', 'file_rw',
-        'filesaveas', 'exit',
-        'editcut', 'editcopy', 'editdelete','editpaste', 'info', 'folder_new',
-        'new_filter', 'appearance', 'usersguide',
-        'dbfilters', 'folder', 'folder_open', 'table',  'array','carray',
-        'earray', 'vlarray', 'vlstring','object', 'unimplemented',
-        'zoom',
-        'cancel', 'ok']
-
     for name in all_icons:
-        iconset = qt.QIconSet()
+        icon = QtGui.QIcon()
         if name in large_icons:
-            iconset.setIconSize(qt.QIconSet.Large, qt.QSize(22, 22))
             file_name = 'big_icons/%s.png' % name
             file_path = '%s/%s' % (icons_directory, file_name)
-            pixmap = qt.QPixmap()
-            pixmap.load(file_path)
-            iconset.setPixmap(pixmap, qt.QIconSet.Large, qt.QIconSet.Normal,
-                qt.QIconSet.On)
+            pixmap = QtGui.QPixmap(file_path)
+            pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
+            icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
             file_name = 'small_icons/%s.png' % name
             file_path = '%s/%s' % (icons_directory, file_name)
-            pixmap = qt.QPixmap()
-            pixmap.load(file_path)
-            iconset.setPixmap(pixmap, qt.QIconSet.Small, qt.QIconSet.Normal,
-                qt.QIconSet.On)
-        ICONS_DICT[name] = iconset
+            pixmap = QtGui.QPixmap(file_path)
+            icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icons_dict[name] = icon
 
-    # Add an empty iconSet for the Default button of some dialogs
-    ICONS_DICT[''] = qt.QIconSet()
+#    # Add an empty iconSet for the Default button of some dialogs
+    icons_dict[''] = QtGui.QIcon()
 
     # Application icon
-    pixmap = qt.QPixmap()
-    pixmap.load('%s/vitables_wm.png' % icons_directory)
-    ICONS_DICT['vitables_wm'] = pixmap
+    icon = QtGui.QIcon()
+    pixmap = QtGui.QPixmap('%s/vitables_wm.png' % icons_directory)
+    icon.addPixmap(pixmap)
+    icons_dict['vitables_wm'] = icon
 
 
 def getIcons():
-    """Return the icons dictionary."""
+    """Return the icons dictionary to be used by the main window."""
 
     if not ICONS_DICT:
-        createIcons()
+        large_icons = sets.Set([
+            # Icons for toolbars
+            'fileclose', 'filenew', 'fileopen', 'fileopen_popup', 
+            'filesaveas', 'exit', 
+            'editcopy', 'editcut', 'editdelete','editpaste', 'usersguide', 
+            'new_filter', 'delete_filters', 
+            # Icons for tree pane items
+            'file_ro', 'file_rw', 'dbfilters', 'folder', 'folder_open'])
+
+        small_icons = sets.Set([
+            # Icons for menu items
+            'fileclose', 'filenew', 'fileopen', 'filesaveas', 'exit', 
+            'editcut', 'editcopy','editdelete','editpaste', 'info', 
+            'folder_new', 
+            'new_filter', 'delete_filters', 
+            'appearance', 
+            'usersguide', 
+            # Icons for tree pane items
+            'unimplemented', 
+            'array', 'carray', 'earray', 'object', 
+            'vlarray','table', 'vlstring', 
+            # Icons for node views
+            'zoom', 
+            # Icons for buttons
+            'cancel', 'ok'])
+
+        createIcons(large_icons, small_icons, ICONS_DICT)
 
     return ICONS_DICT
 
 
-def customizeWidgetButtons(widget, icons=None):
-    """
-    Customize the widget style.
+def getHBIcons():
+    """Return the icons dictionary to be used by the Help Browser."""
 
-    QFileDialog.getOpenFileName and other statics methods of making
-    dialogs don't give access to the dialog buttons, so don't allow to
-    customize them. As a workaround, dialogs are created via
-    constructors and passed to this function, that traverses the dialog
-    widget looking for its buttons. Found buttons are customized by
-    adding to them the appropriate icon.
-    The function can be aplied to any kind of widget, not only dialogs.
+    if not HB_ICONS_DICT:
+        large_icons = sets.Set([
+        # Icons for toolbar
+        'gohome', 'player_back', 'player_play', 'reload_page',
+        'bookmark', 'bookmark_add', 'viewmag+', 'viewmag-', 'history_clear'])
 
-    :Parameters:
+        small_icons = sets.Set([
+        # Icons for menu items
+        'fileopen', 'exit',
+        'viewmag+', 'viewmag-',
+        'gohome', 'player_back', 'player_play', 'reload_page',
+        'bookmark', 'bookmark_add',
+        # Icons for buttons
+        'ok', 'cancel', 'remove'])
 
-        - `widget`: the widget being customized.
-        - `icons`: the icons dictionary
-    """
+        createIcons(large_icons, small_icons, HB_ICONS_DICT)
 
-    # There is a bug in Qt-3.3 that causes that buttons with icon+label
-    # display its content left justified instead of center. In most cases
-    # this could be circumvented with the customStyle module, but with
-    # MacOS X it still gives some problems
-    label2icon = {'&OK': 'ok', 'OK': 'ok', 'Aceptar': 'ok',
-        'Cancel': 'cancel', '&Cancel': 'cancel', 'Cancelar': 'cancel',
-#        'Apply': 'apply', 'Aplicar': 'apply', 
-        'Default': '', 'Prefijado': ''}
-
-    font = qt.qApp.font()
-    font.setBold(False)
-
-    # Customize the dialog buttons
-    for child in widget.children():
-        if isinstance(child, qt.QButton):
-            button = child # Just for code clarity
-            label = button.text().latin1()
-            if label in label2icon.keys():
-#                iconName = label2Icon[label]
-#                button.setIconSet(icons[iconName])
-                button.setFont(font)
+    return HB_ICONS_DICT
 
 
-def addRow(label, text, parent):
-    """
-    Add a row to a given widget.
+#
+# QAction related functions
+#
+def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
+                 checkable=False):
+    """Create an action that will be added to a menu.
 
-    This is a helper method to add rows of labels in a widget. The
-    rows look like::
-
-        name: + value + stretchable space
-
-    where ``name:`` and ``value`` are labels. The first one is bold, the
-    other is not.
+    This is a helper function which reduce the amount of typing needed
+    for creating actions.
 
     :Parameters:
 
-        - `label`: the leftmost label of the row
-        - `text`: the text for the second label
-        - `parent`: the labels parent widget
+    - `parent`: the action parent
+    - `text`: the action text
+    - `shortcut`: the action shortcut
+    -`slot`: the slot where the triggered SIGNAL will be connected
+    - `icon`: the action icon
+    - `tip`: the action status tip
+    - `checkable`: True if the action is checkable
     """
 
-    row_layout = qt.QHBoxLayout(parent.layout(), 5)
-    
-    row_layout.addWidget(label)
+    action = QtGui.QAction(parent)
+    action.setText(text)
+    if icon is not None:
+        action.setIcon(icon)
+    if shortcut is not None:
+        action.setShortcut(shortcut)
+    if tip is not None:
+#            action.setToolTip(tip)
+        action.setStatusTip(tip)
+    if checkable:
+        action.setCheckable(True)
+    if slot is not None:
+        parent.connect(action, QtCore.SIGNAL("triggered()"), slot)
+    return action
 
-    value = qt.QLabel(text, parent)
-    parent_font = parent.font()
-    parent_font.setBold(0)
-    value.setFont(parent_font)
-    row_layout.addWidget(value)
 
-    row_layout.addStretch(1)
+def addActions(target, actions, actions_dict):
+    """Add a list of actions to a menu or a toolbar.
 
-
-def makeLineEdit(text, parent, read_write = False, frame = False):
-    """
-    Customised text boxes for Properties dialogs.
-
-    Customised boxes may have or not a frame. If boxes are not editable
-    then their background is gray. The method makes sure that the font
-    is not bold.
+    This is a helper function which make easier to add actions to a
+    menu or a toolbar. Separators and submenus are also handled by this
+    method.
 
     :Parameters:
-    
-        - `text`: the text of the text box
-        - `parent`: the parent widget of the text box
-        - `rw`: whether the widget is editable or not
-        - `frame`: whether the widget has a frame or not
+
+    - `target`: the menu or toolbar where actions will be added
+    - `actions`: the sequence of actions to be added
     """
 
-    ledit = qt.QLineEdit(text, parent)
-
-    ledit.setReadOnly(not read_write)
-
-    parent_font = parent.font()
-    parent_font.setBold(0)
-    ledit.setFont(parent_font)
-
-    ledit.setFrame(frame)
-
-    if read_write:
-        ledit.setEraseColor(qt.QTextEdit().palette().color(qt.QPalette.Active,
-            qt.QColorGroup.Base))
-    else:
-        ledit.setEraseColor(qt.QTextEdit().palette().color(qt.QPalette.Disabled,
-            qt.QColorGroup.Background))
-
-    return ledit
+    for action in actions:
+        if action is None:
+            target.addSeparator()
+        elif isinstance(action, QtGui.QMenu):
+            target.addMenu(action)
+        else:
+            target.addAction(actions_dict[action])
 
 
 def formatArrayContent(content):
     """
     Nicely format the contents of a table widget cell.
-    
+
     Used when the cell contains a numpy array.
     """
 
@@ -287,7 +248,7 @@ def formatArrayContent(content):
 def formatObjectContent(content):
     """
     Nicely format the contents of a table widget cell.
-    
+
     Used in VLArrays with ``object`` pseudo atoms.
 
     Reading a VLArray with ``object`` pseudo atom returns a list of
@@ -311,7 +272,7 @@ def formatObjectContent(content):
 def formatStringContent(content):
     """
     Nicely format the contents of a table widget cell.
-    
+
     Used in VLArrays with ``vlstring`` or ``vlunicode`` pseudo atoms.
     If the pseudo atom is ``vlstring`` the method return a string. If
     the pseudo atom is ``vlunicode`` then a unicode string is returned.
@@ -319,10 +280,6 @@ def formatStringContent(content):
 
     return content
 
-
-#
-# tables related functions
-#
 
 def formatExceptionInfo(limit=1):
     """
@@ -336,9 +293,96 @@ def formatExceptionInfo(limit=1):
 
     print '\n%s\n' % traceback.format_exc(limit)
 
+
 #
-# Help system related functions
+# Path related functions
 #
+def getHomeDir():
+    """
+    Get the user's home directory.
+
+    How the directory is obtained depends on the platform. The returned
+    path is used in QFileDialog calls.
+    """
+
+    if sys.platform.startswith('win'):
+        home = os.getenv('HOMEDRIVE') + os.getenv('HOMEPATH')
+        home = forwardPath(home)
+    else:
+        home = os.getenv('HOME')
+    return QtCore.QString(home)
+
+
+def forwardPath(path):
+    """Replace backslashes with slashes in a given path."""
+
+    while path.count(chr(92)):
+        path = path.replace(chr(92), '/')
+    return path
+
+
+def getFinalName(nodename, sibling, pattern, info):
+    """Return the node name to be used when editing a node.
+
+    Some node editing operations may raise naming issues because the
+    name wanted for the edited node is already being used by a sibling
+    node. These operations are:
+
+    - paste
+    - drop
+    - rename
+    - group creation
+
+    If such naming issue arises, a dialog is displayed, and the user is
+    required to decide what to do: choose a new name for the node being
+    edited, overwrite the node which is currently using the troubled name
+    or cancel the node editing.
+
+    :Parameters:
+
+    - `nodename`: the troubled name
+    - `sibling`: a sequence with the sibling nodenames of the edited node
+    - `pattern`: a regular expression pattern the nodename must match
+    - `info`: the information to be displayed in the dialog
+    """
+
+    overwrite = False
+    # Bad nodename condition
+    nodename_in_sibling = nodename in sibling
+    # If repeated, ask for a new nodename
+    while nodename_in_sibling:
+        dialog = renameDlg.RenameDlg(nodename, pattern, info)
+        if dialog.exec_():
+            nodename = dialog.action['new_name']
+            overwrite = dialog.action['overwrite']
+            del dialog
+            if overwrite == True:
+                break
+            # Update the bad nodename condition
+            nodename_in_sibling = nodename in sibling
+        else:
+            del dialog
+            return None, None
+    return nodename, overwrite
+
+
+def customLineEdit(parent):
+    """A customized QLineEdit suitable for the Properties dialog.
+
+    The widget has no frame, is read-only and has a 'transparent'
+    background.
+
+    :Parameter parent: the parent widge of the QLineEdit
+    """
+
+    ledit = QtGui.QLineEdit(parent)
+    ledit.setFrame(False)
+    ledit.setReadOnly(True)
+    palette = ledit.palette()
+    bg_color = palette.color(QtGui.QPalette.Window)
+    palette.setColor(QtGui.QPalette.Base, bg_color)
+    return ledit
+
 
 def getLicense():
     """The ViTables license in Rich Text format."""
@@ -350,14 +394,4 @@ def getLicense():
 
     return """%s""" % license_text
 
-#
-# Misc
-#
-
-def forwardPath(path):
-    """Replace backslashes with slashes in a given path."""
-
-    while path.count(chr(92)):
-        path = path.replace(chr(92), '/')
-    return path
 

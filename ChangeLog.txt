@@ -1,32 +1,373 @@
 ViTables ChangeLog
 ==================
 
-** Mar 28, 2008**
-  A note has been attached to the start of every source file of ViTables.
-  In this note it is specified how the ViTables program is licensed.
-  
-  The queries dialog has been modified: range selectors don't use spinboxes
-  anymore, just textboxes. The reason is that spinboxes do not support
-  unsigned Int64, just Int32. As a consequence, large tables could not be
-  managed by this dialog. 
+** Nov 13, 2008 **
+	Navigation of huge datasets is now fully implemented. Every navigation
+	device (vertical scrollbar, keyboard and mouse wheel) seems to work fine and
+	to update displayed data when a buffer fault occurs.
 
-** Mar 27, 2008**
-  License files: ported r1013 from branch porting_pyqt4.
+** Nov 04, 2008 **
+	Navigability of huge datasets has been enhanced. The selected cell is now
+	properly updated when a buffer fault occurs. It means that navigating the
+	table with the keyboard works fine now.
+
+** Oct 31, 2008 **
+	Huge datasets can be displayed and navigated. Several things remain to be
+	done (usability enhancements) but the feature seems usable and stable.
+
+** Oct 24, 2008 **
+	Opening files by dropping their icons in the databases tree panel is fully
+	implemented.
+
+	Some annoying problems that arised when nodes were moved around in the
+	databases tree panel have been fixed.
+
+	I've started to implement the support for huge datasets.
+
+** Oct 23, 2008 **
+	Opening files by dropping their icons in the databases tree panel has been
+	partially implemented.
+
+	Fixed a couple of bugs in the Properties dialog: data types are correctly
+	shown now.
+
+	In-place renaming of nodes has been debugged.
+
+	Fixed a little problem with groups expansion in the tree view pane that was
+	rather annoying: now pasting a node (or creating a new group) expands the
+	parent group if it was closed. So user can see that the node has really been
+	added.
+
+** Oct 22, 2008 **
+	More progresses in the datasets displaying:
+	- the workspace and the tree of databases are synchronized now: if a leaf
+		with a view is selected in the tree then the view becomes active in the
+		workspace. And viceversa, if a view is activated in the workspace its leaf
+		is automatically selected in the tree
+	- when a node with views is overwritten (because a group has been created, a
+		node has been renamed or a node has been pasted/dropped) the views are
+		closed
+	- the drag and drop behavior has been debugged
+
+** Oct 21, 2008 **
+	Fixed a bug in the application quitting process: the temporary database
+	wasn't properly deleted.
+
+** Oct 20, 2008 **
+	The Windows menu has been reimplemented.
+
+** Oct 19, 2008 **
+	Datasets can now be displayed in the workspace. Still importants things
+	remain to be done, mainly to add support for quickly navigate huge datasets.
+
+** Oct 17, 2008 **
+	The buffer.py module has been refactored and modified.
+
+** Oct 16, 2008 **
+	Fixed a bug in the node rename and file save as operations. A node/file
+	cannot overwrite itself.
+
+** Oct 13, 2008 **
+	Fixed a subtle bug in the code for renaming nodes.
+
+	Fixed a bug in the dialog for entering the name of a node when a group is
+	being created or a node is being renamed: empty strings are not valid names
+	now :-)
+
+** Oct 11, 2008 **
+	The code for renaming nodes has been refactored. Affected modules are
+	vtapp.py, utils.py, inputNodeName.py and renameDlg.py.
+
+	The setup.py has been updated.
+
+** Sep 26, 2008 **
+  Fixed some minor bugs regarding the enabled/disabled state of toolbar buttons
+  and menu items.
   
-  ViTables? logo: ported r1015 from branch porting_pyqt4. 
-  
-** Dec 13, 2007**
-  The editing of user attributes has been improved. Overflow cases are now
-  properly detected and a ValueError is raised. Although this is not the
-  default behavior of numpy arrays (which are silently converted to the
-  apropriate dtype when an overflow occurs) it seems more adequated for an end
-  user application as ViTables.
-  
-  Fixed a bug in the editing of the TITLE system attribute (accents raised
-  errors).
-  
+  Added new module inputNodeName.py. It is used instead of renameDlg.py for
+  creating groups and entering the initial name in renaming operations.
+
+** Sep 25, 2008 **
+  The behavior of the Open Recent File submenu is now a little bit more user
+  friendly.
+
+** Sep 24, 2008**
+  Fixed a bug in the file opening procedure. Files with no PyTables/HDF5
+  format are properly managed now.
+
+  Some code in the vtapp.py module has been reorganized to make it more
+  readable.
+
+** Aug 02, 2008 **
+  Fixed a couple of bugs in the File menu:
+
+    * the Close All action wasn't enabled/disabled properly
+    * the Save As... action didn't work
+
+** Jul 23, 2008 **
+  The porting of the nodeProperties subpackage has finished.
+
+** Jul 21, 2008 **
+  Merged r1054 and r1055 from trunk. Every modified file has been merged
+  but VERSION.
+
+** Jul 18, 2008 **
+  The nodeProperties subpackage is being ported. At the moment the GUI
+  part has been ported. Next step will be porting the code for attributes
+  validation.
+
+** Jul 15, 2008 ** 
+  Fixed a nasty bug that crashed the application every time a node was
+  expanded in the tree viewer. The reported Qt4 error was:
+
+  QObject: Do not delete object during its event handling!
+
+  I've been unable to locate exactly where the bug was. Apparently it was
+  produced by a strange interaction between VTApp and VTGUI classes so
+  I've embedded VTGUI in VTApp and removed the vtgui.py module. It seems
+  to fix the bug.
+
+** Jul 07, 2008 **
+  The porting of the nodeProperties subpackage has started.
+
+  A new module, nodeDoc.py, has been added. It is in charge of the
+  information collection about a given PyTables node. This module makes
+  unnecessary the following ones: nodeDoc.py, tableDoc.py, arrayDoc.py,
+  unimplementedDoc.py and groupDoc.py. All those modules have been
+  removed from the project.
+
+** Jul 03, 2008 **
+  The behavior of the Preferences dialog has been tuned.
+
+** Jul 01, 2008 **
+  The porting of the documentation browser has been done.
+
+  The behavior of the documentation browser has been tuned.
+
+** Jun 26, 2008 **
+  Added svn:keyword property to dbsTreeModel.py leafNode.py
+  nodeItemDelegate.py groupNode.py dbsTreeView.py rootGroupNode.py
+
+** Apr 18, 2008 **
+  Added contextual menus to the tree of databases view. Also a couple of
+  menu items in the Help menu are working now.
+
+  Functionality for configuring the application has been reimplemented.
+
+** Apr 16, 2008 **
+  Added code for enable/disable actions depending on the selected node
+  in the tree of databases view.
+
+** Apr 15, 2008 **
+  Thre new icons have been added.
+
+  Command 'Delete All Queries' has been reimplemented. The Query toolbar
+  has been added.
+
+  Tables queries have been reimplemented.
+
+** Apr 11, 2008 **
+  A couple of methods have been refactored and now have a new signature.
+  Calls to these methods have been updated.
+
+  The dbDoc.py module has been refactored.
+
+  The nodeItemDelegate.py module has been moved to the h5db subpackage.
+
+** Apr 08, 2008 **
+  Added support for renaming nodes inplace.
+
+  The code for node editing operations has been refactored.
+
+** Apr 07, 2008 **
+  Implemented Node --> Rename command with overwriting support.
+
+** Apr 03, 2008 **
+  Fixed a bug in the algorithm for recovering last session. Now if a
+  given node doesn't exist then the application reports it and doesn't
+  crash.
+
+  Implemented Node --> New Group command with overwriting support.
+
+** Apr 02, 2008 **
+  The overwriting feature has been implemented in the drag and drop of
+  nodes.
+
+  Splash screen readability improved.
+
+  Fixed a bug in DBDoc.pasteNode method of dbDoc.py module.
+
+  The overwriting feature has been implemented in the Node Paste...
+  command.
+
+  The overwriting feature has been implemented in the File Save as...
+  command.
+
+  Added code for setting the application icon.
+
+** Mar 31, 2008 **
+  Processing command line fetaure has been ported.
+
+  The last session recovering feature has been ported.
+
+** Mar 28, 2008 **
+  Splash screen module has been debugged: now messages are drawn at the
+  proper position.
+
+  The following files have been updated: INSTALL.txt, README.txt,
+  setup.py and Makefile.
+
+  Version number has changed to 2.0.
+
+  A note has been attached to the start of every source file of ViTables.
+  In this note it is  specified how the ViTables program is licensed.
+
+** Mar 27, 2008 **
+  Copyright statement of source files has been updated.
+
+  ViTables logo has changed: now it doesn't contain the Carabos logo.
+  I've done this because now ViTables is not developed by Carabos Coop.
+  V.. Instead it is a free software project maintained by myself.
+
+  The ViTables source code license has changed. From now on it has a
+  GPLv3 license.
+
+** Mar 26, 2008 **
+  Creating a branche for porting ViTables to PyQt4.
+
+  Fixed a little problem in the drag and drop support of the tree of
+  databases  model/view.
+
+  The treeEditor subpackage has been removed.
+
+  The functionality of the File menu has been implemented. Only
+  overwritting files during a File --> Save as... operation remains
+  unimplemented.
+
+  Fixed a couple of bugs in the tree of databases model:
+  - the close database operation didn't remove the node from the tree
+    view.
+  - when opening a database fails the returned value was no specified.
+
+  The configuration module has been rewritten.
+
+  The configuration module has been rewritten.
+
+  Small changes introduced in several modules: the name of some
+  attributes has changed and some imports have been slightly modified.
+
+  Small changes introduced in several modules: the name of some
+  attributes has changed and some imports have been slightly modified.
+
+** Mar 20, 2008 **
+  The vtgui.py module has been refactored and some small problems have
+  been fixed: the size of the toolbars icons, the WhatsThis action
+  setup, and the setup of the menu with entries for the toolbars.
+
+  The vtgui.py module porting is done. The result is a module much
+  shorter and clearer thant it was before.
+
+** Mar 19, 2008 **
+  The porting of the vtgui.py module has started. It has been greatly
+  simplified.
+
+  The drag and drop behavior of the tree of databases view has been
+  debugged a little bit.
+
+  PyQt4.QtXXX libraries are now imported as QtCore and QtGui instead of
+  qtCore and qtGui. In addition a couple of modules have some minor
+  changes.
+
+** Mar 18, 2008 **
+  Copy, cut, paste and delete operations have been implemented in the
+  tree of databases model. Overwriting has not been considered yet.
+
+** Mar 05, 2008 **
+  Basic drag and drop of the tree of databases model/view works!
+  Nodes can be moved from one location to another (even in a different
+  file). Nodes that belong to files opened in read-only mode cannot be
+  dragged. Lazy population of the model works fine too.
+
+** Mar 03, 2008 **
+  The basic model/view implementation for the tree of opened databases
+  is done. Databases can be opened and closed. The object tree of a
+  given database is populated in a lazy way so that performance is
+  guaranteed when opening files with a large number of nodes. Finally,
+  icons are tied to nodes in the tree view.
+
+** Feb 29, 2008 **
+  Drag and drop support is being implemented.
+
+** Feb 27, 2008 **
+  Added basic support for renaming nodes in-place.
+
+** Feb 26, 2008 **
+  Added support for custom context menus to the tree of databases view.
+
+  Some modules have been changed in order to keep internal consistency.
+
+  Minor modifications made in several modules.
+
+** Feb 22, 2008 **
+  The h5db subpackage has been updated. Calls to Qt3 methods have been
+  moved to Qt4 equivalent methods.
+
+  nodes subpackage has been updated. Calls to Qt3 methods has been
+  replaced by calls to Qt4 methods.
+
+** Feb 20, 2008 **
+  createIcons function changed: removed a line that was commented out.
+
+  The nodes subpackage migration has started. Calls to Qt
+  functions/methods have been adapted to Qt4.
+
+** Feb 18, 2008 **
+  The following modules have been ported:
+
+  * scripts/vitables
+  * vitables/utils.py
+  * vitables/vtsplash.py
+  * vitables/vtSite.py
+  * vitables/vtgui.py 
+    This module has been split in two modules: logger class is defined
+    in a new module now.
+  * vitables/logger.py
+
+  The whole preferences subpackage has been ported:
+  * vitables/preferences/vtconfig.py
+  * vitables/preferences/preferences.py
+  * vitables/preferences/configException.py
+
+  The following tests have been ported:
+  * vitables/preferences/preferencesGUI.py
+  * tests/preferences/test_vtconfig.py
+  * tests/preferences/test_preferences.py
+
+** Dec 16, 2007 **
+  The Spanish translation has been updated.
+
+  WhatsThis help texts and some About... texts have been reformatted in
+  order to improve the code readability.
+
+** Dec 14, 2007 **
+  The previous bug fix in the editing of the TITLE system attribute was
+  incomplete. It has been corrected now (hopefuly).
+
+** Dec 13, 2007 **
+  Fixed a bug in the editing of the TITLE system attribute (accents
+  raised errors).
+
+  Some trivial enhancements have been done.
+
+  The editing of user attributes has been improved. Overflow cases are
+  now properly detected and a ValueError is raised. Although this is not
+  the default behavior of numpy arrays (which are silently converted to
+  the apropriate dtype when an overflow occurs) it seems more adequated
+  for an end user application as ViTables.
+
 ** Nov 29, 2007**
-  Drag and drop of nodes has been debugged. Cut and paste has been improved. I hope that editing nodes is now implemented in a quite robust way.
+  Drag and drop of nodes has been debugged. Cut and paste has been improved.
+  I hope that editing nodes is now implemented in a quite robust way.
 
 ** Nov 28, 2007**
   The behaviour of the documentation browser has been improved.

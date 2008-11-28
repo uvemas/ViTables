@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 #----------------------------------------------------------------------
 # Setup script for the vitables package
 
@@ -16,12 +17,15 @@ if sys.platform == 'darwin' and 'py2app' in sys.argv:
 
 def checkVersions():
     """Check libraries availability.
+
+    If a required library is not installed or it is too old then the setup
+    process is aborted.
     """
 
     # Check if PyTables and PyQt are installed
     try:
         from tables import __version__
-        from qt import qVersion, PYQT_VERSION_STR
+        from PyQt4.QtCore import qVersion, PYQT_VERSION_STR
     except ImportError, e:
         print e
         sys.exit()
@@ -42,33 +46,18 @@ def checkVersions():
         sys.exit(1)
 
     qtVersion = qVersion()
-    if qtVersion < '3.3' :
+    if qtVersion < '4.4' :
         print "###############################################################"
-        print "You need Qt3 v3.3 or greater to run ViTables!. Exiting..."
+        print "You need Qt v4.4 or greater to run ViTables!. Exiting..."
         print "###############################################################"
         sys.exit(1)
 
     pyqtVersion = PYQT_VERSION_STR
-    if pyqtVersion < '3.14' :
+    if pyqtVersion < '4.4' :
         print "###############################################################"
-        print "You need PyQt3 v3.14 or greater to run ViTables!. Exiting..."
+        print "You need PyQt v4.4 or greater to run ViTables!. Exiting..."
         print "###############################################################"
         sys.exit(1)
-
-helpAsked = False
-for item in ['-h', '--help', '--help-commands', '--help-formats',
-    '--help-compiler']:
-    if item in sys.argv:
-        helpAsked = True
-        break
-
-if not helpAsked:
-    checkVersions()
-
-# Get the version number
-f = open('VERSION', 'r')
-vt_version = f.readline()[:-1]
-f.close()
 
 # =================================================================
 
@@ -84,7 +73,6 @@ class smart_install_data(install_data):
         # The project installation directory can be set via --install-purelib
         # and some other options
         install_lib_dir = getattr(install_cmd, 'install_lib')
-        tmp = install_lib_dir.replace(chr(92),'/')
 
         install_options = install_cmd.distribution.command_options["install"]
         # If data directory is not specified (via configuration file
@@ -92,8 +80,7 @@ class smart_install_data(install_data):
         if not install_options.has_key('install_data'):
             # Data will not be located in the $base directory (default
             # behavior) but in the project directory
-            #install_data_dir = os.path.join(install_lib_dir, 'vitables')
-            install_data_dir = "%s/%s" % (tmp, 'vitables')
+            install_data_dir = os.path.join(install_lib_dir, 'vitables')
             setattr(self, 'install_dir', install_data_dir)
         else:
             # Data directory is specified via configuration file or
@@ -215,6 +202,24 @@ def add_unix_icons():
 # End of the code to add the application icons in Unix systems.
 # =================================================================
 
+
+helpAsked = False
+for item in ['-h', '--help', '--help-commands', '--help-formats',
+    '--help-compiler']:
+    if item in sys.argv:
+        helpAsked = True
+        break
+
+if not helpAsked:
+    checkVersions()
+
+# Proceed if required libraries are OK
+
+# Get the version number
+f = open('VERSION', 'r')
+vt_version = f.readline()[:-1]
+f.close()
+
 setup_args = {}
 if use_py2app:
     setup_args['app'] = ['macosxapp/vitables-app.py']
@@ -264,13 +269,13 @@ setup(name = 'ViTables', # The name of the distribution
     url = 'http://www.vitables.org',
     license = 'GPLv3, see the LICENSE.txt file for detailed info',
     platforms = 'Unix, MacOSX, Windows',
-    classifiers = ['Development Status :: 1.2',
+    classifiers = ['Development Status :: 2.0',
     'Environment :: Desktop',
     'Operating System :: POSIX',
     'Programming Language :: Python'],
     packages = ['vitables', 'vitables.docBrowser',
     'vitables.h5db', 'vitables.nodeProperties', 'vitables.nodes',
-    'vitables.preferences', 'vitables.treeEditor',
+    'vitables.preferences', 
     'vitables.vtTables', 'vitables.vtWidgets'],
     scripts = ['scripts/vitables'],
     cmdclass = {"install_data":smart_install_data},
@@ -311,4 +316,5 @@ if len(sys.argv) > 1 and not helpAsked:
         print """\n
 Installation completed successfully!
 Enjoy Data with ViTables, the troll of the PyTables family."""
+
 

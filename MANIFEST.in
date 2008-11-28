@@ -9,4 +9,3 @@ include scripts/vitables
 include translations/*.txt translations/*.qm
 
 exclude setup.cfg 
-recursive-exclude tests *

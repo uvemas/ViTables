@@ -21,7 +21,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: vtTableItem.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: vtTableItem.py 1083 2008-11-04 16:41:02Z vmas $
 #
 ########################################################################
 
@@ -50,7 +50,7 @@ import qt
 import qttable
 
 class VTTableItem(qttable.QTableItem):
-    
+
     def __init__(self, table, ro, text='', p=None):
         """
         A customised QTableItem.
@@ -84,7 +84,7 @@ class VTTableItem(qttable.QTableItem):
     def createEditor(self):
         """
         Create a customised editor that highlight its contents.
-        
+
         This method is **not** called via table.editCell(r, c) if
         table is in read-only mode.
         """

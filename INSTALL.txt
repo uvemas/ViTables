@@ -2,8 +2,8 @@ System requirements
 -------------------
 
 To run ViTables you need install Python >= 2.4, PyTables >= 2.0 (so
-you have to fullfill its own requirements), the Qt3 >= 3.3 library, and
-PyQt3 >= 3.14.
+you have to fullfill its own requirements), the Qt4 >= 4.3 library, and
+PyQt4 >= 4.3.
 
 Installation on Linux and Widows platforms
 ------------------------------------------

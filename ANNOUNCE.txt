@@ -1,8 +1,8 @@
 =========================
-Announcing ViTables 1.2.4
+Announcing ViTables 1.2.2
 =========================
 
-We are proud to present ViTables 1.2.4, the latest release of our viewer for
+We are proud to present ViTables 1.2.2, the latest release of our viewer for
 PyTables/HDF5 files.
 
 As it happens with the entire PyTables family, the main strength of ViTables is
@@ -11,11 +11,16 @@ For example, with ViTables you can open a table with one thousand million rows
 in a few tenths of second, with very low memory requirements. Also important is
 the fact that it is designed to be a multiplatform application, i.e. it runs
 flawlessly in Unix (and hence, GNU/Linux), Mac OS X and Windows. The fact that
-it runs on top of PyTables ensures its speed and memory efficiency.
+it runs on top of PyTables ensures its speed and memory efficiency. Finally,
+for a better user experience, we have created binary installers for Windows and
+Mac OS X. The Unix version is installable using Python distutils.
 
-In this release you will find some bug fixes and usability enhancements, but
-the most important change is that ViTables is now Free Software, licensed
-under GPL v3.
+In this release you will find some bug fixes and usability enhancements,
+among them:
+
+- capability for navigating datasets whith even 2^64 rows
+- enhanced displaying of datasets
+- Spanish translation added
 
 Platforms
 ---------
@@ -30,18 +35,23 @@ How to get it
 
 Go to:
 
-http://www.vitables.org
+http://www.carabos.com/buy
 
-and click the link 'downloads area' to find the available packages.
+to find directions on how to buy it. You can get it under a personal license or
+a site one.
 
+Remember that, when you buy a license, you are contributing to the liberation
+process of PyTables Pro and ViTables 1.2. See:
+
+http://www.carabos.com/liberation
+
+for details.
 
 Share your experience
 ---------------------
 
 We are very interested in your feedback about ViTables. Please send your
-opinions, suggestions, bugs, etc. to the ViTables Users Group at
-http://tech.groups.yahoo.com/group/vitables-users.
-
+opinions, suggestions, bugs, etc. to vitables@carabos.com.
 Thank you!
 
 Enjoy Data with ViTables, the troll of the PyTables family!

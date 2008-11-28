@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -21,7 +23,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: vtsplash.py 1020 2008-03-28 16:41:24Z vmas $
+#       $Id: vtsplash.py 1063 2008-09-24 17:30:22Z vmas $
 #
 ########################################################################
 
@@ -30,23 +32,26 @@ Here is defined the VTSplash class.
 
 Classes:
 
-* VTSplash(qt.QSplashScreen)
+* VTSplash(QtGui.QSplashScreen)
 
 Methods:
 
 * __init__(self, png)
-* message(self, msg, color=qt.Qt.white)
+* drawContents(self, painter)
+* drawMessage(self, msg)
 
 Misc variables:
 
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
-import qt
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
-class VTSplash(qt.QSplashScreen):
+class VTSplash(QtGui.QSplashScreen):
     """The application splash screen."""
 
 
@@ -60,30 +65,54 @@ class VTSplash(qt.QSplashScreen):
         :Parameter png: the pixmap image displayed as a splash screen.
         """
 
-        qt.QSplashScreen.__init__(self, png)
-        self.painter = qt.QPainter(self.pixmap())
+        QtGui.QSplashScreen.__init__(self, png)
 
 
-    def message(self, msg, color=qt.Qt.white):
+    def drawContents(self, painter):
+        """Draw the contents of the splash screen using a given painter.
+
+        This is an overloaded method. It draws contents with the origin
+        translated by a certain offset.
+
+        :Parameter painter: the painter used to draw the splash screen
+        """
+
+        painter.setPen(QtGui.QColor(QtCore.Qt.white))
+        font = painter.font()
+        font.setBold(True)
+        painter.setFont(font)
+        painter.drawText(10, 213, self.msg)
+
+
+    def drawMessage(self, msg):
         """
         Draws the message text onto the splash screen.
 
-        Message is drawn with color color and aligns the text
-        according to the flags in alignment. This is a convenience
-        method. It clears the writable region before the text drawing
-        and, once the drawing has been done, also repaints the splash
-        screen making sure that the text will be displayed. It means
-        that explicit calls to clear and repaint methods are unneeded.
-
-        :Parameter color: the text color
+        :Parameter msg: the message to be displayed
         """
 
-        # The splash pixmap has 545x350 pixels
-        # Messages are drawn in a rectangle of 545x20 pixel. The top
-        # left corner coordinates are (0, 330)
-        self.painter.setPen(color)
-        self.painter.fillRect(0, 200, 500, 17, qt.QBrush(qt.Qt.black))
-        self.painter.drawText(10, 212, msg)
-        self.repaint()
+        self.msg = msg
+        self.showMessage(self.msg)
 
+
+if __name__ == '__main__':
+    import sys
+    import time
+    APP = QtGui.QApplication(sys.argv)
+    LOGO = QtGui.QPixmap("""/home/vmas/repositoris.nobackup/"""
+        """vitables/icons/vitables_logo.png""")
+    SPLASH = VTSplash(LOGO)
+    SPLASH.show()
+    # Check that messages are not overwritten:
+    # write a message, wait a little bit, write another message
+    SPLASH.drawMessage('hola, que tal estas?')
+    QtGui.qApp.processEvents()
+    time.sleep(3)
+    SPLASH.drawMessage('hasta luego, lucas!')
+#    qtGui.qApp.processEvents()
+    TIMER = QtCore.QTimer()
+    TIMER.connect(TIMER, QtCore.SIGNAL('timeout()'), QtGui.qApp.quit)
+    TIMER.setSingleShot(True)
+    TIMER.start(3000)
+    APP.exec_()
 

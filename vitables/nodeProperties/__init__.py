@@ -16,5 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["groupProp", "leafProp", "nodePropDlg", "systemAttr",
-    "userAttr"]
+__all__ = ["attrEditor", "nodePropDlg"]

@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+
+
 ########################################################################
 #
-#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
@@ -20,7 +23,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: vitables 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: vitables 1069 2008-10-13 20:02:30Z vmas $
 #
 ########################################################################
 
@@ -44,6 +47,7 @@ The application framework:
 - keeps track of modifications to documents, saving, saving under a
   new filename, and closing documents without saving
 """
+
 __docformat__ = 'restructuredtext'
 
 import locale
@@ -57,28 +61,36 @@ import vitables.vtSite
 if sys.platform.startswith('win'):
     PYQT_DIR = os.path.join(vitables.vtSite.INSTALLDIR, 'pyqt')
     sys.path = [os.path.normpath(PYQT_DIR)] + sys.path
-    
-import qt
+
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
 def main(args):
     """The application launcher.
 
-    First of all, translators are loaded. Then the GUI is shown and the event
+    First of all, translators are loaded. Then the GUI is shown and the events
     loop is started.
     """
 
-    app = qt.QApplication(args)
+    app = QtGui.QApplication(args)
     # These imports must be done after the QApplication has been instantiated
     from vitables.vtapp import VTApp
     from vitables.preferences import vtconfig
+
+    # specify the organization's Internet domain. When the Internet
+    # domain is set, it is used on Mac OS X instead of the organization
+    # name, since Mac OS X applications conventionally use Internet
+    # domains to identify themselves
+    app.setOrganizationDomain('vitables.org')
+    app.setApplicationName('ViTables')
     config = vtconfig.Config()
-    
+
     # Localize the application
     locale.setlocale(locale.LC_ALL, '')
     language = locale.getlocale()[0]
-    vt_translator = qt.QTranslator()
+    vt_translator = QtCore.QTranslator()
     vt_translator.load('vitables_%s' % language, config.translations_dir)
-    qt_translator = qt.QTranslator()
+    qt_translator = QtCore.QTranslator()
     qt_translator.load('qt_%s' % language, config.translations_dir)
     app.installTranslator(vt_translator)
     app.installTranslator(qt_translator)
@@ -96,12 +108,12 @@ def main(args):
         # Other options and positional arguments are silently ignored
         options.mode = ''
         h5files = []
-    
+
     # Start the application
     del config
-    vt_app = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
-    app.setMainWidget(vt_app.gui)
-    app.exec_loop()
+    main_window = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
+    main_window.show()
+    app.exec_()
 
 if __name__ == '__main__':
     # How to run in Mac OS X

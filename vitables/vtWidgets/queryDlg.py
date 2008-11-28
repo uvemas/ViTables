@@ -21,7 +21,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: queryDlg.py 1020 2008-03-28 16:41:24Z vmas $
+#       $Id: queryDlg.py 1038 2008-04-15 07:38:34Z vmas $
 #
 ########################################################################
 
@@ -30,23 +30,23 @@ Here is defined the QueryDlg class.
 
 Classes:
 
-* QueryDlg(qt.QDialog)
+* QueryDlg(QtGui.QDialog)
 
 Methods:
 
 * __init__(self, query_info, info, ft_names, counter, initial_query, qtable)
 * __tr(self,  source, comment=None)
-* makeSectionOne(self, global_opt_gb)
-* makeSectionTwo(self, condition_gb, valid_fields)
-* makeSectionThree(self, rows_range_gb, nrows)
+* checkConditionSyntax(self, condition)
 * makeSectionFour(self, buttons_layout)
+* makeSectionOne(self, global_opt_gb)
+* makeSectionThree(self, rows_range_gb, nrows)
+* makeSectionTwo(self, condition_gb, valid_fields)
+* slotAccept(self)
 * slotEnableIndicesColumn(self, cb_on)
-* slotInsertOperator(self, operator)
 * slotInsertField(self, field_id)
 * slotInsertFunction(self, text)
+* slotInsertOperator(self, operator)
 * slotUpdateOKState(self)
-* checkConditionSyntax(self, condition)
-* slotAccept(self)
 
 Functions:
 
@@ -59,20 +59,17 @@ Misc variables:
 """
 __docformat__ = 'restructuredtext'
 
-import numpy
-
 import tables.exceptions
 
-import qt
+import numpy
+
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
 import vitables.utils
 
-def slotEnterHelpMode():
-    """Makes the dialog to enter in help mode."""
-    qt.QWhatsThis.enterWhatsThisMode()
 
-
-class QueryDlg(qt.QDialog):
+class QueryDlg(QtGui.QDialog):
     """
     A dialog for filter creation .
 
@@ -89,65 +86,68 @@ class QueryDlg(qt.QDialog):
             Ok + Cancel
 
     A text box is used to enter the condition to be applied. Combos
-    are used to enter operators, functions and field names.
+    are used to enter operators, functions and field names. Textboxes
+    are used to enter the range of the query.
     """
 
 
-    def __init__(self, query_info, info, ft_names, counter, initial_query, qtable):
+    def __init__(self, info, ft_names, counter, initial_query, table):
         """
         Ctor.
 
         :Parameters:
 
-        - `query_info`: a dictionary with information about the query itself
         - `info`: a dictionary with information about the table being queried
         - `ft_names`: the list of filtered tables names currently in use
         - `counter`: a counter used to give a unique ID to the query
         - `initial_query`: the dialog will be setup with this query (if any)
-        - `qtable`: the table being queried
+        - `table`: the table being queried
         """
 
-        # Makes the New Query dialog and gives it a layout
-        qt.QDialog.__init__(self, qt.qApp.mainWidget())
-        dlg_layout = qt.QVBoxLayout(self, 10, 6)
-        self.setCaption(self.__tr('New query on table: %s',
+        # Makes the attributes edition dialog and gives it a layout
+        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        dlg_layout = QtGui.QVBoxLayout(self)
+        dlg_layout.setSpacing(6)
+        self.setWindowTitle(self.__tr('New query on table: %s',
             'A dialog caption') % info['name'])
 
         # Attributes used by method slotUpdateOKState
         self.used_names = ft_names
         self.col_names = info['col_names']
-        self.num_rows = info['nrows']
-        self.source_table = qtable
         self.condvars = info['condvars']
+        self.source_table = table
+        self.num_rows = info['nrows']
 
         # Attributes used by method slotAccept
-        # *Cause query_info is mutable it is passed by reference and the caller
-        # still can access it once the dialog has been closed.*
         # If the dialog is cancelled these initial values will be returned to
         # the caller. If the dialog is accepted then these values will be
         # updated (in the slotAccept method) and returned to the caller
-        self.query_info = query_info
+        self.query_info = {}
         self.query_info['condition'] = ''
         self.query_info['rows_range'] = ()
         self.query_info['ft_name'] = ''
         self.query_info['indices_field_name'] = ''
+        self.query_info['condvars'] = self.condvars
+        self.query_info['src_filepath'] = info['src_filepath']
+        self.query_info['src_path'] = info['src_path']
 
         # Main widgets
         # Global Options section
-        global_opt_gb = qt.QGroupBox(self.__tr('Global options',
+        global_opt_gb = QtGui.QGroupBox(self.__tr('Global options',
             'A groupbox title'), self)
         dlg_layout.addWidget(global_opt_gb)
         # Table name text box
-        self.name_le = qt.QLineEdit('FilteredTable_%s' % counter, global_opt_gb)
-        qt.QWhatsThis.add(self.name_le, self.__tr(
+        self.name_le = QtGui.QLineEdit('FilteredTable_%s' % counter, 
+                                        global_opt_gb)
+        self.name_le.setWhatsThis(self.__tr(
             """<qt>
             The name of the table where the query results will be added.
             </qt>""",
             'A help text for the Query dialog'))
         # Indices field name widgets
-        self.indices_checkbox = qt.QCheckBox(global_opt_gb)
-        self.indices_column = qt.QLineEdit('Orig_idx', global_opt_gb)
-        qt.QWhatsThis.add(self.indices_column, self.__tr(
+        self.indices_checkbox = QtGui.QCheckBox(global_opt_gb)
+        self.indices_column = QtGui.QLineEdit('Orig_idx', global_opt_gb)
+        self.indices_column.setWhatsThis(self.__tr(
             """<qt>
             The name of the column where the indices of the selected rows
             will be added.
@@ -155,11 +155,11 @@ class QueryDlg(qt.QDialog):
             'A help text for the Query dialog')
             )
         # Condition section
-        condition_gb = qt.QGroupBox(self.__tr('Query condition',
+        condition_gb = QtGui.QGroupBox(self.__tr('Query condition',
             'A groupbox title'), self)
         dlg_layout.addWidget(condition_gb)
-        self.query_le = qt.QLineEdit(condition_gb)
-        qt.QWhatsThis.add(self.query_le, self.__tr(\
+        self.query_le = QtGui.QLineEdit(condition_gb)
+        self.query_le.setWhatsThis(self.__tr(
             """<qt>
             <h3>Conditions syntax</h3>
             A condition on a table is just a <em>string</em> containing a
@@ -187,9 +187,9 @@ class QueryDlg(qt.QDialog):
             Appendix B of the PyTables users guide.</p>
             </qt>""",
             'A help text for the Query dialog')
-            )
-        self.operators_cb = qt.QComboBox(condition_gb)
-        qt.QWhatsThis.add(self.operators_cb, self.__tr(
+        )
+        self.operators_cb = QtGui.QComboBox(condition_gb)
+        self.operators_cb.setWhatsThis(self.__tr(
             """<qt>
             The operators that can be used in a given condition. Operators
             can be logical, comparison and arithmetic.<br>Not all operators
@@ -197,21 +197,22 @@ class QueryDlg(qt.QDialog):
             </qt>""",
             'A help text for the Query dialog')
             )
-        self.functions_cb = qt.QComboBox(condition_gb)
-        qt.QWhatsThis.add(self.functions_cb, self.__tr(
+        self.functions_cb = QtGui.QComboBox(condition_gb)
+        self.functions_cb.setWhatsThis(self.__tr(
             """<qt>
             The set of functions that can appear in a condition.
             It includes functions for doing selections, trigonometric
             functions and functions on complex numbers. For ease
-            of use arguments are automatically included when a
+            of use, arguments are automatically included when a
             function is inserted. The arguments meaning is:
             <ul><li>N: number</li><li>B: boolean</li>
             <li>F: float</li><li>C: complex</li></ul>
             </qt>""",
             'A help text for the Query dialog')
             )
-        self.columns_cb = qt.QComboBox(False, condition_gb)
-        qt.QWhatsThis.add(self.columns_cb, self.__tr(
+        self.columns_cb = QtGui.QComboBox(condition_gb)
+        self.columns_cb.setEditable(False)
+        self.columns_cb.setWhatsThis(self.__tr(
             """<qt>
             The names of the searchable columns. They must
             fulfill the following requirements:
@@ -226,27 +227,30 @@ class QueryDlg(qt.QDialog):
             )
         # Range selectors section
         rows_range_gb = \
-            qt.QGroupBox(self.__tr('Range of rows', 'A groupbox title'), self)
-        qt.QWhatsThis.add(rows_range_gb, self.__tr(
+            QtGui.QGroupBox(self.__tr('Range of rows', 'A groupbox title'), 
+                            self)
+        rows_range_gb.setWhatsThis(self.__tr(
             """The range of rows included in the query.""",
             'A help text for the Query dialog')
             )
         dlg_layout.addWidget(rows_range_gb)
-        self.rstart = qt.QLineEdit('', rows_range_gb)
-        self.rstop = qt.QLineEdit('', rows_range_gb)
-        self.rstep = qt.QLineEdit('', rows_range_gb)
-        validator = qt.QRegExpValidator(qt.QRegExp("\\d*"), self)
+        self.rstart = QtGui.QLineEdit('', rows_range_gb)
+        self.rstop = QtGui.QLineEdit('', rows_range_gb)
+        self.rstep = QtGui.QLineEdit('', rows_range_gb)
+        validator = QtGui.QRegExpValidator(QtCore.QRegExp("\\d*"), self)
         self.rstart.setValidator(validator)
         self.rstop.setValidator(validator)
         self.rstep.setValidator(validator)
         # The OK and Cancel buttons section
-        buttons_layout = qt.QHBoxLayout(dlg_layout, 5)
+        buttons_layout = QtGui.QHBoxLayout()
+        dlg_layout.addLayout(buttons_layout)
+        buttons_layout.setSpacing(6)
         self.ok_button = \
-            qt.QPushButton(self.__tr('&OK', 'A button label'), self)
+            QtGui.QPushButton(self.__tr('&OK', 'A button label'), self)
         self.cancel_button = \
-            qt.QPushButton(self.__tr('&Cancel', 'A button label'), self)
+            QtGui.QPushButton(self.__tr('&Cancel', 'A button label'), self)
         self.help_button = \
-            qt.QPushButton(self.__tr("&What's This", 'A button label'), self)
+            QtGui.QPushButton(self.__tr("&What's This", 'Button label'), self)
 
         # Add components to dialog
         self.makeSectionOne(global_opt_gb)
@@ -259,38 +263,32 @@ class QueryDlg(qt.QDialog):
             self.query_le.setText(initial_query)
 
         # Connect signals to slots
-        self.connect(self.help_button, qt.SIGNAL('clicked()'),
-            slotEnterHelpMode)
-        self.connect(self.indices_checkbox, qt.SIGNAL('toggled(bool)'),
+        activated = QtCore.SIGNAL('activated(const QString &)')
+        text_changed = QtCore.SIGNAL('textChanged(const QString &)')
+        self.connect(self.name_le, text_changed, self.slotUpdateOKState)
+        self.connect(self.indices_column, text_changed, self.slotUpdateOKState)
+        self.connect(self.query_le, text_changed, self.slotUpdateOKState)
+        self.connect(self.rstart, text_changed, self.slotUpdateOKState)
+        self.connect(self.rstop, text_changed, self.slotUpdateOKState)
+        self.connect(self.columns_cb, activated, self.slotInsertField)
+        self.connect(self.operators_cb, activated, self.slotInsertOperator)
+        self.connect(self.functions_cb, activated, self.slotInsertFunction)
+        self.connect(self.help_button, QtCore.SIGNAL('clicked()'),
+            QtGui.QWhatsThis.enterWhatsThisMode)
+        self.connect(self.indices_checkbox, QtCore.SIGNAL('toggled(bool)'),
             self.slotEnableIndicesColumn)
-        self.connect(self.name_le, qt.SIGNAL('textChanged(const QString &)'),
-            self.slotUpdateOKState)
-        self.connect(self.indices_column,
-            qt.SIGNAL('textChanged(const QString &)'), self.slotUpdateOKState)
-        self.connect(self.query_le, qt.SIGNAL('textChanged(const QString &)'),
-            self.slotUpdateOKState)
-        self.connect(self.rstart, qt.SIGNAL('textChanged(const QString &)'),
-            self.slotUpdateOKState)
-        self.connect(self.rstop, qt.SIGNAL('textChanged(const QString &)'),
-            self.slotUpdateOKState)
-        self.connect(self.columns_cb, qt.SIGNAL('activated(const QString &)'),
-            self.slotInsertField)
-        self.connect(self.operators_cb, qt.SIGNAL('activated(const QString &)'),
-            self.slotInsertOperator)
-        self.connect(self.functions_cb, qt.SIGNAL('activated(const QString &)'),
-            self.slotInsertFunction)
-        self.connect(self.ok_button, qt.SIGNAL('clicked()'), self.slotAccept)
-        self.connect(self.cancel_button, qt.SIGNAL('clicked()'),
-            qt.SLOT('reject()'))
+        self.connect(self.ok_button, QtCore.SIGNAL('clicked()'), 
+            self.slotAccept)
+        self.connect(self.cancel_button, QtCore.SIGNAL('clicked()'),
+            QtCore.SLOT('reject()'))
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
-        self.name_le.emit(qt.SIGNAL('textChanged(const QString &)'),
-            (self.name_le.text(), ))
+        self.name_le.emit(text_changed, self.name_le.text())
 
 
     def __tr(self,  source, comment=None):
         """Translate method."""
-        return qt.qApp.translate('QueryDlg', source, comment).latin1()
+        return str(QtGui.qApp.translate('QueryDlg', source, comment))
 
 
     def makeSectionOne(self, global_opt_gb):
@@ -300,28 +298,27 @@ class QueryDlg(qt.QDialog):
         :Parameter global_opt_gb: the Global Options groupbox
         """
 
-        global_opt_gb.setOrientation(qt.Qt.Vertical)
-        global_opt_gb.setInsideMargin(10)
-##        global_opt_gb.setInsideSpacing(6) # Doesn't work, PyQt bug??
-        global_opt_gb.layout().setSpacing(6)
-
-        # The table name
-        name_layout = qt.QHBoxLayout(global_opt_gb.layout(), 5)
-        name_layout.addWidget(qt.QLabel(self.__tr('Name:', 'A textbox label'),
-            global_opt_gb))
+        # The table name area
+        name_layout = QtGui.QHBoxLayout()
+        name_layout.addWidget(QtGui.QLabel(self.__tr('Name:', 
+                                            'A textbox label'), 
+                                            global_opt_gb))
         name_layout.addWidget(self.name_le)
 
-        global_opt_gb.layout().addSpacing(6)
-
-        # The column with original indices
-        indices_layout = qt.QHBoxLayout(global_opt_gb.layout(), 5)
-        self.indices_checkbox.setOn(0)
+        # The column with original indices area
+        indices_layout = QtGui.QHBoxLayout()
+        self.indices_checkbox.setChecked(0)
         indices_layout.addWidget(self.indices_checkbox)
-        indices_layout.addWidget(qt.QLabel(\
+        indices_layout.addWidget(QtGui.QLabel(\
             self.__tr('Original indices into column:',
             'A label in the Query-->New filter dialog'), global_opt_gb))
         self.indices_column.setEnabled(0)
         indices_layout.addWidget(self.indices_column)
+
+        global_layout = QtGui.QVBoxLayout()
+        global_opt_gb.setLayout(global_layout)
+        global_layout.addLayout(name_layout)
+        global_layout.addLayout(indices_layout)
 
 
     def makeSectionTwo(self, condition_gb, valid_fields):
@@ -330,45 +327,35 @@ class QueryDlg(qt.QDialog):
 
         :Parameters:
 
-        - `criteria_gb`: the Criteria Selection groupbox
+        - `condition_gb`: the Condition groupbox
         - `valid_fields`: the set of searchable field names
         """
 
-        condition_gb_layout = qt.QVBoxLayout(condition_gb, 10, 6)
-
-        # Give room between the groupbox title and the first label
-        spacer = \
-            qt.QSpacerItem(5, 10,qt.QSizePolicy.Fixed, qt.QSizePolicy.Fixed)
-        condition_gb_layout.addItem(spacer)
-
-        # Add the query line editor to the groupbox layout
-        condition_gb_layout.addWidget(self.query_le)
         # Add a horizontal layout to the groupbox layout. This new
         # layout contain the section combos
-        combos_layout = qt.QHBoxLayout()
-        condition_gb_layout.addLayout(combos_layout)
+        combos_layout = QtGui.QHBoxLayout()
         combos_layout.addStretch(1)
         combos_layout.addWidget(self.columns_cb)
-        combos_layout.addStretch(1)
         combos_layout.addWidget(self.operators_cb)
-        combos_layout.addStretch(1)
         combos_layout.addWidget(self.functions_cb)
         combos_layout.addStretch(1)
+
+        condition_gb_layout = QtGui.QVBoxLayout()
+        condition_gb.setLayout(condition_gb_layout)
+        condition_gb_layout.addWidget(self.query_le)
+        condition_gb_layout.addLayout(combos_layout)
 
         # Fill the combos
         operators = ['&', '|', '~', '<', '<=', '==', '!=', '>', '>=', '+',
             '-', '*', '/', '**', '%']
+        self.operators_cb.insertItems(0, QtCore.QStringList(operators))
         functions = ['where', 'sin', 'cos', 'tan', 'arcsin', 'arccos',
             'arctan', 'arctan2', 'sinh', 'cosh', 'tanh', 'sqrt', 'real',
             'imag', 'complex']
-        for item in operators:
-            self.operators_cb.insertItem(item)
-        for item in functions:
-            self.functions_cb.insertItem(item)
+        self.functions_cb.insertItems(0, QtCore.QStringList(functions))
         sorted_fields = [field for field in valid_fields]
         sorted_fields.sort()
-        for field in sorted_fields:
-            self.columns_cb.insertItem(field)
+        self.columns_cb.insertItems(0, QtCore.QStringList(sorted_fields))
 
 
     def makeSectionThree(self, rows_range_gb, nrows):
@@ -381,31 +368,28 @@ class QueryDlg(qt.QDialog):
         - `nrows`: the number of rows of the table being filtered
         """
 
-        range_layout = qt.QGridLayout(rows_range_gb, 4, 3, 11, 6)
-        range_layout.setColStretch(2, 1)
+        range_layout = QtGui.QGridLayout(rows_range_gb)
 
-        # Give room between the groupbox title and the first label
-        spacer = \
-            qt.QSpacerItem(30, 30,qt.QSizePolicy.Fixed, qt.QSizePolicy.Fixed)
-        range_layout.addItem(spacer, 0, 0)
-
-        start_label = qt.QLabel(self.__tr('Start:', 'A range selector label'),
-            rows_range_gb)
-        range_layout.addWidget(start_label, 1, 0)
+        start_label = QtGui.QLabel(self.__tr('Start:', 
+                                   'A range selector label'),
+                                   rows_range_gb)
+        range_layout.addWidget(start_label, 0, 0)
         self.rstart.setText('1')
-        range_layout.addWidget(self.rstart, 1, 1)
+        range_layout.addWidget(self.rstart, 0, 1)
 
-        stop_label = qt.QLabel(self.__tr('Stop:', 'A range selector label'),
+        stop_label = QtGui.QLabel(self.__tr('Stop:', 'A range selector label'),
             rows_range_gb)
-        range_layout.addWidget(stop_label, 2, 0)
+        range_layout.addWidget(stop_label, 1, 0)
         self.rstop.setText(str(nrows))
-        range_layout.addWidget(self.rstop, 2, 1)
+        range_layout.addWidget(self.rstop, 1, 1)
 
-        step_label = qt.QLabel(self.__tr('Step:', 'A range selector label'),
+        step_label = QtGui.QLabel(self.__tr('Step:', 'A range selector label'),
             rows_range_gb)
-        range_layout.addWidget(step_label, 3, 0)
+        range_layout.addWidget(step_label, 2, 0)
         self.rstep.setText('1')
-        range_layout.addWidget(self.rstep, 3, 1)
+        range_layout.addWidget(self.rstep, 2, 1)
+
+        range_layout.setColumnStretch(2, 1)
 
 
     def makeSectionFour(self, buttons_layout):
@@ -462,7 +446,7 @@ class QueryDlg(qt.QDialog):
 
         :Parameter field_id: is the field identifier in the combobox current item
         """
-        self.query_le.insert(field_id.latin1().split(' ')[0])
+        self.query_le.insert(str(field_id).split(' ')[0])
 
 
     def slotInsertFunction(self, text):
@@ -490,7 +474,7 @@ class QueryDlg(qt.QDialog):
             'imag': 'imag(C)',
             'complex': 'complex(F, F)'
             }
-        self.query_le.insert(name2call[text.latin1()])
+        self.query_le.insert(name2call[str(text)])
 
 
     def slotUpdateOKState(self):
@@ -518,7 +502,7 @@ class QueryDlg(qt.QDialog):
         status_ok = True
 
         # Check the table name
-        ft_name = self.name_le.text().latin1()
+        ft_name = str(self.name_le.text())
         if not ft_name:
             status_ok = False
         elif ft_name in self.used_names:
@@ -527,7 +511,7 @@ class QueryDlg(qt.QDialog):
                 """ choose another one.""", 'A logger info message')
 
         # Check the indices column name
-        indices_colname = self.indices_column.text().latin1()
+        indices_colname = str(self.indices_column.text())
         if self.indices_column.isEnabled():
             if indices_colname == '':
                 status_ok = False
@@ -547,24 +531,32 @@ class QueryDlg(qt.QDialog):
 
         # Check the condition.
         # If it is an empty string the OK button is not enabled
-        condition = self.query_le.text().latin1()
+        condition = str(self.query_le.text())
         if condition.isspace() or (condition in [None, '']):
             status_ok = False
 
         # Check the range values
-        start_str = self.rstart.text().latin1()
-        stop_str = self.rstop.text().latin1()
+        start_str = str(self.rstart.text())
+        stop_str = str(self.rstop.text())
         if not (start_str and stop_str):
-          status_ok = False
+            status_ok = False
         else:
-          start = numpy.array(start_str).astype(numpy.int64)
-          stop = numpy.array(stop_str).astype(numpy.int64)
-          if stop > self.num_rows:
-              status_ok = False
-          elif start > stop:
-              status_ok = False
-          elif start < 1:
-              status_ok = False
+            start = numpy.array(start_str).astype(numpy.int64)
+            stop = numpy.array(stop_str).astype(numpy.int64)
+            if stop > self.num_rows:
+                status_ok = False
+                print self.__tr("""The stop value is greater than the number"""
+                                """ of rows. Please, choose another one.""",
+                                'A logger info message')
+            elif start > stop:
+                status_ok = False
+                print self.__tr("""The start value is greater than the """
+                                """stop value. Please, choose another one.""",
+                                'A logger info message')
+            elif start < 1:
+                status_ok = False
+                print self.__tr("""The start value must be greater than 0.""", 
+                                'A logger info message')
 
         # Enable/disable the OK button
         if status_ok:
@@ -609,7 +601,7 @@ class QueryDlg(qt.QDialog):
         """Compose the query and return."""
 
         # Get the query
-        condition = self.query_le.text().latin1()
+        condition = str(self.query_le.text())
         # Blanks at the begining of condition raise a SyntaxError
         condition = condition.strip()
         if not self.checkConditionSyntax(condition):
@@ -618,18 +610,16 @@ class QueryDlg(qt.QDialog):
         self.query_info['condition'] = condition
 
         # Get the table name and the name of the column with indices (if any)
-        self.query_info['ft_name'] = self.name_le.text().latin1()
+        self.query_info['ft_name'] = str(self.name_le.text())
         if self.indices_column.isEnabled():
             self.query_info['indices_field_name'] = \
-                self.indices_column.text().latin1()
+                str(self.indices_column.text())
 
         # Get the range and convert it into a Python range
         self.query_info['rows_range'] = (
-           numpy.array(self.rstart.text().latin1()).astype(numpy.int64) - 1,
-           numpy.array(self.rstop.text().latin1()).astype(numpy.int64),
-           numpy.array(self.rstep.text().latin1()).astype(numpy.int64))
+           numpy.array(str(self.rstart.text())).astype(numpy.int64) - 1,
+           numpy.array(str(self.rstop.text())).astype(numpy.int64),
+           numpy.array(str(self.rstep.text())).astype(numpy.int64))
 
         # Exit
         self.accept()
-
-

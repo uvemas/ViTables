@@ -21,7 +21,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: hpTable.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: hpTable.py 1019 2008-03-28 12:26:43Z vmas $
 #
 ########################################################################
 

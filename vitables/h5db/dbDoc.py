@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -21,7 +23,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: dbDoc.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: dbDoc.py 1068 2008-10-11 17:15:42Z vmas $
 #
 ########################################################################
 
@@ -30,53 +32,56 @@ Here is defined the DBDoc class.
 
 Classes:
 
-* DBDoc(qt.QObject)
+* DBDoc(QtCore.QObject)
 
 Methods:
 
-* __init__(self, filepath, mode)
+* __init__(self, filepath, mode, tmp_dbdoc=None)
 * __tr(self, source, comment=None)
-* openH5File(self)
+* clearHiddenGroup(self)
 * closeH5File(self)
+* copyFile(self, dst_filepath)
+* copyNode(self, nodepath)
+* createGroup(self, where, final_name)
+* cutNode(self, nodepath)
+* deleteNode(self, nodepath)
 * getFileFormat(self)
-* getFileName(self)
-* getFileMode(self)
-* getH5File(self)
 * getNode(self, where)
 * listNodes(self)
-* copyFile(self, dst_filepath)
-* createGroup(self, where, final_name)
-* cut(self, where, name, target_node)
-* copyNode(self, src_dbdoc, src_nodepath, target_dbdoc, parentpath, final_name)
-* move(self, src_nodepath, target_dbdoc, target_parentpath, final_name)
-* rename(self, where, final_name, current_name)
-* delete(self, where, name, is_visible=True)
+* moveNode(self, src_h5file, childpath, dst_h5file, parentpath,
+  childname=None)
+* openH5File(self)
+* pasteNode(self, parentpath)
+* renameNode(self, nodepath, new_name)
+
+Functions:
 
 Misc variables:
 
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import os
 
 import tables
-import qt
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
 import vitables.utils
 
-class DBDoc(qt.QObject):
+class DBDoc(QtCore.QObject):
     """
-    A database contained in an h5 file.
+    A database contained in an hdf5/PyTables file.
 
-    This class represents a database (model) that is controlled by the
-    database manager (controller).
-    It exposes methods to get some database properties.
+    This class exposes methods for reading/writing database nodes. It is
+    a thin wrapper to the tables.File class
     """
 
 
-    def __init__(self, filepath, mode):
+    def __init__(self, filepath, mode, tmp_dbdoc=None):
         """
         Makes a data structure that defines a given database.
 
@@ -85,19 +90,17 @@ class DBDoc(qt.QObject):
         - filepath
         - filename
         - mode
-        - h5_file, the File instance returned when filePath is opened
+        - h5file, the File instance returned when filePath is opened
 
         :Parameters:
 
         - `filePath`: full path of the DB
         - `mode`: indicate the open mode of the database file. It
             can be 'r'ead-only or 'a'ppend
+        - `tmp_dbdoc`: a reference to the temporary database DBDoc instance
         """
 
-        qt.QObject.__init__(self)
-
-        # The attached view
-        self.dbview = None
+        QtCore.QObject.__init__(self)
 
         # The opening mode
         self.mode = mode
@@ -109,15 +112,22 @@ class DBDoc(qt.QObject):
         self.filename = os.path.basename(filepath)
 
         # The tables.File instance
-        # Value used if an error occurs
-        self.h5_file = self.openH5File()
+        self.h5file = self.openH5File()
 
-        # The file format
-        self.file_format = self.getFileFormat()
+        # The temporary database. It is used as an intermediate storage
+        # in copy and cut operations
+        self.hidden_where = '/_p_cutNode'
+        self.tmp_dbdoc = tmp_dbdoc
+        if tmp_dbdoc != None:
+            self.tmp_h5file = self.tmp_dbdoc.h5file
+        else:
+            self.tmp_dbdoc = self
+            self.tmp_h5file = self.h5file
+
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return qt.qApp.translate('DBDoc', source, comment).latin1()
+        return str(QtGui.qApp.translate('DBDoc', source, comment))
 
 
     def openH5File(self):
@@ -150,7 +160,7 @@ class DBDoc(qt.QObject):
         """Closes a tables.File instance."""
 
         try:
-            self.h5_file.close()
+            self.h5file.close()
         except:
             vitables.utils.formatExceptionInfo()
 
@@ -165,27 +175,13 @@ class DBDoc(qt.QObject):
         :Returns: the format of the database file
         """
         format = None
-        if self.h5_file and self.h5_file._isPTFile:
-            format = 'PyTables file'
-        else:
-            format = 'Generic HDF5 file'
+        if self.h5file:
+            if self.h5file._isPTFile:
+                format = 'PyTables file'
+            else:
+                format = 'Generic HDF5 file'
 
         return format
-
-
-    def getFileName(self):
-        """:Returns: the filename of the open file"""
-        return self.filename
-
-
-    def getFileMode(self):
-        """:Returns: the access mode of the open file"""
-        return self.mode
-
-
-    def getH5File(self):
-        """:Returns: a tables.File instance"""
-        return self.h5_file
 
 
     def getNode(self, where):
@@ -196,7 +192,7 @@ class DBDoc(qt.QObject):
         """
 
         try:
-            node = self.h5_file.getNode(where)
+            node = self.h5file.getNode(where)
             return node
         except tables.exceptions.NoSuchNodeError:
             print self.__tr("""\nError: cannot open node %s in file %s """,
@@ -205,15 +201,14 @@ class DBDoc(qt.QObject):
             return None
 
 
-
     def listNodes(self):
         """:Returns: the recursive list of full nodepaths for the file"""
-        return [node._v_pathname for node in self.h5_file.walkNodes('/')]
+        return [node._v_pathname for node in self.h5file.walkNodes('/')]
 
 
-    #
+    # 
     # Editing databases
-    #
+    # 
 
     def copyFile(self, dst_filepath):
         """
@@ -235,12 +230,128 @@ class DBDoc(qt.QObject):
         session it fails, due (probably) to HDF5 memory protection.
         """
         try:
-            self.getH5File().copyFile(dst_filepath, overwrite=True)
+            self.h5file.copyFile(dst_filepath, overwrite=True)
         except tables.exceptions.HDF5ExtError:
             print self.__tr("""\nError: unable to save the file %s as """\
                 """%s. Beware that only closed files can be safely """\
                 """overwritten via Save As...""",
                 'A logger error message') % (self.filepath, dst_filepath)
+            vitables.utils.formatExceptionInfo()
+
+
+    def deleteNode(self, nodepath):
+        """Delete a tables.Node.
+
+        :Parameters:
+
+        - `nodepath`: the full path of the node being deleted
+        """
+
+        try:
+            self.h5file.removeNode(where=nodepath, recursive=True)
+            self.h5file.flush()
+        except:
+            vitables.utils.formatExceptionInfo()
+
+
+    def copyNode(self, nodepath):
+        """Copy a tables.Node to the hidden group of the temporary database.
+
+        :Parameters:
+
+        - `nodepath`: the full path of the node being copied
+        """
+
+        try:
+            self.clearHiddenGroup()
+            if nodepath == '/':
+                newname = 'copy_of_root_group'
+            else:
+                newname = None
+            new_parent = self.tmp_h5file.getNode(self.hidden_where)
+            self.h5file.copyNode(where=nodepath, newparent=new_parent,
+                newname=newname, recursive=True)
+            self.tmp_h5file.flush()
+        except:
+            vitables.utils.formatExceptionInfo()
+
+
+    def clearHiddenGroup(self):
+        """
+        Clear the hidden group of the temporary database.
+
+        Clear the contents of the hidden group before a new cut/copy is
+        done. It means that at most one node will live in the hidden group
+        at a given time.
+        """
+
+        # The hidden group of the temporary database
+        hidden_group = self.tmp_h5file.getNode(self.hidden_where)
+        # The list of copied/cut nodes paths
+        children_dict = getattr(hidden_group, '_v_children')
+        cut_nodes =  children_dict.keys()
+        # Empty the hidden group
+        for nodename in cut_nodes:
+            cut_nodename = os.path.basename(nodename)
+            self.tmp_h5file.removeNode(self.hidden_where,
+                name=cut_nodename, recursive=True)
+        self.tmp_h5file.flush()
+
+
+    def cutNode(self, nodepath):
+        """Moves a tables.Node to the hidden group of the temporary database.
+
+        :Parameters:
+
+        - `nodepath`: the full path of the node being copied
+        """
+
+        self.clearHiddenGroup()
+        childname = os.path.basename(nodepath)
+        self.moveNode(nodepath, self.tmp_dbdoc, self.hidden_where, childname)
+
+
+    def pasteNode(self, parentpath, childname):
+        """Moves a tables.Node from the hidden group of the temporary
+        database to the given location.
+
+        :Parameters:
+
+        - `parentpath`: the full path of the pasted node's new parent
+        - `childname`: the name of the node being pasted
+        """
+
+        # The current path of the node being pasted
+        hidden_group = self.tmp_h5file.getNode(self.hidden_where)
+        children_dict = getattr(hidden_group, '_v_children')
+        nodename =  children_dict.keys()[0]
+        src_nodepath = '%s/%s' % (self.hidden_where, nodename)
+        try:
+            parent_node = self.h5file.getNode(parentpath)
+            self.tmp_h5file.copyNode(src_nodepath, newparent=parent_node,
+                newname=childname, overwrite=True, recursive=True)
+            self.h5file.flush()
+        except:
+            vitables.utils.formatExceptionInfo()
+
+
+    def renameNode(self, nodepath, new_name):
+        """
+        Rename the selected node from the object tree.
+
+        :Parameters:
+
+        - `nodepath`: the full path of the node being renamed
+        - `new_name`: the node new name
+        """
+
+        h5file = self.h5file
+        where, current_name = os.path.split(nodepath)
+
+        try:
+            h5file.renameNode(where, new_name, current_name, overwrite=1)
+            h5file.flush()
+        except:
             vitables.utils.formatExceptionInfo()
 
 
@@ -254,178 +365,41 @@ class DBDoc(qt.QObject):
         - `final_name`: the new group name
         """
 
-        creation_ok = False
-        h5file = self.getH5File()
+        h5file = self.h5file
         try:
             if final_name in h5file.getNode(where)._v_children.keys():
                 h5file.removeNode(where, final_name, recursive=True)
             h5file.createGroup(where, final_name, title='')
             h5file.flush()
-            creation_ok = True
         except:
             vitables.utils.formatExceptionInfo()
-        # Update the database view
-        if creation_ok:
-            self.dbview.createGroup(where, final_name)
 
 
-    def cut(self, where, name, target_node):
-        """
-        Cut the selected node from the object tree.
-
-        The cut node is moved to the hidden group ``_p_cutNode``, in the
-        temporary database.
+    def moveNode(self, childpath, dst_dbdoc, parentpath, childname):
+        """Move a tables.Node to a different location.
 
         :Parameters:
 
-        - `where`: the full path of the parent node
-        - `name`: the cut node name
-        - `target_node`: the hidden group where the cut node will be
-        stored
+        - `childpath`: the full path of the node being moved
+        - `dst_dbdoc`: the destination database (a DBDoc instance)
+        - `parentpath`: the full path of the new parent node
+        - `childname`: the name of the node in its final location
         """
 
-        cut_ok = False
         try:
-            # tables.File.moveNode() method cannot move nodes between
-            # different files so, a workaround is needed here
-            h5file = self.getH5File()
-            h5file.copyNode(where=where, name=name, newparent=target_node,
-                overwrite=True, recursive=True)
-            h5file.removeNode(where, name, recursive=True)
-            h5file.flush()
-            target_node._v_file.flush()
-            cut_ok = True
-        except:
-            vitables.utils.formatExceptionInfo()
-        # Propagate changes to the attached view
-        if cut_ok:
-            self.dbview.delete(where, name)
-
-
-    def copyNode(self, src_dbdoc, src_nodepath, target_dbdoc, parentpath,
-        final_name):
-        """
-        Paste a copied/cut node under the selected group.
-
-        :Parameters:
-
-        - `src_dbdoc`: the database where the node being pasted lives
-        - `src_nodepath`: the full path in the source database of the
-            node being pasted
-        - `target_dbdoc`: the database where the node being pasted will live
-        - `parentpath`: the path of the target group
-        - `final_name`: the wanted name for the node being pasted
-        """
-
-        paste_ok = False
-        try:
-            parent_node = target_dbdoc.getNode(parentpath)
-            h5file = self.getH5File()
-            h5file.copyNode(src_nodepath, newparent=parent_node,
-                newname=final_name, overwrite=True, recursive=True)
-            parent_node._v_file.flush()
-            paste_ok = True
-        except:
-            vitables.utils.formatExceptionInfo()
-        # Propagate changes to the attached view
-        if paste_ok:
-            self.dbview.copyNode(self.filepath, src_nodepath,
-                target_dbdoc.filepath, parentpath, final_name)
-
-
-    def move(self, src_nodepath, target_dbdoc, target_parentpath, final_name):
-        """
-        Move the selected node to another location.
-
-        :Parameters:
-
-        - `src_nodepath`: the full path in the source database of the
-            node being dropped
-        - `target_dbdoc`: the database where the node being dropped will live
-        - `target_parentpath`: the path of the new parent group of the
-            node being dropped
-        - `final_name`: the name of the pasted node in the target file
-        stored
-        """
-
-        move_ok = False
-        try:
-            parent_node = target_dbdoc.getNode(target_parentpath)
-            h5file = self.getH5File()
-            # If the node is being moved to a different location in the
-            # same database
-            if self == target_dbdoc:
-                h5file.moveNode(src_nodepath, newparent=parent_node,
-                    newname=final_name, overwrite=True)
-            # If the node is being moved to a different database
+            dst_h5file = dst_dbdoc.h5file
+            parent_node = dst_h5file.getNode(parentpath)
+            if self.h5file is dst_h5file:
+                self.h5file.moveNode(childpath, newparent=parent_node,
+                    newname=childname, overwrite=True)
             else:
-                h5file.copyNode(src_nodepath, newparent=parent_node,
-                    newname=final_name, overwrite=True, recursive=True)
-                parent_node._v_file.flush()
-                src_where, src_nodename = os.path.split(src_nodepath)
-                h5file.removeNode(src_where, src_nodename, recursive=1)
-            h5file.flush()
-            move_ok = True
+                self.h5file.copyNode(childpath, newparent=parent_node,
+                    newname=childname, overwrite=True, recursive=True)
+                dst_h5file.flush()
+                src_where, src_nodename = os.path.split(childpath)
+                self.h5file.removeNode(src_where, src_nodename, recursive=1)
+            self.h5file.flush()
         except:
             vitables.utils.formatExceptionInfo()
-        # Propagate changes to the attached view
-        if move_ok:
-            self.dbview.move(self.filepath, src_nodepath, target_dbdoc.filepath,
-                target_parentpath, final_name)
 
 
-    def rename(self, where, final_name, current_name):
-        """
-        Rename the selected node from the object tree.
-
-        :Parameters:
-
-        - `where`: the full path of the parent node
-        - `final_name`: the node new name
-        - `current_name`: the node current name
-        """
-
-        renaming_ok = False
-        h5file = self.getH5File()
-
-        try:
-            h5file.renameNode(where, final_name, current_name,  overwrite=1)
-            h5file.flush()
-            renaming_ok = True
-        except:
-            vitables.utils.formatExceptionInfo()
-        # Propagate changes to the attached view
-        if renaming_ok:
-            self.dbview.renameSelected(where, final_name, current_name)
-
-
-    def delete(self, where, name, is_visible=True):
-        """
-        Delete the selected item from the object tree.
-
-        For groups the deletion is made recursively.
-        Cut nodes live in a hidden group of the temporary database so
-        they are not visible in the tree view and don't have to be deleted
-        from there.
-
-        :Parameters:
-
-        - `where`: the path of the parent of the node being deleted
-        - `name`: the name of the node being deleted
-        - `is_cut_node`: indicates if the node being deleted is a cut one
-        """
-
-        deleting_ok = False
-        h5file = self.getH5File()
-
-        try:
-            h5file.removeNode(where, name, recursive=1)
-            h5file.flush()
-            deleting_ok = True
-        except:
-            vitables.utils.formatExceptionInfo()
-        # Propagate changes to the attached view
-        # Cut nodes are not visible in the tree view so they don't have
-        # be deleted from there
-        if deleting_ok and is_visible:
-            self.dbview.delete(where, name)

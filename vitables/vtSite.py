@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -21,7 +23,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: vtSite.py 1020 2008-03-28 16:41:24Z vmas $
+#       $Id: vtSite.py 1063 2008-09-24 17:30:22Z vmas $
 #
 ########################################################################
 
@@ -40,17 +42,13 @@ Misc variables:
 * VERSION
 
 """
+
 __docformat__ = 'restructuredtext'
 
-# This allows for testing in the source tree.  During ordinary installation,
-# this file will be overwritten with the paths used by ``setup.py``.
 INSTALLDIR = '.'
 DATADIR = '.'
-VERSION = '1.2.3'
+VERSION = '2.0'
 
-# However, when running as a Mac OS X app, the directories we are looking for
-# are in the same place as the main script.  The installation procedure does
-# *not* overwrite this file.
 import sys as _sys
 if (_sys.platform == 'darwin'
     and getattr(_sys, 'frozen', None) == 'macosx_app'):

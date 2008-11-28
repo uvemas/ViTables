@@ -1,0 +1,10 @@
+syntax: glob
+*.pyc
+*.svn
+*.leo_shadow
+*.leo
+*~
+*.fo
+*.pdf
+*.e4*
+doc/html

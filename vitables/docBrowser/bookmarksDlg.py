@@ -21,7 +21,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: bookmarksDlg.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: bookmarksDlg.py 1048 2008-07-01 08:10:20Z vmas $
 #
 ########################################################################
 
@@ -30,18 +30,17 @@ Here is defined the BookmarksDlg class.
 
 Classes:
 
-* BookmarksDlg(qt.QDialog)
+* BookmarksDlg(QtGui.QDialog)
 
 Methods:
 
 * __init__(self, blist, hbgui)
 * __tr(self, source, comment=None)
-* makePage(self)
+* deleteBookmarks(self)
 * fillBookmarksTable(self)
-* slotDisplayBookmark(self, lvi)
-* slotCheckDeleteButton(self, lvi)
 * slotButtonClicked(self, button)
-* slotDeleteBookmarks(self) 
+* slotCheckDeleteButton(self, item)
+* slotDisplayBookmark(self, index)
 
 Misc variables:
 
@@ -53,16 +52,17 @@ __docformat__ = 'restructuredtext'
 import sys
 import os.path
 
-import qt
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
-class BookmarksDlg(qt.QDialog):
+class BookmarksDlg(QtGui.QDialog):
     """
     The dialog for editing bookmarks.
 
     The class defines a modal dialog used to delete entries from the
     bookmarks list.
-    Bookmarks are displayed in a tree view with `QListView`. Each
-    bookmark is a `QCheckListItem`. At the bottom there is a group of
+    Bookmarks are displayed in a tree view with `QTreeView`. Bookmarks
+    can be visited by double clicking them. At the bottom there is a group of
     buttons with ``Delete``, ``OK`` and ``Cancel`` buttons. ``Delete``
     removes checked items from the bookmarks list. 
     """
@@ -71,7 +71,7 @@ class BookmarksDlg(qt.QDialog):
     def __init__(self, blist, hbgui):
         """
         Dialog constructor.
-        
+
         :Parameters:
 
         `blist`: the bookmarks list
@@ -79,139 +79,120 @@ class BookmarksDlg(qt.QDialog):
         """
 
         # The HelpBrowser GUI instance from which this dialog has been opened
-        
-        qt.QDialog.__init__(self, hbgui)
+        QtGui.QDialog.__init__(self, hbgui)
 
-        self.setCaption(self.__tr('Bookmarks editor', 'Dialog caption'))
-        self.setWFlags(qt.Qt.WDestructiveClose)
+        self.setWindowTitle(self.__tr('Bookmarks editor', 'Dialog caption'))
+        dlg_layout = QtGui.QVBoxLayout(self)
 
-        # Give a layout to the dialog
-        self.dlg_layout = qt.QVBoxLayout(self, 10, 6)
+        # Add a tree view
+        self.tree = QtGui.QTreeView(self)
+        self.tree.setItemsExpandable(False)
+        self.model = QtGui.QStandardItemModel()
+        self.tree.setModel(self.model)
+        self.model.setHorizontalHeaderLabels([
+            self.__tr('Bookmark', 
+            'First column header of the bookmarks table'), 
+            self.__tr('URL', 
+            'Second column header of the bookmarks table')])
+        dlg_layout.addWidget(self.tree)
 
-        # Arrange the dialog components
-        self.blv = qt.QListView(self)
-        self.button_group = qt.QButtonGroup(3, qt.Qt.Horizontal, self)
-        self.ok_button = qt.QPushButton(self.__tr('&OK', 'Button label'), \
-            self.button_group)  # ID=0
-        self.del_button = qt.QPushButton(self.__tr('&Delete', 'Button label'), \
-            self.button_group)  # ID=1
-        self.cancel_button = \
-            qt.QPushButton(self.__tr('&Cancel', 'Button label'), \
-            self.button_group)  # ID=2
-        self.makePage()
+        # Add a group of buttons
+        self.button_group = QtGui.QDialogButtonBox(self)
+        self.ok_button = self.button_group.addButton(self.__tr('&OK', 
+            'Button label'), QtGui.QDialogButtonBox.AcceptRole)
+        self.del_button = self.button_group.addButton(self.__tr('&Delete', 
+            'Button label'), QtGui.QDialogButtonBox.ActionRole)
+        self.cancel_button = self.button_group.addButton(self.__tr('&Cancel', 
+            'Button label'), QtGui.QDialogButtonBox.RejectRole)
+        dlg_layout.addWidget(self.button_group)
 
         # We dont work directly on the HelpBrowser bookmarks list,
         # instead we make a copy. This is convenient if, after doing
-        # some changes in the list, we  decide to cancel the changes.
-        self.blist = blist[:]
+        # some changes in the list, we decide to cancel the changes.
+        self.blist = QtCore.QStringList(blist)
         self.fillBookmarksTable()
+        self.show()
 
         # Finally we connect signals to slots
-        self.connect(self.blv, qt.SIGNAL('clicked(QListViewItem *)'),
+        self.connect(self.model, 
+            QtCore.SIGNAL('itemChanged(QStandardItem *)'), 
             self.slotCheckDeleteButton)
-        self.connect(self.blv, qt.SIGNAL('doubleClicked(QListViewItem *)'),
+        self.connect(self.tree, 
+            QtCore.SIGNAL('doubleClicked(QModelIndex)'), 
             self.slotDisplayBookmark)
-        self.connect(self.button_group, qt.SIGNAL('clicked(int)'),
+        self.connect(self.button_group, 
+            QtCore.SIGNAL('clicked(QAbstractButton *)'), 
             self.slotButtonClicked)
 
-        self.blv.emit(qt.SIGNAL('clicked(QListViewItem *)'), (None,))
+        self.del_button.setEnabled(False)
 
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return qt.qApp.translate('BookmarksDlg', source, comment).latin1()
-
-
-    def makePage(self):
-        """
-        Add components to the bookmarks dialog.
-
-        The dialog is made of a `QListView`, that displays the list
-        of bookmarks in a tabular way, and several buttons.
-        The bookmarks table has two columns, ``Name`` and ``URL``, that
-        show the short name and the full path of a document section.
-        For instance the section ``/usr/share/data/style.html#colors``
-        has ``URL`` ``/usr/share/data/style.html#colors`` and ``Name``
-        ``style.html#colors``
-        """
-
-        #
-        #				QListView
-        #
-
-        self.dlg_layout.addWidget(self.blv)
-        self.blv.addColumn(self.__tr('Bookmark', 
-            'First column header of the bookmarks table'))
-        self.blv.addColumn(self.__tr('URL', 
-            'Second column header of the bookmarks table'))
-    
-        #
-        #				QButtonGroup
-        #
-
-        self.button_group.setFrameStyle(qt.QFrame.NoFrame)
-        self.ok_button.setDefault(1)
-
-        # Layout the buttons in such a way that they dont become wider
-        # when the dialog is horizontally expanded
-        buttons_layout = qt.QHBoxLayout(self.dlg_layout)
-        buttons_layout.addStretch(1)
-        buttons_layout.addWidget(self.button_group)
-        buttons_layout.addStretch(1)
+        return str(QtGui.qApp.translate('BookmarksDlg', source, comment))
 
 
     def fillBookmarksTable(self):
         """Add entries to the bookmarks table."""
 
+        self.model.setColumnCount(2)
+        parent_item = self.model.invisibleRootItem()
         # Each item of the tree (bookmark) is extracted from the bookmarks list
-        for item in self.blist :
+        for entry in self.blist :
             # extracts the short name. Examples:
             # /home/vmas/estilo.html --> estilo.html
             # /home/vmas/estilo.html#color --> estilo.html#color
-            shortname = os.path.basename(item)
+            shortname = os.path.basename(str(entry))
+            item = QtGui.QStandardItem(shortname)
+            item.setCheckable(True)
+            item.setEditable(False)
+            item1 = QtGui.QStandardItem(entry)
+            item1.setEditable(False)
+            parent_item.appendRow([item, item1])
+        self.tree.setExpanded(self.model.indexFromItem(parent_item), True)
+        self.tree.repaint()
+        self.repaint()
 
-            # construct a checkable list view item
-            lvi = qt.QCheckListItem(self.blv, shortname, \
-                qt.QCheckListItem.CheckBox)
-            lvi.setText(1, item)
-            self.blv.insertItem(lvi)
 
-
-    def slotDisplayBookmark(self, lvi):
+    def slotDisplayBookmark(self, index):
         """
         Display a given bookmark in the help browser.
-        
+
         When a bookmark is double clicked the `HelpBrowser` window is
         updated and displays that bookmark.
         """
 
         # The HelpBrowser instance tied to this dialog
-        help_browser = self.parent().helpBrowser
-        # Get the bookmark ID
-        src = lvi.text(1).latin1()
-        bookmark_id = help_browser.bookmarks.index(src)
+        help_browser = self.parent().browser
+        # Get the bookmark UID
+        row = self.model.itemFromIndex(index).row()
+        item = self.model.item(row, 1)
+        src = str(item.text())
+        bookmark_id = help_browser.bookmarks.indexOf(src) + 1
         # Open the bookmark
-        help_browser.slotOpenBookmark(bookmark_id + 1)
+        help_browser.slotOpenBookmark(bookmark_id)
 
 
-    def slotCheckDeleteButton(self, lvi):
+    def slotCheckDeleteButton(self, item):
         """
         Enable/disable the ``Delete`` button.
-        
+
         The state of the ``Delete`` button depends on the presence/abscence
         of checked items in the bookmarks list. Every time an item is
         clicked the ``Delete`` button state is updated.
         """
 
-        # Iterate over the QListView looking for checked items
+        parent_item = self.model.invisibleRootItem()
+        # Iterate over the QTreeWidget looking for checked items
         enabled = 0
-        current = self.blv.firstChild()
-        while current :
-            if current.isOn() :
+        row = 0
+        item = parent_item.child(row)
+        while item != None:
+            if item.checkState() == QtCore.Qt.Checked:
                 enabled = 1
                 break
-            else :
-                current = current.nextSibling()
+            row = row + 1
+            item = parent_item.child(row)
 
         self.del_button.setEnabled(enabled)
 
@@ -224,50 +205,45 @@ class BookmarksDlg(qt.QDialog):
         appropriate method is called.
         """
 
+        role = self.button_group.buttonRole(button)
         # OK button clicked
-        if button == 0:
+        if role == QtGui.QDialogButtonBox.AcceptRole:
             gui = self.parent()
-            gui.helpBrowser.bookmarks = self.blist
+            gui.browser.bookmarks = self.blist
             self.accept()
         # Delete button clicked
-        elif button == 1:
-            self.slotDeleteBookmarks()
+        elif role == QtGui.QDialogButtonBox.ActionRole:
+            self.deleteBookmarks()
         # Cancel button clicked
-        elif button == 2:
+        elif role == QtGui.QDialogButtonBox.RejectRole:
             self.reject()
 
 
-    def slotDeleteBookmarks(self) :
+    def deleteBookmarks(self) :
         """Delete all selected bookmarks."""
 
-        # Return if the bookmarks list is empty
-        if not self.blv.childCount() :
-            return
-
-        # Iterate over the QListView and delete the checked items
-        current = self.blv.firstChild()
-        while current :
-            if current.isOn() :
-                next_current = current.nextSibling()
-                # from the QListViewItem gets the full name of the bookmark
-                full_name = current.text(1)
-                # and remove it from the bookmarks list
-                self.blist.remove(full_name)
-                # finally remove the item from the QListView
-                self.blv.takeItem(current)
-                del current
-                current = next_current
-            else :
-                current = current.nextSibling()
+        parent_item = self.model.invisibleRootItem()
+        # Iterate over the QTreeWidget looking for checked items
+        deleted_rows = []
+        row = 0
+        item = parent_item.child(row)
+        while item != None:
+            if item.checkState() == QtCore.Qt.Checked:
+                deleted_rows.append(row)
+            row = row + 1
+            item = parent_item.child(row)
+        # Items with highest model indexes are removed first from the model
+        # This way deleting an item does not modify the model index of the
+        # remaining items
+        deleted_rows.reverse()
+        for row in deleted_rows:
+            self.model.takeRow(row)
+            del self.blist[row]
 
         # After deletion we udpate the dialog
-        self.blv.repaintContents()
         self.del_button.setEnabled(0)
 
-
-if __name__ == '__main__' :
-    APP = qt.QApplication(sys.argv)
-    APP.connect(APP, qt.SIGNAL('lastWindowClosed()'), APP, qt.SLOT('quit()'))
-    BDLG = BookmarksDlg([])
-    BDLG.exec_loop()
-    APP.exec_loop()
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    dlg = BookmarksDlg(['uno', 'dos'], None)
+    app.exec_()

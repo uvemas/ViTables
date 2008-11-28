@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -21,7 +23,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: configException.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: configException.py 1083 2008-11-04 16:41:02Z vmas $
 #
 ########################################################################
 
@@ -45,9 +47,10 @@ Misc variables:
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
-import qt
+import PyQt4.QtGui as QtGui
 
 class ConfigFileIOException(Exception):
     """Exception class for IO errors in the configuration file."""
@@ -76,8 +79,9 @@ class ConfigFileIOException(Exception):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return qt.qApp.translate('ConfigFileIOException', source,
-            comment).latin1()
+        return str(QtGui.qApp.translate('ConfigFileIOException', source,
+            comment))
+
 
 
 class SettingRetrievalException(Exception):
@@ -93,7 +97,7 @@ class SettingRetrievalException(Exception):
         """
 
         Exception.__init__(self)
-        
+
         kind2message = {
         'color':  self.__tr("""\nConfiguration warning: the %s color cannot be"""\
             """ retrieved. Its default value will be used.""", 
@@ -136,5 +140,5 @@ class SettingRetrievalException(Exception):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return qt.qApp.translate('SettingRetrievalException', source,
-            comment).latin1()
+        return str(QtGui.qApp.translate('SettingRetrievalException', source,
+            comment))

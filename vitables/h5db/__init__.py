@@ -1,3 +1,4 @@
+
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008 Vicent Mas. All rights reserved
 #
@@ -16,4 +17,5 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["dbDoc", "dbManager", "dbView"]
+__all__ = ["dbDoc", "dbsTreeModel", "dbsTreeView", "groupNode",
+"leafNode", "nodeItemDelegate", "rootGroupNode"]

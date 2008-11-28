@@ -16,5 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["arrayDoc", "groupDoc", "leafView", "leavesManager", "nodeDoc",
-    "tableDoc",  "unimplementedDoc"]
+__all__ = ["nodeInfo", "queriesManager"]

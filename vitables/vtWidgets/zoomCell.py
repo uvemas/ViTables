@@ -21,7 +21,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: zoomCell.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: zoomCell.py 1083 2008-11-04 16:41:02Z vmas $
 #
 ########################################################################
 
@@ -219,7 +219,7 @@ class ZoomCell(qttable.QTable):
     def getPyObjectDimensions(self):
         """
         Get the dimensions of the grid where the cell will be zoomed.
-        
+
         The zoomed cell contains a `Python` object.
 
         :Returns: a tuple (rows, columns)
@@ -234,7 +234,7 @@ class ZoomCell(qttable.QTable):
     def getArrayDimensions(self, shape):
         """
         Get the dimensions of the grid where the cell will be zoomed.
-        
+
         The zoomed cell contains a `numpy` array and will be displayed
         in a table with the same shape than it.
 

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -21,47 +23,39 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: preferencesGUI.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: preferencesGUI.py 1071 2008-10-17 16:49:03Z vmas $
 #
 ########################################################################
+
 
 """
 Here is defined the PreferencesGUI class.
 
 Classes:
 
-* PreferencesGUI(qt.QTabDialog)
+* PreferencesGUI(QtGui.QDialog)
 
 Methods:
 
-* __init__(self, name=None, modal=0, flags=0)
+* __init__(self)
 * __tr(self, source, comment=None)
-* composeStartupGB(self, startup_gb)
-* arrangeLoggerGB(self, logger_gb, layout)
-* arrangeWorkspaceGB(self, workspace_gb)
-* arrangeStyleGB(self, style_gb)
+* makeGeneralPage(self, general_page)
+* makeLookAndFeelPage(self, lf_page)
 
 Functions:
-
-* addToLayout(layout, *widgets_list)
 
 Misc variables:
 
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
-import qt
+import PyQt4.QtGui as QtGui
+import PyQt4.QtCore as QtCore
 
-def addToLayout(layout, *widgets_list):
-    """Add a list of widgets to a given layout."""
-
-    for widget in widgets_list:
-        layout.addWidget(widget)
-
-
-class PreferencesGUI(qt.QTabDialog):
+class PreferencesGUI(QtGui.QDialog):
     """
     Creates the `Preferences` dialog.
 
@@ -74,172 +68,161 @@ class PreferencesGUI(qt.QTabDialog):
     - background color of the workspace
     - application style
 
-    The dialog has ``OK``, ``Default``, ``Apply`` and ``Cancel``
+    The dialog has ``OK``, ``Reset``, ``Apply`` and ``Cancel``
     buttons. They behave as usual.
     """
 
 
-    def __init__(self, name=None, modal=0, flags=0):
+    def __init__(self):
         """
         Init the preferences dialog and makes the GUI.
-
-        :Parameters:
-
-        - `name`: the name of the dialog (a string)
-        - `modal`: TRUE if the dialog is modal (blocks the application)
-        - `flags`: flags
         """
 
-        qt.QTabDialog.__init__(self, qt.qApp.mainWidget(), name, modal, flags)
-        self.setCaption(self.__tr('ViTables configuration dialog',
+        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        self.setWindowTitle(self.__tr('ViTables configuration dialog',
             'Caption of the preferences dialog'))
 
-        # Make the General page
-        general_page = qt.QWidget(self)
-        general_layout = qt.QVBoxLayout(general_page)
-        startup_gb = qt.QGroupBox(3, qt.Qt.Vertical, general_page)
-        self.restore_cb = qt.QCheckBox(startup_gb)
-        self.hiden_bg = qt.QButtonGroup()
-        self.composeStartupGB(startup_gb)
-        general_layout.addWidget(startup_gb)
-        # Add page to dialog
-        self.addTab(general_page, self.__tr('&General',
-            'The title of the first dialog tab'))
+        # Make the dialog tabbed
+        tab_widget = QtGui.QTabWidget(self)
 
-        # Make the Look & Feel page
-        lf_page = qt.QWidget(self)
-        lf_layout = qt.QVBoxLayout(lf_page)
-        logger_gb = qt.QGroupBox(2, qt.Qt.Horizontal, lf_page)
-        buttons_parent = qt.QWidget(logger_gb)
-        buttons_layout = qt.QVBoxLayout(buttons_parent)
-        self.font_pb = qt.QPushButton(self.__tr('&Font',
-            'The label of the logger font chooser button'),
-            buttons_parent)
-        self.foreground_pb = qt.QPushButton(self.__tr('F&oreground',
-            'The label of the logger text color button'),
-            buttons_parent)
-        self.background_pb = qt.QPushButton(self.__tr('&Background',
-            'The label of the logger color button'),
-            buttons_parent)
-        text = """<p>En un lugar de La Mancha,<br>""" \
-        """de cuyo nombre no quiero acordarme,<br>""" \
-        """no ha mucho tiempo vivia un hidalgo...</p>"""
-        self.sample_te = qt.QTextEdit(logger_gb)
-        self.sample_te.setText(text)
-        self.arrangeLoggerGB(logger_gb, buttons_layout)
-        workspace_gb = qt.QGroupBox(2, qt.Qt.Horizontal, lf_page)
-        self.workspace_pb = qt.QPushButton(workspace_gb)
-        self.workspace_label = qt.QLabel(workspace_gb)
-        self.arrangeWorkspaceGB(workspace_gb)
-        style_gb = qt.QGroupBox(3, qt.Qt.Horizontal, lf_page)
-        self.styles_cb = qt.QComboBox(style_gb)
-        self.arrangeStyleGB(style_gb)
-        addToLayout(lf_layout, logger_gb, workspace_gb, style_gb)
-        # Add page to dialog
-        self.addTab(lf_page, self.__tr('&Look and Feel',
+        # Make pages
+        general_page = QtGui.QWidget()
+        self.makeGeneralPage(general_page)
+        lf_page = QtGui.QWidget()
+        self.makeLookAndFeelPage(lf_page)
+
+        # Make buttons
+        self.buttons_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Reset|
+                                            QtGui.QDialogButtonBox.Ok|
+                                            QtGui.QDialogButtonBox.Cancel)
+
+        # Add pages to dialog
+        tab_widget.addTab(general_page, self.__tr('&General',
+            'The title of the first dialog tab'))
+        tab_widget.addTab(lf_page, self.__tr('&Look and Feel',
             'The title of the second dialog tab'))
 
-        # Configure button's labels
-        self.setApplyButton(self.__tr('Apply', 'Label of the Apply button'))
-        self.setDefaultButton(self.__tr('Default',
-            'Label of the Default button'))
-        self.setCancelButton(self.__tr('Cancel', 'Label of the Cancel button'))
+        # The dialog layout
+        dlg_layout = QtGui.QVBoxLayout(self)
+        dlg_layout.addWidget(tab_widget)
+        dlg_layout.addWidget(self.buttons_box)
 
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return qt.qApp.translate('PreferencesGUI', source, comment).latin1()
+        return str(QtGui.qApp.translate('PreferencesGUI', source, comment))
 
 
-    def composeStartupGB(self, startup_gb):
+    def makeGeneralPage(self, general_page):
         """
         Add components to the Startup group box of the General page.
 
-        :Parameter startup_gb: the groupbox being composed.
+        :Parameter general_page: the page being composed.
         """
 
+        # The page contains only a QGroupBox with one check box and two
+        # radio buttons
+        startup_gb = QtGui.QGroupBox(general_page)
         startup_gb.setTitle( self.__tr('Startup',
             'The name of the groupbox where startup is configured'))
-        # An invisible button group is used to make radio buttons exclusive
-        self.hiden_bg.setRadioButtonExclusive(1)
 
-        #  Add Current directory entry to groupbox
-        current_dir_rb = qt.QRadioButton(startup_gb)
-        current_dir_rb.setText(self.__tr('Start in home directory',
-            'Label of the startup in home directory radio button'))
-        self.hiden_bg.insert(current_dir_rb, 1)
-
-        #  Add Last opened directory entry to groupbox
-        last_dir_rb = qt.QRadioButton(startup_gb)
-        last_dir_rb.setText(self.__tr('Start in last opened directory',
-            'Label of the startup in the last open directory radio button'))
-        self.hiden_bg.insert(last_dir_rb, 2)
-
-        #  Add Restore last session entry to groupbox
+        self.restore_cb = QtGui.QCheckBox()
         self.restore_cb.setText(self.__tr('Restore last session',
             'Label of the restore last session check button'))
 
+        current_dir_rb = QtGui.QRadioButton()
+        current_dir_rb.setText(self.__tr('Start in home directory',
+            'Label of the startup in home directory radio button'))
 
-    def arrangeLoggerGB(self, logger_gb, layout):
+        last_dir_rb = QtGui.QRadioButton()
+        last_dir_rb.setText(self.__tr('Start in last opened directory',
+            'Label of the startup in the last open directory radio button'))
+
+        # An invisible button group is used to make radio buttons exclusive
+        self.hiden_bg = QtGui.QButtonGroup()
+        self.hiden_bg.setExclusive(1)
+        self.hiden_bg.addButton(current_dir_rb, 1)
+        self.hiden_bg.addButton(last_dir_rb, 2)
+
+        # The page layout
+        vbox = QtGui.QVBoxLayout(startup_gb)
+        vbox.addWidget(self.restore_cb)
+        vbox.addWidget(current_dir_rb)
+        vbox.addWidget(last_dir_rb)
+        general_layout = QtGui.QVBoxLayout(general_page)
+        general_layout.addWidget(startup_gb)
+
+
+    def makeLookAndFeelPage(self, lf_page):
         """
-        Add the Logger group box to the Look & Feel page of Preferences.
+        Add components to the Startup group box of the General page.
 
-        :Parameters:
-
-        - `logger_gb`: the groupbox being arranged
-        - `layout`: the layout for arranging buttons
+        :Parameter lf_page: the page being composed.
         """
 
+        # The page contains three groupboxes: Logger,Workspace and Style
+        # The Logger groupbox
+        logger_gb = QtGui.QGroupBox(lf_page)
         logger_gb.setTitle(self.__tr('Logger',
             'The title of the logger groubox'))
-
-        addToLayout(layout, self.font_pb, self.foreground_pb,
-            self.background_pb)
+        self.font_pb = QtGui.QPushButton(self.__tr('&Font',
+            'The label of the logger font chooser button'))
+        self.foreground_pb = QtGui.QPushButton(self.__tr('F&oreground',
+            'The label of the logger text color button'))
+        self.background_pb = QtGui.QPushButton(self.__tr('&Background',
+            'The label of the logger color button'))
+        text = """<p>En un lugar de La Mancha,<br>""" \
+        """de cuyo nombre no quiero acordarme,<br>""" \
+        """no ha mucho tiempo vivia un hidalgo...</p>"""
+        self.sample_te = QtGui.QTextEdit(logger_gb)
+        self.sample_te.setAcceptRichText(True)
+        self.sample_te.setText(text)
         self.sample_te.setReadOnly(1)
-        self.sample_te.setTextFormat(qt.Qt.RichText)
+        logger_layout = QtGui.QGridLayout(logger_gb)
+        logger_layout.addWidget(self.font_pb, 0, 0)
+        logger_layout.addWidget(self.foreground_pb, 1, 0)
+        logger_layout.addWidget(self.background_pb, 2, 0)
+        logger_layout.addWidget(self.sample_te, 0, 1, 3, 1)
 
-
-    def arrangeWorkspaceGB(self, workspace_gb):
-        """
-        Add the Workspace group box to the Look & Feel page of Preferences.
-
-        :Parameter workspace_gb: the groupbox being arranged
-        """
-
+        # The Workspace groupbox
+        workspace_gb = QtGui.QGroupBox(lf_page)
         workspace_gb.setTitle(self.__tr('Workspace',
             'The title of the workspace groupbox'))
+        self.workspace_pb = QtGui.QPushButton(self.__tr('&Background',
+            'The label of the logger color button'))
+        self.workspace_label = \
+            QtGui.QLabel(self.__tr('Background color sample',
+                                   'A label for the workspace color sample'))
+        self.workspace_label.setAutoFillBackground(True)
+        workspace_layout = QtGui.QHBoxLayout(workspace_gb)
+        workspace_layout.addWidget(self.workspace_pb)
+        workspace_layout.addWidget(self.workspace_label)
 
-        # Compose the Workspace group box
-        self.workspace_pb.setText(self.__tr('Background',
-            'The label of the workspace color button'))
-        self.workspace_label.setText(self.__tr('Background color sample',
-            'A label for the workspace color sample'))
-
-
-    def arrangeStyleGB(self, style_gb):
-        """
-        Add the Style group box to the Look & Feel page of Preferences.
-
-        :Parameter style_gb: the groupbox being arranged
-        """
-
+        # The Style groupbox
+        style_gb = QtGui.QGroupBox(lf_page)
         style_gb.setTitle(self.__tr('Style',
             'The title of the global aspect groupbox'))
-
+        self.styles_cb = QtGui.QComboBox(style_gb)
         # Style names can be retrieved with qt.QStyleFactory.keys()
         # The following map between qt.QStyles and style names applies:
-        # 'qt.QWindowsStyle': 'Windows',
-        # 'qt.QWindowsXPStyle': 'WindowsXP',
-        # 'qt.QMotifStyle': 'Motif',
-        # 'qt.QMotifPlusStyle': 'MotifPlus',
-##            'qt.QMacStyle': 'Macintosh',
-        # 'qt.QAquaStyle': 'Macintosh (Aqua)',
-        # 'qt.QPlatinumStyle': 'Platinum',
-        # 'qt.QSGIStyle': 'SGI',
-        # 'qt.QCDEStyle': 'CDE'
+        # 'QtGui.QWindowsStyle': 'Windows',
+        # 'QtGui.QMotifStyle': 'Motif',
+        # 'QtGui.QCDEStyle': 'CDE'
+        # 'QtGui.QPlastiqueStyle': 'Plastique'
+        # 'QtGui.QCleanlooksStyle': 'Cleanlooks'
+        # 'qt.QMacStyle': 'Macintosh',
+        # 'QtGui.QWindowsXPStyle': 'WindowsXP',
         # WindowsXP and Macintosh (Aqua) styles are only implemented in
         # the PyQt for these platforms
-        styles = ['default', 'Windows', 'Motif',  'MotifPlus', 'Platinum',
-            'SGI', 'CDE']
-        for item in styles:
-            self.styles_cb.insertItem(item)
+        styles = ['default', 'Windows', 'Motif',  'CDE', 'Plastique',
+            'Cleanlooks']
+        self.styles_cb.insertItems(0, QtCore.QStringList(styles))
+        style_layout = QtGui.QHBoxLayout(style_gb)
+        style_layout.addWidget(self.styles_cb)
+
+        # The page layout
+        lf_layout = QtGui.QVBoxLayout(lf_page)
+        lf_layout.addWidget(logger_gb)
+        lf_layout.addWidget(workspace_gb)
+        lf_layout.addWidget(style_gb)
+

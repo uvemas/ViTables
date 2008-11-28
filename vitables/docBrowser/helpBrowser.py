@@ -21,7 +21,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: helpBrowser.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: helpBrowser.py 1083 2008-11-04 16:41:02Z vmas $
 #
 ########################################################################
 
@@ -30,32 +30,32 @@ Here is defined the HelpBrowser class.
 
 Classes:
 
-* HelpBrowser(qt.QObject) 
+* HelpBrowser(QtCore.QObject) 
 
 Methods:
 
 * __init__(self, parent) 
 * __tr(self, source, comment=None)
 * connectSignals(self)
-* slotNewBrowser(self) 
-* slotOpenFile(self, filepath=None) 
-* slotCloseWindow(self) 
-* slotExitBrowser(self) 
+* slotAboutHelpBrowser(self)
+* slotAboutQt(self)
+* slotAddBookmark(self)
+* slotClearBookmarks(self)
+* slotClearHistory(self)
+* slotCloseWindow(self)
+* slotDisplaySrc(self, src=None)
+* slotEditBookmarks(self)
+* slotExitBrowser(self)
+* slotNewBrowser(self)
+* slotOpenBookmark(self, bmark_id)
+* slotOpenFile(self, filepath=None)
+* slotRecentSubmenuAboutToShow(self)
+* slotUpdateBackward(self, available)
+* slotUpdateForward(self, available)
 * slotZoomIn(self) 
 * slotZoomOut(self) 
-* updateHome(self) 
-* slotUpdateForward(self, available) 
-* slotUpdateBackward(self, available) 
-* slotUpdateBookmarksMenu(self) 
-* slotOpenBookmark(self, bmark_id) 
-* slotAddBookmark(self) 
-* slotEditBookmarks(self) 
-* slotClearBookmarks(self) 
-* slotDisplaySrc(self, src) 
-* slotClearHistory(self) 
 * updateHistory(self, src) 
-* slotAboutHelpBrowser(self) 
-* slotAboutQt(self) 
+* updateHome(self) 
 
 Misc variables:
 
@@ -66,13 +66,14 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-import qt
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
 import vitables.utils
 from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 
-class HelpBrowser(qt.QObject) :
+class HelpBrowser(QtCore.QObject) :
     """
     Very simple documentation browser.
 
@@ -89,38 +90,36 @@ class HelpBrowser(qt.QObject) :
     """
 
 
-    def __init__(self, parent) :
+    def __init__(self, vtapp) :
         """
         Initializes the browser.
 
         Restore history and bookmarks from disk and makes the browser window.
-        
-        :Parameter parent: is an instance of `VTApp`
+
+        :Parameter vtapp: an instance of `VTApp`
         """
 
-        qt.QObject.__init__(self)
+        QtCore.QObject.__init__(self)
 
-        self.vtapp = parent
+        self.vtapp = vtapp
 
         # Get the bookmarks and the navigation history
-        self.bookmarks = parent.hbBookmarks
-        self.history = parent.hbHistory
+        self.bookmarks = vtapp.hb_bookmarks
+        self.history = vtapp.hb_history
 
         # The User's Guide file
         self.users_guide = vitables.utils.forwardPath(
-            os.path.join(self.vtapp.config.doc_dir, 'html', 'index.html'))
+            os.path.join(vtapp.config.doc_dir, 'html', 'index.html'))
         self.not_found_doc = vitables.utils.forwardPath(os.path.abspath(
-            os.path.join(self.vtapp.config.doc_dir, 'html', 'not_found.html')))
+            os.path.join(vtapp.config.doc_dir, 'html', 'not_found.html')))
 
         # create the GUI
-        self.gui = browserGUI.HelpBrowserGUI(self, 
-            self.vtapp.config.doc_dir, self.vtapp.config.icons_dir)
-        
+        self.gui = browserGUI.HelpBrowserGUI(self)
+
         # The working directory used in QFileDialog calls
-        self.lastOpenDir = vitables.utils.getHomeDir()
+        self.working_dir = vitables.utils.getHomeDir()
 
         # Connect signals to slots
-        self.actions = self.gui.actions
         self.connectSignals()
 
         # The GUI setup is slow so it is not shown until the setup is
@@ -131,7 +130,7 @@ class HelpBrowser(qt.QObject) :
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return qt.qApp.translate('HelpBrowser', source, comment).latin1()
+        return str(QtGui.qApp.translate('HelpBrowser', source, comment))
 
 
     def connectSignals(self):
@@ -142,98 +141,51 @@ class HelpBrowser(qt.QObject) :
         slots of the documentation browser controller (`HelpBrowser`).
         """
 
-        self.connect(self.gui.comboHistory, 
-            qt.SIGNAL('activated(const QString &)'), self.slotDisplaySrc)
+        self.connect(self.gui.combo_history, 
+            QtCore.SIGNAL('activated(QString)'), self.slotDisplaySrc)
 
         # This is the most subtle connection. It encompasses source
-        # changes  coming from anywhere, including slots (home, backward
-        # and forward),  menus (Go and Bookmarks) clicked links and
-        # programatic changes.
-        self.connect(self.gui.text_browser, qt.SIGNAL('sourceChanged(const QString &)'), 
+        # changes coming from anywhere, including slots (home, backward
+        # and forward), menus (Go and Bookmarks), clicked links and
+        # programatic changes (setSource calls).
+        self.connect(self.gui.text_browser, 
+            QtCore.SIGNAL('sourceChanged(QUrl)'), 
             self.updateHistory)
 
-        self.connect(self.gui.text_browser, qt.SIGNAL('backwardAvailable(bool)'), 
+        self.connect(self.gui.text_browser, 
+            QtCore.SIGNAL('backwardAvailable(bool)'), 
             self.slotUpdateBackward)
 
-        self.connect(self.gui.text_browser, qt.SIGNAL('forwardAvailable(bool)'), 
+        self.connect(self.gui.text_browser, 
+            QtCore.SIGNAL('forwardAvailable(bool)'), 
             self.slotUpdateForward)
 
-        self.connect(self.gui.bookmarks_menu, qt.SIGNAL('aboutToShow()'), 
-            self.slotUpdateBookmarksMenu)
+        self.connect(self.gui.bookmarks_menu, 
+            QtCore.SIGNAL('aboutToShow()'), 
+            self.slotRecentSubmenuAboutToShow)
 
-        # Connect actions to slots
-        # The actions are defined in the browserGUI module
-        action_signal_slot = {
-            #
-            # File menu
-            #
-            'newBrowser':
-            (self.actions['newBrowser'], qt.SIGNAL('activated()'),
-                self.slotNewBrowser),
-            'openFile':
-            (self.actions['openFile'], qt.SIGNAL('activated()'),
-                self.slotOpenFile),
-            'closeWindow':
-            (self.actions['closeWindow'], qt.SIGNAL('activated()'),
-                self.slotCloseWindow),
-            'exitBrowser':
-            (self.actions['exitBrowser'], qt.SIGNAL('activated()'),
-                self.slotExitBrowser),
-            #
-            # View menu
-            #
-            'zoomIn':
-            (self.actions['zoomIn'], qt.SIGNAL('activated()'), 
-                self.slotZoomIn),
-            'zoomOut':
-            (self.actions['zoomOut'], qt.SIGNAL('activated()'), 
-                self.slotZoomOut),
-            #
-            # Go menu
-            #
-            'goHome':
-            (self.actions['goHome'], qt.SIGNAL('activated()'), self.gui.text_browser,
-                qt.SLOT('home()')),
-            'goBackward':
-            (self.actions['goBackward'], qt.SIGNAL('activated()'), self.gui.text_browser,
-                qt.SLOT('backward()')),
-            'goForward':
-            (self.actions['goForward'], qt.SIGNAL('activated()'), self.gui.text_browser,
-                qt.SLOT('forward()')),
-            'goReload':
-            (self.actions['goReload'], qt.SIGNAL('activated()'), self.gui.text_browser,
-                qt.SLOT('reload()')),
-            #
-            # Bookmarks menu
-            #
-            'bookmarksAdd': 
-            (self.actions['bookmarksAdd'], qt.SIGNAL('activated()'),
-                self.slotAddBookmark),
-            'bookmarksEdit': 
-            (self.actions['bookmarksEdit'], qt.SIGNAL('activated()'),
-                self.slotEditBookmarks),
-            'bookmarksClear': 
-            (self.actions['bookmarksClear'], qt.SIGNAL('activated()'),
-                self.slotClearBookmarks),
-            #
-            # Help menu
-            #
-            'about': 
-            (self.actions['about'], qt.SIGNAL('activated()'),
-                self.slotAboutHelpBrowser),
-            'aboutQt': 
-            (self.actions['aboutQt'], qt.SIGNAL('activated()'),
-                self.slotAboutQt),
-            #
-            # Navigation toolbar
-            #
-            'clearSession': 
-            (self.actions['clearSession'], qt.SIGNAL('activated()'),
-                self.slotClearHistory)
-            }
 
-        for args in action_signal_slot.values() :
-            apply(self.connect, args)
+    def slotDisplaySrc(self, src=None) :
+        """
+        Displays a document in the `HelpBrowser` window.
+
+        :Parameter src: the path of the file being displayed
+        """
+
+        # If a bookmark or an item from the combo history is being loaded
+        if src is None:
+            action = self.gui.sender()
+            action_text = action.text()
+            if action_text.count(QtCore.QRegExp("^\d")):
+                src = action_text.remove(QtCore.QRegExp("^\d+\.\s+"))
+
+        if isinstance(src, QtCore.QString):
+            src = str(src)
+        src = vitables.utils.forwardPath(os.path.abspath(src))
+        url = QtCore.QUrl(src)
+        if not os.path.isfile(str(url.toLocalFile())):
+            url = QtCore.QUrl(self.not_found_doc)
+        self.gui.text_browser.setSource(url)
 
 
     #########################################################
@@ -241,20 +193,20 @@ class HelpBrowser(qt.QObject) :
     # 					File menu related slots
     #
     #########################################################
-    
+
     def slotNewBrowser(self) :
         """
         Opens a new help browser window.
 
         File --> New Window
-        
+
         Creates a new `HelpBrowser` instance and shows it. The new instance is
         appended to the list of opened browsers. This way we can keep track of
         the opened windows, what is needed when we quit the browser.
         """
 
         browser = HelpBrowser(self.vtapp)
-        self.vtapp.docBrowsers.append(browser)
+        self.vtapp.doc_browsers.append(browser)
 
 
     def slotOpenFile(self, filepath=None) :
@@ -266,29 +218,30 @@ class HelpBrowser(qt.QObject) :
         :Parameter filepath: the path of the file being open
         """
 
-        fileDlg = qt.QFileDialog(self.gui, None, 1)
-        fileDlg.setFilters(self.__tr("""HTML files (*.html *.htm);;"""
-            """Any file (*.*)""", 'File filter for the Open File dialog'))
-        fileDlg.setCaption(self.__tr('Select a file for opening', 
+        file_dlg = QtGui.QFileDialog(self.gui)
+        file_dlg.setFilters(QtCore.QStringList(self.__tr(
+            """HTML files (*.html *.htm);;"""
+            """Any file (*.*)""", 'File filter for the Open File dialog')))
+        file_dlg.setWindowTitle(self.__tr('Select a file for opening', 
             'A dialog caption'))
-        fileDlg.setDir(self.lastOpenDir)
+        file_dlg.setDirectory(self.working_dir)
         try:
-            fileDlg.exec_loop()
+    
             # OK clicked. Working directory is updated
-            if fileDlg.result() == qt.QDialog.Accepted:
+            if file_dlg.exec_():
                 # The absolut path of the selected file
-                filepath = fileDlg.selectedFile()
+                filepath = file_dlg.selectedFiles()[0]
                 # Update the working directory
-                self.lastOpenDir = fileDlg.dir().canonicalPath().latin1()
-                # Displays the document (it will automatically update the history)
+                self.working_dir = str(file_dlg.directory().canonicalPath())
+                # Displays the document (history is automatically updated)
                 self.slotDisplaySrc(filepath)
             # Cancel clicked. Working directory doesn't change
             else:
                 pass
         finally:
-            del fileDlg
+            del file_dlg
 
-    
+
     def slotCloseWindow(self) :
         """
         Close the active window.
@@ -298,8 +251,8 @@ class HelpBrowser(qt.QObject) :
         The generated close event is processed by the reimplemented handler
         """
 
-        self.vtapp.hbHistory = self.history
-        self.vtapp.hbBookmarks = self.bookmarks
+        self.vtapp.hb_history = self.history
+        self.vtapp.hb_bookmarks = self.bookmarks
         self.gui.close()
 
 
@@ -315,16 +268,17 @@ class HelpBrowser(qt.QObject) :
         """
 
         # Close all browsers
-        for browser in self.vtapp.docBrowsers[:] :
+        for browser in self.vtapp.doc_browsers[:] :
             browser.slotCloseWindow()
-            
     
+
+
     #########################################################
     #
     # 					View menu related slots
     #
     #########################################################
-    
+
     def slotZoomIn(self) :
         """Increases the font size of the displayed source."""
         self.gui.text_browser.zoomIn(2)
@@ -340,7 +294,7 @@ class HelpBrowser(qt.QObject) :
     # 					Go menu related slots
     #
     #########################################################
-    
+
     def updateHome(self) :
         """
         Enables/disables the Go --> Home menu item.
@@ -370,39 +324,26 @@ class HelpBrowser(qt.QObject) :
     # 					Bookmarks menu related slots
     #
     #########################################################
-    
-    def slotUpdateBookmarksMenu(self) :
-        """
-        Updates the content of the Bookmarks menu.
 
-        Every time the menu is poped its content is synchronized with the
-        content of the bookmarks file. This ensures that all opened help
-        browser windows will have the same bookmarks menu. The bookmarks
-        menu is a visual representation of the bookmarks file, so
-        bookmarks will occupy the same position in both, the file and the menu
-        (well, with a shifting of 3 positions due to the fixed items of the
-        bookmarks menu).
-        """
+    def slotRecentSubmenuAboutToShow(self):
+        """Update the content of the Bookmarks menu."""
 
-        self.gui.bookmarks_menu.clear()
-        # Adds items to menu
-        for action_def in self.gui.bookmarks_menu_actions :
-            action_id = action_def[0]
-            self.gui.actions[action_id].addTo(self.gui.bookmarks_menu)
-
-        self.gui.bookmarks_menu.setId(0, 1000)
-        self.gui.bookmarks_menu.setId(1, 2000)
-        self.gui.bookmarks_menu.setId(1, 3000)
-        self.gui.bookmarks_menu.insertSeparator()
-
-        # The jth bookmarks list item will have an identifier item_id=j + 1
-        item_id = 1
-        for filepath in self.bookmarks :
-            shortname = os.path.basename(filepath)
-            self.gui.bookmarks_menu.insertItem('%d %s' % (item_id, shortname), 
-                item_id)
-            self.gui.bookmarks_menu.connectItem(item_id, self.slotOpenBookmark)
-            item_id = item_id + 1
+        # Clear the last bookmarks menu...
+        menu_actions = self.gui.bookmarks_menu.actions()
+        for action in menu_actions:
+            if action.text().count(QtCore.QRegExp("^\d")):
+                self.gui.bookmarks_menu.removeAction(action)
+        # and refresh it
+        index = 0
+        for item in self.bookmarks:
+            index += 1
+            filepath = str(item)
+            action = QtGui.QAction('%s. %s' % (index, filepath), 
+                                               self.gui.bookmarks_menu)
+            action.setData(QtCore.QVariant(item))
+            self.gui.connect(action, QtCore.SIGNAL("triggered()"), 
+                self.slotDisplaySrc)
+            self.gui.bookmarks_menu.addAction(action)
 
 
     def slotOpenBookmark(self, bmark_id) :
@@ -421,7 +362,7 @@ class HelpBrowser(qt.QObject) :
         """
 
         src_path = self.bookmarks[bmark_id - 1]
-        self.slotDisplaySrc(src_path) # qt.SIGNAL sourceChanged() emited
+        self.slotDisplaySrc(src_path) # QtCore.SIGNAL sourceChanged() emited
 
 
     def slotAddBookmark(self) :
@@ -431,15 +372,14 @@ class HelpBrowser(qt.QObject) :
         Bookmarks --> Add bookmark
         """
 
-        src = self.gui.text_browser.source().latin1()
-        src = vitables.utils.forwardPath(os.path.abspath(src))
-        if src in self.bookmarks :
+        src = self.gui.text_browser.source().toString(QtCore.QUrl.RemoveScheme)
+        src = vitables.utils.forwardPath(str(src))
+        src = src.replace('///', '/')
+        if self.bookmarks.count(src) :
             # if the page is already bookmarked we do nothing
             pass
         else :
             # The page is not bookmarked so we append it to the bookmarks list.
-            # We dont need to add it to the Bookmarks menu, it will be done via 
-            # slotUpdateBookmarksMenu
             self.bookmarks.append(src)
 
 
@@ -452,12 +392,12 @@ class HelpBrowser(qt.QObject) :
 
         # update bookmarks list
         edit_dlg = bookmarksDlg.BookmarksDlg(self.bookmarks, self.gui)
-        edit_dlg.exec_loop()
+        edit_dlg.exec_()
 
 
     def slotClearBookmarks(self) :
         """Clear all bookmarks."""
-        self.bookmarks = []
+        self.bookmarks.clear()
 
 
     #########################################################
@@ -465,26 +405,6 @@ class HelpBrowser(qt.QObject) :
     # 					History related slots
     #
     #########################################################
-    
-    def slotDisplaySrc(self, src) :
-        """
-        Displays a document in the `HelpBrowser` window.
-
-        :Parameter src: the combo item text
-        """
-
-        if isinstance(src, qt.QString):
-            src = src.latin1()
-
-        # The source can be a bookmarked page so we have to extract
-        # the filepath
-        filepath = src.split('#')[0]
-        if os.path.isfile(filepath):
-            self.gui.text_browser.setSource(src)
-            self.gui.text_browser.update()
-        else:
-            self.gui.text_browser.setSource(self.not_found_doc)
-
 
     def slotClearHistory(self) :
         """
@@ -493,8 +413,8 @@ class HelpBrowser(qt.QObject) :
         Toolbar --> Clear History
         """
 
-        self.history = []
-        self.gui.comboHistory.clear()
+        self.history.clear()
+        self.gui.combo_history.clear()
         self.updateHome()
 
 
@@ -515,14 +435,16 @@ class HelpBrowser(qt.QObject) :
         :Parameter src: the path being added to the combo
         """
 
-        src = vitables.utils.forwardPath(os.path.abspath(src.latin1()))
-        if src == self.not_found_doc:
+        url = QtCore.QUrl(src).toString(QtCore.QUrl.RemoveScheme)
+        url = vitables.utils.forwardPath(os.path.abspath(str(url)))
+        url = url.replace('///', '/')
+        if url == self.not_found_doc:
             return
-        if not src in self.history:
-            self.history.append(src)
-            self.gui.comboHistory.insertItem(src)
+        if not self.history.count(url):
+            self.history.append(url)
+            self.gui.combo_history.addItem(url)
 
-        self.gui.comboHistory.setCurrentItem(self.history.index(src))
+        self.gui.combo_history.setCurrentIndex(self.history.indexOf(url))
         self.updateHome()
 
 
@@ -531,7 +453,7 @@ class HelpBrowser(qt.QObject) :
     # 					Help menu related slots
     #
     #########################################################
-    
+
     def slotAboutHelpBrowser(self) :
         """
         Shows a message box with the application ``About`` info.
@@ -552,9 +474,10 @@ class HelpBrowser(qt.QObject) :
             'About Help browser text')
 
         # Display a customized About dialog
-        about = qt.QMessageBox(caption, text, qt.QMessageBox.Information, 
-            qt.QMessageBox.NoButton, qt.QMessageBox.NoButton, 
-            qt.QMessageBox.NoButton, self.gui)
+        about = QtGui.QMessageBox(caption, text, 
+            QtGui.QMessageBox.Information, 
+            QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton, 
+            QtGui.QMessageBox.NoButton, self.gui)
         # Show the message
         about.show()
 
@@ -567,4 +490,4 @@ class HelpBrowser(qt.QObject) :
         """
 
         caption = self.__tr('About Qt', 'A dialog caption')
-        qt.QMessageBox.aboutQt(self.gui, caption)
+        QtGui.QMessageBox.aboutQt(self.gui, caption)

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -21,7 +23,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 #       $Source$
-#       $Id: buffer.py 1018 2008-03-28 11:31:46Z vmas $
+#       $Id: buffer.py 1082 2008-10-31 12:24:08Z vmas $
 #
 ########################################################################
 
@@ -35,8 +37,10 @@ Classes:
 Methods:
 
 * __init__(self, document)
+* leafNumberOfRows(self)
 * getReadParameters(self, start, bs)
 * readBuffer(self, start, bs)
+* isDataSourceReadable(self)
 * scalarCell(self, row, col)
 * vectorCell(self, row, col)
 * arrayCell(self, row, col)
@@ -46,6 +50,7 @@ Misc variables:
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -66,7 +71,7 @@ warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
 
 class Buffer:
     """
-    Buffer used to access `ArrayDoc` and `TableDoc` instances data.
+    Buffer used to access the real data contained in PyTables datasets.
 
     By using this buffer the leaf view drawing speed increases sensibly.
     Note that the buffer number of rows **must** be at least equal to the number
@@ -89,39 +94,70 @@ class Buffer:
     """
 
 
-    def __init__(self, document):
+    def __init__(self, leaf):
         """
-        Reads the first chunk of data from a data source.
+        Initializes the buffer.
 
-        The first chunk of data starts at row number 0.
-
-        :Parameter document:
-            the data source (`NodeDoc` instance) from which data are
+        :Parameter leaf:
+            the data source (`tables.Leaf` instance) from which data are
             going to be read.
         """
 
-        # The data source
-        self.document = document
+        self.data_source = leaf
 
-        # The document row where the buffer starts
+        # The length of the dimension that is going to be read. It
+        # is an int64.
+        self.leaf_numrows = self.leafNumberOfRows()
+
+        # Every chunk of data read from the data source is stored in a list.
+        # The maximum length of the list (i.e. the chunk size) is 10000 rows
+        self.chunk = []
+        self.chunk_size = 10000
+        if self.leaf_numrows <= self.chunk_size:
+            self.chunk_size = self.leaf_numrows
+
+        # The document row where the current chunk of data starts.
         # It must be an int64 in order to address spaces bigger than 2**32
         self.start = numpy.array(0, dtype=numpy.int64)
 
-        # Every chunk of data read from the data source is stored in a list
-        # The maximum length of the list (i.e. the chunk size) is 10000 rows
-        self.chunk = []
-        self.chunkSize = 10000
+        # The method used for reading data depends on the kind of node.
+        # Setting the reader method at initialization time increases the
+        # speed of reading several orders of magnitude
+        shape = leaf.shape
+        if shape == ():
+            # Array element will be read like a[()]
+            self.getCell = self.scalarCell
+        elif len(shape) < 2:
+            # Array elements will be read like a[row]
+            self.getCell = self.vectorCell
+        else:
+            # Array elements will be read like a[row][column]
+            self.getCell = self.arrayCell
+    def leafNumberOfRows(self):
+        """The number of rows of the dataset being read.
 
-        # Set the length of the dimension that is going to be read. It
-        # is an int64.
-        # For Arrays see ArrayDoc.numRows() to see how it differs from
-        # the view number of rows
-        self.dimLength = self.document.node.nrows
+        We don't use the Leaf.nrows attribute because it is not always
+        suitable for displaying the data in a 2D grid. Instead we use the
+        Leaf.shape attribute and map it to a number of rows useful for our
+        purposes.
 
-        # A flag for dealing with unreadable datasets
-        self.unreadableDataset = False
+        The returned number of rows may differ from that returned by the
+        ``nrows`` attribute in scalar arrays and EArrays.
 
+        :Returns: the size of the first dimension of the document
+        """
 
+        shape = self.data_source.shape
+        if shape == None:
+            # Node is not a Leaf or there was problems getting the shape
+            nrows = 0
+        elif shape == ():
+            # Node is a rank 0 array (e.g. numpy.array(5))
+            nrows = 1
+        else:
+            nrows = shape[0]
+
+        return numpy.array(nrows, dtype=numpy.int64)
     def getReadParameters(self, start, bs):
         """
         Returns acceptable parameters for the read method.
@@ -137,7 +173,7 @@ class Buffer:
         """
 
         firstRow = numpy.array(0, dtype=numpy.int64)
-        lastRow = self.dimLength
+        lastRow = self.leaf_numrows
 
         # When scrolling up we must keep start value >= firstRow
         if start <  firstRow:
@@ -148,8 +184,35 @@ class Buffer:
         if stop > lastRow:
             stop = lastRow
 
+        # Ensure that the whole buffer will be filled
+        if stop - start < self.chunk_size:
+            start = stop - self.chunk_size
+
         return start, stop
 
+    def isDataSourceReadable(self):
+        """Find out if the dataset can be read or not.
+
+        This is not a complex test. It simply try to read a small chunk
+        of data at the begining of the dataset. If it cannot then the
+        dataset is considered unreadable.
+        """
+
+        readable = True
+        start, stop = self.getReadParameters(\
+                            numpy.array(0, dtype=numpy.int64), self.chunk_size)
+        try:
+            data = self.data_source.read(start, stop)
+        except tables.HDF5ExtError:
+            readable = False
+            print  self.__tr("""\nError: problems reading records. """\
+                """The dataset seems to be compressed with """\
+                """the %s library. Check that it is installed"""\
+                """ in your system, please.""" % \
+                self.data_source.filters.complib,
+                'A dataset readability error')
+
+        return readable
 
     def readBuffer(self, start, bs):
         """
@@ -172,16 +235,17 @@ class Buffer:
 
         start, stop = self.getReadParameters(start, bs)
         try:
-            data = self.document.node.read(start, stop)
+            data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
-            self.unreadableDataset = True
+            print  self.__tr("""\nError: problems reading records. """\
+                """The dataset maybe corrupted.""",
+                'A dataset readability error')
         except:
             vitables.utils.formatExceptionInfo()
         else:
             # Update the buffer contents and its start position
             self.chunk = data
             self.start = start
-
 
     def scalarCell(self, row, col):
         """
@@ -260,3 +324,4 @@ class Buffer:
             return self.chunk[int(row - self.start)][col]
         except IndexError, v:
             print 'IndexError! buffer start: %s row, column: %s, %s' % (self.start, row, col)
+

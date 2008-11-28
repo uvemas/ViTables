@@ -2,7 +2,8 @@ import unittest
 import sys
 import os
 
-import qt
+import PyQt4.QtCore as qtCore
+import PyQt4.QtGui as qtGui
 
 class PreferencesTestCase(unittest.TestCase):
     """Test case for the Preferences class.
@@ -21,11 +22,11 @@ class PreferencesTestCase(unittest.TestCase):
         test_config['Startup/startupWorkingDirectory'] = 'home'
         test_config['Startup/restoreLastSession'] = 1
         # Logger
-        test_config['Logger/paper'] = qt.QColor('white')
-        test_config['Logger/text'] = qt.QColor('black')
-        test_config['Logger/font'] = qt.QFont('Helvetica', 10, -1)
+        test_config['Logger/paper'] = qtGui.QColor('white')
+        test_config['Logger/text'] = qtGui.QColor('black')
+        test_config['Logger/font'] = qtGui.QFont('Helvetica', 10, -1)
         # Workspace
-        test_config['Workspace/background'] = qt.QColor('white')
+        test_config['Workspace/background'] = qtGui.QColor('white')
         # Style
         test_config['Look/currentStyle'] = 'default'
     
@@ -59,12 +60,12 @@ class PreferencesTestCase(unittest.TestCase):
         #
 
         # Startup: radio button ID
-        rbID = self.prefs.gui.hiden_bg.selectedId()
+        rbID = self.prefs.gui.hiden_bg.checkedId()
         expected = self.prefs.button2id[config['Startup/startupWorkingDirectory']]
         self.assertEqual(rbID, expected,
             'Startup working directory is not setup properly')
         # Startup: checkbox activation state
-        dlg_checkbox = self.prefs.gui.restore_cb.isOn()
+        dlg_checkbox = self.prefs.gui.restore_cb.isChecked()
         expected = config['Startup/restoreLastSession']
         self.assertEqual(dlg_checkbox, expected,
             'Restore last session is not setup properly')
@@ -73,21 +74,21 @@ class PreferencesTestCase(unittest.TestCase):
         expected = config['Logger/font']
         self.assertEqual(dlg_font, expected,
             'Logger font is not setup properly')
-        dlg_color = self.prefs.gui.sample_te.color()
+        dlg_color = self.prefs.gui.sample_te.textColor()
         expected = config['Logger/text']
         self.assertEqual(dlg_color, expected,
             'Logger color is not setup properly')
-        dlg_paper = self.prefs.gui.sample_te.paper().color()
+        dlg_paper = self.prefs.gui.sample_te.palette().color(qtGui.QPalette.Background)
         expected = config['Logger/paper']
         self.assertEqual(dlg_paper, expected,
             'Logger paper is not setup properly')
         # Workspace
-        dlg_wbg = self.prefs.gui.workspace_label.eraseColor()
+        dlg_wbg = self.prefs.gui.workspace_label.palette().color(qtGui.QPalette.Background)
         expected = config['Workspace/background']
         self.assertEqual(dlg_wbg, expected,
             'Workspace background is not setup properly')
         # Style
-        dlg_style = self.prefs.gui.styles_cb.currentText().latin1()
+        dlg_style = str(self.prefs.gui.styles_cb.currentText())
         expected = config['Look/currentStyle']
         self.assertEqual(dlg_style, expected,
             'Application style is not setup properly')
@@ -105,11 +106,11 @@ class PreferencesTestCase(unittest.TestCase):
         #
 
         # Startup
-        rbID = self.prefs.gui.hiden_bg.selectedId()
+        rbID = self.prefs.gui.hiden_bg.checkedId()
         expected = self.prefs.button2id[Config.confDef['Startup/startupWorkingDirectory']]
         self.assertEqual(rbID, expected,
             'Startup working directory is not defaulted properly')
-        dlg_checkbox = self.prefs.gui.restore_cb.isOn()
+        dlg_checkbox = self.prefs.gui.restore_cb.isChecked()
         expected = Config.confDef['Startup/restoreLastSession']
         self.assertEqual(dlg_checkbox, expected,
             'Restore last session is not setup properly')
@@ -118,21 +119,21 @@ class PreferencesTestCase(unittest.TestCase):
         expected = Config.confDef['Logger/font']
         self.assertEqual(dlg_font, expected,
             'Logger font is not setup properly')
-        dlg_color = self.prefs.gui.sample_te.color()
-        expected = qt.QColor(Config.confDef['Logger/text'])
+        dlg_color = self.prefs.gui.sample_te.textColor()
+        expected = qtGui.QColor(Config.confDef['Logger/text'])
         self.assertEqual(dlg_color, expected,
             'Logger color is not setup properly')
-        dlg_paper = self.prefs.gui.sample_te.paper()
-        expected = qt.QBrush(qt.QColor(Config.confDef['Logger/paper']))
+        dlg_paper = self.prefs.gui.sample_te.palette().color(qtGui.QPalette.Background)
+        expected = qtGui.QBrush(qtGui.QColor(Config.confDef['Logger/paper']))
         self.assertEqual(dlg_paper, expected,
             'Logger paper is not setup properly')
         # Workspace
-        dlg_wbg = self.prefs.gui.workspace_label.eraseColor()
-        expected = qt.QColor(Config.confDef['Workspace/background'])
+        dlg_wbg = self.prefs.gui.workspace_label.palette().color(qtGui.QPalette.Background)
+        expected = qtGui.QColor(Config.confDef['Workspace/background'])
         self.assertEqual(dlg_wbg, expected,
             'Workspace background is not setup properly')
         # Style
-        dlg_style = self.prefs.gui.styles_cb.currentText().latin1()
+        dlg_style = str(self.prefs.gui.styles_cb.currentText())
         expected = Config.confDef['Look/currentStyle']
         self.assertEqual(dlg_style, expected,
             'Application style is not setup properly')
@@ -175,7 +176,7 @@ class PreferencesTestCase(unittest.TestCase):
         """
 
         self.prefs.slotSetLoggerForeground()
-        expected = self.prefs.gui.sample_te.color()
+        expected = self.prefs.gui.sample_te.textColor()
         self.assertEqual(self.prefs.new_prefs['Logger/text'], expected,
             'Logger text color is not setup properly')
 
@@ -185,7 +186,7 @@ class PreferencesTestCase(unittest.TestCase):
         """
 
         self.prefs.slotSetLoggerBackground()
-        expected = self.prefs.gui.sample_te.paper().color()
+        expected = self.prefs.gui.sample_te.palette().color(qtGui.QPalette.Background)
         self.assertEqual(self.prefs.new_prefs['Logger/paper'], expected,
             'Logger paper is not setup properly')
 
@@ -195,7 +196,7 @@ class PreferencesTestCase(unittest.TestCase):
         """
 
         self.prefs.slotSetWorkspaceBackground()
-        expected = self.prefs.gui.workspace_label.eraseColor()
+        expected = self.prefs.gui.workspace_label.palette().color(qtGui.QPalette.Background)
         self.assertEqual(self.prefs.new_prefs['Workspace/background'], expected,
             'Workspace background is not setup properly')
 
@@ -204,7 +205,7 @@ class PreferencesTestCase(unittest.TestCase):
         """Check whether the style is setup properly.
         """
 
-        self.prefs.slotSetStyle(qt.QString('SGI'))
+        self.prefs.slotSetStyle(qtCore.QString('SGI'))
         expected = 'SGI'
         self.assertEqual(self.prefs.new_prefs['Look/currentStyle'], expected,
             'Style is not setup properly')
@@ -223,14 +224,11 @@ def globalSetup():
 
     # Avoid <QApplication: There should be max one application object> errors:
     # if an instance of QApplication already exists then use a pointer to it
-    try:
-        qt.qApp.argv()
-        QTAPP = qt.qApp
-    except RuntimeError:
-        QTAPP = qt.QApplication(sys.argv)
+    QTAPP = qtGui.qApp
+    if QTAPP.type() != 1:
+        QTAPP = qtGui.QApplication(sys.argv)
     import vitables.preferences.preferences as vtprefs
     from vitables.preferences.vtconfig import Config
-    QTAPP.setMainWidget(qt.QWidget())
 
 
 def suite():

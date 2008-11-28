@@ -1,5 +1,6 @@
 # MingW Makefile for the mswindows subdirectory
-# This Makefile is intended to create the PyTables Pro installer for Windows
+# This Makefile is intended to create the ViTables installer for Windows.
+# It is not intended for distribution.
 
 VERSIONFILE=..\VERSION
 VERSION=$(shell type ..\VERSION)
