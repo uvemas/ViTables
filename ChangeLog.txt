@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Nov 30, 2008**
+	Fixed a bug in the navigation of huge datasets. Now displayed data is properly
+	updated when a slider drag ends and when the table is wheeled.
 
 ** Nov 13, 2008 **
 	Navigation of huge datasets is now fully implemented. Every navigation

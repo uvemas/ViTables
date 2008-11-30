@@ -87,7 +87,7 @@ class LeafView(QtGui.QTableView):
             self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
             self.tricky_vscrollbar = scrollBar.ScrollBar(self.vscrollbar)
             self.max_value = self.tricky_vscrollbar.maximum()
-            self.viewport().installEventFilter(self)
+            self.tricky_vscrollbar.installEventFilter(self)
 
         # Setup the vertical header width
         #self.vheader = self.verticalHeader()
@@ -126,6 +126,22 @@ class LeafView(QtGui.QTableView):
         value = numpy.array(fv_label*self.max_value/self.leaf_numrows, 
                             dtype=numpy.int64)
         self.tricky_vscrollbar.setValue(value)
+
+
+    def eventFilter(self, widget, event):
+        """Event handler that receives mouse release events for this view.
+
+        :Parameters:
+        
+            - `widget`: the widget that receives the event
+            - `event`: the received event
+        """
+
+        if event.type() in (QtCore.QEvent.MouseButtonRelease, QtCore.QEvent.Wheel):
+            top_left = self.model.index(0, 0)
+            bottom_right = self.model.index(self.model.numrows - 1, self.model.numcols - 1)
+            self.dataChanged(top_left, bottom_right)
+        return QtGui.QTableView.eventFilter(self, widget, event)
 
 
     def navigateWithMouse(self, int_action):
@@ -500,14 +516,15 @@ class LeafView(QtGui.QTableView):
 
 
 
-    def eventFilter(self, widget, event):
+    def wheelEvent(self, event):
         """Send the wheel events received by the viewport to the visible
         vertical scrollbar.
         """
 
-        if event.type() == QtCore.QEvent.Wheel:
+        if self.rbuffer.leaf_numrows > self.model.numrows:
             QtCore.QCoreApplication.sendEvent(self.tricky_vscrollbar, event)
-        return QtGui.QTableView.eventFilter(self, widget, event)
+        else:
+            QtGui.QTableView.wheelEvent(self, event)
 
 
     # For large datasets the number of rows of the dataset is greater than
