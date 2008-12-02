@@ -525,6 +525,10 @@ class VTApp(QtGui.QMainWindow):
         # Create the Windows menu and add actions/menus/separators to it
         self.windows_menu = self.menuBar().addMenu(self.__tr("&Windows", 
             'The Windows menu entry'))
+        self.windows_menu
+        action_group = QtGui.QActionGroup(self.windows_menu)
+        action_group.setExclusive(True)
+        self.windows_menu.action_group = action_group
         self.connect(self.windows_menu, QtCore.SIGNAL("aboutToShow()"), 
             self.slotUpdateWindowsMenu)
 
@@ -1178,6 +1182,9 @@ class VTApp(QtGui.QMainWindow):
             elif i < 36:
                 accel = "&%c " % chr(counter + ord("@") - 9)
             action = menu.addAction("%s%s" % (accel, title))
+            action.setCheckable(True)
+            if self.workspace.activeSubWindow() == window: action.setChecked(True)
+            menu.action_group.addAction(action)
             self.connect(action, QtCore.SIGNAL("triggered()"), 
                         self.window_mapper, QtCore.SLOT("map()"))
             self.window_mapper.setMapping(action, window)

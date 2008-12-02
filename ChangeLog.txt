@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** Dec 02, 2008**
 	Implemented the capability for zooming cell contents.
 
+	Dynamic entries under the Windows menu are now checkable and exclusive.
+
 ** Nov 30, 2008**
 	Fixed a bug in the navigation of huge datasets. Now displayed data is properly
 	updated when a slider drag ends and when the table is wheeled.
