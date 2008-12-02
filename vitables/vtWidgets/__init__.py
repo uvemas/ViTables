@@ -1,1 +1,1 @@
-__all__ = ["inputNodeName", "queryDlg", "renameDlg", "vtTableItem", "zoomCell"]
+__all__ = ["inputNodeName", "queryDlg", "renameDlg", "zoomCell"]

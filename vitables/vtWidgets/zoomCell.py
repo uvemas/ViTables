@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -48,19 +50,19 @@ Misc variables:
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import numpy
 
 import tables.utilsExtension
 
-import qt
-import qttable
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
 import vitables.utils
-from vitables.vtWidgets.vtTableItem import VTTableItem
 
-class ZoomCell(qttable.QTable):
+class ZoomCell(QtGui.QMdiSubWindow):
     """
     Display an array/table cell on its own view (table widget).
 
@@ -83,9 +85,7 @@ class ZoomCell(qttable.QTable):
 
     - a `numpy.void` object when the cell corresponds to nested field of the record
     """
-
-
-    def __init__(self, cell, caption, workspace, name=None):
+    def __init__(self, data, title, workspace, leaf):
         """
         Creates a zoom view for a given cell.
 
@@ -95,97 +95,96 @@ class ZoomCell(qttable.QTable):
 
         :Parameters:
 
-            - `cell`: the value stored in the cell
-            - `caption`: the base string for the zoomed view caption
-            - `workspace`: the parent of the view
+            - `data`: the value stored in the cell being zoomed
+            - `title`: the base string for the zoomed view title
+            - `workspace`: the parent of the zoomed view
+            - `leaf`: a LeafNode instance
         """
 
+        self.data = data
+        self.title = title
         self.workspace = workspace
-        self.zvCaption = caption
-        self.cellData = cell
-        self.cellHasShape = self.hasShape()
-        self.fieldNames = []
+        self.data_shape = self.hasShape()
+        self.field_names = []
+
+        # Create and customise the widget that will display the zoomed cell
+        # The pindex attribute is required to keep working the code for
+        # synchronising workspace and tree of databases view.
+        # The leaf attribute is required to keep working the code for
+        # cleaning the workspace when a file is closed.
+        # The WA_DeleteOnClose flag makes that when the widget is
+        # closed either programatically (see VTAPP.slotWindowsClose)
+        # or by the user (clicking the close button in the titlebar)
+        # the widget is hiden AND destroyed --> the workspace
+        # updates automatically its list of open windows --> the
+        # Windows menu content is automatically updated
+        QtGui.QMdiSubWindow.__init__(self, workspace)
+        self.pindex = None
+        self.leaf = leaf
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        # The internal widget
+        self.grid = QtGui.QTableWidget()
+        self.setWidget(self.grid)
+        # Configure the titlebar
+        self.setWindowTitle(self.title)
+        iconsDictionary = vitables.utils.getIcons()
+        self.setWindowIcon(iconsDictionary['zoom'])
+
         # Decide how the cell content will be formatted. Content can be:
         # - a numpy array
         # - either a string or a unicode string
         # - other Python object
-        if self.cellHasShape:
+        if self.data_shape:
             self.formatContent = vitables.utils.formatArrayContent
         elif isinstance(cell, str) or isinstance(cell, unicode):
             self.formatContent = vitables.utils.formatStringContent
         else:
             self.formatContent = vitables.utils.formatObjectContent
 
-        # Create and customise the widget that will display the zoomed cell
-        # The WDestructiveClose flag makes that when the widget is
-        # closed either programatically (see VTAPP.slotWindowsClose)
-        # or by the user (clicking the close button in the titlebar)
-        # the widget is hiden AND destroyed --> the workspace
-        # updates automatically its list of open windows --> the
-        # Windows menu content is automatically updated
+        # Setup grid dimensions
         (nrows, ncols) = self.getGridDimensions()
-        qttable.QTable.__init__(self, nrows, ncols, workspace, name)
-        self.setWFlags(qt.QWidget.WDestructiveClose)
-        self.setReadOnly(1)
+        self.grid.setColumnCount(ncols)
+        self.grid.setRowCount(nrows)
 
-        # Use customised QTableItems to properly align the contents.
-        header = self.verticalHeader()
-        font_metrics = qt.QFontMetrics(self.fontMetrics())
-        font_height = font_metrics.height()
-        for row in range(0, nrows):
-            header.resizeSection(row, font_height*1.2)
-            for col in range(0, ncols):
-                self.setItem(row, col, VTTableItem(self, ro=False))
+        # Setup grid editing
+        self.grid.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
 
-        # Configure the titlebar
-        self.setCaption(self.zvCaption)
-        iconsDictionary = vitables.utils.getIcons()
-        self.setIcon(iconsDictionary['zoom'].pixmap(qt.QIconSet.Small,
-            qt.QIconSet.Normal, qt.QIconSet.On))
-
-        # Setup the horizontal header for zooms of Table fields
-        if self.fieldNames:
-            header = self.horizontalHeader()
+        # Setup grid horizontal header
+        if self.field_names:
             for section in range(0, ncols):
-                header.setLabel(section, self.fieldNames[section])
+                item = QtGui.QTableWidgetItem()
+                item.setText(self.field_names[section])
+                self.grid.setHorizontalHeaderItem(section, item)
+        else:
+            for section in range(0, ncols):
+                item = QtGui.QTableWidgetItem()
+                item.setText(str(section + 1))
+                self.grid.setHorizontalHeaderItem(section, item)
 
-        # Fill the zoom view
-        if self.fieldNames:
+        # Fill the grid
+        if self.field_names:
             self.zoomTable()
         else:
             self.zoomArray()
 
-        # Without this (empirical) resizing all windows would be placed at
-        # the workspace origin
-        self.resize(300,300)
-
-        # Once the geometry arrangements (implicits via fillTable or 
-        # explicits via resize) are done we show the view.
         self.show()
 
-        # Resize the view as nicely as I can
-        while self.visibleHeight() > self.contentsHeight():
-            delta = self.visibleHeight() - self.contentsHeight()
-            self.resize(self.width(), self.height() - delta)
-        while self.visibleWidth() > self.contentsWidth():
-            delta = self.visibleWidth() - self.contentsWidth()
-            self.resize(self.width() - delta, self.height())
-
-        if self.numCols() == 1:
-            self.setColumnStretchable(0, 1)
-        if self.numRows() == 1:
-            self.setRowStretchable(0, 1)
+        rmode = QtGui.QHeaderView.Stretch
+        if self.grid.columnCount() == 1:
+            self.grid.horizontalHeader().setResizeMode(rmode)
+        if self.grid.rowCount() == 1:
+            self.grid.verticalHeader().setResizeMode(rmode)
 
         # Connect signals to slots
-        self.connect(self,
-            qt.SIGNAL('doubleClicked(int, int, int, const QPoint &)'),
+        QtCore.QObject.connect(self.grid,
+            QtCore.SIGNAL('cellDoubleClicked(int, int)'), 
             self.slotZoomView)
 
 
     def hasShape(self):
-        """Find out if the cell has a shape attribute."""
+        """Find out if the zoomed cell has a shape attribute."""
 
-        if hasattr(self.cellData, 'shape'):
+        if hasattr(self.data, 'shape'):
             return True
         else:
             return False
@@ -193,21 +192,18 @@ class ZoomCell(qttable.QTable):
 
     def getGridDimensions(self):
         """
-        Get the dimensions of the grid where the cell will be zoomed.
-
-        Any zoomed cell will be displayed in a table with dimensions
-        `(nrows, ncols)`
+        Get the dimensions of the grid where the zoomed cell will be displayed.
 
         :Returns: a tuple (rows, columns)
         """
 
-        if self.cellHasShape:
+        if self.data_shape:
             # The cell contains a numpy object
-            shape = self.cellData.shape
-            dtype = self.cellData.dtype
+            shape = self.data.shape
+            dtype = self.data.dtype
             if dtype.fields:
                 # Table nested fields come here
-                return self.getTableDimensions(dtype)
+                return self.getNestedFieldDimensions(dtype)
             else:
                 # Any other case come here
                 return self.getArrayDimensions(shape)
@@ -225,8 +221,8 @@ class ZoomCell(qttable.QTable):
         :Returns: a tuple (rows, columns)
         """
 
-        if isinstance(self.cellData, list) or isinstance(self.cellData, tuple):
-            return (len(self.cellData), 1)
+        if isinstance(self.data, list) or isinstance(self.data, tuple):
+            return (len(self.data), 1)
         else:
             return (1, 1)
 
@@ -259,7 +255,7 @@ class ZoomCell(qttable.QTable):
         return (nrows, ncols)
 
 
-    def getTableDimensions(self, dtype):
+    def getNestedFieldDimensions(self, dtype):
         """
         Get the dimensions of the grid where the cell will be zoomed.
 
@@ -272,8 +268,8 @@ class ZoomCell(qttable.QTable):
         :Returns: a tuple (rows, columns)
         """
 
-        self.fieldNames = [name for (name, format) in self.cellData.dtype.descr]
-        ncols = len(self.fieldNames)
+        self.field_names = [name for (name, format) in self.data.dtype.descr]
+        ncols = len(self.field_names)
         nrows = 1
 
         return (nrows, ncols)
@@ -282,74 +278,79 @@ class ZoomCell(qttable.QTable):
     def zoomTable(self):
         """Fill the zoom view with the content of the clicked nested field."""
 
-        for column in range(0, self.numCols()):
-            content = self.cellData[self.fieldNames[column]]
+        for column in range(0, self.grid.columnCount()):
+            content = self.data[self.field_names[column]]
             text = self.formatContent(content)
-            self.setText(0, column, text)
+            item = QtGui.QTableWidgetItem(text)
+            self.grid.setItem(0, column, item)
 
 
     def zoomArray(self):
         """Fill the zoom view with the content of the clicked cell."""
 
-        numRows = self.numRows()
-        numCols = self.numCols()
+        numRows = self.grid.rowCount()
+        numCols = self.grid.columnCount()
         # Numpy scalars are displayed in a 1x1 grid
         if numRows == numCols == 1:
-            content = self.cellData
+            content = self.data
             text = self.formatContent(content)
-            self.setText(0, 0, text)
+            item = QtGui.QTableWidgetItem(text)
+            self.grid.setItem(0, 0, item)
         # 1-D arrays
         elif numCols == 1:
             for row in range(0, numRows):
-                content = self.cellData[row]
+                content = self.data[row]
                 text = self.formatContent(content)
-                self.setText(row, 0, text)
+                item = QtGui.QTableWidgetItem(text)
+                self.grid.setItem(row, 0, item)
         # N-D arrays
         else:
             for row in range(0, numRows):
                 for column in range(0, numCols):
-                    content = self.cellData[row][column]
+                    content = self.data[row][column]
                     text = self.formatContent(content)
-                    self.setText(row, column, text)
+                    item = QtGui.QTableWidgetItem(text)
+                    self.grid.setItem(row, column, item)
 
 
-    def slotZoomView(self, row, col, button, position):
+    def slotZoomView(self, row, col):
         """Makes the content of the clicked cell fully visible.
 
         :Parameters:
 
             - `row`: the row of the clicked cell
             - `col`: the column of the clicked cell
-            - `button`: the mouse button pressed
-            - `position`: the mouse position. Not used.
         """
 
         # Check if the zoom has to be done
-        if button != qt.Qt.LeftButton:
-            return
-        elif self.cellHasShape:
-            if not (self.cellData.shape !=() or self.fieldNames):
+        if self.data_shape:
+            if not (self.data.shape !=() or self.field_names):
                 return
-        elif not (isinstance(self.cellData, list) or isinstance(self.cellData, tuple)):
+        elif not (isinstance(self.data, list) or isinstance(self.data, tuple)):
                 return
 
         # Get data
-        if self.cellHasShape:
+        if self.data_shape:
             # Arrays and table nested fields
-            if self.fieldNames:
-                cell = self.cellData[self.fieldNames[col]]
-            elif len(self.cellData.shape) > 1:
-                cell = self.cellData[row][ col]
-            elif len(self.cellData.shape) == 1:
-                cell = self.cellData[row]
+            if self.field_names:
+                cell = self.data[self.field_names[col]]
+            elif len(self.data.shape) > 1:
+                cell = self.data[row][ col]
+            elif len(self.data.shape) == 1:
+                cell = self.data[row]
         else:
             # Python lists and tuples
-            cell = self.cellData[row]
+            cell = self.data[row]
 
         # Get caption
-        if self.fieldNames:
-            caption = '%s: %s[%s]' % (self.zvCaption,
-                self.fieldNames[col], row + 1)
+        if self.field_names:
+            caption = '%s: %s[%s]' % (self.title,
+                self.field_names[col], row + 1)
         else:
-            caption = '%s: (%s, %s)' % (self.zvCaption, row + 1, col + 1)
-        ZoomCell(cell, caption, self.workspace)
+            caption = '%s: (%s, %s)' % (self.title, row + 1, col + 1)
+        ZoomCell(cell, caption, self.workspace, self.leaf)
+
+
+
+
+

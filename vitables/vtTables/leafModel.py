@@ -97,7 +97,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         # The dataset number of columns doesn't use to be large so, we don't
         # need set a maximum as we did with rows. The whole set of columns
         # are displayed
-        if hasattr(self.data_source, 'description'):
+        if isinstance(self.data_source, tables.Table):
             # Leaf is a PyTables table
             self.numcols = len(self.data_source.colnames)
         else:

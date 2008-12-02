@@ -52,6 +52,8 @@ import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
 import vitables.vtTables.scrollBar as scrollBar
+import vitables.nodes.nodeInfo as nodeInfo
+import vitables.vtWidgets.zoomCell as zoomCell
 
 class LeafView(QtGui.QTableView):
     """
@@ -102,6 +104,11 @@ class LeafView(QtGui.QTableView):
         # Setup the text elide mode
         self.setTextElideMode(QtCore.Qt.ElideRight)
 
+        # The DataSheet instance that contains this view
+        self.data_sheet = None
+
+        # Connect SIGNALS to slots
+        self.connect(self, QtCore.SIGNAL("doubleClicked(QModelIndex)"), self.zoomCell)
         if self.rbuffer.leaf_numrows > self.model.numrows:
             self.connect(self.tricky_vscrollbar, QtCore.SIGNAL("actionTriggered(int)"), self.navigateWithMouse)
             self.connect(self.selection_model, 
@@ -129,10 +136,10 @@ class LeafView(QtGui.QTableView):
 
 
     def eventFilter(self, widget, event):
-        """Event handler that receives mouse release events for this view.
+        """Event handler that customises the LeafView behavior for some events.
 
         :Parameters:
-        
+
             - `widget`: the widget that receives the event
             - `event`: the received event
         """
@@ -590,4 +597,27 @@ class LeafView(QtGui.QTableView):
             self.model.loadData(current_section - row - 1, table_size)
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                             table_size - 1)
+
+    def zoomCell(self, index):
+        """Display the inner dimensions of a cell.
+
+        :Parameter index: the model index of the cell being zoomed
+        """
+
+        row = index.row()
+        column = index.column()
+        data = self.rbuffer.getCell(row, column)
+
+        # The title of the zoomed view
+        node = self.data_sheet.leaf
+        info = nodeInfo.NodeInfo(node)
+        if node.node_kind == 'table':
+            col = info.columns_names[column]
+            title = '%s: %s[%s]' % (node.name, col, row + 1)
+        else:
+            title = '%s: (%s,%s)' % (node.name, row + 1, column + 1)
+
+        zoomCell.ZoomCell(data, title, self.data_sheet.vtapp.workspace, 
+                          self.data_sheet.leaf)
+
 

@@ -60,13 +60,14 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         :Parameters:
 
-            - `leaf`: the node whose dataset is being displayed
-            - `view`: a view tied to that node
+            - `leaf`: the LeafNode instance whose dataset is being displayed
+            - `view`: the displayed LeafView instance
             - `pindex`: a persistent model index
             - `parent`: the parent of the widget
         """
 
         QtGui.QMdiSubWindow.__init__(self, parent)
+        view.data_sheet = self
         self.setWidget(view)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
