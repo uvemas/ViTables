@@ -588,10 +588,11 @@ class VTApp(QtGui.QMainWindow):
 
         status_bar = self.statusBar()
         self.sb_node_info = QtGui.QLabel(status_bar)
-    #        self.sbNodeInfo.setLineWidth(0)
-    #        self.sbNodeInfo.setFrameStyle(qt.QFrame.NoFrame)
-        status_bar.addWidget(self.sb_node_info)
-        self.sb_node_info.setText(self.__tr('Selected node: ',
+        self.sb_node_info.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, \
+        QtGui.QSizePolicy.Minimum)
+        status_bar.addPermanentWidget(self.sb_node_info)
+        self.sb_node_info.setToolTip(self.__tr(
+            'The node currently selected in the Tree of databases pane',
             'The Selected node box startup message'))
         status_bar.showMessage(self.__tr('Ready...',
             'The status bar startup message'))
@@ -1192,6 +1193,17 @@ class VTApp(QtGui.QMainWindow):
                         self.window_mapper, QtCore.SLOT("map()"))
             self.window_mapper.setMapping(action, window)
             counter = counter + 1
+    def updateStatusBar(self):
+        """Update the permanent message of the status bar.
+        """
+
+        current = self.dbs_tree_view.currentIndex()
+        if current.isValid():
+            tip = self.dbs_tree_model.data(current, QtCore.Qt.StatusTipRole)
+            message = tip.toString()
+        else:
+            message = ''
+        self.sb_node_info.setText(message)
     def popupContextualMenu(self, kind, pos):
         """
         Popup a contextual menu in the tree of databases view.

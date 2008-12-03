@@ -3,6 +3,11 @@ ViTables ChangeLog
 ** Dec 03, 2008**
 	The 'Recover last session' feature is fully implemented now.
 
+	Fixed a small bug in the splash screen.
+
+	Added a label in the status bar for displaying info about the node currently
+	selected in the Tree of databases pane.
+
 ** Dec 02, 2008**
 	Implemented the capability for zooming cell contents.
 

@@ -211,6 +211,7 @@ class DBsTreeView(QtGui.QTreeView):
         """
 
         self.vtapp.slotUpdateActions()
+        self.vtapp.updateStatusBar()
 
         # Activate the view (if any) of the selected node
         pcurrent = QtCore.QPersistentModelIndex(current)
