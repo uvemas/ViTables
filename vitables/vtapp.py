@@ -841,8 +841,11 @@ class VTApp(QtGui.QMainWindow):
         """
 
         session_files_nodes = QtCore.QStringList([])
-        # The files list returned by getDBList does not include the temporary file
+        # The list of files returned by getDBList doesn't include the temporary
+        # database
         filepaths = self.dbs_tree_model.getDBList()
+        node_views = [window for window in self.workspace.subWindowList() \
+                        if isinstance(window, dataSheet.DataSheet)]
         for path in filepaths:
             mode = self.dbs_tree_model.getDBDoc(path).mode
             # If a new file has been created during the current session
@@ -850,8 +853,11 @@ class VTApp(QtGui.QMainWindow):
             # will be created from scratch in the next ViTables session
             if mode == 'w':
                 mode = 'a'
-            # TODO: get paths of the open nodes for this database
-            session_files_nodes.append('%s#@#%s' % (mode, path))
+            item_path = '%s#@#%s' % (mode, path)
+            for view in node_views:
+                if view.leaf.filepath == path:
+                    item_path = '%s#@#%s' % (item_path, view.leaf.nodepath)
+            session_files_nodes.append(item_path)
 
         # Format the list in a handy way to store it on disk
         return session_files_nodes
@@ -860,10 +866,9 @@ class VTApp(QtGui.QMainWindow):
     # Databases are automatically opened at startup when:
     # 
     #     * application is configured for recovering last session
-    #     * command line arguments are passed when the application is started 
-    # in
-    #       a console
-    # 
+    #     * ViTables is started from the command line with some args
+    #
+
     def recoverLastSession(self):
         """
         Recover the last session.
@@ -1549,7 +1554,10 @@ class VTApp(QtGui.QMainWindow):
         :Parameter current: the model index of the item to be opened
         """
 
-        index = self.dbs_tree_view.currentIndex()
+        if current is None:
+            index = self.dbs_tree_view.currentIndex()
+        else:
+            index = current
         pindex = QtCore.QPersistentModelIndex(index)
         dbs_tree_leaf = self.dbs_tree_model.nodeFromIndex(index)
         leaf = dbs_tree_leaf.node # A PyTables node
@@ -1576,7 +1584,6 @@ class VTApp(QtGui.QMainWindow):
 
         # Create a model and a view for the leaf
         leaf_model = leafModel.LeafModel(leaf_buffer)
-        # leaf_view = QtGui.QTableView()
         leaf_view = leafView.LeafView(leaf_model)
 
         # Add the view to the MDI area
@@ -2131,146 +2138,6 @@ class VTApp(QtGui.QMainWindow):
         # Show the dialog
         versions_dlg.exec_()
 
-    #    def connectSignals(self):
-    #        """
-    #        Connect signals to slots.
-    #
-    #        Signals coming from the menubar and toolbars are connected to
-    #        slots of the application controller (VTApp).
-    #        Signals coming from the tree view pane are connected to slots of
-    #        the leaves manager.
-    #        """
-    #
-    #        self.connect(self.otLV, qt.SIGNAL("doubleClicked(QListViewItem *)"),
-    #            self.slotNodeOpen)
-    #
-    #        self.connect(self.otLV,
-    #            qt.SIGNAL("contextMenuRequested(QListViewItem *, const QPoint &, int)"),
-    #            self.slotContextualNodeMenu)
-    #
-    #        self.connect(self.otLV, qt.SIGNAL("selectionChanged()"),
-    #            self.slotUpdateSBNodeInfo)
-    #
-    #        #
-    #        # Synchronization between the tree view and the workspace
-    #        #
-    #        self.connect(self.workspace, qt.SIGNAL('windowActivated(QWidget *)'),
-    #            self.slotSynchronizeTreeView)
-    #        self.connect(self.otLV, qt.SIGNAL("selectionChanged()"),
-    #            self.synchronizeWorkspace)
-    #
-    #        #
-    #        # QActions update
-    #        #
-    #        # When a window is activated or closed the Open View and Close
-    #        # View actions need to be updated
-    #        self.connect(self.workspace, qt.SIGNAL('windowActivated(QWidget *)'),
-    #            self.slotUpdateActions)
-    #        # When the item selected in the tree view changes most actions
-    #        # may require un update
-    #        self.connect(self.otLV, qt.SIGNAL("selectionChanged()"),
-    #            self.slotUpdateActions)
-    #
-    #
-    #    def slotUpdateSBNodeInfo(self):
-    #        """Update the status bar text box showing the selected item path."""
-    #
-    #        info = ''
-    #        selected = self.otLV.selectedItem()
-    #        if selected:
-    #            info = selected.where
-    #        self.sbNodeInfo.setText(self.__tr('Selected node: %0.50s ',
-    #            'A status bar message') %  info)
-    #
-    #
-
-    #    def activateWindow(self, index):
-    #        """Activate the window selected from the Windows menu."""
-    #
-    #        window = self.menuToWindowMap[index]
-    #        self.raiseView(window)
-    #
-    #
-    #    def raiseView(self, view):
-    #        """
-    #        Give focus to a given view.
-    #
-    #        When a view gets focus it becomes the active window of the
-    #        workspace. After this call the widget will be visually in front of
-    #        any overlapping sibling widgets.
-    #
-    #        :Parameter view: the view being activated
-    #        """
-    #
-    #        # QWidget.raiseW() is not used, see QWorkspace docs for details
-    #        if view.isActiveWindow():
-    #            # Give an activated look to the window
-    #            # See docstring of the synchronizeWorkspace method for details
-    #            qt.qApp.sendEvent(view, qt.QEvent(qt.QEvent.WindowActivate))
-    #            self.otLV.setSelected(view.leaf_view.lvitem, True)
-    #        else:
-    #            view.setActiveWindow()  # This triggers slotSynchronizeTreeView
-    #        view.setFocus()
-    #
-    #
-    #    def slotSynchronizeTreeView(self, active_window):
-    #        """
-    #        Synchronize the tree view pane and the workspace.
-    #
-    #        The driven force is state of the workspace. The node tied to the
-    #        active view is selected.
-    #        """
-    #
-    #        # The WindowActivate SIGNAL can be emited with None widgets 
-    #        if not active_window:
-    #            return
-    #
-    #        # zoom views are not synchronized
-    #        if not isinstance(active_window, hpTable.HPTable):
-    #            return
-    #
-    #        # Select the item tied to the window being activated
-    #        active_view = active_window.leaf_view
-    #        self.otLV.ensureItemVisible(active_view.lvitem)
-    #        self.otLV.setSelected(active_view.lvitem, True)
-    #        # Give keyboard focus to the view
-    #        active_window.setFocus()
-
-
-    #    def synchronizeWorkspace(self):
-    #        """
-    #        Synchronize the tree view pane and the workspace.
-    #
-    #        The driven force is state of the tree view pane. If the selected node
-    #        has a view that view is raised. If it has no view then the active view
-    #        is deactivated.
-    #        
-    #        Beware that the only way to deactivate the workspace active window
-    #        is to activate a different one. The QEvent.WindowDeactivate and
-    #        QEvent.WindowActivate events just change the look of the receiver
-    #        window.
-    #        """
-    #
-    #        try:
-    #            selected = self.otLV.selectedItem()
-    #            key = "%s#@#%s" % (selected.getFilepath(), selected.where)
-    #            selected_view = self.leavesManager._openLeaf[key][1].hp_table
-    #        except (AttributeError, KeyError):
-    #            selected_view = None
-    #            active_view = self.workspace.activeWindow()
-    #
-    #        if not selected_view:  # The selected node (if any) has no view
-    #            wd_event = qt.QEvent(qt.QEvent.WindowDeactivate)
-    #            # Don't send the event if there are no views in the workspace
-    #            active_view and qt.qApp.sendEvent(active_view, wd_event)
-    #        elif selected_view == self.workspace.activeWindow():
-    #            wa_event = qt.QEvent(qt.QEvent.WindowActivate)
-    #            qt.qApp.sendEvent(selected_view, wa_event)
-    #        else:
-    #            selected_view.setFocus()
-    #        self.otLV.setFocus()
-    #
-    #
 
 
 

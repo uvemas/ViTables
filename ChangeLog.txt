@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 03, 2008**
+	The 'Recover last session' feature is fully implemented now.
+
 ** Dec 02, 2008**
 	Implemented the capability for zooming cell contents.
 
