@@ -48,12 +48,13 @@ Misc variables:
 
 __docformat__ = 'restructuredtext'
 
+import time
+
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
 class VTSplash(QtGui.QSplashScreen):
     """The application splash screen."""
-
 
     def __init__(self, png):
         """
@@ -91,8 +92,11 @@ class VTSplash(QtGui.QSplashScreen):
         :Parameter msg: the message to be displayed
         """
 
+        QtGui.qApp.processEvents()
         self.msg = msg
         self.showMessage(self.msg)
+        time.sleep(0.500)
+        self.clearMessage()
 
 
 if __name__ == '__main__':

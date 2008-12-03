@@ -93,7 +93,6 @@ class Buffer:
     which block of code must be executed at every cell painting time.
     """
 
-
     def __init__(self, leaf):
         """
         Initializes the buffer.

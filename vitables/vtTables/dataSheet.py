@@ -54,7 +54,6 @@ class DataSheet(QtGui.QMdiSubWindow):
     The widget containing the displayed data of a given dataset.
     """
 
-
     def __init__(self, leaf, view, pindex, parent=None):
         """Display a given dataset in the MDI area.
 

@@ -55,7 +55,6 @@ import PyQt4.QtGui as QtGui
 class ConfigFileIOException(Exception):
     """Exception class for IO errors in the configuration file."""
 
-
     def __init__(self, key):
         """
         :Parameter key:

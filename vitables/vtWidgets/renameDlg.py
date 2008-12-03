@@ -86,6 +86,7 @@ class RenameDlg(QtGui.QDialog):
 
     In this cases the Overwrite button is not visible.
     """
+
     def __init__(self, name, pattern, info):
         """A customised QInputDialog.
 
@@ -262,4 +263,3 @@ class RenameDlg(QtGui.QDialog):
         self.action['overwrite'] = False
         self.action['new_name'] = str(name)
         self.accept()
-

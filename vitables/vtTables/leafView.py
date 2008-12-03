@@ -62,7 +62,6 @@ class LeafView(QtGui.QTableView):
     This is a customised view intended to deal with huge datasets.
     """
 
-
     def __init__(self, model, parent=None):
         """Create the view.
 

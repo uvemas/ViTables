@@ -57,7 +57,6 @@ class ScrollBar(QtGui.QScrollBar):
     suitable for dealing with huge datasets.
     """
 
-
     def __init__(self, scrollbar=None):
         """Replace a vertical scrollbar with other one.
 

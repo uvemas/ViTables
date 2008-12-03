@@ -78,7 +78,6 @@ class VTApp(QtGui.QMainWindow):
     * slots that handle user input
     """
 
-
     def __init__(self, mode='', dblist='', h5files=None, keep_splash=True):
         """
         Initialize the application.
@@ -215,7 +214,6 @@ class VTApp(QtGui.QMainWindow):
         del splash
 
         # Ensure that QActions have a consistent state
-    #        self.connectSignals()
         self.slotUpdateActions()
 
         self.connect(self.dbs_tree_model, \
@@ -2137,7 +2135,4 @@ class VTApp(QtGui.QMainWindow):
 
         # Show the dialog
         versions_dlg.exec_()
-
-
-
 

@@ -278,9 +278,6 @@ class DBsTreeView(QtGui.QTreeView):
             return QtGui.QTreeView.dragMoveEvent(self, event)
 
 
-    #
-    # Drag and drop support
-    #
 
 
 if __name__ == '__main__':

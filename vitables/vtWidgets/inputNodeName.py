@@ -63,7 +63,6 @@ class InputNodeName(QtGui.QDialog):
     it doesn't provide a way for customizing buttons text.
     """
 
-
     def __init__(self, title, info, action):
         """A customised QInputDialog.
 

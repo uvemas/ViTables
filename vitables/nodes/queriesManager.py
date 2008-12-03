@@ -65,6 +65,7 @@ import vitables.utils
 import vitables.vtWidgets.queryDlg as queryDlg
 
 class QueriesManager:
+
     def __init__(self, tmp_h5file):
         """Setup the queries manager.
 

@@ -72,7 +72,6 @@ class PreferencesGUI(QtGui.QDialog):
     buttons. They behave as usual.
     """
 
-
     def __init__(self):
         """
         Init the preferences dialog and makes the GUI.

@@ -80,7 +80,6 @@ class DBDoc(QtCore.QObject):
     a thin wrapper to the tables.File class
     """
 
-
     def __init__(self, filepath, mode, tmp_dbdoc=None):
         """
         Makes a data structure that defines a given database.

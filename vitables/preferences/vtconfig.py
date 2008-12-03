@@ -146,7 +146,6 @@ class Config(QtCore.QSettings):
     in the configuration file.
     """
 
-
     def __init__(self):
         """
         Setup the application configurator.

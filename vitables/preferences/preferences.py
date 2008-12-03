@@ -70,7 +70,6 @@ class Preferences(QtCore.QObject):
     Gives functionality to the `Preferences` dialog.
     """
 
-
     def __init__(self, vtapp):
         """
         Initialize the preferences dialog.

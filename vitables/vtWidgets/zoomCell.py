@@ -85,6 +85,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
     - a `numpy.void` object when the cell corresponds to nested field of the record
     """
+
     def __init__(self, data, title, workspace, leaf):
         """
         Creates a zoom view for a given cell.
@@ -349,7 +350,6 @@ class ZoomCell(QtGui.QMdiSubWindow):
         else:
             caption = '%s: (%s, %s)' % (self.title, row + 1, col + 1)
         ZoomCell(cell, caption, self.workspace, self.leaf)
-
 
 
 

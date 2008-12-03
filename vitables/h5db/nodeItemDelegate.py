@@ -65,7 +65,6 @@ class NodeItemDelegate(QtGui.QItemDelegate):
     used to edit the name of the nodes in a database object tree.
     """
 
-
     def __init__(self, parent=None):
         """
         Creates the custom delegate.

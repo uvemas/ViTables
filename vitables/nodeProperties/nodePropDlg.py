@@ -77,7 +77,6 @@ class NodePropDlg(QtGui.QDialog):
     attributes in a tabular way.
     """
 
-
     def __init__(self, info):
         """:Parameters:
 

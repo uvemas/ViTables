@@ -66,7 +66,6 @@ class LeafModel(QtCore.QAbstractTableModel):
     the model.
     """
 
-
     def __init__(self, rbuffer, parent=None):
         """Create the model.
 

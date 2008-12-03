@@ -67,7 +67,6 @@ class Logger(QtGui.QTextEdit):
     redirecting them to an instance of this class.
     """
 
-
     def __init__(self, parent=None):
         """Create the Logger widget and configure it.
 

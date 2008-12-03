@@ -90,7 +90,6 @@ class QueryDlg(QtGui.QDialog):
     are used to enter the range of the query.
     """
 
-
     def __init__(self, info, ft_names, counter, initial_query, table):
         """
         Ctor.

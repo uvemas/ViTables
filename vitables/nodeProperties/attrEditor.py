@@ -173,7 +173,6 @@ class AttrEditor(object):
     remains opened until the user fixes the mistake.
     """
 
-
     def __init__(self, asi, title, user_table):
         """:Parameters:
 
