@@ -193,7 +193,7 @@ class QueriesManager:
 
     def queryTable(self, table, query_info, title):
         """
-        Querye a table and add a the result to the temporary database.
+        Query a table and add a the result to the temporary database.
 
         :Parameters:
 

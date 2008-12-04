@@ -1937,8 +1937,10 @@ class VTApp(QtGui.QMainWindow):
             tmp_index = self.dbs_tree_model.index(model_rows - 1, 0, 
                 QtCore.QModelIndex())
             self.dbs_tree_model.lazyAddChildren(tmp_index)
-            # TODO:
-            # Open the filtered table
+            # The new filtered table is inserted in first position under
+            # the Query results node
+            index = self.dbs_tree_model.index(0, 0, tmp_index)
+            self.slotNodeOpen(index)
 
 
     def slotQueryDeleteAll(self):

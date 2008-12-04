@@ -1,6 +1,10 @@
 ViTables ChangeLog
 ==================
 ** Dec 04, 2008**
+	The content of filtered tables can be displayed now.
+
+	Fixed a bug in the access to datasets with two or more dimensions.
+
 	Nodes copying has been updated: leaves whose dataset is not readable are not
 	copied
 
