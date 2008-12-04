@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 04, 2008**
+	Deletion of views tied to overwritten nodes has been implemented.
+
 	The status bar is properly updated now when a node is renamed in the Tree of databases pane.
 
 ** Dec 03, 2008**

@@ -535,7 +535,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             child_index = self.index(child.row(), 0, index)
             yield child_index
             if hasattr(child, 'children'):
-                for item_index in self.deepIterator(child_index):
+                for item_index in child.children[:]:
                     yield item_index
         del seq
 

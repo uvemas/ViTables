@@ -589,7 +589,7 @@ class VTApp(QtGui.QMainWindow):
         status_bar = self.statusBar()
         self.sb_node_info = QtGui.QLabel(status_bar)
         self.sb_node_info.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, \
-        QtGui.QSizePolicy.Minimum)
+                                        QtGui.QSizePolicy.Minimum)
         status_bar.addPermanentWidget(self.sb_node_info)
         self.sb_node_info.setToolTip(self.__tr(
             'The node currently selected in the Tree of databases pane',
@@ -1204,6 +1204,8 @@ class VTApp(QtGui.QMainWindow):
         else:
             message = ''
         self.sb_node_info.setText(message)
+
+
     def popupContextualMenu(self, kind, pos):
         """
         Popup a contextual menu in the tree of databases view.
@@ -1229,6 +1231,23 @@ class VTApp(QtGui.QMainWindow):
         menu.popup(pos)
 
 
+    def closeChildrenViews(self, nodepath, filepath):
+        """Close views being overwritten during node editing.
+
+        :Parameters:
+        
+            - `nodepath`: the full path of the node that is overwrting other nodes
+            - `filepath`: the full path of the file where that node lives
+        """
+
+        for window in self.workspace.subWindowList():
+            wnodepath = window.leaf.nodepath
+            wfilepath = window.leaf.filepath
+            if not wfilepath == filepath:
+                continue
+            if wnodepath[0:len(nodepath)] == nodepath:
+                window.close()
+            
     def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
         """Raise a file selector dialog and get a filepath.
 
@@ -1661,14 +1680,13 @@ class VTApp(QtGui.QMainWindow):
         if nodename is None:
             return
 
-        # TODO:If the creation overwrites a group with attached views then these
+        # If the creation overwrites a group with attached views then these
         # views are closed before the renaming is done
-    #        if overwrite:
-    #            node_key = '%s#@#%s' % (dbdoc.filepath, where)
-    #            self.leavesManager.cleanLeavesUnderKey(node_key)
+        if overwrite:
+            nodepath = tables.path.joinPath(parent.nodepath, nodename)
+            self.closeChildrenViews(nodepath, parent.filepath)
 
         self.dbs_tree_model.createGroup(current, nodename, overwrite)
-
 
     def slotNodeRename(self):
         """
@@ -1678,9 +1696,6 @@ class VTApp(QtGui.QMainWindow):
         - check the node name. If it is already in use ask what to<br>
           do (possibilities are rename, overwrite and cancel creation)
         - rename the node
-
-        :Parameter inplace:
-            indicates if the item is being renamed inplace or not
         """
 
         index = self.dbs_tree_view.currentIndex()
@@ -1720,38 +1735,34 @@ class VTApp(QtGui.QMainWindow):
         if nodename is None:
             return
 
-        # TODO: If the renaming overwrites a node with attached views then these
+        # If the renaming overwrites a node with attached views then these
         # views are closed before the renaming is done
-    #        if overwrite:
-    #            nodepath = tables.path.joinPath(parent_path, final_name)
-    #            node_key = '%s#@#%s' % (dbdoc.filepath, nodepath)
-    #            self.leavesManager.cleanLeavesUnderKey(node_key)
+        if overwrite:
+            nodepath = tables.path.joinPath(parent.nodepath, nodename)
+            self.closeChildrenViews(nodepath, child.filepath)
 
         # Rename the node
         self.dbs_tree_model.renameNode(index, nodename, overwrite)
     #        # TODO: Update views related to the renamed node
     #        self.leavesManager.rename(dbdoc.filepath, final_path, initial_path)
-    #
-    #        # TODO: Update the Selected node indicator of the status bar
-    #        self.slotUpdateSBNodeInfo()
 
+        # Update the Selected node indicator of the status bar
+        self.updateStatusBar()
 
     def slotNodeCut(self):
         """Cut the selected node."""
 
         current = self.dbs_tree_view.currentIndex()
 
-        # TODO: If the cut node has attached views then these views are closed
+        # If the cut node has attached views then these views are closed
         # before the cutting is done. This behavior can be inconvenient
         # for users but get rid of potential problems that arise if, for
         # any reason, the user doesn't paste the cut node.
-    #        node_key = '%s#@#%s' % (dbdoc.filepath, selected.where)
-    #        where, nodename = os.path.split(selected.where)
-    #        self.leavesManager.cleanLeavesUnderKey(node_key)
+        node = self.dbs_tree_model.nodeFromIndex(current)
+        self.closeChildrenViews(node.nodepath, node.filepath)
 
         # Cut the node
         self.dbs_tree_model.cutNode(current)
-
 
     def slotNodeCopy(self):
         """
@@ -1816,16 +1827,14 @@ class VTApp(QtGui.QMainWindow):
         if nodename is None:
             return
 
-        # TODO: If the pasting overwrites a node with attached views then these
+        # If the pasting overwrites a node with attached views then these
         # views are closed before the pasting is done
-    #        if overwrite:
-    #            nodepath = tables.path.joinPath(target_nodepath, final_name)
-    #            node_key = '%s#@#%s' % (target_dbdoc.filepath, nodepath)
-    #            self.leavesManager.cleanLeavesUnderKey(node_key)
+        if overwrite:
+            nodepath = tables.path.joinPath(parent.nodepath, nodename)
+            self.closeChildrenViews(nodepath, parent.filepath)
 
         # Paste the node
         self.dbs_tree_model.pasteNode(current, nodename, overwrite)
-
 
     def slotNodeDelete(self, current=None, force=None):
         """
@@ -1858,10 +1867,9 @@ class VTApp(QtGui.QMainWindow):
     ##        if item.parent() == self.queryRoot:
     ##            self.ftnames.remove(item.text(0).latin1())
     #
-    #        # TODO: If the deletion involves a node with attached views then these
-    #        # views are closed before the deletion is done
-    #        node_key = '%s#@#%s' % (dbdoc.filepath, lvitem.where)
-    #        self.leavesManager.cleanLeavesUnderKey(node_key)
+        # If the deletion involves a node with attached views then these
+        # views are closed before the deletion is done
+        self.closeChildrenViews(node.nodepath, node.filepath)
 
         # Delete the node
         self.dbs_tree_model.deleteNode(current)
@@ -1870,7 +1878,6 @@ class VTApp(QtGui.QMainWindow):
     #        # items (as it can happen in VTApp.slotQueryDeleteAll) the
     #        # QActions will be properly updated
     #        self.otLV.emit(qt.SIGNAL('selectionChanged()'), ())
-
 
     def slotNodeProperties(self):
         """
