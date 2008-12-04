@@ -72,6 +72,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
 
         QtGui.QItemDelegate.__init__(self, parent)
         self.current_name = None
+        self.vtapp = parent.vtapp
 
 
     def __tr(self, source, comment=None):
@@ -142,3 +143,6 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         # Update the underlying data structure
         model.renameNode(index, nodename, overwrite)
         self.emit(QtCore.SIGNAL('closeEditor(QWidget *)'), editor)
+
+        # Update the application status bar
+        self.vtapp.updateStatusBar()

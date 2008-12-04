@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 04, 2008**
+	The status bar is properly updated now when a node is renamed in the Tree of databases pane.
+
 ** Dec 03, 2008**
 	The 'Recover last session' feature is fully implemented now.
 

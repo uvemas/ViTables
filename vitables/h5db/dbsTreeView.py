@@ -79,11 +79,12 @@ class DBsTreeView(QtGui.QTreeView):
         """
 
         QtGui.QTreeView.__init__(self, parent)
+        self.vtapp = vtapp
+
         # The custom delegate used for editing items
         self.setItemDelegate(NodeItemDelegate(self))
         self.setObjectName('dbs_tree_view')
 
-        self.vtapp = vtapp
 
         # Setup drag and drop
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
