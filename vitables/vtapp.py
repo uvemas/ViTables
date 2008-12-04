@@ -1771,7 +1771,19 @@ class VTApp(QtGui.QMainWindow):
 
         current = self.dbs_tree_view.currentIndex()
 
-        # TODO: Non readable leaves should not be copied
+        # Non readable leaves should not be copied
+        dbs_tree_node = self.dbs_tree_model.nodeFromIndex(current)
+        if not (dbs_tree_node.node_kind in ('root group', 'group')):
+            leaf = dbs_tree_node.node # A PyTables node
+            leaf_buffer = rbuffer.Buffer(leaf)
+            if not leaf_buffer.isDataSourceReadable():
+                info_box = QtGui.QMessageBox.information(self, 
+                    self.__tr('About unreadable datasets', 'A dialog caption'), 
+                    self.__tr(
+                    """Sorry, actual data for this node are not accesible.<br>"""
+                    """The node will not be copied.""", 
+                    'Text of the Unimplemented node dialog'))
+                return
 
         # Copy the node
         self.dbs_tree_model.copyNode(current)
