@@ -123,15 +123,15 @@ class Buffer:
         # Setting the reader method at initialization time increases the
         # speed of reading several orders of magnitude
         shape = leaf.shape
-        if shape == ():
+        if isinstance(leaf, tables.Table) or len(shape) > 1:
+            # Dataset elements will be read like a[row][column]
+            self.getCell = self.arrayCell
+        elif shape == ():
             # Array element will be read like a[()]
             self.getCell = self.scalarCell
-        elif len(shape) < 2:
+        else:
             # Array elements will be read like a[row]
             self.getCell = self.vectorCell
-        else:
-            # Array elements will be read like a[row][column]
-            self.getCell = self.arrayCell
     def leafNumberOfRows(self):
         """The number of rows of the dataset being read.
 
