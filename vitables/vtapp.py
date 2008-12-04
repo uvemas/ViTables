@@ -987,6 +987,7 @@ class VTApp(QtGui.QMainWindow):
     # 
     #     * toggling state of QActions i.e. enabling/disabling QActions
     # 
+
     def slotUpdateActions(self):
         """
         Update the state of the actions tied to menu items and toolbars.
@@ -1875,21 +1876,23 @@ class VTApp(QtGui.QMainWindow):
             if del_dlg == QtGui.QMessageBox.No:
                 return
 
-    #        # TODO: If item is a filtered table then update the list of used names
-    ##        if item.parent() == self.queryRoot:
-    ##            self.ftnames.remove(item.text(0).latin1())
-    #
+        # If item is a filtered table then update the list of used names
+        if hasattr(node.node._v_attrs, 'query_condition'):
+            self.queries_mgr.ft_names.remove(node.name)
+
         # If the deletion involves a node with attached views then these
         # views are closed before the deletion is done
         self.closeChildrenViews(node.nodepath, node.filepath)
 
         # Delete the node
         self.dbs_tree_model.deleteNode(current)
-    #        # TODO: The emission of SIGNAL selectionChanged is forced. It ensures
-    #        # that when this method is called repeatedly for non selected
-    #        # items (as it can happen in VTApp.slotQueryDeleteAll) the
-    #        # QActions will be properly updated
-    #        self.otLV.emit(qt.SIGNAL('selectionChanged()'), ())
+
+        # The emission of SIGNAL selectionChanged is forced. It ensures
+        # that when this method is called repeatedly for non selected
+        # items (as it can happen in VTApp.slotQueryDeleteAll) the
+        # QActions will be properly updated
+        if not force is None:
+            self.slotUpdateActions()
 
     def slotNodeProperties(self):
         """

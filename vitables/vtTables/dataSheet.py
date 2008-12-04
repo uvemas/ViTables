@@ -111,4 +111,7 @@ class DataSheet(QtGui.QMdiSubWindow):
         for index in index_list:
             if index == self.pindex:
                 self.vtapp.dbs_tree_view.setCurrentIndex(index)
+                self.vtapp.dbs_tree_view.selectionModel().select(index, 
+                    QtGui.QItemSelectionModel.Select)
+                self.vtapp.dbs_tree_view.repaint() 
 

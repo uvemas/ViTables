@@ -1,7 +1,9 @@
 ViTables ChangeLog
 ==================
 ** Dec 04, 2008**
-	The content of filtered tables can be displayed now.
+	A minor problem found in tables queries have been fixed.
+
+	The content of just created filtered tables is now automatically displayed.
 
 	Fixed a bug in the access to datasets with two or more dimensions.
 
