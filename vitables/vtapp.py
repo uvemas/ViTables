@@ -1236,7 +1236,7 @@ class VTApp(QtGui.QMainWindow):
         """Close views being overwritten during node editing.
 
         :Parameters:
-        
+    
             - `nodepath`: the full path of the node that is overwrting other nodes
             - `filepath`: the full path of the file where that node lives
         """
@@ -1248,7 +1248,8 @@ class VTApp(QtGui.QMainWindow):
                 continue
             if wnodepath[0:len(nodepath)] == nodepath:
                 window.close()
-            
+
+        
     def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
         """Raise a file selector dialog and get a filepath.
 
@@ -1887,12 +1888,11 @@ class VTApp(QtGui.QMainWindow):
         # Delete the node
         self.dbs_tree_model.deleteNode(current)
 
-        # The emission of SIGNAL selectionChanged is forced. It ensures
-        # that when this method is called repeatedly for non selected
-        # items (as it can happen in VTApp.slotQueryDeleteAll) the
-        # QActions will be properly updated
-        if not force is None:
-            self.slotUpdateActions()
+        # Synchronise the workspace with the tree of databases pane i.e.
+        # ensure that the new current node (if any) gets selected
+        select_model = self.dbs_tree_view.selectionModel()
+        new_current = self.dbs_tree_view.currentIndex()
+        select_model.select(new_current, QtGui.QItemSelectionModel.Select)
 
     def slotNodeProperties(self):
         """

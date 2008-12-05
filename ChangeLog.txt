@@ -1,5 +1,9 @@
 ViTables ChangeLog
 ==================
+** Dec 05, 2008**
+	Fixed a small bug in the synchronisation of the workspace with the tree of
+	databases pane.
+
 ** Dec 04, 2008**
 	A minor problem found in tables queries have been fixed.
 
