@@ -228,7 +228,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             return True
 
 
-    def openDBDoc(self, filepath, mode='a'):
+    def openDBDoc(self, filepath, mode='a', position=0):
         """
         Open an existing hdf5 file.
 
@@ -247,7 +247,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             db_doc = dbDoc.DBDoc(filepath, mode, self.tmp_dbdoc)
             self.mapDB(filepath, db_doc)
             root_node = rootGroupNode.RootGroupNode(db_doc, self.root)
-            self.addNode(self.root, root_node)
+            self.addNode(self.root, root_node, position)
 
 
     def closeDBDoc(self, filepath):
@@ -880,9 +880,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
         self.beginInsertRows(index, row, 0)
-        parent.insertChild(child)
+        parent.insertChild(child, row)
         self.endInsertRows()
         self.emit(QtCore.SIGNAL("layoutChanged()"))
+        return True
 
 
     def removeRows(self, position, count=1, parent=QtCore.QModelIndex()):

@@ -114,13 +114,12 @@ class RootGroupNode(object):
         return len(self.children)
 
 
-    def insertChild(self, child):
+    def insertChild(self, child, position=0):
         """Insert a child in a group node.
 
         :Parameter child: the child being inserted.
         """
-
-        self.children = [child] + self.children
+        self.children.insert(position, child)
 
 
     def childAtRow(self, row):

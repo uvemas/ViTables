@@ -1360,10 +1360,10 @@ class VTApp(QtGui.QMainWindow):
         """
 
         overwrite = False
-        index = self.dbs_tree_view.currentIndex()
+        current_index = self.dbs_tree_view.currentIndex()
 
         # The file being saved
-        initial_filepath = self.dbs_tree_model.nodeFromIndex(index).filepath
+        initial_filepath = self.dbs_tree_model.nodeFromIndex(current_index).filepath
         initial_dirname, initial_filename = os.path.split(initial_filepath)
 
         # The trier filepath
@@ -1442,6 +1442,14 @@ class VTApp(QtGui.QMainWindow):
                 if child.filepath == filepath:
                     self.slotFileClose(self.dbs_tree_model.index(row, 0, 
                                                         QtCore.QModelIndex()))
+            # The current index could have changed when overwriting
+            # so we update it
+            for row in range(0, self.dbs_tree_model.rowCount(QtCore.QModelIndex())):
+                index = QtCore.QModelIndex().child(row, 0)
+                node = self.dbs_tree_model.nodeFromIndex(index)
+                if node.filepath == initial_filepath:
+                    current_index = index
+            self.dbs_tree_view.setCurrentIndex(current_index)
 
         # Make a copy of the selected file
         try:
@@ -1454,8 +1462,9 @@ class VTApp(QtGui.QMainWindow):
         # Close the copied file (which is selected in the tree view) and
         # open the new copy in read-write mode.
         # TODO: The position in the tree of databases shouldn't change
+        position = current_index.row()
         self.slotFileClose()
-        self.slotFileOpen(QtCore.QString(filepath), 'a') 
+        self.slotFileOpen(QtCore.QString(filepath), 'a', position=0) 
 
 
     def slotFileOpenRO(self, filepath=None):
@@ -1478,7 +1487,7 @@ class VTApp(QtGui.QMainWindow):
         self.slotFileOpen(filepath, str(mode))
 
 
-    def slotFileOpen(self, filepath=None, mode='a'):
+    def slotFileOpen(self, filepath=None, mode='a', position=0):
         """
         Open a file that contains a ``PyTables`` database.
 
@@ -1508,11 +1517,11 @@ class VTApp(QtGui.QMainWindow):
         filepath = vitables.utils.forwardPath(os.path.abspath(filepath))
 
         # Open the database and select it in the tree view
-        self.dbs_tree_model.openDBDoc(filepath, mode)
+        self.dbs_tree_model.openDBDoc(filepath, mode, position)
         database = self.dbs_tree_model.getDBDoc(filepath)
         if database:
-            self.dbs_tree_view.setCurrentIndex(self.dbs_tree_model.index(0, 0, 
-                QtCore.QModelIndex()))
+            self.dbs_tree_view.setCurrentIndex(self.dbs_tree_model.index(position, 
+                0, QtCore.QModelIndex()))
             self.updateRecentFiles(filepath, mode)
 
 
@@ -1745,8 +1754,6 @@ class VTApp(QtGui.QMainWindow):
 
         # Rename the node
         self.dbs_tree_model.renameNode(index, nodename, overwrite)
-    #        # TODO: Update views related to the renamed node
-    #        self.leavesManager.rename(dbdoc.filepath, final_path, initial_path)
 
         # Update the Selected node indicator of the status bar
         self.updateStatusBar()
