@@ -100,6 +100,13 @@ class LeafView(QtGui.QTableView):
         max_width = fmetrics.width(" %s " % str(self.leaf_numrows))
         self.vheader.setMinimumWidth(max_width)
 
+        # Setup the headers' resize mode
+        rmode = QtGui.QHeaderView.Stretch
+        if self.model.columnCount() == 1:
+            self.horizontalHeader().setResizeMode(rmode)
+        if self.model.rowCount() == 1:
+            self.vheader.setResizeMode(rmode)
+
         # Setup the text elide mode
         self.setTextElideMode(QtCore.Qt.ElideRight)
 
