@@ -241,7 +241,6 @@ def formatArrayContent(content):
 
     Used when the cell contains a numpy array.
     """
-
     return numpy.array2string(content, separator=',')
 
 

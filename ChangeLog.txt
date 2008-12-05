@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 05, 2008**
+	Fixed a subtle bug in the datasets access process.
+
 	A small bug has been fixed.
 
 	File Save As... operation has been debugged.

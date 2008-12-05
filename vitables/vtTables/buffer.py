@@ -106,7 +106,7 @@ class Buffer:
 
         # The length of the dimension that is going to be read. It
         # is an int64.
-        self.leaf_numrows = self.leafNumberOfRows()
+        self.leaf_numrows = self.data_source.nrows
 
         # Every chunk of data read from the data source is stored in a list.
         # The maximum length of the list (i.e. the chunk size) is 10000 rows
@@ -132,6 +132,8 @@ class Buffer:
         else:
             # Array elements will be read like a[row]
             self.getCell = self.vectorCell
+
+
     def leafNumberOfRows(self):
         """The number of rows of the dataset being read.
 
@@ -157,6 +159,8 @@ class Buffer:
             nrows = shape[0]
 
         return numpy.array(nrows, dtype=numpy.int64)
+
+
     def getReadParameters(self, start, bs):
         """
         Returns acceptable parameters for the read method.
@@ -189,6 +193,7 @@ class Buffer:
 
         return start, stop
 
+
     def isDataSourceReadable(self):
         """Find out if the dataset can be read or not.
 
@@ -212,6 +217,7 @@ class Buffer:
                 'A dataset readability error')
 
         return readable
+
 
     def readBuffer(self, start, bs):
         """
@@ -245,6 +251,7 @@ class Buffer:
             # Update the buffer contents and its start position
             self.chunk = data
             self.start = start
+
 
     def scalarCell(self, row, col):
         """

@@ -91,7 +91,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         # The dataset number of rows is potentially huge but tables are
         # kept small: just the data returned by a read operation of the
         # buffer are displayed
-        self.numrows = self.rbuffer.chunk_size
+        self.numrows = self.rbuffer.leafNumberOfRows()
 
         # The dataset number of columns doesn't use to be large so, we don't
         # need set a maximum as we did with rows. The whole set of columns
@@ -122,7 +122,7 @@ class LeafModel(QtCore.QAbstractTableModel):
                 self.formatContent = vitables.utils.formatStringContent
 
         # Populate the model with the first chunk of data
-        self.loadData(self.rbuffer.start, self.numrows)
+        self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)
 
 
     def __tr(self, source, comment=None):
