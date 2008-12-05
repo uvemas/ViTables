@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 05, 2008**
+	A small bug has been fixed.
+
 	File Save As... operation has been debugged.
 
 	Enhanced the render of datasets with just one row/column.

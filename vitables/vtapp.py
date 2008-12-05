@@ -1045,12 +1045,12 @@ class VTApp(QtGui.QMainWindow):
         node = self.dbs_tree_model.nodeFromIndex(current)
         if node != self.dbs_tree_model.root:
             # Actions always enabled for every node
-            enabled = enabled.union(['fileSaveAs', 'nodeProperties', 
+            enabled = enabled.union(['nodeProperties', 
                                      'nodeCopy'])
 
             # If the selected file is not the temporary DB
             if node.filepath != self.dbs_tree_model.tmp_filepath:
-                enabled = enabled.union(['fileClose'])
+                enabled = enabled.union(['fileSaveAs', 'fileClose'])
 
             kind = node.node_kind
             # If the node is a table --> queryNew is enabled
