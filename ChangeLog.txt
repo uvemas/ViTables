@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 08, 2008**
+	Fixed a small bug in insertion of nodes in the tree of databases pane.
+
 ** Dec 05, 2008**
 	Fixed a subtle bug in the datasets access process.
 

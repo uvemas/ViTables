@@ -868,6 +868,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         row = grandparent.rowOfChild(parent)
         assert row != -1
         return self.createIndex(row, 0, parent)
+
+
     def addNode(self, parent, child, row=0, index=QtCore.QModelIndex()):
         """Adds a child node to a given parent.
 
@@ -879,7 +881,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
-        self.beginInsertRows(index, row, 0)
+        self.beginInsertRows(index, row, row)
         parent.insertChild(child, row)
         self.endInsertRows()
         self.emit(QtCore.SIGNAL("layoutChanged()"))

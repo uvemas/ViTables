@@ -1236,7 +1236,7 @@ class VTApp(QtGui.QMainWindow):
         """Close views being overwritten during node editing.
 
         :Parameters:
-    
+
             - `nodepath`: the full path of the node that is overwrting other nodes
             - `filepath`: the full path of the file where that node lives
         """
@@ -1249,7 +1249,7 @@ class VTApp(QtGui.QMainWindow):
             if wnodepath[0:len(nodepath)] == nodepath:
                 window.close()
 
-        
+    
     def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
         """Raise a file selector dialog and get a filepath.
 
@@ -1460,11 +1460,11 @@ class VTApp(QtGui.QMainWindow):
             QtGui.qApp.restoreOverrideCursor()
 
         # Close the copied file (which is selected in the tree view) and
-        # open the new copy in read-write mode.
-        # TODO: The position in the tree of databases shouldn't change
+        # open the new copy in read-write mode. The position in the tree
+        # is kept
         position = current_index.row()
         self.slotFileClose()
-        self.slotFileOpen(QtCore.QString(filepath), 'a', position=0) 
+        self.slotFileOpen(QtCore.QString(filepath), 'a', position) 
 
 
     def slotFileOpenRO(self, filepath=None):
