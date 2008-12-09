@@ -1,8 +1,8 @@
-=========================
-Announcing ViTables 1.2.2
-=========================
+========================
+Announcing ViTables 2.0
+========================
 
-We are proud to present ViTables 1.2.2, the latest release of our viewer for
+I'm happy to present ViTables 2.0, the latest release of this viewer for
 PyTables/HDF5 files.
 
 As it happens with the entire PyTables family, the main strength of ViTables is
@@ -11,47 +11,35 @@ For example, with ViTables you can open a table with one thousand million rows
 in a few tenths of second, with very low memory requirements. Also important is
 the fact that it is designed to be a multiplatform application, i.e. it runs
 flawlessly in Unix (and hence, GNU/Linux), Mac OS X and Windows. The fact that
-it runs on top of PyTables ensures its speed and memory efficiency. Finally,
-for a better user experience, we have created binary installers for Windows and
-Mac OS X. The Unix version is installable using Python distutils.
+it runs on top of PyTables ensures its speed and memory efficiency.
 
-In this release you will find some bug fixes and usability enhancements,
-among them:
-
-- capability for navigating datasets whith even 2^64 rows
-- enhanced displaying of datasets
-- Spanish translation added
+In this release you will find some bug fixes and usability enhancements, but
+the most important change is that ViTables has been finally migrated to use the
+Qt4 library. As a consequence ViTables has been largely refactored and even
+rewritten. It is now more compact (several thousand lines of code
+have been dropped), more stable and looks nicer.
 
 Platforms
 ---------
-
-At the moment, ViTables has been fully tested only on GNU/Linux, Windows
-and MacOS X platforms, but as it is made on top of Python, PyQt and
-PyTables, its portability should be really good and it should work just
-fine in other Unices.
+At the moment, ViTables has been fully tested only on GNU/Linux and Windows
+platforms, but as it is made on top of Python, PyQt and PyTables, its
+portability should be really good and it should work just fine in other Unices.
 
 How to get it
 -------------
-
 Go to:
 
-http://www.carabos.com/buy
+http://www.vitables.org
 
-to find directions on how to buy it. You can get it under a personal license or
-a site one.
-
-Remember that, when you buy a license, you are contributing to the liberation
-process of PyTables Pro and ViTables 1.2. See:
-
-http://www.carabos.com/liberation
-
-for details.
+and click the link 'downloads area' to find the available packages.
 
 Share your experience
 ---------------------
+I'm very interested in your feedback about ViTables. Please send your
+opinions, suggestions, bugs, etc. to the ViTables Users Group at
 
-We are very interested in your feedback about ViTables. Please send your
-opinions, suggestions, bugs, etc. to vitables@carabos.com.
+http://tech.groups.yahoo.com/group/vitables-users.
+
 Thank you!
 
 Enjoy Data with ViTables, the troll of the PyTables family!

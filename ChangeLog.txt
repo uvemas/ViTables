@@ -1,6 +1,10 @@
 ViTables ChangeLog
 ==================
 ** Dec 09, 2008**
+	ANNOUNCE.txt and setup.py have been updated.
+
+	Fixed a bug in scripts/vitables.
+
 	Fixed a small l10n problem.
 
 ** Dec 08, 2008**

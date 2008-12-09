@@ -73,6 +73,7 @@ class smart_install_data(install_data):
         # The project installation directory can be set via --install-purelib
         # and some other options
         install_lib_dir = getattr(install_cmd, 'install_lib')
+        tmp = install_lib_dir.replace(chr(92),'/')
 
         install_options = install_cmd.distribution.command_options["install"]
         # If data directory is not specified (via configuration file
@@ -263,9 +264,9 @@ setup(name = 'ViTables', # The name of the distribution
         """,
 
     author = 'Vicent Mas',
-    author_email = 'vmas@vitables.org',
+    author_email = 'uvemas@gmail.com',
     maintainer = 'Vicent Mas',
-    maintainer_email = 'vmas@vitables.org',
+    maintainer_email = 'uvemas@gmail.com',
     url = 'http://www.vitables.org',
     license = 'GPLv3, see the LICENSE.txt file for detailed info',
     platforms = 'Unix, MacOSX, Windows',
