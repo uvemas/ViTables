@@ -51,6 +51,7 @@ __docformat__ = 'restructuredtext'
 import os.path
 
 
+
 class NodeInfo(object):
     """Collects information about a given node.
 

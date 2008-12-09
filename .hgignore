@@ -8,4 +8,4 @@ syntax: glob
 *.pdf
 *.e4*
 doc/html
-vitables.py
+./vitables.py

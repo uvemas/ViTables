@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 09, 2008**
+	Fixed a small l10n problem.
+
 ** Dec 08, 2008**
 	Fixed a small bug in insertion of nodes in the tree of databases pane.
 

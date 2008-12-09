@@ -1249,7 +1249,6 @@ class VTApp(QtGui.QMainWindow):
             if wnodepath[0:len(nodepath)] == nodepath:
                 window.close()
 
-    
     def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
         """Raise a file selector dialog and get a filepath.
 
@@ -1910,7 +1909,6 @@ class VTApp(QtGui.QMainWindow):
 
         current = self.dbs_tree_view.currentIndex()
         node = self.dbs_tree_model.nodeFromIndex(current)
-        # Open the database and select it in the tree view
         info = nodeInfo.NodeInfo(node)
         nodePropDlg.NodePropDlg(info)
 
