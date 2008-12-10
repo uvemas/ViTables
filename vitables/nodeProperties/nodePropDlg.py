@@ -288,16 +288,16 @@ class NodePropDlg(QtGui.QDialog):
         layout.addWidget(dtype_label, 2, 0)
         layout.addWidget(dtype_ledit, 2, 1)
 
+        # Compression library label
+        compression_label = QtGui.QLabel(self.__tr('Compression:', 'A label'), 
+            groupbox)
+        compression_ledit = vitables.utils.customLineEdit(groupbox)
+        compression_ledit.setText(str(info.filters.complib))
+        layout.addWidget(compression_label, 3, 0)
+        layout.addWidget(compression_ledit, 3, 1)
+
         # Information about the fields of Table instances
         if table:
-            # Compression library label
-            compression_label = QtGui.QLabel(self.__tr('Compression:', 
-                                            'A label'), groupbox)
-            compression_ledit = vitables.utils.customLineEdit(groupbox)
-            compression_ledit.setText(str(info.filters.complib))
-            layout.addWidget(compression_label, 3, 0)
-            layout.addWidget(compression_ledit, 3, 1)
-
             # The Table's fields description
             table = QtGui.QTableView(groupbox)
             table.verticalHeader().hide()
@@ -665,9 +665,14 @@ class NodePropDlg(QtGui.QDialog):
         if self.mode == 'read-only':
             QtGui.QDialog.accept(self)
         else:
-            # Get the value of the TITLE attribute
-            title = str(self.sysattr_model.item(self.title_pos[0], 
+            # Get the value of the TITLE attribute. Checking is required
+            # because the attribute is mandatory in PyTables but not in
+            # generic HDF5 files
+            if hasattr(self, 'title_pos'):
+                title = str(self.sysattr_model.item(self.title_pos[0], 
                                                 self.title_pos[1]).text())
+            else:
+                title = None
             # Check the editable attributes
             aeditor = attrEditor.AttrEditor(self.asi, title, self.user_table)
             attrs_are_ok, error = aeditor.checkAttributes()

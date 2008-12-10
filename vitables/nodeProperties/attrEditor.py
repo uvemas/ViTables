@@ -210,7 +210,8 @@ class AttrEditor(object):
             self.edited_attrs[row] = (name, value, dtype, multidim)
 
         # Add the TITLE attribute to the dictionary
-        self.edited_attrs[rows] = ('TITLE', title, 'string', False)
+        if title is not None:
+            self.edited_attrs[rows] = ('TITLE', title, 'string', False)
 
 
     def __tr(self, source, comment=None):
@@ -303,7 +304,10 @@ class AttrEditor(object):
         """
 
         # Get rid of deleted attributes
-        all_attrs = sets.Set(self.asi._v_attrnamesuser + ["TITLE"])
+        if self.edited_attrs.has_key('TITLE'):
+            all_attrs = sets.Set(self.asi._v_attrnamesuser + ["TITLE"])
+        else:
+            all_attrs = sets.Set(self.asi._v_attrnamesuser)
         edited_attrs_names = sets.Set([self.edited_attrs[row][0] 
                                         for row in self.edited_attrs.keys()])
         for attr in (all_attrs - edited_attrs_names):

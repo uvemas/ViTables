@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 10, 2008**
+	The Properties dialog has been debugged and improved.
+
 ** Dec 09, 2008**
 	ANNOUNCE.txt and setup.py have been updated.
 
