@@ -226,6 +226,10 @@ class VTApp(QtGui.QMainWindow):
             self.dbs_tree_view.expand)
 
         self.slotUpdateWindowsMenu()
+
+        self.workspace.installEventFilter(self)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return str(QtGui.qApp.translate('VTApp', source, comment))
@@ -388,6 +392,13 @@ class VTApp(QtGui.QMainWindow):
                 'Status bar text for the Windows -> Close All action'))
 
         actions['windowsActionGroup'] = QtGui.QActionGroup(self)
+
+        actions['mdiTabbed'] = vitables.utils.createAction(self, 
+            self.__tr('Change view mode', 'MDI -> Tabbed'), None, 
+            self.changeMDIViewMode, 
+            None, 
+            self.__tr('Change the workspace view mode', 
+                'Status bar text for the MDI -> Tabbed action'))
 
         actions['toolsUserOptions'] = vitables.utils.createAction(self, 
             self.__tr('&Preferences...', 'Tools -> Preferences'), None, 
@@ -582,6 +593,11 @@ class VTApp(QtGui.QMainWindow):
             'nodeRename', 'nodeCut', 'nodeCopy', 'nodePaste', 'nodeDelete', 
             None, 'queryNew']
         vitables.utils.addActions(self.leaf_node_cm, actions, self.gui_actions)
+
+        self.mdi_cm = QtGui.QMenu()
+        actions = ['mdiTabbed', None, 
+            self.windows_menu]
+        vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
 
     def initStatusBar(self):
         """Init status bar."""
@@ -1248,6 +1264,31 @@ class VTApp(QtGui.QMainWindow):
                 continue
             if wnodepath[0:len(nodepath)] == nodepath:
                 window.close()
+
+    def changeMDIViewMode(self):
+        """Toggle the view mode of the workspace.
+        """
+
+        if self.workspace.viewMode() == QtGui.QMdiArea.SubWindowView:
+            self.workspace.setViewMode(QtGui.QMdiArea.TabbedView)
+        else:
+            self.workspace.setViewMode(QtGui.QMdiArea.SubWindowView)
+    def eventFilter(self, widget, event):
+        """Event filter used to provide the MDI area with a context menu.
+
+        :Parameters:
+            -`widget`: the widget that receives the event
+            -`event`: the event being processed
+        """
+
+        if widget == self.workspace:
+            if event.type() == QtCore.QEvent.ContextMenu:
+                pos = event.globalPos()
+                self.mdi_cm.popup(pos)
+            return QtGui.QMdiArea.eventFilter(widget, widget, event)
+        else:
+           return QtGui.QMainWindow.eventFilter(self, widget, event)
+
 
     def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
         """Raise a file selector dialog and get a filepath.

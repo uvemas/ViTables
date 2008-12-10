@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 10, 2008**
+	A context menu has been added to the workspace.
+
 	The User's Manual has been updated.
 
 	The documentation browser has been updated.
