@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 10, 2008**
+	The documentation browser has been updated.
+
 	The module in charge of application configuration has been updated.
 
 	Fixed a small bug in the Properties dialog.

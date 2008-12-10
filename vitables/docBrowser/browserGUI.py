@@ -74,6 +74,8 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         self.setIconSize(QtCore.QSize(22, 22))
         self.setWindowTitle(self.__tr('Documentation browser', 
             'The window title'))
+        self.icons = vitables.utils.getHBIcons()
+        self.setWindowIcon(self.icons['vitables_wm'])
 
         self.browser = browser
 
@@ -85,7 +87,6 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         self.text_browser.setReadOnly(1)
 
         # The popup menus
-        self.icons = vitables.utils.getHBIcons()
         self.actions = self.setupActions()
         self.initPopups()
         self.setupHistoryCombo()
@@ -210,9 +211,11 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
                     'Status bar text for the Help --> About Qt action'))
 
         actions['clearSession'] = vitables.utils.createAction(self, 
-                '', 
+                self.__tr('Clear history', ''), 
                 QtGui.QKeySequence.UnknownKey, self.browser.slotClearHistory, 
-                self.icons['history_clear'], None)
+                self.icons['history_clear'], 
+                self.__tr('Clear the content of the history combobox', 
+                    ''))
         return actions
 
 
