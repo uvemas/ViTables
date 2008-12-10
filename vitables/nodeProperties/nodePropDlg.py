@@ -484,7 +484,8 @@ class NodePropDlg(QtGui.QDialog):
             if dtype_name.startswith('complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.
-                value_item.setText(value[1:-1])
+                if (str(value)[0], str(value)[-1]) == ('(', ')'):
+                    value_item.setText(str(value)[1:-1])
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
             if (hasattr(value, 'shape') and value.shape != ())or\
