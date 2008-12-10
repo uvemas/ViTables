@@ -65,37 +65,37 @@ If format is NativeFormat then the default search path will be:
 
   - UserScope
 
-    - ``$HOME/.config/Carabos/ViTables.conf``
-    - ``$HOME/.config/Carabos.conf``
+    - ``$HOME/.config/vitables.org/ViTables.conf``
+    - ``$HOME/.config/vitables.org.conf``
 
   - SystemScope
 
-    - ``/etc/xdg/Carabos/ViTables.conf``
-    - ``/etc/xdg/Carabos.conf``
+    - ``/etc/xdg/vitables.org/ViTables.conf``
+    - ``/etc/xdg/vitables.org.conf``
 
 - MacOSX
 
   - UserScope
 
-    - ``$HOME/Library/Preferences/com.carabos.ViTables.plist``
-    - ``$HOME/Library/Preferences/com.carabos.plist``
+    - ``$HOME/Library/Preferences/org.vitables.ViTables.plist``
+    - ``$HOME/Library/Preferences/org.vitables.plist``
 
   - SystemScope
 
-    - ``/Library/Preferences/com.carabos.ViTables.plist``
-    - ``/Library/Preferences/com.carabos.plist``
+    - ``/Library/Preferences/org.vitables.ViTables.plist``
+    - ``/Library/Preferences/org.vitables.plist``
 
 - Windows
 
   - UserScope
 
-    - ``HKEY_CURRENT_USER/Software/Carabos/ViTables``
-    - ``HKEY_CURRENT_USER/Software/Carabos/``
+    - ``HKEY_CURRENT_USER/Software/vitables.org/ViTables``
+    - ``HKEY_CURRENT_USER/Software/vitables.org/``
 
   - SystemScope
 
-    - ``HKEY_LOCAL_MACHINE/Software/Carabos/ViTables``
-    - ``HKEY_LOCAL_MACHINE/Software/Carabos/``
+    - ``HKEY_LOCAL_MACHINE/Software/vitables.org/ViTables``
+    - ``HKEY_LOCAL_MACHINE/Software/vitables.org/``
 
 If format is NativeFormat and platform is Unix the path can be set via
 QtCore.QSettings.setPath static method.
@@ -108,8 +108,8 @@ If format is NativeFormat:
   ``ViTables`` will match a configuration file named ``ViTables.conf``
 - under MacOSX, Internet Domain and Product Name ->
   reversed Internet Domain.Product Name.plist so the domain
-  ``carabos.com`` and the product ``ViTables`` become
-  ``com.carabos.ViTables.plist``
+  ``vitables.org`` and the product ``ViTables`` become
+  ``org.vitables.ViTables.plist``
 
 Before to read/write a property value we must provide the product
 name as the first subkey of the property key.
@@ -160,7 +160,7 @@ class Config(QtCore.QSettings):
 
         # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback
-        QtCore.QSettings.__init__(self, 'Carabos', 'ViTables')
+        QtCore.QSettings.__init__(self, 'vitables.org', 'ViTables')
         self.setFallbacksEnabled(False)
 
         # The full path of the data directory
@@ -191,7 +191,7 @@ class Config(QtCore.QSettings):
         if sys.platform.startswith('win'):
             # On windows systems settings will be stored in the registry
             # under the Carabos key
-            self.writeEntry('/Carabos/init', '') # Is this required??
+            self.writeEntry('/vitables.org/init', '') # Is this required??
             vtversion = vitables.vtSite.VERSION
             pyversion = 'Python%s%s' % (sys.version_info[0], sys.version_info[1])
             self.base_key = 'ViTables/%s/%s' % (vtversion, pyversion)
