@@ -120,6 +120,27 @@ class DBsTreeView(QtGui.QTreeView):
         return str(QtGui.qApp.translate('DBsTreeView', source, comment))
 
 
+    def mouseDoubleClickEvent(self, event):
+        """Specialised handler for mouse double click events.
+
+        When a node is double clicked in the tree of databases pane:
+        - if the node can be renamed and the Shift key is pressed then
+          rename the node
+        - if the node is a leaf with no view and the Shift key is not pressed
+          then open the node
+        - if the node is a collpased group and the Shift key is not pressed
+          then expand the group
+        """
+
+        modifier = event.modifiers()
+        current = self.currentIndex()
+        if modifier == QtCore.Qt.ShiftModifier:
+            if current.flags() & QtCore.Qt.ItemIsEditable:
+                self.edit(current)
+        else:
+            self.activateNode(current)
+
+
     def updateCollapsedGroup(self, index):
         """After collapsing a group update its icon.
 

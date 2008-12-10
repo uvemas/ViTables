@@ -1,6 +1,9 @@
 ViTables ChangeLog
 ==================
 ** Dec 10, 2008**
+	Changed the trigger for in-place renaming of nodes in the tree of databases
+	pane.
+
 	The Properties dialog has been debugged and improved.
 
 ** Dec 09, 2008**
