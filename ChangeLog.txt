@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 10, 2008**
+	The User's Manual has been updated.
+
 	The documentation browser has been updated.
 
 	The module in charge of application configuration has been updated.

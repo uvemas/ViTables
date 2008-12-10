@@ -11,14 +11,14 @@
         fileref="images/title_page_plain.svg" format="SVG"/>
     </imageobject>
   </mediaobject>
-  <title><application>ViTables 1.2.4</application> User's Guide</title>
+  <title><application>ViTables 2.0</application> User's Guide</title>
   <author>
 
   <!-- Next page -->
   <firstname>Vicent</firstname><surname>Mas</surname>
   </author>
-  <edition>User's Guide version 14.2 for ViTables 1.2.4</edition>
-  <pubdate>July, 18, 2008</pubdate>
+  <edition>User's Guide version 1.3 for ViTables 2.0</edition>
+  <pubdate>December, 12, 2008</pubdate>
   <copyright>
   <year>2005-2007</year>
   <holder>Cárabos Coop. V. All rights reserved.</holder>
@@ -160,7 +160,7 @@
           user requested operations is printed.
           </para></listitem>
 
-          <listitem><para>Several levels of help are available: contextual help
+          <listitem><para>Several levels of help are available: context help
           , tooltips, status bar...</para></listitem>
           <listitem><para>Configurable look and feel.
           </para></listitem>
@@ -181,11 +181,11 @@
       <para>To run <application>ViTables</application> you need to install
       Python <symbol role="geq">&#x2265;</symbol> 2.4, PyTables <symbol
       role="geq">&#x2265;</symbol> 2.0 (so you have to fulfill its own
-      requirements), the Qt3 <symbol role="geq">&#x2265;</symbol> 3.3 library
-      and PyQt3 <symbol role="geq">&#x2265;</symbol> 3.15.</para>
+      requirements), the Qt4 <symbol role="geq">&#x2265;</symbol> 4.4 library
+      and PyQt4 <symbol role="geq">&#x2265;</symbol> 4.4.</para>
 
       <para>At the moment, <application>ViTables</application> has been fully
-      tested on Linux, Mac OS X and Windows XP platforms. Other Unices should
+      tested on Linux and Windows XP platforms. Other Unices should
       run just fine when using the Unix version of
       <application>ViTables</application> because all the software that
       <application>ViTables</application> relies on (i.e. Python, Qt, PyQt,
@@ -246,7 +246,7 @@
         <section id='Ch1_Windows_Binary_Installers'>
           <title>Windows Binary Installers</title>
 
-          <para>Because of license issues, there is no Windows binary
+          <para>Currently there is no Windows binary
           installer for ViTables. So it has to be installed from sources
           following the instructions given in the previous sections.</para>
         </section>
@@ -273,13 +273,13 @@ $ ./make.sh]]></screen>
 
         <para>General information about PyTables can be found at the
         <ulink
-        url="http://www.carabos.com/products/pytables.html">project
+        url="http://www.pytables.com">project
         site</ulink>.
         For more information on HDF5, please visit its
-        <ulink url="http://hdf.ncsa.uiuc.edu/HDF5/">web site</ulink>.
+				<ulink url="http://www.hdfgroup.org/HDF5/">web site</ulink>.
         Information about <application>ViTables</application> is available
         <ulink
-        url="http://www.carabos.com/products/vitables.html">here</ulink>.
+        url="http://www.vitables.org">here</ulink>.
         </para>
 
         <para>Questions and feedback can be mailed to the developers.</para>
@@ -352,14 +352,14 @@ options:
       where information about your requested operations will be shown.</para>
 
       <para>As usual, you can launch commands from the menu bar, from
-      contextual menus or, if a shortcut button is available, from the toolbar.
+      context menus or, if a shortcut button is available, from the toolbar.
       </para>
 
       <figure id="main_window">
         <title>The main window</title>
         <mediaobject>
           <imageobject role="fo">
-            <imagedata valign="middle" align="center" scale="40"
+            <imagedata valign="middle" align="center" scale="60"
             fileref="images/mainWindow.png" format="PNG"/>
           </imageobject>
           <imageobject role="html">
@@ -461,9 +461,9 @@ options:
       Customization includes behavior and look and feel. See
 			<xref linkend="A1_The_Configuration_File" xrefstyle="select: label"/> for more
       information on this subject. From this menu you can also show, hide and
-      line up the application toolbars. At the moment three toolbars are
-      available: <guimenuitem>File</guimenuitem>,
-      <guimenuitem>Node</guimenuitem> and <guimenuitem>Help</guimenuitem>.
+      line up the application toolbars. At the moment four toolbars are
+			available: <guimenuitem>File</guimenuitem>, <guimenuitem>Node</guimenuitem>,
+      <guimenuitem>Query</guimenuitem> and <guimenuitem>Help</guimenuitem>.
       </para>
 
       <para><screenshot>
@@ -485,8 +485,8 @@ options:
       couple of <emphasis>About</emphasis> boxes. The <guimenuitem>Show
       Versions</guimenuitem> entry shows the version numbers of the libraries
       being used by <application>ViTables</application> (including PyTables
-      related libraries, like Zlib or UCL). Finally, from this menu you can
-      enter the <emphasis>What's This</emphasis> mode for contextual
+      related libraries, like Zlib or LZO). Finally, from this menu you can
+      enter the <emphasis>What's This</emphasis> mode for context
       help.</para>
 
       <para><screenshot>
@@ -597,15 +597,22 @@ options:
         access to their contents. A group can contain groups and/or leaves (or
         may be empty). A double click on a leave will display its content in
         the workspace. You can access the available options for a given node
-        just with a right mouse click on it. A contextual menu will appear from
+        just with a right mouse click on it. A context menu will appear from
         which commands can be launched. The contents of the menu depend on the
         kind of
         node being clicked (root nodes, groups, tables and arrays have all of
-        them their own contextual menu). Alternatively you can select the node
+        them their own context menu). Alternatively you can select the node
         with a single mouse click and choose a command from the
-        <guimenu>Node</guimenu> menu. Finally, there is also a contextual menu
+        <guimenu>Node</guimenu> menu. Finally, there is also a context menu
         for the tree pane itself that will pop up by right-clicking any empty
         area of the tree viewer.</para>
+
+				<para>A node can be renamed in-place (without raising the Rename dialog) by
+				keeping pressed the Shift key while the node is double clicked.</para>
+
+				<para>The object tree can be navigated with the keyboard too. Pressing Enter
+				will expand the selected node if it is a group or will open it if it is
+				a leaf. The + and - keys expand an collapse groups.</para>
 
         <figure id="tree_viewer">
           <title>The tree viewer</title>
@@ -669,7 +676,7 @@ options:
         list of open views (which is particularly useful when the workspace is
         cluttered with so many open views that it's difficult to find the one
         you want) or close all open views at once. This menu is also available
-        as a contextual menu.</para>
+        as a context menu.</para>
 
         <figure id="workspace">
           <title>A workspace with 3 opened leaves</title>
@@ -693,15 +700,14 @@ options:
         <para>The logger is the long region placed at the bottom of the viewing
         area, see <xref linkend="logger" xrefstyle="select: label"/>. It is an
         info panel where <application>ViTables</application> reports the result
-        of requested operations (for instance, if they were successful or
-        not).
+        of requested operations (namely if they were not successful).
         Also runtime errors are caught and reported to you through the logger
         (so you can mail the error to <application>ViTables</application>
         developers and help to improve the quality of the package :-). Errors
         and warning messages are highlighted in red and orange respectively.
         </para>
 
-        <para>Of course there is also a contextual menu for the logger that
+        <para>Of course there is also a context menu for the logger that
         provides you with some handy operations, like to copy selected text or
         to empty the logger.</para>
 
@@ -763,16 +769,12 @@ options:
 
       Not very exciting... until you try the last method on a large dataset,
       and realize that very large tables can be navigated as quickly as small ones.
-      When the slider is being dragged on large tables, a row indicator is
-      shown
-      close to it, thus making it very easy to locate and display a given
-      section of the dataset<footnote><para>The row indicator content is
-      formatted according to your system locale.</para></footnote>.</para>
+      </para>
 
       <para>Another interesting feature of views is the ability to zoom in on
       cells that contain multidimensional data. When you double-click in a
       cell,
-      a zoomed cell is displayed in its own view, reducing by two the number of
+      it is displayed in its own view, reducing by two the number of
       dimensions of the displayed data. For instance, a cell containing a
       vector
       is displayed as a one column table of scalars. A cell that contains
@@ -811,7 +813,7 @@ options:
 
       <para>The available metadata about a given node (group or leaf) can be
       accessed by right-clicking the mouse on the node and launching the
-      <guimenuitem>Properties</guimenuitem> command from the contextual menu
+      <guimenuitem>Properties</guimenuitem> command from the context menu
       that appears. This can also be achieved from the <guimenu>Node</guimenu>
       menu. Then the <link linkend="properties_dialog">Properties
       dialog</link>,
@@ -835,24 +837,17 @@ options:
           </mediaobject>
       </figure>
 
-      <para>Aside from the Properties dialog, you can request information in
+      <para>Aside from the Properties dialog, you can get information in
       several other ways.</para>
 
-      <para>By pointing at a tree node with the mouse for more than two
-      seconds,
-      the full path of this node is displayed in the status bar. This can be
+      <para>The full path of the node currently selected in the tree view is
+			displayed in the status bar. This can be
       useful when the object tree is large and guessing a full path is not
       easy.
       </para>
 
-      <para>An interesting aspect of views is that, besides displaying the real
-      data contained in a leaf, they provide quick access to metadata of this
-      leaf. The top left icon of the view shows the kind of displayed data
-      (array or table). The info button close to the icon can be used in two
-      ways. By pointing at it with the mouse a tooltip will appear showing some
-      useful info (full path of the file where data is stored, full path of the
-      leaf, title and shape of the leaf). By clicking the button, the leaf
-      Properties dialog will be opened.</para>
+      <para>The top left icon of views shows the kind of displayed data
+      (array or table).</para>
 
       <para>Finally, some generic information can be obtained by launching the
       command
@@ -1104,17 +1099,11 @@ options:
     so you can adapt the global aspect of <application>ViTables</application>
     to what would be expected on your platform.</para>
 
-    <para>New settings can be tested with the <guibutton>Apply</guibutton>
-    button. Clicking this button will apply the changes so that you can see how
-    they work, but will not close the Preferences dialog. This way, if you are
-    not satisfied with the changes made, you can revert to the original
-    situation by clicking the <guibutton>Cancel</guibutton> button. This will
-    close the dialog and undo any changes.</para>
-
     <para>The <guibutton>OK</guibutton> button will apply the new settings and
     make them permanent by saving them in the Windows registry or in a
     configuration file (on Unix platforms). The full path of this file will be
-    <filename>$HOME/.vitables/vitablesrc</filename>. Although it is a plain
+    <filename>$HOME/.vitables/vitables.org/ViTables.conf</filename>. Although it
+		is a plain
     text
     file and <application>ViTables</application> could be configured by editing
     it by hand, this is not recommended. Some settings, like fonts or geometry
