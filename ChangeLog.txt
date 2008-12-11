@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 11, 2008**
+	Zooming cells with string content has been fixed.
+
 	Fixed an annoying bug introduced in changeset 184e748db458.
 
 ** Dec 10, 2008**

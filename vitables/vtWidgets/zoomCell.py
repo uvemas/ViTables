@@ -137,7 +137,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # - other Python object
         if self.data_shape:
             self.formatContent = vitables.utils.formatArrayContent
-        elif isinstance(cell, str) or isinstance(cell, unicode):
+        elif isinstance(self.data, str) or isinstance(self.data, unicode):
             self.formatContent = vitables.utils.formatStringContent
         else:
             self.formatContent = vitables.utils.formatObjectContent
