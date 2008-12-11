@@ -92,6 +92,8 @@ class LeafModel(QtCore.QAbstractTableModel):
         # kept small: just the data returned by a read operation of the
         # buffer are displayed
         self.numrows = self.rbuffer.leafNumberOfRows()
+        if self.numrows > self.rbuffer.chunk_size:
+            self.numrows = self.rbuffer.chunk_size
 
         # The dataset number of columns doesn't use to be large so, we don't
         # need set a maximum as we did with rows. The whole set of columns
