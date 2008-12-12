@@ -94,13 +94,13 @@ class Preferences(QtCore.QObject):
         self.initial_prefs = {}
         style_sheet = vtapp.logger.styleSheet()
         paper = style_sheet[-7:]
-        self.initial_prefs['Logger/paper'] = QtGui.QColor(paper)
-        self.initial_prefs['Logger/text'] = vtapp.logger.textColor()
-        self.initial_prefs['Logger/font'] = vtapp.logger.font()
-        self.initial_prefs['Workspace/background'] = \
+        self.initial_prefs['Logger/Paper'] = QtGui.QColor(paper)
+        self.initial_prefs['Logger/Text'] = vtapp.logger.textColor()
+        self.initial_prefs['Logger/Font'] = vtapp.logger.font()
+        self.initial_prefs['Workspace/Background'] = \
                                         vtapp.workspace.background().color()
         self.initial_prefs['Look/currentStyle'] = vtapp.current_style
-        self.initial_prefs['Startup/startupWorkingDirectory'] = \
+        self.initial_prefs['Startup/startupWorkingDir'] = \
                                                 vtapp.startup_working_directory
         self.initial_prefs['Startup/restoreLastSession'] = \
                                                     vtapp.restore_last_session
@@ -149,21 +149,21 @@ class Preferences(QtCore.QObject):
         """
 
         rb_id = self.button2id[\
-            preferences['Startup/startupWorkingDirectory']]
+            preferences['Startup/startupWorkingDir']]
         self.gui.hiden_bg.button(rb_id).setChecked(True)
 
         self.gui.restore_cb.setChecked(\
             preferences['Startup/restoreLastSession'])
 
         self.gui.sample_te.selectAll()
-        self.gui.sample_te.setTextColor(preferences['Logger/text'])
+        self.gui.sample_te.setTextColor(preferences['Logger/Text'])
         self.gui.sample_te.moveCursor(QtGui.QTextCursor.End)  # Unselect text
         self.gui.sample_te.setStyleSheet("""background-color: %s""" % 
-                                        preferences['Logger/paper'].name())
-        self.gui.sample_te.setFont(preferences['Logger/font'])
+                                        preferences['Logger/Paper'].name())
+        self.gui.sample_te.setFont(preferences['Logger/Font'])
 
         self.gui.workspace_label.setStyleSheet('background-color: %s' % 
-            preferences['Workspace/background'].name())
+            preferences['Workspace/Background'].name())
 
         index = self.gui.styles_cb.findText(\
             preferences['Look/currentStyle'])
@@ -182,7 +182,7 @@ class Preferences(QtCore.QObject):
         if button == self.gui.buttons_box.button(QtGui.QDialogButtonBox.Reset):
             self.slotResetButton()
         elif button == self.gui.buttons_box.button(QtGui.QDialogButtonBox.Cancel):
-            self.slotCancelButton()
+            self.gui.reject()
         else:
             self.slotOKButton()
 
@@ -198,17 +198,6 @@ class Preferences(QtCore.QObject):
         # if the user presses Reset followed by OK
         self.new_prefs = self.initial_prefs.copy()
         self.setPreferences(self.new_prefs)
-
-
-    def slotCancelButton(self):
-        """
-        Reset the Preferences dialog to the initial values and close it.
-        """
-
-        self.new_prefs = self.initial_prefs.copy()
-        for key, value in self.new_prefs.items():
-            self.new_prefs[key] = QtCore.QVariant(value)
-        self.gui.reject()
 
 
     def slotOKButton(self):
@@ -236,7 +225,7 @@ class Preferences(QtCore.QObject):
 
         for (key, value) in self.button2id.items():
             if value == button_id:
-                self.new_prefs['Startup/startupWorkingDirectory'] = key
+                self.new_prefs['Startup/startupWorkingDir'] = key
 
 
     def slotSetStartupSession(self, cb_on):
@@ -262,7 +251,7 @@ class Preferences(QtCore.QObject):
         new_font, is_ok = QtGui.QFontDialog.getFont(self.gui.sample_te.font())
         # The selected font is applied to the sample text
         if is_ok:
-            self.new_prefs['Logger/font'] = new_font
+            self.new_prefs['Logger/Font'] = new_font
             self.gui.sample_te.setFont(new_font)
 
 
@@ -273,7 +262,7 @@ class Preferences(QtCore.QObject):
         color = QtGui.QColorDialog.getColor(text_color)
         # The selected text color is applied to the sample text
         if color.isValid():
-            self.new_prefs['Logger/text'] = color
+            self.new_prefs['Logger/Text'] = color
             self.gui.sample_te.selectAll()
             self.gui.sample_te.setTextColor(color)
             self.gui.sample_te.moveCursor(QtGui.QTextCursor.End)
@@ -287,7 +276,7 @@ class Preferences(QtCore.QObject):
         color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
         # The selected paper color is applied to the sample text window
         if color.isValid():
-            self.new_prefs['Logger/paper'] = color
+            self.new_prefs['Logger/Paper'] = color
             stylesheet.replace(background, color.name())
             self.gui.sample_te.setStyleSheet(stylesheet)
 
@@ -300,7 +289,7 @@ class Preferences(QtCore.QObject):
         color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
         # The selected color is applied to the sample label besides the button
         if color.isValid():
-            self.new_prefs['Workspace/background'] = color
+            self.new_prefs['Workspace/Background'] = QtGui.QBrush(color)
             stylesheet.replace(background, color.name())
             self.gui.workspace_label.setStyleSheet(stylesheet)
 

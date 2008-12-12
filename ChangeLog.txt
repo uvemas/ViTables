@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 12, 2008**
+	The preferences package has been refactored.
+
 ** Dec 11, 2008**
 	Zooming cells with string content has been fixed.
 

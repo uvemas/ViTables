@@ -629,35 +629,22 @@ class VTApp(QtGui.QMainWindow):
         """
 
         config = {}
-        keys_list = ['Logger/paper', # Logger background color
-            'Logger/text', # Logger text color
-            'Logger/font', # Logger font
-            'Workspace/background', # Workspace background color
-            'Startup/restoreLastSession', # Startup: restore last session
-            'Startup/lastWorkingDirectory', # Startup: last working directory
-            'Geometry/position', # Main window geometry
-            # State of the main window layout i.e. position and size of
-            # toolbars and dockwidgets
-            'Geometry/state', 
-            'Geometry/hsplitter', # Horizontal splitter geometry
-            'Geometry/vsplitter', # Vertical splitter geometry
-            'Recent/files', # The full filenames of the last ten opened files
-            # The full filenames and nodenames of the files and nodes that were
-            # opened when the last session was terminated
-            'Session/files', 
-            # The full path (filepath+sectionID) of every document visited with
-            # the documentation browser
-            'HelpBrowser/history', 
-            'HelpBrowser/bookmarks', # The documentation browser bookmarks
-            ]
-        for key in keys_list:
-            config[key] = self.config.readValue(key)
-
-        # Application style and startup working directory require more
-        # checking than the rest of settings so they have their own getters
+        config['Logger/Paper'] = self.config.loggerPaper()
+        config['Logger/Text'] = self.config.loggerText()
+        config['Logger/Font'] = self.config.loggerFont()
+        config['Workspace/Background'] = self.config.workspaceBackground()
+        config['Startup/restoreLastSession'] = self.config.startupLastSession()
+        config['Startup/startupWorkingDir'] = self.config.startupWorkingDir()
+        config['Startup/lastWorkingDir'] = self.config.lastWorkingDir()
+        config['Geometry/Position'] = self.config.windowPosition()
+        config['Geometry/Layout'] = self.config.windowLayout()
+        config['Geometry/HSplitter'] = self.config.hsplitterPosition()
+        config['Geometry/VSplitter'] = self.config.vsplitterPosition()
+        config['Recent/Files'] = self.config.recentFiles()
+        config['Session/Files'] = self.config.sessionFiles()
+        config['HelpBrowser/History'] = self.config.helpHistory()
+        config['HelpBrowser/Bookmarks'] = self.config.helpBookmarks()
         config['Look/currentStyle'] = self.config.readStyle()
-        config['Startup/startupWorkingDirectory'] = \
-            self.config.readStartupWorkingDir()
         return config
 
 
@@ -665,125 +652,62 @@ class VTApp(QtGui.QMainWindow):
         """
         Configure the application with the given configuration/preferences.
 
-        When the value passed for a given setting is not valid (i.e. if the
-        Config.readValue method has returned QtCore.QVariant() as value for
-        that setting) sensible hardcoded default values are used or we
-        simply allow the underlying Qt library choose the default values.
-
         :Parameter config: a dictionary with the configuration/preferences
                            being loaded
         """
 
         keys = config.keys()
         for key in keys:
-            if key == 'Logger/paper':
-                # Logger paper
-                value = config['Logger/paper']
-                if value.isValid():
-                    paper = str(QtGui.QColor(value).name())
-                else:
-                    paper = "#ffffff"
+            value = config[key]
+            if key == 'Logger/Paper':
+                paper = str(QtGui.QColor(value).name())
                 stylesheet = self.logger.styleSheet()
                 old_paper = stylesheet[-7:]
                 stylesheet.replace(old_paper, paper)
                 self.logger.setStyleSheet(stylesheet)
-            elif key == 'Logger/text':
-                # Logger text color
-                value = config['Logger/text']
-                if value.isValid():
-                    text_color = QtGui.QColor(value)
-                else:
-                    text_color = QtGui.QColor('black')
+            elif key == 'Logger/Text':
+                text_color = QtGui.QColor(value)
                 self.logger.moveCursor(QtGui.QTextCursor.End)
                 self.logger.setTextColor(text_color)
-            if key == 'Logger/font':
-                # Logger text font
-                value = config['Logger/font']
-                if value.isValid():
-                    self.logger.setFont(QtGui.QFont(value))
-            elif key == 'Workspace/background':
-                # Workspace
-                value = config['Workspace/background']
-                if value.isValid():
-                    color = QtGui.QColor(value)
-                    self.workspace.setBackground(color)
+            elif key == 'Logger/Font':
+                self.logger.setFont(QtGui.QFont(value))
+            elif key == 'Workspace/Background':
+                self.workspace.setBackground(QtGui.QBrush(value))
             elif key == 'Look/currentStyle':
-                # Style
-                value = config['Look/currentStyle']
-                if value.isValid():
-                    self.current_style = value.toString()
+                # Default style is provided by the underlying window manager
+                self.current_style = value.toString()
+                if self.current_style != 'default':
                     QtGui.qApp.setStyle(self.current_style)
-                else:
-                    self.current_style = 'default'
-            elif key == 'Startup/startupWorkingDirectory':
-                # Startup working directory
-                value = config['Startup/startupWorkingDirectory']
-                if value.isValid():
-                    self.startup_working_directory = value.toString()
-                else:
-                    self.startup_working_directory = QtCore.QString('home')
-            elif key == 'Startup/restoreLastSession':
-                # Startup restore last session
-                value = config['Startup/restoreLastSession']
-                if value.isValid():
-                    self.restore_last_session = value.toBool()
-                else:
-                    self.restore_last_session = False
-            elif key == 'Startup/lastWorkingDirectory':
-                # Startup last working directory
-                value = config['Startup/lastWorkingDirectory']
-                if value.isValid():
-                    self.last_working_directory = value.toString()
-                else:
-                    self.last_working_directory = vitables.utils.getHomeDir()
-            elif key == 'Geometry/position':
-                # Window geometry
-                value = config['Geometry/position']
+            elif key == 'Geometry/Position':
+                # Default position is provided by the underlying window manager
                 if value.isValid():
                     self.restoreGeometry(value.toByteArray())
-            elif key == 'Geometry/state':
-                # Window state
-                value = config['Geometry/state']
+            elif key == 'Geometry/Layout':
+                # Default layout is provided by the underlying Qt installation
                 if value.isValid():
                     self.restoreState(value.toByteArray())
-            elif key == 'Geometry/hsplitter':
-                # Horizontal splitter geometry
-                value = config['Geometry/hsplitter']
+            elif key == 'Geometry/HSplitter':
+                # Default geometry provided by the underlying Qt installation
                 if value.isValid():
                     self.hsplitter.restoreState(value.toByteArray())
-            elif key == 'Geometry/vsplitter':
-                # Vertical splitter geometry
-                value = config['Geometry/vsplitter']
+            elif key == 'Geometry/VSplitter':
+                # Default geometry provided by the underlying Qt installation
                 if value.isValid():
                     self.vsplitter.restoreState(value.toByteArray())
-            elif key == 'Recent/files':
-                # The list of recent files
-                value = config['Recent/files']
-                if value.isValid():
-                    self.recent_files = value.toStringList()
-                else:
-                    self.recent_files = QtCore.QStringList([])
-            elif key == 'Session/files':
-                # The list of session files and nodes
-                value = config['Session/files']
-                if value.isValid():
-                    self.session_files_nodes = value.toStringList()
-                else:
-                    self.session_files_nodes = QtCore.QStringList([])
-            elif key == 'HelpBrowser/history':
-                # The Help Browser history
-                value = config['HelpBrowser/history']
-                if value.isValid():
-                    self.hb_history = value.toStringList()
-                else:
-                    self.hb_history = QtCore.QStringList([])
-            elif key == 'HelpBrowser/bookmarks':
-                # The Help Browser bookmarks
-                value = config['HelpBrowser/bookmarks']
-                if value.isValid():
-                    self.hb_bookmarks = value.toStringList()
-                else:
-                    self.hb_bookmarks = QtCore.QStringList([])
+            elif key == 'Startup/restoreLastSession':
+                self.restore_last_session = value.toBool()
+            elif key == 'Startup/startupWorkingDir':
+                self.startup_working_directory = value.toString()
+            elif key == 'Startup/lastWorkingDir':
+                self.last_working_directory = value.toString()
+            elif key == 'Recent/Files':
+                self.recent_files = value.toStringList()
+            elif key == 'Session/Files':
+                self.session_files_nodes = value.toStringList()
+            elif key == 'HelpBrowser/History':
+                self.hb_history = value.toStringList()
+            elif key == 'HelpBrowser/Bookmarks':
+                self.hb_bookmarks = value.toStringList()
 
 
     def saveConfiguration(self):
@@ -798,44 +722,44 @@ class VTApp(QtGui.QMainWindow):
         # Logger paper
         style_sheet = self.logger.styleSheet()
         paper = style_sheet[-7:]
-        self.config.writeValue('Logger/paper', QtGui.QColor(paper))
+        self.config.writeValue('Logger/Paper', QtGui.QColor(paper))
         # Logger text color
-        self.config.writeValue('Logger/text', self.logger.textColor())
+        self.config.writeValue('Logger/Text', self.logger.textColor())
         # Logger text font
-        self.config.writeValue('Logger/font', self.logger.font())
+        self.config.writeValue('Logger/Font', self.logger.font())
         # Workspace
-        self.config.writeValue('Workspace/background', 
-            self.workspace.background().color())
+        self.config.writeValue('Workspace/Background', 
+            self.workspace.background())
         # Style
         self.config.writeValue('Look/currentStyle', self.current_style)
         # Startup working directory
-        self.config.writeValue('Startup/startupWorkingDirectory', 
+        self.config.writeValue('Startup/startupWorkingDir', 
             self.startup_working_directory)
         # Startup restore last session
         self.config.writeValue('Startup/restoreLastSession', 
             self.restore_last_session)
         # Startup last working directory
-        self.config.writeValue('Startup/lastWorkingDirectory', 
+        self.config.writeValue('Startup/lastWorkingDir', 
             self.last_working_directory)
         # Window geometry
-        self.config.writeValue('Geometry/position', self.saveGeometry())
-        # Window geometry
-        self.config.writeValue('Geometry/state', self.saveState())
+        self.config.writeValue('Geometry/Position', self.saveGeometry())
+        # Window layout
+        self.config.writeValue('Geometry/Layout', self.saveState())
         # Horizontal splitter geometry
-        self.config.writeValue('Geometry/hsplitter', 
+        self.config.writeValue('Geometry/HSplitter', 
                             self.hsplitter.saveState())
         # Vertical splitter geometry
-        self.config.writeValue('Geometry/vsplitter', 
+        self.config.writeValue('Geometry/VSplitter', 
                             self.vsplitter.saveState())
         # The list of recent files
-        self.config.writeValue('Recent/files', self.recent_files)
+        self.config.writeValue('Recent/Files', self.recent_files)
         # The list of session files and nodes
         self.session_files_nodes = self.getSessionFilesNodes()
-        self.config.writeValue('Session/files', self.session_files_nodes)
+        self.config.writeValue('Session/Files', self.session_files_nodes)
         # The Help Browser history
-        self.config.writeValue('HelpBrowser/history', self.hb_history)
+        self.config.writeValue('HelpBrowser/History', self.hb_history)
         # The Help Browser bookmarks
-        self.config.writeValue('HelpBrowser/bookmarks', self.hb_bookmarks)
+        self.config.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
         # If we don't sync then errors appear for every QColor and QFont
         # instances trying to be saved
         # QVariant::load: unable to load type 67 (appears 3 times)
@@ -2042,26 +1966,19 @@ class VTApp(QtGui.QMainWindow):
 
         for window in self.workspace.subWindowList():
             window.showMinimized()
-    #        for window in self.workspace.windowList(qt.QWorkspace.CreationOrder):
-    #        # generate a QCloseEvent that will be processed with the eventFilter
-    #            window.close()
-
-
     def slotToolsPreferences(self):
         """
         Launch the Preferences dialog.
 
         Clicking the ``OK`` button applies the configuration set in the
         Preferences dialog.
-        Clicking the ``Cancel`` button re-applies the current
-        configuration. This way any possible change tested with the
-        ``Apply`` or ``Default`` button is reverted.
         """
 
         prefs =  preferences.Preferences(self)
         try:
-            prefs.gui.exec_()
-            self.loadConfiguration(prefs.new_prefs)
+            if prefs.gui.exec_() == QtGui.QDialog.Accepted:
+                for key, value in prefs.new_prefs.items():
+                self.loadConfiguration(prefs.new_prefs)
         finally:
             del prefs
 

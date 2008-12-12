@@ -65,13 +65,13 @@ If format is NativeFormat then the default search path will be:
 
   - UserScope
 
-    - ``$HOME/.config/vitables.org/ViTables.conf``
-    - ``$HOME/.config/vitables.org.conf``
+    - ``$HOME/.config/MyCompany/ViTables.conf``
+    - ``$HOME/.config/MyCompany.conf``
 
   - SystemScope
 
-    - ``/etc/xdg/vitables.org/ViTables.conf``
-    - ``/etc/xdg/vitables.org.conf``
+    - ``/etc/xdg/MyCompany/ViTables.conf``
+    - ``/etc/xdg/MyCompany.conf``
 
 - MacOSX
 
@@ -89,13 +89,13 @@ If format is NativeFormat then the default search path will be:
 
   - UserScope
 
-    - ``HKEY_CURRENT_USER/Software/vitables.org/ViTables``
-    - ``HKEY_CURRENT_USER/Software/vitables.org/``
+    - ``HKEY_CURRENT_USER/Software/MyCompany/ViTables``
+    - ``HKEY_CURRENT_USER/Software/MyCompany/``
 
   - SystemScope
 
-    - ``HKEY_LOCAL_MACHINE/Software/vitables.org/ViTables``
-    - ``HKEY_LOCAL_MACHINE/Software/vitables.org/``
+    - ``HKEY_LOCAL_MACHINE/Software/MyCompany/ViTables``
+    - ``HKEY_LOCAL_MACHINE/Software/MyCompany/``
 
 If format is NativeFormat and platform is Unix the path can be set via
 QtCore.QSettings.setPath static method.
@@ -131,6 +131,7 @@ import PyQt4.QtGui as QtGui
 
 from vitables.preferences import configException
 import vitables.vtSite
+import vitables.utils
 
 def getVersion():
     """The application version."""
@@ -160,7 +161,7 @@ class Config(QtCore.QSettings):
 
         # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback
-        QtCore.QSettings.__init__(self, 'vitables.org', 'ViTables')
+        QtCore.QSettings.__init__(self, 'ViTables')
         self.setFallbacksEnabled(False)
 
         # The full path of the data directory
@@ -191,7 +192,7 @@ class Config(QtCore.QSettings):
         if sys.platform.startswith('win'):
             # On windows systems settings will be stored in the registry
             # under the Carabos key
-            self.writeEntry('/vitables.org/init', '') # Is this required??
+            self.writeEntry('/ViTables/init', '') # Is this required??
             vtversion = vitables.vtSite.VERSION
             pyversion = 'Python%s%s' % (sys.version_info[0], sys.version_info[1])
             self.base_key = 'ViTables/%s/%s' % (vtversion, pyversion)
@@ -213,104 +214,238 @@ class Config(QtCore.QSettings):
                 QtCore.QSettings.UserScope, config_directory)
 
 
+    def loggerPaper(self):
+        """
+        Returns the logger background color.
+        """
+
+        key = 'Logger/Paper'
+        default_value = QtCore.QVariant(QtGui.QColor("#ffffff"))
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.Color):
+            return setting_value
+        else:
+            return default_value
+
+
+    def loggerText(self):
+        """
+        Returns the logger text color.
+        """
+
+        key = 'Logger/Text'
+        default_value = QtCore.QVariant(QtGui.QColor("#000000"))
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.Color):
+            return setting_value
+        else:
+            return default_value
+
+
+    def loggerFont(self):
+        """
+        Returns the logger font.
+        """
+
+        key = 'Logger/Font'
+        default_value = QtCore.QVariant(QtGui.qApp.font())
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.Font):
+            return setting_value
+        else:
+            return default_value
+
+
+    def workspaceBackground(self):
+        """
+        Returns the workspace background color.
+        """
+
+        key = 'Workspace/Background'
+        default_value = QtCore.QVariant(QtGui.QBrush(QtGui.QColor("#ffffff")))
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.Brush):
+            return setting_value
+        else:
+            return default_value
+
+
     def readStyle(self):
         """Returns the current application style."""
 
-        # the property key and its default value
+        # The property key and its default value
         key = 'Look/currentStyle'
-        prop_value = QtCore.QVariant()
+        default_value = QtCore.QVariant('default')
 
-        try:
-            # Read the entry from the configuration file/registry
-            entry = self.value(key)
+        # Read the entry from the configuration file/registry
+        entry = self.value(key)
 
-            # Check the entry format and value
-            if not entry.canConvert(QtCore.QVariant.String):
-                raise configException.ConfigFileIOException(key)
-            if str(entry.toString()) not in ['default', 'Windows', 'Motif', 
-                                            'MotifPlus', 'Platinum', 'SGI', 
-                                            'CDE']:
-                raise configException.SettingRetrievalException('style')
-
-            prop_value = entry
-        except configException.ConfigFileIOException, inst:
-            print inst.error_message
-        except configException.SettingRetrievalException, inst:
-            print inst.error_message
-
-        return prop_value
+        # Check the entry format and value
+        if not entry.canConvert(QtCore.QVariant.String):
+            return default_value
+        elif str(entry.toString()) not in ['default', 'Windows', 'Motif', 
+                                        'MotifPlus', 'Platinum', 'SGI', 
+                                        'CDE']:
+            return default_value
+        else:
+            return entry
 
 
-    def readStartupWorkingDir(self):
-        """Returns the startupWorkingDirectory property."""
-
-        # the property key and its default value
-        key = 'Startup/startupWorkingDirectory'
-        prop_value = QtCore.QVariant()
-
-        try:
-            # Read the entry from the configuration file/registry
-            entry = self.value(key)
-
-            # Check the entry format and value
-            if not entry.canConvert(QtCore.QVariant.String):
-                raise configException.ConfigFileIOException(key)
-            if str(entry.toString()) not in ['home', 'last']:
-                raise configException.SettingRetrievalException('startup')
-
-            prop_value = entry
-        except configException.ConfigFileIOException, inst:
-            print inst.error_message
-        except configException.SettingRetrievalException, inst:
-            print inst.error_message
-
-        return prop_value
-
-
-    def readValue(self, key):
+    def windowPosition(self):
         """
-        Returns the stored value of a given application setting.
-
-        The recent files list looks like
-        ``[mode#@#filepath1, mode#@#filepath2, ...]``
-        The list of bookmarks looks like
-        ``[filepath1[#ID], filepath2[#ID], ...]``
-
-        :Parameters:
-
-        - `key`: the setting being retrieved
+        Returns the main window geometry setting.
         """
 
-        types = {'Logger/paper': QtCore.QVariant.Color, 
-                 'Logger/text': QtCore.QVariant.Color, 
-                 'Logger/font': QtCore.QVariant.Font, 
-                 'Workspace/background': QtCore.QVariant.Color, 
-                 'Startup/startupWorkingDirectory': QtCore.QVariant.String, 
-                 'Startup/restoreLastSession': QtCore.QVariant.Bool, 
-                 'Geometry/position': QtCore.QVariant.ByteArray, 
-                 'Geometry/state': QtCore.QVariant.ByteArray, 
-                 'Geometry/hsplitter': QtCore.QVariant.ByteArray, 
-                 'Geometry/vsplitter': QtCore.QVariant.ByteArray, 
-                 'Startup/lastWorkingDirectory': QtCore.QVariant.String, 
-                 'Recent/files': QtCore.QVariant.StringList, 
-                 'Session/files': QtCore.QVariant.StringList, 
-                 'HelpBrowser/history': QtCore.QVariant.StringList, 
-                 'HelpBrowser/bookmarks': QtCore.QVariant.StringList, }
-        # the property default value
-        prop_value = QtCore.QVariant()
+        key = 'Geometry/Position'
+        default_value = QtCore.QVariant()
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+            return setting_value
+        else:
+            return default_value
 
-        try:
-            # Read the entry from the configuration file/registry
-            entry = self.value(key)
-            # Check the entry format
-            if not entry.canConvert(types[key]):
-                raise configException.ConfigFileIOException(key)
 
-            prop_value = entry
-        except configException.ConfigFileIOException, inst:
-            print inst.error_message
+    def windowLayout(self):
+        """
+        Returns the main window layout setting.
 
-        return prop_value
+        This setting stores the position and size of toolbars and
+        dockwidgets.
+        """
+
+        key = 'Geometry/Layout'
+        default_value = QtCore.QVariant()
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+            return setting_value
+        else:
+            return default_value
+
+
+    def hsplitterPosition(self):
+        """
+        Returns the horizontal splitter geometry setting.
+        """
+
+        key = 'Geometry/HSplitter'
+        default_value = QtCore.QVariant()
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+            return setting_value
+        else:
+            return default_value
+
+
+    def vsplitterPosition(self):
+        """
+        Returns the vertical splitter geometry setting.
+        """
+
+        key = 'Geometry/VSplitter'
+        default_value = QtCore.QVariant()
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+            return setting_value
+        else:
+            return default_value
+
+
+    def startupLastSession(self):
+        """
+        Returns the restore last session setting.
+        """
+
+        key = 'Startup/restoreLastSession'
+        default_value = QtCore.QVariant(False)
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.Bool):
+            return setting_value
+        else:
+            return default_value
+
+
+    def startupWorkingDir(self):
+        """
+        Returns the startup working directory setting.
+        """
+
+        key = 'Startup/startupWorkingDir'
+        default_value = QtCore.QVariant('home')
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.String):
+            return setting_value
+        else:
+            return default_value
+
+
+    def lastWorkingDir(self):
+        """
+        Returns the last working directory setting.
+        """
+
+        key = 'Startup/lastWorkingDir'
+        default_value = QtCore.QVariant(vitables.utils.getHomeDir())
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.String):
+            return setting_value
+        else:
+            return default_value
+
+
+    def recentFiles(self):
+        """
+        Returns the list of most recently opened files setting.
+        """
+
+        key = 'Recent/Files'
+        default_value = QtCore.QVariant([])
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.StringList):
+            return setting_value
+        else:
+            return default_value
+
+
+    def sessionFiles(self):
+        """
+        Returns the list of files and nodes opened when the last session quit.
+        """
+
+        key = 'Session/Files'
+        default_value = QtCore.QVariant([])
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.StringList):
+            return setting_value
+        else:
+            return default_value
+
+
+    def helpHistory(self):
+        """
+        Returns the navigation history of the HelpBrowser.
+        """
+
+        key = 'HelpBrowser/History'
+        default_value = QtCore.QVariant([])
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.StringList):
+            return setting_value
+        else:
+            return default_value
+
+
+    def helpBookmarks(self):
+        """
+        Returns the bookmarks of the HelpBrowser.
+        """
+
+        key = 'HelpBrowser/Bookmarks'
+        default_value = QtCore.QVariant([])
+        setting_value = self.value(key)
+        if setting_value.canConvert(QtCore.QVariant.StringList):
+            return setting_value
+        else:
+            return default_value
 
 
     def writeValue(self, key, value):
