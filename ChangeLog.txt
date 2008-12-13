@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 13, 2008**
+	Project clean-up and final changes.
+
 ** Dec 12, 2008**
 	The preferences package has been refactored.
 

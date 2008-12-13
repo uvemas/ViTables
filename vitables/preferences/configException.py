@@ -33,14 +33,11 @@ Here is defined the configException module.
 Classes:
 
 * ConfigFileIOException(Exception)
-* SettingRetrievalException(Exception)
 
 Methods:
 
 * ConfigFileIOException.__init__(self, key)
 * ConfigFileIOException.__tr(self, source, comment=None)
-* SettingRetrievalException.__init__(self, kind, key=None)
-* SettingRetrievalException.__tr(self, source, comment=None)
 
 Misc variables:
 

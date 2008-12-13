@@ -1977,7 +1977,6 @@ class VTApp(QtGui.QMainWindow):
         prefs =  preferences.Preferences(self)
         try:
             if prefs.gui.exec_() == QtGui.QDialog.Accepted:
-                for key, value in prefs.new_prefs.items():
                 self.loadConfiguration(prefs.new_prefs)
         finally:
             del prefs

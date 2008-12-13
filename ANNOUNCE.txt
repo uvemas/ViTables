@@ -16,8 +16,9 @@ it runs on top of PyTables ensures its speed and memory efficiency.
 In this release you will find some bug fixes and usability enhancements, but
 the most important change is that ViTables has been finally migrated to use the
 Qt4 library. As a consequence ViTables has been largely refactored and even
-rewritten. It is now more compact (several thousand lines of code
-have been dropped), more stable and looks nicer.
+rewritten. It is now more compact (a couple of thousand lines have been dropped),
+more stable and looks nicer. Changes are important enough to deserve a new major
+version.
 
 Platforms
 ---------

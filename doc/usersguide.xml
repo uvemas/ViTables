@@ -675,11 +675,16 @@ options:
         this menu you can, for instance, rearrange the opened views, see the
         list of open views (which is particularly useful when the workspace is
         cluttered with so many open views that it's difficult to find the one
-        you want) or close all open views at once. This menu is also available
-        as a context menu.</para>
+        you want) or close all open views at once.</para>
+
+			<para>There is also a context menu for the workspace. It can be used to
+			change the workspace view mode: you can display views as regular windows
+			(default behavior) or with tabs in a tab bar. In addition it give you
+			access to the <guimenu>Windows</guimenu> popup menu.
+			</para>
 
         <figure id="workspace">
-          <title>A workspace with 3 opened leaves</title>
+          <title>A tabbified workspace with 3 leaves</title>
             <mediaobject>
               <imageobject role="fo">
                 <imagedata valign="middle" align="center" scale="50"
@@ -746,29 +751,11 @@ options:
       </para>
 
       <para>Datasets are displayed in views, that are spreadsheet-like windows.
-        As usual, views can be navigated in a variety of ways:
-
-      <itemizedlist>
-        <listitem><para>one line steps with cursor keys
-        </para></listitem>
-
-        <listitem><para>small number of lines steps wheeling the mouse over the
-        cells area</para></listitem>
-
-        <listitem><para>one page steps with Prior/Next Page keys
-        </para></listitem>
-
-        <listitem><para>large number of lines steps wheeling the mouse over the
-        vertical scrollbar
-        </para></listitem>
-
-        <listitem><para>any number of lines dragging the slider of the vertical
-        scrollbar
-        </para></listitem>
-      </itemizedlist>
-
-      Not very exciting... until you try the last method on a large dataset,
-      and realize that very large tables can be navigated as quickly as small ones.
+      Then can be navigated as you expected: via scrollbar, keyboard or wheel
+			of mouse. The interesting thing is that <emphasis>the navigation speed is
+			independent of the view size</emphasis>: a table with several thousand
+			million rows is navigated as quickly as a table with just a few dozens
+			rows.
       </para>
 
       <para>Another interesting feature of views is the ability to zoom in on
@@ -790,7 +777,7 @@ options:
       <para><screenshot>
         <mediaobject>
           <imageobject role="fo">
-            <imagedata valign="middle" align="center" scale="50"
+            <imagedata valign="middle" align="center" scale="55"
             fileref="images/browseDataset.png" format="PNG"/>
           </imageobject>
           <imageobject role="html">
@@ -1118,19 +1105,27 @@ options:
     <para>The configuration file is divided into sections, labeled as
     <literal>[section_name]</literal>. Every section is made of subsections
     written as key/value pairs and representing the item that is being
-    customized. Both sections and subsections are alphabetically sorted.
+    customized.
     Currently the following sections/subsections are available: </para>
 
     <glosslist>
     <?dbfo glosslist-presentation="list" ?>
         <glossentry>
-        <glossterm><emphasis role="bold">[Geometry] hsplitter</emphasis>
+        <glossterm><emphasis role="bold">[Geometry] HSplitter</emphasis>
         </glossterm>
         <glossdef><para>the size of the horizontal splitter</para></glossdef>
         </glossentry>
+				
+				<glossentry>
+					<glossterm><emphasis role="bold">[Geometry] Layout</emphasis>
+					</glossterm>
+					<glossdef>
+						<para>the position and size of toolbars and dock widgets</para>
+					</glossdef>
+				</glossentry>
 
         <glossentry>
-        <glossterm><emphasis role="bold">[Geometry] position</emphasis>
+        <glossterm><emphasis role="bold">[Geometry] Position</emphasis>
         </glossterm>
         <glossdef>
         <para>the position and size of the application window</para>
@@ -1138,37 +1133,37 @@ options:
         </glossentry>
 
         <glossentry>
-        <glossterm><emphasis role="bold">[Geometry] vsplitter</emphasis>
+        <glossterm><emphasis role="bold">[Geometry] VSplitter</emphasis>
         </glossterm>
         <glossdef><para>the size of the vertical splitter</para></glossdef>
         </glossentry>
         
         <glossentry>
-        <glossterm><emphasis role="bold">[HelpBrowser] bookmarks</emphasis>
+        <glossterm><emphasis role="bold">[HelpBrowser] Bookmarks</emphasis>
         </glossterm>
         <glossdef><para>the list of current bookmarks of the help browser
         </para></glossdef>
         </glossentry>
         
         <glossentry>
-        <glossterm><emphasis role="bold">[HelpBrowser] history</emphasis>
+        <glossterm><emphasis role="bold">[HelpBrowser] History</emphasis>
         </glossterm>
         <glossdef><para>the navigation history of the help browser</para>
         </glossdef>
         </glossentry>
         
         <glossentry>
-        <glossterm><emphasis role="bold">[Logger] font</emphasis></glossterm>
+        <glossterm><emphasis role="bold">[Logger] Font</emphasis></glossterm>
         <glossdef><para>the logger font</para></glossdef>
         </glossentry>
 
         <glossentry>
-        <glossterm><emphasis role="bold">[Logger] paper</emphasis></glossterm>
+        <glossterm><emphasis role="bold">[Logger] Paper</emphasis></glossterm>
         <glossdef><para>the logger background color</para></glossdef>
         </glossentry>
 
         <glossentry>
-        <glossterm><emphasis role="bold">[Logger] text</emphasis></glossterm>
+        <glossterm><emphasis role="bold">[Logger] Text</emphasis></glossterm>
         <glossdef><para>the logger text color</para></glossdef>
         </glossentry>
 
@@ -1181,19 +1176,19 @@ options:
         </glossentry>
         
         <glossentry>
-        <glossterm><emphasis role="bold">[Recent] files</emphasis></glossterm>
+        <glossterm><emphasis role="bold">[Recent] Files</emphasis></glossterm>
         <glossdef><para>the list of files recently opened</para></glossdef>
         </glossentry>
         
         <glossentry>
-        <glossterm><emphasis role="bold">[Session] files</emphasis></glossterm>
+        <glossterm><emphasis role="bold">[Session] Files</emphasis></glossterm>
         <glossdef><para>the list of files and views that were open the last
         time ViTables was closed</para></glossdef>
         </glossentry>
         
         <glossentry>
         <glossterm>
-            <emphasis role="bold">[Startup] lastWorkingDirectory</emphasis>
+            <emphasis role="bold">[Startup] lastWorkingDir</emphasis>
         </glossterm>
         <glossdef><para>The last directory accessed from within ViTables
         via Open File dialog</para></glossdef>
@@ -1210,7 +1205,7 @@ options:
 
         <glossentry>
         <glossterm>
-            <emphasis role="bold">[Startup] startupWorkingDirectory</emphasis>
+            <emphasis role="bold">[Startup] startupWorkingDir</emphasis>
         </glossterm>
         <glossdef><para>possible values are <emphasis>current</emphasis>, and
         <emphasis>last</emphasis>. These values indicate how the application
@@ -1219,9 +1214,9 @@ options:
 
         <glossentry>
         <glossterm>
-            <emphasis role="bold">[Workspace] background</emphasis>
+            <emphasis role="bold">[Workspace] Background</emphasis>
         </glossterm>
-        <glossdef><para>the workspace background color</para></glossdef>
+        <glossdef><para>the workspace background brush</para></glossdef>
         </glossentry>
 
     </glosslist>
@@ -1248,14 +1243,9 @@ options:
     <itemizedlist>
       <listitem><para>capable of multiple views</para></listitem>
 
-      <listitem>
-        <para>bookmarks
-            <footnote><para>A nice feature of bookmarks is
-            that they can be navigated while they are being edited with the
-            Bookmarks Editing dialog. Simply double click on a bookmark and it
-            will be displayed in the browser.</para></footnote>
-        </para>
-      </listitem>
+			<listitem>
+        <para>bookmarks</para>
+			</listitem>
 
       <listitem><para>session history</para></listitem>
 
@@ -1263,9 +1253,14 @@ options:
 
       <listitem><para>easy document navigation through navigation
       buttons</para></listitem>
-    </itemizedlist>
+		</itemizedlist>
 
-    <para><screenshot>
+		<para>A nice feature of bookmarks is that they can be navigated while they
+			are being edited with the Bookmarks Editing dialog. Simply double click
+			on a bookmark and it will be displayed in the browser.
+		</para>
+
+		<para><screenshot>
        <mediaobject>
           <imageobject role="fo">
             <imagedata valign="middle" align="center" scale="60"
