@@ -129,7 +129,7 @@ class BookmarksDlg(QtGui.QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('BookmarksDlg', source, comment))
+        return unicode(QtGui.qApp.translate('BookmarksDlg', source, comment))
 
 
     def fillBookmarksTable(self):
@@ -166,11 +166,8 @@ class BookmarksDlg(QtGui.QDialog):
         help_browser = self.parent().browser
         # Get the bookmark UID
         row = self.model.itemFromIndex(index).row()
-        item = self.model.item(row, 1)
-        src = str(item.text())
-        bookmark_id = help_browser.bookmarks.indexOf(src) + 1
-        # Open the bookmark
-        help_browser.slotOpenBookmark(bookmark_id)
+        src = help_browser.bookmarks[row]
+        help_browser.slotDisplaySrc(src)
 
 
     def slotCheckDeleteButton(self, item):

@@ -66,7 +66,7 @@ import numpy
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
-import vitables.vtSite
+import vitables.qrc_resources
 import vitables.vtWidgets.renameDlg as renameDlg
 
 ICONS_DICT = {}
@@ -91,31 +91,23 @@ def createIcons(large_icons, small_icons, icons_dict):
     """
 
     all_icons = large_icons.union(small_icons)
-    icons_directory = '%s/icons' % vitables.vtSite.DATADIR
 
     for name in all_icons:
         icon = QtGui.QIcon()
         if name in large_icons:
-            file_name = 'big_icons/%s.png' % name
-            file_path = '%s/%s' % (icons_directory, file_name)
-            pixmap = QtGui.QPixmap(file_path)
+            pixmap = QtGui.QPixmap(':/icons/big_icons/%s.png' % name)
             pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
-            file_name = 'small_icons/%s.png' % name
-            file_path = '%s/%s' % (icons_directory, file_name)
-            pixmap = QtGui.QPixmap(file_path)
+            pixmap = QtGui.QPixmap(':/icons/small_icons/%s.png' % name)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 
-#    # Add an empty iconSet for the Default button of some dialogs
+    # Add an empty iconSet for the Default button of some dialogs
     icons_dict[''] = QtGui.QIcon()
 
     # Application icon
-    icon = QtGui.QIcon()
-    pixmap = QtGui.QPixmap('%s/vitables_wm.png' % icons_directory)
-    icon.addPixmap(pixmap)
-    icons_dict['vitables_wm'] = icon
+    icons_dict['vitables_wm'] = QtGui.QIcon(':/icons/vitables_wm.png')
 
 
 def getIcons():
@@ -386,11 +378,12 @@ def customLineEdit(parent):
 def getLicense():
     """The ViTables license in Rich Text format."""
 
-    license_path =  os.path.join(vitables.vtSite.DATADIR, 'LICENSE.html')
-    input_file = open(license_path, 'r')
-    license_text = input_file.read()
+    input_file = QtCore.QFile(":/LICENSE.html")
+    input_file.open(QtCore.QIODevice.ReadOnly)
+    stream = QtCore.QTextStream(input_file)
+    license_text = stream.readAll()
     input_file.close()
 
-    return """%s""" % license_text
+    return license_text
 
 

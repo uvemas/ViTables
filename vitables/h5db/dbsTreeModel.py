@@ -138,7 +138,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('DBsTreeModel', source, comment))
+        return unicode(QtGui.qApp.translate('DBsTreeModel', source, comment))
 
 
     def mapDB(self, filepath, db_doc):

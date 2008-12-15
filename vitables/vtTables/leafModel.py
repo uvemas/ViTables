@@ -129,7 +129,7 @@ class LeafModel(QtCore.QAbstractTableModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('LeafModel', source, comment))
+        return unicode(QtGui.qApp.translate('LeafModel', source, comment))
 
 
     def headerData(self, section, orientation, role):

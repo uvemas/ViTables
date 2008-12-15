@@ -109,9 +109,11 @@ class InputNodeName(QtGui.QDialog):
         # Make sure that buttons are in the proper activation state
         self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), (self.value_le.text()))
 
+
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('InputNodeName', source, comment))
+        return unicode(QtGui.qApp.translate('InputNodeName', source, comment))
+
 
     def addComponents(self):
         """
@@ -162,9 +164,12 @@ class InputNodeName(QtGui.QDialog):
         else:
             self.edit_button.setEnabled(1)
 
+
     def slotAccept(self):
         """Save the entered group name and hide the dialog.
         """
 
         self.node_name = unicode(self.value_le.text())
         self.accept()
+
+

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -46,6 +48,7 @@ Misc variables:
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import os
@@ -96,7 +99,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('HelpBrowserGUI', source, comment))
+        return unicode(QtGui.qApp.translate('HelpBrowserGUI', source, comment))
 
 
     def setupActions(self):

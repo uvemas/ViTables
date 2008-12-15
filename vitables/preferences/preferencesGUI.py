@@ -109,7 +109,7 @@ class PreferencesGUI(QtGui.QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('PreferencesGUI', source, comment))
+        return unicode(QtGui.qApp.translate('PreferencesGUI', source, comment))
 
 
     def makeGeneralPage(self, general_page):

@@ -101,10 +101,11 @@ class smart_install_data(install_data):
         if self.root != None:
             tmp = tmp[len(self.root):]
             install_data_dir = install_data_dir[len(self.root):]
-        vtpaths_module.write('INSTALLDIR = "%s/%s"\n' % \
-                            (os.path.normpath(tmp), 'vitables'))
-        vtpaths_module.write('DATADIR = "%s"\n' % \
-                            os.path.normpath(install_data_dir))
+        installdir = os.path.join(os.path.normpath(tmp), 
+                                  'vitables').replace(chr(92),'/')
+        vtpaths_module.write('INSTALLDIR = "%s"\n' % installdir)
+        datadir = os.path.normpath(install_data_dir).replace(chr(92),'/')
+        vtpaths_module.write('DATADIR = "%s"\n' % datadir)
         vtpaths_module.write('VERSION = "%s"\n' % vt_version)
         vtpaths_module.close()
 

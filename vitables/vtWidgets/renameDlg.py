@@ -149,7 +149,7 @@ class RenameDlg(QtGui.QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('RenameDlg', source, comment))
+        return unicode(QtGui.qApp.translate('RenameDlg', source, comment))
 
 
     def addComponents(self):

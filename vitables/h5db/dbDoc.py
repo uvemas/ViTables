@@ -126,7 +126,7 @@ class DBDoc(QtCore.QObject):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('DBDoc', source, comment))
+        return unicode(QtGui.qApp.translate('DBDoc', source, comment))
 
 
     def openH5File(self):

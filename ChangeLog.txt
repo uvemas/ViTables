@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 15, 2008**
+	Fixed some bugs regarding portability between different platforms.
+
 ** Dec 13, 2008**
 	Project clean-up and final changes.
 

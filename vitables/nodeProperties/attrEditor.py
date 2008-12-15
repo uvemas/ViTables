@@ -216,7 +216,7 @@ class AttrEditor(object):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('AttrEditor', source, comment))
+        return unicode(QtGui.qApp.translate('AttrEditor', source, comment))
 
 
     def checkAttributes(self):

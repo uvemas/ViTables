@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -62,6 +64,7 @@ Misc variables:
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import os
@@ -70,6 +73,7 @@ import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
 import vitables.utils
+import vitables.qrc_resources
 from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 
@@ -107,12 +111,6 @@ class HelpBrowser(QtCore.QObject) :
         self.bookmarks = vtapp.hb_bookmarks
         self.history = vtapp.hb_history
 
-        # The User's Guide file
-        self.users_guide = vitables.utils.forwardPath(
-            os.path.join(vtapp.config.doc_dir, 'html', 'index.html'))
-        self.not_found_doc = vitables.utils.forwardPath(os.path.abspath(
-            os.path.join(vtapp.config.doc_dir, 'html', 'not_found.html')))
-
         # create the GUI
         self.gui = browserGUI.HelpBrowserGUI(self)
 
@@ -124,13 +122,13 @@ class HelpBrowser(QtCore.QObject) :
 
         # The GUI setup is slow so it is not shown until the setup is
         # done (it avoids displaying an ugly empty widget)
-        self.slotDisplaySrc(self.users_guide)
+        self.slotDisplaySrc('index.html')
         self.gui.show()
 
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return str(QtGui.qApp.translate('HelpBrowser', source, comment))
+        return unicode(QtGui.qApp.translate('HelpBrowser', source, comment))
 
 
     def connectSignals(self):
@@ -165,7 +163,7 @@ class HelpBrowser(QtCore.QObject) :
             self.slotRecentSubmenuAboutToShow)
 
 
-    def slotDisplaySrc(self, src=None) :
+    def slotDisplaySrc(self, src=None):
         """
         Displays a document in the `HelpBrowser` window.
 
@@ -179,12 +177,9 @@ class HelpBrowser(QtCore.QObject) :
             if action_text.count(QtCore.QRegExp("^\d")):
                 src = action_text.remove(QtCore.QRegExp("^\d+\.\s+"))
 
-        if isinstance(src, QtCore.QString):
-            src = str(src)
-        src = vitables.utils.forwardPath(os.path.abspath(src))
-        url = QtCore.QUrl(src)
-        if not os.path.isfile(str(url.toLocalFile())):
-            url = QtCore.QUrl(self.not_found_doc)
+        src = QtCore.QDir().fromNativeSeparators(src) # src can be a QString
+        (dirname, basename) = os.path.split(unicode(src))
+        url = QtCore.QUrl("qrc:/doc/html/%s" % basename)
         self.gui.text_browser.setSource(url)
 
 
@@ -226,7 +221,7 @@ class HelpBrowser(QtCore.QObject) :
             'A dialog caption'))
         file_dlg.setDirectory(self.working_dir)
         try:
-    
+
             # OK clicked. Working directory is updated
             if file_dlg.exec_():
                 # The absolut path of the selected file
@@ -270,7 +265,7 @@ class HelpBrowser(QtCore.QObject) :
         # Close all browsers
         for browser in self.vtapp.doc_browsers[:] :
             browser.slotCloseWindow()
-    
+
 
 
     #########################################################
@@ -361,8 +356,8 @@ class HelpBrowser(QtCore.QObject) :
         :Parameter bmark_id: the bookmark identifier
         """
 
-        src_path = self.bookmarks[bmark_id - 1]
-        self.slotDisplaySrc(src_path) # QtCore.SIGNAL sourceChanged() emited
+        bmark = self.bookmarks[bmark_id - 1]
+        self.slotDisplaySrc(bmark) # QtCore.SIGNAL sourceChanged() emited
 
 
     def slotAddBookmark(self) :
@@ -436,10 +431,7 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         url = QtCore.QUrl(src).toString(QtCore.QUrl.RemoveScheme)
-        url = vitables.utils.forwardPath(os.path.abspath(str(url)))
-        url = url.replace('///', '/')
-        if url == self.not_found_doc:
-            return
+        url = QtCore.QDir().fromNativeSeparators(url)
         if not self.history.count(url):
             self.history.append(url)
             self.gui.combo_history.addItem(url)
