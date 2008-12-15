@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 15, 2008**
+	Fixed a problem in setup.py.
+
 	Applied several simplifications derived from the use of Qt resources system.
 
 	Fixed some bugs regarding portability between different platforms.
