@@ -122,6 +122,7 @@ b)  using `setPath` method once before we read/write settings, so
 """
 
 __docformat__ = 'restructuredtext'
+__version__ = '2.0'
 
 import os
 import sys
@@ -130,12 +131,13 @@ import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
 from vitables.preferences import configException
-import vitables.vtSite
 import vitables.utils
 
 def getVersion():
     """The application version."""
-    return vitables.vtSite.VERSION
+    return __version__
+
+
 
 class Config(QtCore.QSettings):
     """
@@ -164,18 +166,6 @@ class Config(QtCore.QSettings):
         QtCore.QSettings.__init__(self, 'ViTables')
         self.setFallbacksEnabled(False)
 
-        # The full path of the data directory
-        self.data_directory = vitables.vtSite.DATADIR
-
-        # Set the translations directory in a system-independent way
-        self.translations_dir = os.path.join(self.data_directory,'translations')
-
-        # Set the icons directory in a system-independent way
-        self.icons_dir = os.path.join(self.data_directory,'icons')
-
-        # Set the documentation directory in a system-independent way
-        self.doc_dir = os.path.join(self.data_directory,'doc')
-
         # The default style depends on the platform
         if sys.platform.startswith('win'):
             # if VER_PLATFORM_WIN32_NT (i.e WindowsNT/2000/XP)
@@ -193,9 +183,8 @@ class Config(QtCore.QSettings):
             # On windows systems settings will be stored in the registry
             # under the Carabos key
             self.setValue('/ViTables/init', QtCore.QVariant('')) # Is this required??
-            vtversion = vitables.vtSite.VERSION
             pyversion = 'Python%s%s' % (sys.version_info[0], sys.version_info[1])
-            self.base_key = 'ViTables/%s/%s' % (vtversion, pyversion)
+            self.base_key = 'ViTables/%s/%s' % (__version__, pyversion)
         elif sys.platform.startswith('darwin'):
             # Mac OS X saves settings in a properties list stored in a
             # standard location, either on a global or user basis (see

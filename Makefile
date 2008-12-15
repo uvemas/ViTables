@@ -8,9 +8,11 @@ vtdoc:
 	cd ./doc && make
 
 unix: vtdoc
+	pyrcc4 -o vitables/qrc_resources.py resources.qrc
 	python setup.py sdist
 
 clean:
 	cd ./doc && make clean
+	-rm -f vitables/qrc_resources.py
 	-rm -f MANIFEST
 	-rm -rf build dist

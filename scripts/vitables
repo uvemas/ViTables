@@ -54,11 +54,10 @@ from optparse import OptionParser
 import sys
 import os.path
 
-import vitables.vtSite
-
-# Location of Qt and signed PyQt libraries in Windows systems
+# Location of Qt and PyQt libraries in Windows systems
 if sys.platform.startswith('win'):
-    PYQT_DIR = os.path.join(vitables.vtSite.INSTALLDIR, 'pyqt')
+    import vitables.vtSite
+    PYQT_DIR = os.path.join(vitables.vtSite.INSTALLDIR, 'PyQt4')
     sys.path = [os.path.normpath(PYQT_DIR)] + sys.path
 
 import PyQt4.QtCore as QtCore
@@ -90,12 +89,13 @@ def main(args):
     locale.setlocale(locale.LC_ALL, '')
     locale.setlocale(locale.LC_NUMERIC, 'C')
     language = locale.getlocale()[0]
-    vt_translator = QtCore.QTranslator()
-    vt_translator.load('vitables_%s' % language, config.translations_dir)
-    qt_translator = QtCore.QTranslator()
-    qt_translator.load('qt_%s' % language, config.translations_dir)
-    app.installTranslator(vt_translator)
-    app.installTranslator(qt_translator)
+    # Future translations (if any) will use resource files
+    # vt_translator = QtCore.QTranslator()
+    # vt_translator.load('vitables_%s' % language, config.translations_dir)
+    # qt_translator = QtCore.QTranslator()
+    # qt_translator.load('qt_%s' % language, config.translations_dir)
+    # app.installTranslator(vt_translator)
+    # app.installTranslator(qt_translator)
 
     # Parse the command line
     parser = OptionParser(prog='vitables', version=vtconfig.getVersion(),

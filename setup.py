@@ -89,7 +89,7 @@ class smart_install_data(install_data):
             install_data_dir = getattr(install_cmd, 'install_data')
 
         # Create the module vtSite.py.
-        # The module has the attributes INSTALLDIR, DATADIR and VERSION
+        # The module has the attribute INSTALLDIR
         # When installing this module will overwrite that included
         # in the source package and will be used at runtime
         vtpaths_module = open(os.path.join(install_lib_dir,
@@ -104,9 +104,6 @@ class smart_install_data(install_data):
         installdir = os.path.join(os.path.normpath(tmp), 
                                   'vitables').replace(chr(92),'/')
         vtpaths_module.write('INSTALLDIR = "%s"\n' % installdir)
-        datadir = os.path.normpath(install_data_dir).replace(chr(92),'/')
-        vtpaths_module.write('DATADIR = "%s"\n' % datadir)
-        vtpaths_module.write('VERSION = "%s"\n' % vt_version)
         vtpaths_module.close()
 
         return install_data.run(self)
@@ -281,15 +278,10 @@ setup(name = 'ViTables', # The name of the distribution
     'vitables.vtTables', 'vitables.vtWidgets'],
     scripts = ['scripts/vitables'],
     cmdclass = {"install_data":smart_install_data},
-    data_files = [('icons', glob.glob('icons/vitables*')),
-    ('icons/big_icons', glob.glob('icons/big_icons/*.png')),
-    ('icons/small_icons', glob.glob('icons/small_icons/*.png')),
+    data_files = [
     ('examples', glob.glob('examples/*.h5')),
     ('examples/scripts', glob.glob('examples/scripts/*.py')),
     ('doc', glob.glob('doc/*.pdf')),
-    ('doc/html', glob.glob('doc/html/*.html') +  glob.glob('doc/html/*.css')),
-    ('doc/html/images', glob.glob('doc/html/images/*.png') +
-        glob.glob('doc/html/images/*.svg')),
     ('translations', ['translations/Translations.txt'] +
         glob.glob('translations/*.qm')),
     ('', ['LICENSE.txt', 'LICENSE.html']),

@@ -1,11 +1,8 @@
 include *.txt VERSION LICENSE.html
-recursive-include icons *.png *.ico big_icons/*.png small_icons/*.png
 recursive-include unixapp vitables.desktop vitables.svgz
 recursive-include doc *.pdf 
-recursive-include doc/html *.html *.css images/*.png 
 recursive-include examples *.h5 vitablesrc scripts/*.py
 recursive-include macosxapp *
 include scripts/vitables
-include translations/*.txt translations/*.qm
 
 exclude setup.cfg 

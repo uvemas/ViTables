@@ -46,12 +46,10 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 
 INSTALLDIR = '.'
-DATADIR = '.'
-VERSION = '2.0'
 
 import sys as _sys
 if (_sys.platform == 'darwin'
     and getattr(_sys, 'frozen', None) == 'macosx_app'):
     import __main__
     import os.path as _path
-    INSTALLDIR = DATADIR = _path.dirname(_path.abspath(__main__.__file__))
+    INSTALLDIR = _path.dirname(_path.abspath(__main__.__file__))

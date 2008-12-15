@@ -101,7 +101,7 @@ class VTApp(QtGui.QMainWindow):
         self.config = vtconfig.Config()
 
         # Show a splash screen
-        logo = QtGui.QPixmap("%s/vitables_logo.png" % self.config.icons_dir)
+        logo = QtGui.QPixmap(":/icons/vitables_logo.png")
         splash = vitables.vtsplash.VTSplash(logo)
         splash.show()
         t_i = time.time()
