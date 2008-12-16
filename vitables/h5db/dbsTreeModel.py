@@ -321,6 +321,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             'A logger info message')
         (f_handler, self.tmp_filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)
+        self.tmp_filepath = \
+            unicode(QtCore.QDir.fromNativeSeparators(self.tmp_filepath))
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         if not db_doc:
             return

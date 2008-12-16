@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 16, 2008**
+	Fixed some bugs regarding portability between different platforms
+
 ** Dec 15, 2008**
 	Fixed a problem in setup.py.
 

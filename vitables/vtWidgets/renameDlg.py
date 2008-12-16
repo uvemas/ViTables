@@ -237,7 +237,9 @@ class RenameDlg(QtGui.QDialog):
         if button == self.rename_button:
             self.renameNode()
         elif button == self.overwrite_button:
-            self.overwriteNode()    
+            self.overwriteNode()
+
+
     def overwriteNode(self):
         """
         Set the new name and exit.

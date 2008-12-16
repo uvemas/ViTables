@@ -1276,7 +1276,7 @@ class VTApp(QtGui.QMainWindow):
         :Returns: the filepath with the proper extension (a Python string)
         """
 
-        filepath = str(filepath)
+        filepath = unicode(filepath)
         if not re.search('\.(.+)$', os.path.basename(filepath)):
             ext = '.h5'
             filepath = '%s%s' % (filepath, ext)
@@ -1295,11 +1295,15 @@ class VTApp(QtGui.QMainWindow):
             # The user has canceled the dialog
             return
 
+        # Make sure the path is not a relative path and contains no
+        # backslashes
+        filepath = QtCore.QDir.fromNativeSeparators(os.path.abspath(filepath))
+        filepath = unicode(filepath)
+
         # Check the file extension
         filepath = self.checkFileExtension(filepath)
 
         # Check the returned path
-        filepath = os.path.abspath(filepath)
         if os.path.exists(filepath):
             print self.__tr(
                 """\nWarning: """
@@ -1327,7 +1331,8 @@ class VTApp(QtGui.QMainWindow):
         current_index = self.dbs_tree_view.currentIndex()
 
         # The file being saved
-        initial_filepath = self.dbs_tree_model.nodeFromIndex(current_index).filepath
+        initial_filepath = \
+            self.dbs_tree_model.nodeFromIndex(current_index).filepath
         initial_dirname, initial_filename = os.path.split(initial_filepath)
 
         # The trier filepath
@@ -1338,6 +1343,13 @@ class VTApp(QtGui.QMainWindow):
             initial_filepath)
         if not trier_filepath:  # The user has canceled the dialog
             return
+
+        # Make sure the path is not a relative path and contains no
+        # backslashes
+        trier_filepath = \
+            QtCore.QDir.fromNativeSeparators(os.path.abspath(trier_filepath))
+        trier_filepath = unicode(trier_filepath)
+
         trier_filepath = self.checkFileExtension(trier_filepath)
 
         #
@@ -1384,6 +1396,8 @@ class VTApp(QtGui.QMainWindow):
             if dialog.exec_():
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
+                trier_filepath = \
+                    QtCore.QDir.fromNativeSeparators(trier_filepath)
                 overwrite = dialog.action['overwrite']
                 # Update the error conditions
                 is_initial_filepath = trier_filepath == initial_filepath
@@ -1425,8 +1439,13 @@ class VTApp(QtGui.QMainWindow):
 
         # Close the copied file (which is selected in the tree view) and
         # open the new copy in read-write mode. The position in the tree
-        # is kept
+        # is kept but it should never be the last position (ViTables assumes
+        # that the temporary database has always the last position).
+        # If a file has been closed in the Save As process then we have to
+        # check that the position is not the last one.
         position = current_index.row()
+        if position == self.dbs_tree_model.rowCount(QtCore.QModelIndex()) - 1:
+            position = position - 1
         self.slotFileClose()
         self.slotFileOpen(QtCore.QString(filepath), 'a', position) 
 
@@ -1475,10 +1494,12 @@ class VTApp(QtGui.QMainWindow):
                 # The user has canceled the dialog
                 return
         else:
-            filepath = str(filepath)
+            # Make sure the path is not a relative path and contains no
+            # backslashes
+            filepath = \
+                QtCore.QDir.fromNativeSeparators(os.path.abspath(filepath))
+            filepath = unicode(filepath)
 
-        # Make sure the path is not a relative path and contains no backslashes
-        filepath = vitables.utils.forwardPath(os.path.abspath(filepath))
 
         # Open the database and select it in the tree view
         self.dbs_tree_model.openDBDoc(filepath, mode, position)
