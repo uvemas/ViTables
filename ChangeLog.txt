@@ -1,5 +1,11 @@
 ViTables ChangeLog
 ==================
+** Dec 18, 2008**
+	Fixed a minor issue with the vertical header of large tables.
+
+	The procedure for creating a Windows installer has been changed in order
+	to deal properly with PyQt4.
+
 ** Dec 16, 2008**
 	Fixed some bugs regarding portability between different platforms
 

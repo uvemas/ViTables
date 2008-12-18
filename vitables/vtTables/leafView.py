@@ -99,6 +99,7 @@ class LeafView(QtGui.QTableView):
         fmetrics = QtGui.QFontMetrics(font)
         max_width = fmetrics.width(" %s " % str(self.leaf_numrows))
         self.vheader.setMinimumWidth(max_width)
+        self.vheader.setClickable(True)
 
         # Setup the headers' resize mode
         rmode = QtGui.QHeaderView.Stretch
