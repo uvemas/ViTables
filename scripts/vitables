@@ -57,7 +57,7 @@ import os.path
 # Location of Qt and PyQt libraries in Windows systems
 if sys.platform.startswith('win'):
     import vitables.vtSite
-    PYQT_DIR = os.path.join(vitables.vtSite.INSTALLDIR, 'PyQt4')
+    PYQT_DIR = os.path.join(vitables.vtSite.INSTALLDIR, 'pyqt')
     sys.path = [os.path.normpath(PYQT_DIR)] + sys.path
 
 import PyQt4.QtCore as QtCore

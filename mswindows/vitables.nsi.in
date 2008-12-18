@@ -13,17 +13,17 @@
 !include LogicLib.nsh
 
 # Select the compressor that will compress the installer
-SetCompressor bzip2
+SetCompressor /SOLID lzma
 
 # The name of the installer
-Name "ViTables @VERSION@ (@LICENSE@)"
+Name "ViTables @VERSION@"
 
 # The file where the installer will be saved
 OutFile "ViTables-@VERSION@-@LICENSE@.win32-py@DOTPYTHONVERSION@.exe"
 
 # The installer icons as used by MUI (see NSIS FAQ)
-!define MUI_ICON "@SVN_VITABLES@\icons\vtinstaller.ico"
-!define MUI_UNICON "@SVN_VITABLES@\icons\vtinstaller.ico"
+!define MUI_ICON "@REPO_VITABLES@\icons\vtinstaller.ico"
+!define MUI_UNICON "@REPO_VITABLES@\icons\vtinstaller.ico"
 
 # Use the new XP style
 XPStyle on
@@ -47,7 +47,7 @@ Var PYTHONDIR
 
 Function .onInit
 	# The registry key where application settings will be stored
-	StrCpy $VITABLES_KEY "SOFTWARE\Carabos\ViTables\@VERSION@"
+	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
 	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
 	StrCpy $STARTMENU_FOLDER "ViTables @VERSION@ for Python @DOTPYTHONVERSION@"
 
@@ -61,7 +61,7 @@ FunctionEnd
 
 Function preInstallDir
   # Default installation directory
-  StrCpy $INSTDIR "$PROGRAMFILES\Carabos\$STARTMENU_FOLDER"
+  StrCpy $INSTDIR "$PROGRAMFILES\ViTables\$STARTMENU_FOLDER"
 FunctionEnd
 
 Function prePythonDir
@@ -85,16 +85,8 @@ FunctionEnd
 # Welcome page
 !insertmacro MUI_PAGE_WELCOME
 
-# License summary page
-!define MUI_PAGE_HEADER_TEXT "License Summary"
-!define MUI_PAGE_HEADER_SUBTEXT "Just for lazy people :-)"
-!define MUI_LICENSEPAGE_TEXT_TOP " "
-!define MUI_LICENSEPAGE_TEXT_BOTTOM " "
-!define MUI_LICENSEPAGE_BUTTON "I'm warned"
-!insertmacro MUI_PAGE_LICENSE @SVN_VITABLES@\LICENSE_SUMMARY.txt
-
 # License page
-!insertmacro MUI_PAGE_LICENSE @SVN_VITABLES@\@LICENSEFILENAME@
+!insertmacro MUI_PAGE_LICENSE @REPO_VITABLES@\@LICENSEFILENAME@
 
 # Components selection page
 #!insertmacro MUI_PAGE_COMPONENTS
@@ -134,10 +126,9 @@ Browse and select another folder. Click Next to Continue."
 Section "ViTables @VERSION@" VT
 
   # Copy the MingW, Qt and PyQt libraries in the installation directory
-  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\pyqt
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\pyqt\PyQt4
   File @MINGWDIR@\bin\mingwm10.dll
-  File @QTDIR@\bin\qt-mt336.dll
-  File @PYQTDIR@\*.pyd
+  File @PYQTDIR@\*
 
   # Copy the ViTables script in the Python Scripts directory
   SetOutPath $PYTHONDIR\Scripts
@@ -145,35 +136,35 @@ Section "ViTables @VERSION@" VT
 
   # Copy the ViTables sources in the Python site-packages directory
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables
-  File /r /x .svn @SVN_VITABLES@\vitables\*.py
+  File /r /x .svn @REPO_VITABLES@\vitables\*.py
 
   # The text files: TODO.txt, INSTALL.txt and stuff like that
   SetOutPath $INSTDIR
-  File /x testingHOWTO.txt /x packagingHOWTO.txt /x LICENSE-* @SVN_VITABLES@\*.txt
-  File @SVN_VITABLES@\@LICENSEFILENAME@
+  File /x testingHOWTO.txt /x packagingHOWTO.txt /x LICENSE-* @REPO_VITABLES@\*.txt
+  File @REPO_VITABLES@\@LICENSEFILENAME@
   Rename @LICENSEFILENAME@ LICENSE.txt
   File LICENSE.html
 
   # The documentation directory
   SetOutPath $INSTDIR\doc\html
-  File /r /x .svn @SVN_VITABLES@\doc\html\*
+  File /r /x .svn @REPO_VITABLES@\doc\html\*
   SetOutPath $INSTDIR\doc
-  File @SVN_VITABLES@\doc\usersguide.pdf
+  File @REPO_VITABLES@\doc\usersguide.pdf
 
   # The examples directory
   SetOutPath $INSTDIR\examples
-  File @SVN_VITABLES@\examples\*.h5
+  File @REPO_VITABLES@\examples\*.h5
   SetOutPath $INSTDIR\examples\scripts
-  File /r /x .svn @SVN_VITABLES@\examples\scripts\*
+  File /r /x .svn @REPO_VITABLES@\examples\scripts\*
 
   # The translations directory
   SetOutPath $INSTDIR\translations
-  File @SVN_VITABLES@\translations\*.txt
-  File @SVN_VITABLES@\translations\*.qm
+  File @REPO_VITABLES@\translations\*.txt
+  File @REPO_VITABLES@\translations\*.qm
 
   # The icons directory
   SetOutPath $INSTDIR\icons
-  File /r /x .svn @SVN_VITABLES@\icons\*
+  File /r /x .svn @REPO_VITABLES@\icons\*
 
   # Create the uninstaller and put it in the aplication directory
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -182,10 +173,6 @@ Section "ViTables @VERSION@" VT
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables
   FileOpen $1 "vtSite.py" w
   FileWrite $1 INSTALLDIR="$PYTHONDIR\\Lib\\site-packages\\vitables"
-  FileWrite $1 "$\r$\n"
-  FileWrite $1 DATADIR="$INSTDIR"
-  FileWrite $1 "$\r$\n"
-  FileWrite $1 VERSION="@VERSION@"
   FileWrite $1 "$\r$\n"
   FileClose $1
 
@@ -209,7 +196,7 @@ Section "ViTables @VERSION@" VT
   # Remove the existing file association (if any) for the .h5 extension
   DeleteRegKey HKCR ".h5"
   # Map the .h5 extension to ViTables
-  StrCpy $HDF5FILE_SUBKEY "Carabos\ViTables\@VERSION@\HDF5File"
+  StrCpy $HDF5FILE_SUBKEY "ViTables\@VERSION@\HDF5File"
   WriteRegStr HKCR ".h5" "" $HDF5FILE_SUBKEY
   # Default settings for the .h5 extension 
   WriteRegStr HKCR $HDF5FILE_SUBKEY "" "HDF5 file"
@@ -297,9 +284,9 @@ Section "Un.Vitables uninstall" UVT
   # File association
   ReadRegStr $1 HKCR ".h5" ""
   # If .h5 extension not mapped to ViTables then do nothing
-  ${If} $1 == "Carabos\ViTables\@VERSION@\HDF5File"
+  ${If} $1 == "ViTables\@VERSION@\HDF5File"
     DeleteRegKey HKCR ".h5"
-    DeleteRegKey HKCR "Carabos"
+    DeleteRegKey HKCR "ViTables"
   ${EndIf}
 
 
@@ -313,7 +300,7 @@ SectionEnd
 Function un.onInit
   # Variables set in installer functions are not available here so we must set
   # them again
-	StrCpy $VITABLES_KEY "SOFTWARE\Carabos\ViTables\@VERSION@"
+	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
 	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
 FunctionEnd
 

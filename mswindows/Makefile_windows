@@ -1,36 +1,26 @@
 # MingW Makefile for the mswindows subdirectory
 # This Makefile is intended to create the ViTables installer for Windows.
 # It is not intended for distribution.
+	#$(MAKE) -f Makefile_windows -C ..\doc
 
 VERSIONFILE=..\VERSION
 VERSION=$(shell type ..\VERSION)
 
-ifeq ($(PYTHONVERSION), 24)
-	DOTPYTHONVERSION=2.4
-endif
-ifeq ($(PYTHONVERSION), 25)
-	DOTPYTHONVERSION=2.5
-endif
+PYTHONVERSION=25
+DOTPYTHONVERSION=2.5
 
-ifeq ($(LICENSE), site)
-	LICENSEFILE=..\LICENSE-site.txt
-	LICENSEFILENAME=LICENSE-site.txt
-endif
-ifeq ($(LICENSE), personal)
-	LICENSEFILE=..\LICENSE-personal.txt
-	LICENSEFILENAME=LICENSE-personal.txt
-endif
+LICENSEFILE=..\LICENSE.txt
+LICENSEFILENAME=LICENSE.txt
 
 
 # The NSIS intstaller script
 VTNSIS=vitables-py$(DOTPYTHONVERSION).nsi
 
 # Required paths
-SVN_VITABLES=..
+REPO_VITABLES=..
 MISDOCS="C:\Documents and Settings\vmas\Mis documentos"
 WINDOWS32=C:\\Windows\\system32
-QTDIR=C:\\Qt\\3.3.6
-PYQTDIR=C:\\Python$(PYTHONVERSION)\\pyqt_for_vitables_installer
+PYQTDIR=C:\\Python$(PYTHONVERSION)\\pyqt4_for_vitables_installer
 MINGWDIR=C:\\MinGW
 VENDORID=$(MISDOCS)\VendorID-1.0.0
 
@@ -41,11 +31,10 @@ clean:
 	del $(VTNSIS)
 	del ViTables*.win32-py$(DOTPYTHONVERSION).exe
 	del vitables.exe
-	del LICENSE.html
 
 vitables.exe:
-	copy $(SVN_VITABLES)\scripts\vitables $(VENDORID)\sib\vitables.py
-	C:\Python$(PYTHONVERSION)\python $(VENDORID)\sib\sib.py -M -i $(SVN_VITABLES)\icons\vitables.ico -d $(VENDORID)\sib\build_vitables $(VENDORID)\sib\vitables.py
+	copy $(REPO_VITABLES)\scripts\vitables $(VENDORID)\sib\vitables.py
+	C:\Python$(PYTHONVERSION)\python $(VENDORID)\sib\sib.py -u -M -i $(REPO_VITABLES)\icons\vitables.ico -d $(VENDORID)\sib\build_vitables $(VENDORID)\sib\vitables.py
 	$(MAKE) -C $(VENDORID)\sib\build_vitables
 	copy $(VENDORID)\sib\build_vitables\vitables.exe .
 	del /q /s $(VENDORID)\sib\build_vitables
@@ -53,14 +42,12 @@ vitables.exe:
 	rmdir $(VENDORID)\sib\build_vitables
 
 installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vitables.exe
-	$(MAKE) -f Makefile_windows -C ..\doc
-	copy ..\LICENSE-$(LICENSE).html LICENSE.html
+	copy ..\LICENSE.html LICENSE.html
 	type vitables.nsi.in | sed -e "s/@VERSION@/$(VERSION)/g" \
 	-e "s/@PYTHONVERSION@/$(PYTHONVERSION)/g" \
 	-e "s/@DOTPYTHONVERSION@/$(DOTPYTHONVERSION)/g" \
-	-e "s/@SVN_VITABLES@/$(SVN_VITABLES)/g" \
+	-e "s/@REPO_VITABLES@/$(REPO_VITABLES)/g" \
 	-e "s/@MINGWDIR@/$(MINGWDIR)/g" \
-	-e "s/@QTDIR@/$(QTDIR)/g" \
 	-e "s/@PYQTDIR@/$(PYQTDIR)/g" \
 	-e "s/@WINDOWS32@/$(WINDOWS32)/g" \
 	-e "s/@LICENSE@/$(LICENSE)/g" \
