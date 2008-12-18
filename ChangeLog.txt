@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 18, 2008**
+	Fixed an encoding related problem in the file opening procedure.
+
 	Fixed a minor issue with the vertical header of large tables.
 
 	The procedure for creating a Windows installer has been changed in order

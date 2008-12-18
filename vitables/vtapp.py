@@ -1197,6 +1197,8 @@ class VTApp(QtGui.QMainWindow):
             self.workspace.setViewMode(QtGui.QMdiArea.TabbedView)
         else:
             self.workspace.setViewMode(QtGui.QMdiArea.SubWindowView)
+
+
     def eventFilter(self, widget, event):
         """Event filter used to provide the MDI area with a context menu.
 
@@ -1250,17 +1252,17 @@ class VTApp(QtGui.QMainWindow):
                 filepath = file_selector.selectedFiles()[0]
                 # Update the working directory
                 self.last_working_directory = \
-                    str(file_selector.directory().canonicalPath())
+                    unicode(file_selector.directory().canonicalPath())
                 # Update the history
                 if not file_selector.history().contains(\
                                                 self.last_working_directory):
                     self.file_selector_history.append(\
                                                 self.last_working_directory)
             else:  # Cancel clicked
-                filepath = QtCore.QString('')
+                filepath = u''
         finally:
             del file_selector
-        return str(filepath)
+        return unicode(filepath)
 
 
     def checkFileExtension(self, filepath):
