@@ -1792,24 +1792,25 @@ class VTApp(QtGui.QMainWindow):
 
         current = self.dbs_tree_view.currentIndex()
         parent = self.dbs_tree_model.nodeFromIndex(current)
-        copied_node = self.dbs_tree_model.copied_node_info
-        if copied_node == {}:
+        copied_node_info = self.dbs_tree_model.copied_node_info
+        if copied_node_info == {}:
             return
-        if copied_node['nodepath'] == '/':
+        copied_node = copied_node_info['node']
+        if copied_node.nodepath == '/':
             nodename = 'root_group_of_%s' \
-                        % os.path.basename(copied_node['filepath'])
+                        % os.path.basename(copied_node.filepath)
         else:
-            nodename = os.path.basename(copied_node['nodepath'])
+            nodename = copied_node.name
 
         # Check if pasting is allowed. It is not when the node has been
         # copied and
         # - source and target are the same node
         # - target is the source's parent
         # Pasting cut nodes has no restrictions
-        if (copied_node['is_copied'] == True) and \
-           (copied_node['filepath'] == parent.filepath):
-            if (copied_node['nodepath'] == parent.nodepath) or \
-               (parent.nodepath == copied_node['parent_nodepath']):
+        if (copied_node_info['is_copied'] == True) and \
+           (copied_node.filepath == parent.filepath):
+            if (copied_node.nodepath == parent.nodepath) or \
+               (parent.nodepath == copied_node.parent.nodepath):
                 return
 
         #
@@ -1826,7 +1827,7 @@ class VTApp(QtGui.QMainWindow):
                     """Destination file: %s\nParent group: %s\n\n"""
                     """Node name '%s' already in use in that group.\n""", 
                     'A dialog label') % \
-                    (copied_node['filepath'], copied_node['nodepath'], 
+                    (copied_node.filepath, copied_node.nodepath, 
                     parent.filepath, parent.nodepath, nodename), 
                 self.__tr('Paste', 'A button label')]
         # Validate the nodename

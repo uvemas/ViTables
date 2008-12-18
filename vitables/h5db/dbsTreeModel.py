@@ -360,11 +360,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
 
     def copyNode(self, index):
-        """Copy a Node.
-
-        A copy of the node is stored in the hidden group of the temporary
-        database. Note that prior to store the node, the hidden group is
-        emptied.
+        """Mark a node from the tree of databases view as copied.
 
         :Parameter index: the index of the selected node
         """
@@ -373,11 +369,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
             self.copied_node_info = {'is_copied': True, 
-                'nodepath': node.nodepath, 'nodename': node.name, 
-                'filepath': node.filepath, 
-                'parent_nodepath': node.parent.filepath}
-            # Copies the node to the hidden group of the temporary database
-            self.getDBDoc(node.filepath).copyNode(node.nodepath)
+                'node': node}
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -412,7 +404,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
     def pasteNode(self, index, childname, overwrite=False):
         """Paste a tables.Node.
 
-        Paste the content of the hidden group of the temporary database.
+        Paste the last copied/cut node under the currently selected group.
 
         :Parameters:
 
@@ -429,9 +421,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             if overwrite:
                 self.overwriteNode(parent, index, childname)
 
-            # Paste the node in the PyTables database
-            self.getDBDoc(parent.filepath).pasteNode(parent.nodepath, 
-                                                     childname)
+            # Paste the copied/cut node in the destination database
+            src_node = self.copied_node_info['node']
+            self.getDBDoc(src_node.filepath).pasteNode(src_node, parent, 
+                                                       childname)
 
             # Paste the node in the view
             self.lazyAddChildren(index)

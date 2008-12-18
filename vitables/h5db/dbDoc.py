@@ -253,28 +253,6 @@ class DBDoc(QtCore.QObject):
             vitables.utils.formatExceptionInfo()
 
 
-    def copyNode(self, nodepath):
-        """Copy a tables.Node to the hidden group of the temporary database.
-
-        :Parameters:
-
-        - `nodepath`: the full path of the node being copied
-        """
-
-        try:
-            self.clearHiddenGroup()
-            if nodepath == '/':
-                newname = 'copy_of_root_group'
-            else:
-                newname = None
-            new_parent = self.tmp_h5file.getNode(self.hidden_where)
-            self.h5file.copyNode(where=nodepath, newparent=new_parent,
-                newname=newname, recursive=True)
-            self.tmp_h5file.flush()
-        except:
-            vitables.utils.formatExceptionInfo()
-
-
     def clearHiddenGroup(self):
         """
         Clear the hidden group of the temporary database.
@@ -310,24 +288,18 @@ class DBDoc(QtCore.QObject):
         self.moveNode(nodepath, self.tmp_dbdoc, self.hidden_where, childname)
 
 
-    def pasteNode(self, parentpath, childname):
-        """Moves a tables.Node from the hidden group of the temporary
-        database to the given location.
+    def pasteNode(self, src, parent, childname):
+        """Copy a tables.Node to a different location.
 
         :Parameters:
 
-        - `parentpath`: the full path of the pasted node's new parent
-        - `childname`: the name of the node being pasted
+        - `src`: the copied node being pasted
+        - `parent`: the new parent of the node being pasted
+        - `childname`: the new name of the node being pasted
         """
 
-        # The current path of the node being pasted
-        hidden_group = self.tmp_h5file.getNode(self.hidden_where)
-        children_dict = getattr(hidden_group, '_v_children')
-        nodename =  children_dict.keys()[0]
-        src_nodepath = '%s/%s' % (self.hidden_where, nodename)
         try:
-            parent_node = self.h5file.getNode(parentpath)
-            self.tmp_h5file.copyNode(src_nodepath, newparent=parent_node,
+            self.h5file.copyNode(src.nodepath, newparent=parent.node,
                 newname=childname, overwrite=True, recursive=True)
             self.h5file.flush()
         except:
