@@ -1535,6 +1535,9 @@ class VTApp(QtGui.QMainWindow):
 
         # The tree model closes the file and delete its root item
         # from the tree view
+        dbdoc = self.dbs_tree_model.getDBDoc(filepath)
+        if dbdoc.hidden_group is not None:
+            dbdoc.h5file.removeNode(dbdoc.hidden_group, recursive=True)
         self.dbs_tree_model.closeDBDoc(filepath)
 
 
@@ -1792,26 +1795,45 @@ class VTApp(QtGui.QMainWindow):
 
         current = self.dbs_tree_view.currentIndex()
         parent = self.dbs_tree_model.nodeFromIndex(current)
+
         copied_node_info = self.dbs_tree_model.copied_node_info
         if copied_node_info == {}:
             return
-        copied_node = copied_node_info['node']
-        if copied_node.nodepath == '/':
-            nodename = 'root_group_of_%s' \
-                        % os.path.basename(copied_node.filepath)
-        else:
-            nodename = copied_node.name
 
-        # Check if pasting is allowed. It is not when the node has been
-        # copied and
-        # - source and target are the same node
-        # - target is the source's parent
-        # Pasting cut nodes has no restrictions
-        if (copied_node_info['is_copied'] == True) and \
-           (copied_node.filepath == parent.filepath):
-            if (copied_node.nodepath == parent.nodepath) or \
-               (parent.nodepath == copied_node.parent.nodepath):
+        src_node = copied_node_info['node']
+        src_filepath = src_node.filepath
+        src_nodepath = src_node.nodepath
+        if src_nodepath == '/':
+            nodename = 'root_group_of_%s' \
+                        % os.path.basename(src_filepath)
+        else:
+            nodename = src_node.name
+
+        dbdoc = \
+            self.dbs_tree_model.getDBDoc(copied_node_info['initial_filepath'])
+        if not dbdoc:
+            # The database where the copied/cut node lived has been closed
+            return
+        if src_filepath != copied_node_info['initial_filepath']:
+            # The copied/cut node doesn't exist. It has been moved to other file
+            return
+
+        # Check if the copied node still exists in the tree of databases
+        if copied_node_info['is_copied']:
+            if src_nodepath != copied_node_info['initial_nodepath']:
+                # The copied node doesn't exist. It has been moved somewhere
                 return
+            if not dbdoc.h5file.__contains__(src_nodepath):
+                return
+
+            # Check if pasting is allowed. It is not when the node has been
+            # copied (pasting cut nodes has no restrictions) and
+            # - source and target are the same node
+            # - target is the source's parent
+            if (src_filepath == parent.filepath):
+                if (src_nodepath == parent.nodepath) or \
+                   (parent.nodepath == src_node.parent.nodepath):
+                       return
 
         #
         # Check if the nodename is already in use
@@ -1827,7 +1849,7 @@ class VTApp(QtGui.QMainWindow):
                     """Destination file: %s\nParent group: %s\n\n"""
                     """Node name '%s' already in use in that group.\n""", 
                     'A dialog label') % \
-                    (copied_node.filepath, copied_node.nodepath, 
+                    (src_filepath, src_nodepath,
                     parent.filepath, parent.nodepath, nodename), 
                 self.__tr('Paste', 'A button label')]
         # Validate the nodename

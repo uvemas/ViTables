@@ -65,6 +65,7 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 
 import os
+import uuid
 
 import tables
 import PyQt4.QtCore as QtCore
@@ -115,7 +116,7 @@ class DBDoc(QtCore.QObject):
 
         # The temporary database. It is used as an intermediate storage
         # in copy and cut operations
-        self.hidden_where = '/_p_cutNode'
+        self.hidden_group = None
         self.tmp_dbdoc = tmp_dbdoc
         if tmp_dbdoc != None:
             self.tmp_h5file = self.tmp_dbdoc.h5file
@@ -253,53 +254,51 @@ class DBDoc(QtCore.QObject):
             vitables.utils.formatExceptionInfo()
 
 
-    def clearHiddenGroup(self):
+    def createHiddenGroup(self):
         """
-        Clear the hidden group of the temporary database.
-
-        Clear the contents of the hidden group before a new cut/copy is
-        done. It means that at most one node will live in the hidden group
-        at a given time.
+        Create a hidden group for storing cut nodes.
         """
 
-        # The hidden group of the temporary database
-        hidden_group = self.tmp_h5file.getNode(self.hidden_where)
-        # The list of copied/cut nodes paths
-        children_dict = getattr(hidden_group, '_v_children')
-        cut_nodes =  children_dict.keys()
-        # Empty the hidden group
-        for nodename in cut_nodes:
-            cut_nodename = os.path.basename(nodename)
-            self.tmp_h5file.removeNode(self.hidden_where,
-                name=cut_nodename, recursive=True)
-        self.tmp_h5file.flush()
+        group_name = u'_p_' + unicode(uuid.uuid4())
+        self.hidden_group = '/' + group_name
+        self.h5file.createGroup('/', group_name, 'Hide cut nodes')
+        self.h5file.flush()
+
+
 
 
     def cutNode(self, nodepath):
-        """Moves a tables.Node to the hidden group of the temporary database.
+        """Moves a tables.Node to a hidden group of its database.
+
+        The cut node must be stored somewhere or it will no be possible
+        to paste it later. Storing it in the same database is extremely
+        fast independently of the node size. Storing it in other database
+        (i.e. in the temporary database) would have a cost which depends
+        on the size of the cut node.
 
         :Parameters:
 
-        - `nodepath`: the full path of the node being copied
+        - `nodepath`: the path of the node being copied
         """
 
-        self.clearHiddenGroup()
-        childname = os.path.basename(nodepath)
-        self.moveNode(nodepath, self.tmp_dbdoc, self.hidden_where, childname)
+        if not self.hidden_group:
+            self.createHiddenGroup()
+        nodename = os.path.basename(nodepath)
+        self.moveNode(nodepath, self, self.hidden_group, nodename)
 
 
-    def pasteNode(self, src, parent, childname):
+    def pasteNode(self, src_nodepath, parent, childname):
         """Copy a tables.Node to a different location.
 
         :Parameters:
 
-        - `src`: the copied node being pasted
+        - `src_nodepath`: the path of the copied node being pasted
         - `parent`: the new parent of the node being pasted
         - `childname`: the new name of the node being pasted
         """
 
         try:
-            self.h5file.copyNode(src.nodepath, newparent=parent.node,
+            self.h5file.copyNode(src_nodepath, newparent=parent,
                 newname=childname, overwrite=True, recursive=True)
             self.h5file.flush()
         except:

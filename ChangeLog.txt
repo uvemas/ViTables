@@ -1,5 +1,9 @@
 ViTables ChangeLog
 ==================
+** Dec 19, 2008**
+	The node copy/cut/paste mechanism has changed. Now it is much more efficient
+	and simpler.
+
 ** Dec 18, 2008**
 	The Copy Node operation  has been greatly optimized.
 

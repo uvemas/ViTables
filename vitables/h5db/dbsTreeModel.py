@@ -123,9 +123,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.__openDBs = {}
 
         # Create the temporary database that will contain filtered tables
-        # and (under a hidden group) copied/cut nodes
         self.tmp_filepath = ''
-        self.hidden_where = '/_p_cutNode'
         self.tmp_dbdoc = self.__createTempDB()
 
         self.copied_node_info = {}
@@ -327,15 +325,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if not db_doc:
             return
 
-        # Create the group where cut nodes will be stored
-        h5file = db_doc.h5file
-        try:
-            h5file.createGroup('/', self.hidden_where[1:], 'Hide cut nodes')
-            print self.__tr('OK!', 'Operation successful logger message')
-            return db_doc
-        except:
-            vitables.utils.formatExceptionInfo()
-
 
     def deleteNode(self, index):
         """Delete a node.
@@ -368,8 +357,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         try:
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
-            self.copied_node_info = {'is_copied': True, 
-                'node': node}
+            self.copied_node_info = {'is_copied': True, 'node': node, 
+                                     'initial_filepath': node.filepath, 
+                                     'initial_nodepath': node.nodepath}
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -377,9 +367,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
     def cutNode(self, index):
         """Cut a tables.Node.
 
-        The cut node is stored in the hidden group of the temporary
-        database. Note that prior to store the node, the hidden group is
-        emptied.
+        The cut node is stored in a hidden group of its database.
 
         :Parameter index: the index of the selected node
         """
@@ -387,15 +375,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         try:
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
-            self.copied_node_info = {'is_copied': False, 
-                'nodepath': node.nodepath, 'nodename': node.name, 
-                'filepath': node.filepath, 
-                'parent_nodepath': node.parent.filepath}
+            self.copied_node_info = {'is_copied': False, 'node': node, 
+                                     'initial_filepath': node.filepath, 
+                                     'initial_nodepath': node.nodepath}
             # Deletes the node from the tree of databases model/view
             parent = self.parent(index)
-            position = node.row()
+            # position = node.row()
+            position = index.row()
             self.removeRows(position, 1, parent)
-            # Moves the node to the hidden group of the temporary database
+            # Moves the node to a hidden group in its database
             self.getDBDoc(node.filepath).cutNode(node.nodepath)
         finally:
             QtGui.qApp.restoreOverrideCursor()
@@ -422,10 +410,20 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 self.overwriteNode(parent, index, childname)
 
             # Paste the copied/cut node in the destination database
-            src_node = self.copied_node_info['node']
-            self.getDBDoc(src_node.filepath).pasteNode(src_node, parent, 
-                                                       childname)
-
+            if self.copied_node_info['is_copied']:
+                src_nodepath = self.copied_node_info['node'].nodepath
+                src_filepath = self.copied_node_info['node'].filepath
+                self.getDBDoc(src_filepath).pasteNode(src_nodepath, 
+                                                      parent.node, childname)
+            else:
+                src_filepath = self.copied_node_info['node'].filepath
+                dirname = self.getDBDoc(src_filepath).hidden_group
+                basename = self.copied_node_info['node'].name
+                src_nodepath = '%s/%s' % (dirname, basename)
+                dst_db = self.getDBDoc(parent.filepath)
+                self.getDBDoc(src_filepath).moveNode(src_nodepath, dst_db, 
+                                                     parent.nodepath, 
+                                                     childname)            
             # Paste the node in the view
             self.lazyAddChildren(index)
             self.emit(QtCore.SIGNAL('nodeAdded'), index)
