@@ -1,6 +1,9 @@
 ViTables ChangeLog
 ==================
 ** Dec 19, 2008**
+	Fixed a bug that made impossible to open files by drag and drop in
+	Windows.
+
 	Fixed a bug introduced in the previous commit.
 
 	The node copy/cut/paste mechanism has changed. Now it is much more efficient

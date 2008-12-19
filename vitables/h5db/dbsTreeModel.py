@@ -86,6 +86,7 @@ __docformat__ = 'restructuredtext'
 
 import tempfile
 import os
+import sys
 import sets
 import re
 import exceptions
@@ -1002,14 +1003,20 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # NULL byte
             encoded_data = data.data("text/uri-list")
             # Convert the binary array into a string with suitable format
-            uris = QtCore.QUrl.fromEncoded(encoded_data).toLocalFile()
+            uris_string = QtCore.QUrl.fromEncoded(encoded_data).toString()
             # Split the string using the apropriate separators
-            uris_list = re.split('(\r\n)|\r|\n\0', str(uris))
+            uris_list = re.split('(\r\n)|\r|\n\0', unicode(uris_string))
             # Get rid of the separators
-            filepaths = [uris_list[i] for i in range(0, len(uris_list) - 1, 2)]
+            uris = [uris_list[i] for i in range(0, len(uris_list) - 1, 2)]
             # Transform every element of the sequence into a path and open it
-            for item in filepaths:
-                path = str(QtCore.QUrl(item).path())
+            for item in uris[:]:
+                uri = QtCore.QUrl(item)
+                path = unicode(uri.path())
+                index = uris.index(item)
+                if sys.platform.startswith('win'):
+                    path = path[1:]
+                uris.pop(index)
+                uris.insert(index, path)
                 self.vtapp.slotFileOpen(path)
             return True
 
