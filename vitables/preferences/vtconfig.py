@@ -182,7 +182,6 @@ class Config(QtCore.QSettings):
         if sys.platform.startswith('win'):
             # On windows systems settings will be stored in the registry
             # under the Carabos key
-            self.setValue('/ViTables/init', QtCore.QVariant('')) # Is this required??
             pyversion = 'Python%s%s' % (sys.version_info[0], sys.version_info[1])
             self.base_key = 'ViTables/%s/%s' % (__version__, pyversion)
         elif sys.platform.startswith('darwin'):

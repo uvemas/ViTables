@@ -322,8 +322,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.tmp_filepath = \
             unicode(QtCore.QDir.fromNativeSeparators(self.tmp_filepath))
         db_doc = self.createDBDoc(self.tmp_filepath, True)
-        if not db_doc:
-            return
+        return db_doc
 
 
     def deleteNode(self, index):

@@ -1,7 +1,6 @@
 # MingW Makefile for the mswindows subdirectory
 # This Makefile is intended to create the ViTables installer for Windows.
 # It is not intended for distribution.
-	#$(MAKE) -f Makefile_windows -C ..\doc
 
 VERSIONFILE=..\VERSION
 VERSION=$(shell type ..\VERSION)
@@ -42,6 +41,7 @@ vitables.exe:
 	rmdir $(VENDORID)\sib\build_vitables
 
 installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vitables.exe
+	$(MAKE) -f Makefile_windows -C ..\doc
 	copy ..\LICENSE.html LICENSE.html
 	type vitables.nsi.in | sed -e "s/@VERSION@/$(VERSION)/g" \
 	-e "s/@PYTHONVERSION@/$(PYTHONVERSION)/g" \
