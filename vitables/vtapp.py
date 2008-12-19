@@ -1499,7 +1499,7 @@ class VTApp(QtGui.QMainWindow):
             # Make sure the path is not a relative path and contains no
             # backslashes
             filepath = \
-                QtCore.QDir.fromNativeSeparators(os.path.abspath(filepath))
+                QtCore.QDir.fromNativeSeparators(os.path.abspath(unicode(filepath)))
             filepath = unicode(filepath)
 
 

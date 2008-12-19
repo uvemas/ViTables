@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 19, 2008**
+	Fixed a couple of minor problems.
+
 	Fixed a bug that made impossible to open files by drag and drop in
 	Windows.
 

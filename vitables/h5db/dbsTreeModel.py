@@ -239,7 +239,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         if isinstance(filepath, QtCore.QString):
-            filepath = str(filepath)
+            filepath = unicode(filepath)
 
         if self.checkOpening(filepath):
             # Open the database and add it to model
