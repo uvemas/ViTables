@@ -246,9 +246,15 @@
         <section id='Ch1_Windows_Binary_Installers'>
           <title>Windows Binary Installers</title>
 
-          <para>Currently there is no Windows binary
-          installer for ViTables. So it has to be installed from sources
-          following the instructions given in the previous sections.</para>
+          <para>A binary installer is available for Windows platforms. Just double click the
+					installer icon and follow the wizard instructions. ViTables will be installed in
+					a few clicks.
+					</para>
+
+					<para>
+					The installer contains the necessary PyQt4 libraries (the complete PyQt4 is not
+					required) too so you needn't to have them already installed.
+					</para>
         </section>
 
         <section id='Ch1_Mac_OS_X_Binary_Installers'>

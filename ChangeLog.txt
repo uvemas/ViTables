@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 22, 2008**
+	The User's Guide has been updated.
+
 	Every str() call as been replaced by a unicode() call.
 
 ** Dec 19, 2008**
