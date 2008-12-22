@@ -85,7 +85,7 @@ class Preferences(QtCore.QObject):
         QtCore.QObject.__init__(self)
 
         # Radio button names are not usable, we need the numerical IDs
-        self.button2id = {QtCore.QString('home'): 1, QtCore.QString('last'): 2}
+        self.button2id = {u'home': 1, u'last': 2}
 
         self.vtapp = vtapp
         self.gui = PreferencesGUI()
@@ -300,5 +300,5 @@ class Preferences(QtCore.QObject):
 
         :Parameter style_name: the style to be applied
         """
-        self.new_prefs['Look/currentStyle'] = str(style_name)
+        self.new_prefs['Look/currentStyle'] = unicode(style_name)
 

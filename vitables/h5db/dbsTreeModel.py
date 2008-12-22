@@ -260,7 +260,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         if isinstance(filepath, QtCore.QString):
-            filepath = str(filepath)
+            filepath = unicode(filepath)
 
         for row, child in enumerate(self.root.children):
             if child.filepath == filepath:
@@ -1037,10 +1037,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             name = QtCore.QString()
             stream >> filepath >> nodepath >> node_kind >> name
 
-            filepath = str(filepath)
-            nodepath = str(nodepath)
-            node_kind = str(node_kind)
-            name = str(name)
+            filepath = unicode(filepath)
+            nodepath = unicode(nodepath)
+            node_kind = unicode(node_kind)
+            name = unicode(name)
 
             # Move the node to its final destination in the PyTables database
             new_name = self.moveNode(filepath, nodepath, parent)

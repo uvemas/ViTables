@@ -82,7 +82,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         self.rbuffer = rbuffer
 
         # The number of digits of the last row
-        self.last_row_width = len(str(self.rbuffer.leaf_numrows))
+        self.last_row_width = len(unicode(self.rbuffer.leaf_numrows))
 
         #
         # The table dimensions
@@ -152,9 +152,9 @@ class LeafModel(QtCore.QAbstractTableModel):
             # the section numbers are used as horizontal labels
             if hasattr(self.data_source, 'description'):
                 return QtCore.QVariant(self.data_source.colnames[section])
-            return QtCore.QVariant(str(section + 1))
+            return QtCore.QVariant(unicode(section + 1))
         # The section label for vertical header
-        return QtCore.QVariant(str(self.rbuffer.start + section + 1))
+        return QtCore.QVariant(unicode(self.rbuffer.start + section + 1))
 
 
     def data(self, index, role=QtCore.Qt.DisplayRole):

@@ -112,7 +112,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         - `index`: the index of the item being edited
         """
 
-        suggested_nodename = str(editor.text())
+        suggested_nodename = unicode(editor.text())
 
         node = model.nodeFromIndex(index)  # A GroupNode or a LeafNode instance
         parent = node.parent
@@ -126,7 +126,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
         pattern = """(^%s$)|""" \
-            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""" % str(self.current_name)
+            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""" % unicode(self.current_name)
         info = [self.__tr('Renaming a node: name already in use', 
                 'A dialog caption'), 
                 self.__tr("""Source file: %s\nParent group: %s\n\nThere is """

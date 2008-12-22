@@ -227,7 +227,7 @@ class HelpBrowser(QtCore.QObject) :
                 # The absolut path of the selected file
                 filepath = file_dlg.selectedFiles()[0]
                 # Update the working directory
-                self.working_dir = str(file_dlg.directory().canonicalPath())
+                self.working_dir = unicode(file_dlg.directory().canonicalPath())
                 # Displays the document (history is automatically updated)
                 self.slotDisplaySrc(filepath)
             # Cancel clicked. Working directory doesn't change
@@ -332,7 +332,7 @@ class HelpBrowser(QtCore.QObject) :
         index = 0
         for item in self.bookmarks:
             index += 1
-            filepath = str(item)
+            filepath = unicode(item)
             action = QtGui.QAction('%s. %s' % (index, filepath), 
                                                self.gui.bookmarks_menu)
             action.setData(QtCore.QVariant(item))
@@ -368,7 +368,7 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         src = self.gui.text_browser.source().toString(QtCore.QUrl.RemoveScheme)
-        src = vitables.utils.forwardPath(str(src))
+        src = vitables.utils.forwardPath(unicode(src))
         src = src.replace('///', '/')
         if self.bookmarks.count(src) :
             # if the page is already bookmarked we do nothing

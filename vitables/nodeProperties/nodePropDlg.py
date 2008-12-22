@@ -222,7 +222,7 @@ class NodePropDlg(QtGui.QDialog):
         label = QtGui.QLabel(self.__tr('Number of children:', 'A label'), 
                             groupbox)
         ledit = vitables.utils.customLineEdit(groupbox)
-        ledit.setText(str(len(info.hanging_nodes)))
+        ledit.setText(unicode(len(info.hanging_nodes)))
         layout.addWidget(label, 0, 0)
         layout.addWidget(ledit, 0, 1)
 
@@ -269,14 +269,14 @@ class NodePropDlg(QtGui.QDialog):
         # Number of dimensions label
         dim_label = QtGui.QLabel(self.__tr('Dimensions:', 'A label'), groupbox)
         dim_ledit = vitables.utils.customLineEdit(groupbox)
-        dim_ledit.setText(str(len(info.shape)))
+        dim_ledit.setText(unicode(len(info.shape)))
         layout.addWidget(dim_label, 0, 0)
         layout.addWidget(dim_ledit, 0, 1)
 
         # Shape label
         shape_label = QtGui.QLabel(self.__tr('Shape:', 'A label'), groupbox)
         shape_ledit = vitables.utils.customLineEdit(groupbox)
-        shape_ledit.setText(str(info.shape))
+        shape_ledit.setText(unicode(info.shape))
         layout.addWidget(shape_label, 1, 0)
         layout.addWidget(shape_ledit, 1, 1)
 
@@ -284,7 +284,7 @@ class NodePropDlg(QtGui.QDialog):
         dtype_label = QtGui.QLabel(self.__tr('Data type:', 'A label'), 
             groupbox)
         dtype_ledit = vitables.utils.customLineEdit(groupbox)
-        dtype_ledit.setText(str(info.dtype))
+        dtype_ledit.setText(unicode(info.dtype))
         layout.addWidget(dtype_label, 2, 0)
         layout.addWidget(dtype_ledit, 2, 1)
 
@@ -292,7 +292,7 @@ class NodePropDlg(QtGui.QDialog):
         compression_label = QtGui.QLabel(self.__tr('Compression:', 'A label'), 
             groupbox)
         compression_ledit = vitables.utils.customLineEdit(groupbox)
-        compression_ledit.setText(str(info.filters.complib))
+        compression_ledit.setText(unicode(info.filters.complib))
         layout.addWidget(compression_label, 3, 0)
         layout.addWidget(compression_ledit, 3, 1)
 
@@ -336,7 +336,7 @@ class NodePropDlg(QtGui.QDialog):
                         QtGui.QStandardItem(info.columns_types[pathname])
                     type_item.setEditable(False)
                     shape_item = \
-                        QtGui.QStandardItem(str(info.columns_shapes[pathname]))
+                        QtGui.QStandardItem(unicode(info.columns_shapes[pathname]))
                     shape_item.setEditable(False)
                 self.fields_model.appendRow([pathname_item, type_item, 
                                             shape_item])
@@ -355,7 +355,7 @@ class NodePropDlg(QtGui.QDialog):
         nattr_label = QtGui.QLabel(self.__tr('System attributes:', 'A label'), 
                                     page)
         nattr_ledit = vitables.utils.customLineEdit(page)
-        nattr_ledit.setText(str(len(info.system_attrs)))
+        nattr_ledit.setText(unicode(len(info.system_attrs)))
         page_layout.addWidget(nattr_label, 0, 0)
         page_layout.addWidget(nattr_ledit, 0, 1)
 
@@ -377,10 +377,10 @@ class NodePropDlg(QtGui.QDialog):
         bg_brush = page.palette().brush(QtGui.QPalette.Background)
         base_brush = page.palette().brush(QtGui.QPalette.Base)
         for name, value in info.system_attrs.items():
-            name_item = QtGui.QStandardItem(str(name))
+            name_item = QtGui.QStandardItem(unicode(name))
             name_item.setEditable(False)
             name_item.setBackground(bg_brush)
-            value_item = QtGui.QStandardItem(str(value))
+            value_item = QtGui.QStandardItem(unicode(value))
             value_item.setEditable(False)
             value_item.setBackground(bg_brush)
             # When the database is in read-only mode the TITLE attribute
@@ -403,7 +403,7 @@ class NodePropDlg(QtGui.QDialog):
             else:
                 # The attributes are scalar Python objects (PyTables<1.1)
                 # or N-dimensional attributes
-                dtype_name = str(type(value))
+                dtype_name = unicode(type(value))
             dtype_item = QtGui.QStandardItem(dtype_name)
             dtype_item.setEditable(False)
             dtype_item.setBackground(bg_brush)
@@ -433,7 +433,7 @@ class NodePropDlg(QtGui.QDialog):
         nattr_label = QtGui.QLabel(self.__tr('User attributes:', 'A label'), 
                                     page)
         nattr_ledit = vitables.utils.customLineEdit(page)
-        nattr_ledit.setText(str(len(info.user_attrs)))
+        nattr_ledit.setText(unicode(len(info.user_attrs)))
         page_layout.addWidget(nattr_label, 0, 0)
         page_layout.addWidget(nattr_ledit, 0, 1)
 
@@ -462,8 +462,8 @@ class NodePropDlg(QtGui.QDialog):
         bg_brush = page.palette().brush(QtGui.QPalette.Background)
         base_brush = page.palette().brush(QtGui.QPalette.Base)
         for name, value in info.user_attrs.items():
-            name_item = QtGui.QStandardItem(str(name))
-            value_item = QtGui.QStandardItem(str(value))
+            name_item = QtGui.QStandardItem(unicode(name))
+            value_item = QtGui.QStandardItem(unicode(value))
             dtype_item = QtGui.QStandardItem()
             self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo = QtGui.QComboBox()
@@ -484,8 +484,8 @@ class NodePropDlg(QtGui.QDialog):
             if dtype_name.startswith('complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.
-                if (str(value)[0], str(value)[-1]) == ('(', ')'):
-                    value_item.setText(str(value)[1:-1])
+                if (unicode(value)[0], unicode(value)[-1]) == ('(', ')'):
+                    value_item.setText(unicode(value)[1:-1])
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
             if (hasattr(value, 'shape') and value.shape != ())or\
@@ -644,7 +644,7 @@ class NodePropDlg(QtGui.QDialog):
             self.__tr('User attribute deletion',
             'Caption of the attr deletion dialog'),
             self.__tr("""\n\nYou are about to delete the attribute:\n%s\n\n""",
-            'Ask for confirmation') % str(name),
+            'Ask for confirmation') % unicode(name),
             QtGui.QMessageBox.Yes|QtGui.QMessageBox.Default,
             QtGui.QMessageBox.No|QtGui.QMessageBox.Escape)
 
@@ -670,7 +670,7 @@ class NodePropDlg(QtGui.QDialog):
             # because the attribute is mandatory in PyTables but not in
             # generic HDF5 files
             if hasattr(self, 'title_pos'):
-                title = str(self.sysattr_model.item(self.title_pos[0], 
+                title = unicode(self.sysattr_model.item(self.title_pos[0], 
                                                 self.title_pos[1]).text())
             else:
                 title = None

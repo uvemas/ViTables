@@ -159,7 +159,7 @@ class InputNodeName(QtGui.QDialog):
         :Parameter current: the value currently displayed in the text box
         """
 
-        if not str(current):
+        if not unicode(current):
             self.edit_button.setEnabled(0)
         else:
             self.edit_button.setEnabled(1)

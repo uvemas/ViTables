@@ -194,7 +194,7 @@ class Config(QtCore.QSettings):
             # On Unix systems settings will be stored in a plain text
             # file (see the module docstring for name conventions)
             self.base_key = 'ViTables'
-            config_directory = os.path.join(str(QtCore.QDir.homePath()),
+            config_directory = os.path.join(unicode(QtCore.QDir.homePath()),
                 '.vitables')
             if not os.path.isdir(config_directory):
                 os.mkdir(config_directory)
@@ -271,7 +271,7 @@ class Config(QtCore.QSettings):
         # Check the entry format and value
         if not entry.canConvert(QtCore.QVariant.String):
             return default_value
-        elif str(entry.toString()) not in ['default', 'Windows', 'Motif', 
+        elif unicode(entry.toString()) not in ['default', 'Windows', 'Motif', 
                                         'MotifPlus', 'Platinum', 'SGI', 
                                         'CDE']:
             return default_value

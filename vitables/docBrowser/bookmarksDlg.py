@@ -142,7 +142,7 @@ class BookmarksDlg(QtGui.QDialog):
             # extracts the short name. Examples:
             # /home/vmas/estilo.html --> estilo.html
             # /home/vmas/estilo.html#color --> estilo.html#color
-            shortname = os.path.basename(str(entry))
+            shortname = os.path.basename(unicode(entry))
             item = QtGui.QStandardItem(shortname)
             item.setCheckable(True)
             item.setEditable(False)

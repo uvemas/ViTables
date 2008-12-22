@@ -203,10 +203,10 @@ class AttrEditor(object):
             if name.isEmpty():
                 name = -1
             else:
-                name = str(name)
-            value = str(model.item(row, 1).text())
+                name = unicode(name)
+            value = unicode(model.item(row, 1).text())
             dtype_index = model.indexFromItem(model.item(row, 2))
-            dtype = str(user_table.indexWidget(dtype_index).currentText())
+            dtype = unicode(user_table.indexWidget(dtype_index).currentText())
             self.edited_attrs[row] = (name, value, dtype, multidim)
 
         # Add the TITLE attribute to the dictionary

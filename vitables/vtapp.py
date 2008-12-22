@@ -660,7 +660,7 @@ class VTApp(QtGui.QMainWindow):
         for key in keys:
             value = config[key]
             if key == 'Logger/Paper':
-                paper = str(QtGui.QColor(value).name())
+                paper = unicode(QtGui.QColor(value).name())
                 stylesheet = self.logger.styleSheet()
                 old_paper = stylesheet[-7:]
                 stylesheet.replace(old_paper, paper)
@@ -675,7 +675,7 @@ class VTApp(QtGui.QMainWindow):
                 self.workspace.setBackground(QtGui.QBrush(value))
             elif key == 'Look/currentStyle':
                 # Default style is provided by the underlying window manager
-                self.current_style = value.toString()
+                self.current_style = unicode(value.toString())
                 if self.current_style != 'default':
                     QtGui.qApp.setStyle(self.current_style)
             elif key == 'Geometry/Position':
@@ -697,9 +697,9 @@ class VTApp(QtGui.QMainWindow):
             elif key == 'Startup/restoreLastSession':
                 self.restore_last_session = value.toBool()
             elif key == 'Startup/startupWorkingDir':
-                self.startup_working_directory = value.toString()
+                self.startup_working_directory = unicode(value.toString())
             elif key == 'Startup/lastWorkingDir':
-                self.last_working_directory = value.toString()
+                self.last_working_directory = unicode(value.toString())
             elif key == 'Recent/Files':
                 self.recent_files = value.toStringList()
             elif key == 'Session/Files':
@@ -823,7 +823,7 @@ class VTApp(QtGui.QMainWindow):
 
         expanded_signal = QtCore.SIGNAL("expanded(QModelIndex)")
         for file_data in self.session_files_nodes:
-            item = str(file_data).split('#@#')
+            item = unicode(file_data).split('#@#')
             # item looks like [mode, filepath1, nodepath1, nodepath2, ...]
             mode = item.pop(0)
             filepath = item.pop(0)
@@ -1041,7 +1041,7 @@ class VTApp(QtGui.QMainWindow):
 
         item = QtCore.QString('%1#@#%2').\
                                 arg(mode).\
-                                arg(vitables.utils.forwardPath(str(filepath)))
+                                arg(vitables.utils.forwardPath(unicode(filepath)))
 
         # Updates the list of recently open files. Most recent goes first.
         if not self.recent_files.contains(item):
@@ -1070,7 +1070,7 @@ class VTApp(QtGui.QMainWindow):
         iconset = vitables.utils.getIcons()
         for item in self.recent_files:
             index += 1
-            (mode, filepath) = str(item).split('#@#')
+            (mode, filepath) = unicode(item).split('#@#')
             action = QtGui.QAction('%s. %s' % (index, filepath), self)
             action.setData(QtCore.QVariant(item))
             self.connect(action, QtCore.SIGNAL("triggered()"), 
@@ -1468,8 +1468,8 @@ class VTApp(QtGui.QMainWindow):
 
         action = self.sender()
         item = action.data().toString()
-        (mode, filepath) = str(item).split('#@#')
-        self.slotFileOpen(filepath, str(mode))
+        (mode, filepath) = unicode(item).split('#@#')
+        self.slotFileOpen(filepath, mode)
 
 
     def slotFileOpen(self, filepath=None, mode='a', position=0):
@@ -2126,7 +2126,7 @@ class VTApp(QtGui.QMainWindow):
         libs_versions = {
             'title': self.__tr('Version Numbers',
                 'Caption of the Versions dialog'),
-            'Python': reduce(lambda x,y: '.'.join([str(x), str(y)]),
+            'Python': reduce(lambda x,y: '.'.join([unicode(x), unicode(y)]), 
                 sys.version_info[:3]),
             'PyTables': tables.__version__ ,
             'NumPy': tables.numpy.__version__,

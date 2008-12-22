@@ -159,7 +159,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         else:
             for section in range(0, ncols):
                 item = QtGui.QTableWidgetItem()
-                item.setText(str(section + 1))
+                item.setText(unicode(section + 1))
                 self.grid.setHorizontalHeaderItem(section, item)
 
         # Fill the grid

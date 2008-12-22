@@ -215,13 +215,13 @@ class RenameDlg(QtGui.QDialog):
 
         # If the new name and the current nodename are the same then the
         # group 1 of the pattern is matched
-        result = self.cpattern.search(str(new_name))
+        result = self.cpattern.search(unicode(new_name))
         if (result == None) or \
             ((result != None) and (result.lastindex == 1)) or \
-            (not str(new_name)):
+            (not unicode(new_name)):
             self.rename_button.setEnabled(0)
             self.overwrite_button.setEnabled(0)
-        elif str(new_name) == self.troubled_name:
+        elif unicode(new_name) == self.troubled_name:
             self.rename_button.setEnabled(0)
             if self.troubled_name == '/':
                 self.overwrite_button.setEnabled(0)
@@ -238,7 +238,6 @@ class RenameDlg(QtGui.QDialog):
             self.renameNode()
         elif button == self.overwrite_button:
             self.overwriteNode()
-
 
     def overwriteNode(self):
         """
@@ -263,5 +262,5 @@ class RenameDlg(QtGui.QDialog):
 
         name = self.value_le.text()
         self.action['overwrite'] = False
-        self.action['new_name'] = str(name)
+        self.action['new_name'] = unicode(name)
         self.accept()
