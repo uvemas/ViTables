@@ -128,7 +128,8 @@ class HelpBrowser(QtCore.QObject) :
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('HelpBrowser', source, comment))
+        return unicode(QtGui.qApp.translate('HelpBrowser', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def connectSignals(self):

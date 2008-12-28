@@ -129,7 +129,8 @@ class LeafModel(QtCore.QAbstractTableModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('LeafModel', source, comment))
+        return unicode(QtGui.qApp.translate('LeafModel', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def headerData(self, section, orientation, role):
@@ -207,4 +208,5 @@ class LeafModel(QtCore.QAbstractTableModel):
         self.rbuffer.readBuffer(start, chunk_size)
         self.emit(QtCore.SIGNAL("headerDataChanged(int, int, int)"), 
                     QtCore.Qt.Vertical, 0, self.numrows - 1)
+
 

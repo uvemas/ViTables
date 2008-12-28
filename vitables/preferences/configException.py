@@ -75,8 +75,7 @@ class ConfigFileIOException(Exception):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('ConfigFileIOException', source,
-            comment))
-
+        return unicode(QtGui.qApp.translate('ConfigFileIOException', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 

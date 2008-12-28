@@ -125,9 +125,11 @@ class LeafView(QtGui.QTableView):
                         QtCore.SIGNAL("headerDataChanged(int, int, int)"), 
                         self.repaintCurrentCell)
 
+
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('LeafView', source, comment))
+        return unicode(QtGui.qApp.translate('LeafView', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def syncView(self):

@@ -149,7 +149,8 @@ class RenameDlg(QtGui.QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('RenameDlg', source, comment))
+        return unicode(QtGui.qApp.translate('RenameDlg', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def addComponents(self):
@@ -215,13 +216,14 @@ class RenameDlg(QtGui.QDialog):
 
         # If the new name and the current nodename are the same then the
         # group 1 of the pattern is matched
-        result = self.cpattern.search(unicode(new_name))
+        new_name = unicode(new_name.toUtf8(), 'utf_8')
+        result = self.cpattern.search(new_name)
         if (result == None) or \
             ((result != None) and (result.lastindex == 1)) or \
-            (not unicode(new_name)):
+            (not new_name):
             self.rename_button.setEnabled(0)
             self.overwrite_button.setEnabled(0)
-        elif unicode(new_name) == self.troubled_name:
+        elif new_name == self.troubled_name:
             self.rename_button.setEnabled(0)
             if self.troubled_name == '/':
                 self.overwrite_button.setEnabled(0)
@@ -260,7 +262,7 @@ class RenameDlg(QtGui.QDialog):
         the dialog finishes.
         """
 
-        name = self.value_le.text()
+        new_name = unicode(self.value_le.text().toUtf8(), 'utf_8')
         self.action['overwrite'] = False
-        self.action['new_name'] = unicode(name)
+        self.action['new_name'] = new_name
         self.accept()

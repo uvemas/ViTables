@@ -99,7 +99,8 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('HelpBrowserGUI', source, comment))
+        return unicode(QtGui.qApp.translate('HelpBrowserGUI', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def setupActions(self):

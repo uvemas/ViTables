@@ -161,8 +161,8 @@ class VTApp(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+        #sys.stdout = self.logger
+        #sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -232,8 +232,8 @@ class VTApp(QtGui.QMainWindow):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('VTApp', source, comment))
-
+        return unicode(QtGui.qApp.translate('VTApp', source, comment).toUtf8(), 
+                       'utf_8')
 
     def setupActions(self):
         """Provide actions to the menubar and the toolbars.
@@ -660,7 +660,7 @@ class VTApp(QtGui.QMainWindow):
         for key in keys:
             value = config[key]
             if key == 'Logger/Paper':
-                paper = unicode(QtGui.QColor(value).name())
+                paper = unicode(QtGui.QColor(value).name(), 'utf_8')
                 stylesheet = self.logger.styleSheet()
                 old_paper = stylesheet[-7:]
                 stylesheet.replace(old_paper, paper)
@@ -675,7 +675,8 @@ class VTApp(QtGui.QMainWindow):
                 self.workspace.setBackground(QtGui.QBrush(value))
             elif key == 'Look/currentStyle':
                 # Default style is provided by the underlying window manager
-                self.current_style = unicode(value.toString())
+                self.current_style = unicode(value.toString().toUtf8(), 
+                                             'utf_8')
                 if self.current_style != 'default':
                     QtGui.qApp.setStyle(self.current_style)
             elif key == 'Geometry/Position':
@@ -697,9 +698,11 @@ class VTApp(QtGui.QMainWindow):
             elif key == 'Startup/restoreLastSession':
                 self.restore_last_session = value.toBool()
             elif key == 'Startup/startupWorkingDir':
-                self.startup_working_directory = unicode(value.toString())
+                self.startup_working_directory = \
+                                unicode(value.toString().toUtf8(), 'utf_8')
             elif key == 'Startup/lastWorkingDir':
-                self.last_working_directory = unicode(value.toString())
+                self.last_working_directory = \
+                                unicode(value.toString().toUtf8(), 'utf_8')
             elif key == 'Recent/Files':
                 self.recent_files = value.toStringList()
             elif key == 'Session/Files':
@@ -790,12 +793,12 @@ class VTApp(QtGui.QMainWindow):
             # If a new file has been created during the current session
             # then write mode must be replaced by append mode or the file
             # will be created from scratch in the next ViTables session
-            if mode == 'w':
-                mode = 'a'
-            item_path = '%s#@#%s' % (mode, path)
+            if mode == u'w':
+                mode = u'a'
+            item_path = mode + u'#@#' + path
             for view in node_views:
                 if view.leaf.filepath == path:
-                    item_path = '%s#@#%s' % (item_path, view.leaf.nodepath)
+                    item_path = item_path + u'#@#' + view.leaf.nodepath
             session_files_nodes.append(item_path)
 
         # Format the list in a handy way to store it on disk
@@ -823,7 +826,7 @@ class VTApp(QtGui.QMainWindow):
 
         expanded_signal = QtCore.SIGNAL("expanded(QModelIndex)")
         for file_data in self.session_files_nodes:
-            item = unicode(file_data).split('#@#')
+            item = unicode(file_data.toUtf8(), 'utf_8').split('#@#')
             # item looks like [mode, filepath1, nodepath1, nodepath2, ...]
             mode = item.pop(0)
             filepath = item.pop(0)
@@ -1039,10 +1042,7 @@ class VTApp(QtGui.QMainWindow):
             - `mode`: the opening mode of the file
         """
 
-        item = QtCore.QString('%1#@#%2').\
-                                arg(mode).\
-                                arg(vitables.utils.forwardPath(unicode(filepath)))
-
+        item = mode + u'#@#' + filepath
         # Updates the list of recently open files. Most recent goes first.
         if not self.recent_files.contains(item):
             self.recent_files.insert(0, item)
@@ -1070,8 +1070,8 @@ class VTApp(QtGui.QMainWindow):
         iconset = vitables.utils.getIcons()
         for item in self.recent_files:
             index += 1
-            (mode, filepath) = unicode(item).split('#@#')
-            action = QtGui.QAction('%s. %s' % (index, filepath), self)
+            (mode, filepath) = item.split('#@#')
+            action = QtGui.QAction(u'%s. ' % index + filepath, self)
             action.setData(QtCore.QVariant(item))
             self.connect(action, QtCore.SIGNAL("triggered()"), 
                 self.openRecentFile)
@@ -1250,19 +1250,21 @@ class VTApp(QtGui.QMainWindow):
         try:
             if file_selector.exec_():  # OK clicked
                 filepath = file_selector.selectedFiles()[0]
+                # Make sure filepath contains no backslashes
+                filepath = QtCore.QDir.fromNativeSeparators(filepath)
                 # Update the working directory
-                self.last_working_directory = \
-                    unicode(file_selector.directory().canonicalPath())
+                working_dir = file_selector.directory().canonicalPath()
+                self.last_working_directory = unicode(working_dir.toUtf8(), 
+                                                      'utf_8')
                 # Update the history
-                if not file_selector.history().contains(\
-                                                self.last_working_directory):
+                if not file_selector.history().contains(working_dir):
                     self.file_selector_history.append(\
                                                 self.last_working_directory)
             else:  # Cancel clicked
-                filepath = u''
+                filepath = QtCore.QString('')
         finally:
             del file_selector
-        return unicode(filepath)
+        return unicode(filepath.toUtf8(), 'utf_8')
 
 
     def checkFileExtension(self, filepath):
@@ -1278,10 +1280,9 @@ class VTApp(QtGui.QMainWindow):
         :Returns: the filepath with the proper extension (a Python string)
         """
 
-        filepath = unicode(filepath)
         if not re.search('\.(.+)$', os.path.basename(filepath)):
             ext = '.h5'
-            filepath = '%s%s' % (filepath, ext)
+            filepath = filepath + ext
         return filepath
 
 
@@ -1296,11 +1297,6 @@ class VTApp(QtGui.QMainWindow):
         if not filepath:
             # The user has canceled the dialog
             return
-
-        # Make sure the path is not a relative path and contains no
-        # backslashes
-        filepath = QtCore.QDir.fromNativeSeparators(os.path.abspath(filepath))
-        filepath = unicode(filepath)
 
         # Check the file extension
         filepath = self.checkFileExtension(filepath)
@@ -1346,12 +1342,6 @@ class VTApp(QtGui.QMainWindow):
         if not trier_filepath:  # The user has canceled the dialog
             return
 
-        # Make sure the path is not a relative path and contains no
-        # backslashes
-        trier_filepath = \
-            QtCore.QDir.fromNativeSeparators(os.path.abspath(trier_filepath))
-        trier_filepath = unicode(trier_filepath)
-
         trier_filepath = self.checkFileExtension(trier_filepath)
 
         #
@@ -1379,7 +1369,6 @@ class VTApp(QtGui.QMainWindow):
                 pattern = \
                     "(^%s$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$" \
                     % trier_filename
-                dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
             elif is_initial_filepath:
                 info[1] = self.__tr("""Target directory: %s\n\nThe file """
                                 """being saved cannot overwrite itself.""", 
@@ -1387,19 +1376,20 @@ class VTApp(QtGui.QMainWindow):
                 pattern = \
                     "(^%s$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$" \
                     % trier_filename
-                dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
             elif filename_in_sibling:
                 info[1] = self.__tr("""Target directory: %s\n\nFile name """
                     """'%s' already in use in that directory.\n""", 
                     'Overwrite file dialog label') % (trier_dirname, 
                     trier_filename)
                 pattern = "[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
-                dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
+
+            dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
             if dialog.exec_():
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
                 trier_filepath = \
-                    QtCore.QDir.fromNativeSeparators(trier_filepath)
+                    QtCore.QDir.fromNativeSeparators(trier_filepath).toUtf8()
+                trier_filepath = unicode(trier_filepath, 'utf_8')
                 overwrite = dialog.action['overwrite']
                 # Update the error conditions
                 is_initial_filepath = trier_filepath == initial_filepath
@@ -1449,7 +1439,7 @@ class VTApp(QtGui.QMainWindow):
         if position == self.dbs_tree_model.rowCount(QtCore.QModelIndex()) - 1:
             position = position - 1
         self.slotFileClose()
-        self.slotFileOpen(QtCore.QString(filepath), 'a', position) 
+        self.slotFileOpen(filepath, 'a', position) 
 
 
     def slotFileOpenRO(self, filepath=None):
@@ -1467,8 +1457,8 @@ class VTApp(QtGui.QMainWindow):
         """
 
         action = self.sender()
-        item = action.data().toString()
-        (mode, filepath) = unicode(item).split('#@#')
+        item = action.data().toString().toUtf8()
+        (mode, filepath) = unicode(item, 'utf_8').split('#@#')
         self.slotFileOpen(filepath, mode)
 
 
@@ -1496,11 +1486,9 @@ class VTApp(QtGui.QMainWindow):
                 # The user has canceled the dialog
                 return
         else:
-            # Make sure the path is not a relative path and contains no
-            # backslashes
-            filepath = \
-                QtCore.QDir.fromNativeSeparators(os.path.abspath(unicode(filepath)))
-            filepath = unicode(filepath)
+            # Make sure the path contains no backslashes
+            filepath = QtCore.QDir.fromNativeSeparators(filepath)
+            filepath = unicode(filepath.toUtf8(), 'utf_8')
 
 
         # Open the database and select it in the tree view

@@ -112,7 +112,8 @@ class InputNodeName(QtGui.QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('InputNodeName', source, comment))
+        return unicode(QtGui.qApp.translate('InputNodeName', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def addComponents(self):
@@ -159,7 +160,7 @@ class InputNodeName(QtGui.QDialog):
         :Parameter current: the value currently displayed in the text box
         """
 
-        if not unicode(current):
+        if current.isEmpty():
             self.edit_button.setEnabled(0)
         else:
             self.edit_button.setEnabled(1)
@@ -169,7 +170,7 @@ class InputNodeName(QtGui.QDialog):
         """Save the entered group name and hide the dialog.
         """
 
-        self.node_name = unicode(self.value_le.text())
+        self.node_name = unicode(self.value_le.text().toUtf8(), 'utf_8')
         self.accept()
 
 

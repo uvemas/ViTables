@@ -82,8 +82,12 @@ class DataSheet(QtGui.QMdiSubWindow):
         self.leaf = leaf
 
         # Customise the title bar
-        title = u"%s\t%s" % (leaf.name, leaf.node.title)
-        self.setWindowTitle(title)
+        if not isinstance(leaf.node.title, unicode):
+            title = unicode(leaf.node.title, 'utf_8')
+        else:
+            title = leaf.node.title.encode('utf_8')
+        wtitle = u"%s\t%s" % (leaf.name, title)
+        self.setWindowTitle(wtitle)
         self.setWindowIcon(leaf.icon)
 
         # Eventually update the Node menu actions

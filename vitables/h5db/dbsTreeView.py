@@ -117,7 +117,8 @@ class DBsTreeView(QtGui.QTreeView):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('DBsTreeView', source, comment))
+        return unicode(QtGui.qApp.translate('DBsTreeView', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def mouseDoubleClickEvent(self, event):

@@ -77,7 +77,8 @@ class NodeItemDelegate(QtGui.QItemDelegate):
 
     def __tr(self, source, comment=None):
         """Translate function."""
-        return unicode(QtGui.qApp.translate('NodeItemDelegate', source, comment))
+        return unicode(QtGui.qApp.translate('NodeItemDelegate', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def setEditorData(self, editor, index):

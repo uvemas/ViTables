@@ -137,7 +137,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('DBsTreeModel', source, comment))
+        return unicode(QtGui.qApp.translate('DBsTreeModel', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def mapDB(self, filepath, db_doc):
@@ -193,34 +194,36 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             if os.path.isdir(filepath):
                 error = self.__tr('Openning cancelled: %s is a folder.',
                     'A logger error message') % filepath
-                raise ValueError, error
+                raise ValueError
+
             elif not os.path.isfile(filepath):
                 error = self.__tr('Opening failed: file %s cannot be found.',
                     'A logger error message') % filepath
-                raise ValueError, error
+                raise ValueError
 
             # Check if file is already open.
             elif self.getDBDoc(filepath) is not None:
                 error = self.__tr('Opening cancelled: file %s already open.',
                     'A logger error message') % filepath
-                raise ValueError, error
 
-            # Check the file format
-            else:
-                try:
-                    if not tables.isHDF5File(filepath):
-                        raise ValueError
-                except Exception, inst:
-                    if type(inst) == exceptions.ValueError:
-                        error = self.__tr(\
-                            'Opening cancelled: %s has not HDF5 format.', 
-                            'A logger error message') % filepath
-                    else:
-                        error = self.__tr("""Opening failed: I cannot find """
-                            """out if %s has HDF5 format.""", 
-                            'A logger error message') % filepath
-                    raise ValueError, error
+                raise ValueError
+
         except ValueError:
+            print error
+            return False
+
+        # Check the file format
+        try:
+            if not tables.isHDF5File(filepath.encode('utf_8')):
+                error = self.__tr(\
+                    'Opening cancelled: %s has not HDF5 format.', 
+                    'A logger error message') % filepath
+                print error
+                return False
+        except Exception, inst:
+            error = self.__tr("""Opening failed: I cannot find """
+                """out if %s has HDF5 format.""", 
+                'A logger error message') % filepath
             print error
             return False
         else:
@@ -237,9 +240,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         - `mode`: the opening mode of the database file. It can be 'r'ead-only
             'w'rite or 'a'ppend
         """
-
-        if isinstance(filepath, QtCore.QString):
-            filepath = unicode(filepath)
 
         if self.checkOpening(filepath):
             # Open the database and add it to model
@@ -321,7 +321,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         (f_handler, self.tmp_filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)
         self.tmp_filepath = \
-            unicode(QtCore.QDir.fromNativeSeparators(self.tmp_filepath))
+            unicode(QtCore.QDir.fromNativeSeparators(self.tmp_filepath).toUtf8(), 'utf_8')
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         return db_doc
 
@@ -1003,15 +1003,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # NULL byte
             encoded_data = data.data("text/uri-list")
             # Convert the binary array into a string with suitable format
-            uris_string = QtCore.QUrl.fromEncoded(encoded_data).toString()
+            uris_string = QtCore.QUrl.fromEncoded(encoded_data).toString().toUtf8()
             # Split the string using the apropriate separators
-            uris_list = re.split('(\r\n)|\r|\n\0', unicode(uris_string))
+            uris_list = re.split('(\r\n)|\r|\n\0', unicode(uris_string, 'utf_8'))
             # Get rid of the separators
             uris = [uris_list[i] for i in range(0, len(uris_list) - 1, 2)]
             # Transform every element of the sequence into a path and open it
             for item in uris[:]:
                 uri = QtCore.QUrl(item)
-                path = unicode(uri.path())
+                path = unicode(uri.path().toUtf8(), 'utf_8')
                 index = uris.index(item)
                 if sys.platform.startswith('win'):
                     path = path[1:]

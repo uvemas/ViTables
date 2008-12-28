@@ -127,7 +127,8 @@ class DBDoc(QtCore.QObject):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('DBDoc', source, comment))
+        return unicode(QtGui.qApp.translate('DBDoc', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def openH5File(self):
@@ -143,7 +144,7 @@ class DBDoc(QtCore.QObject):
                     'A logger error message')
 
         try:
-            h5file = tables.openFile(self.filepath, self.mode)
+            h5file = tables.openFile(self.filepath.encode('utf_8'), self.mode)
         except IOError, inst:
             print self.__tr("""\nError: %s.""",
                 'A logger error message') % inst
@@ -230,7 +231,7 @@ class DBDoc(QtCore.QObject):
         session it fails, due (probably) to HDF5 memory protection.
         """
         try:
-            self.h5file.copyFile(dst_filepath, overwrite=True)
+            self.h5file.copyFile(dst_filepath.encode('utf_8'), overwrite=True)
         except tables.exceptions.HDF5ExtError:
             print self.__tr("""\nError: unable to save the file %s as """\
                 """%s. Beware that only closed files can be safely """\

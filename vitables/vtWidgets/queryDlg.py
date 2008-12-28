@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 
 ########################################################################
 #
@@ -57,6 +59,7 @@ Misc variables:
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import tables.exceptions
@@ -67,7 +70,6 @@ import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
 import vitables.utils
-
 
 class QueryDlg(QtGui.QDialog):
     """
@@ -287,7 +289,8 @@ class QueryDlg(QtGui.QDialog):
 
     def __tr(self,  source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('QueryDlg', source, comment))
+        return unicode(QtGui.qApp.translate('QueryDlg', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def makeSectionOne(self, global_opt_gb):
@@ -379,7 +382,7 @@ class QueryDlg(QtGui.QDialog):
         stop_label = QtGui.QLabel(self.__tr('Stop:', 'A range selector label'),
             rows_range_gb)
         range_layout.addWidget(stop_label, 1, 0)
-        self.rstop.setText(unicode(nrows))
+        self.rstop.setText(u'%s' % nrows)
         range_layout.addWidget(self.rstop, 1, 1)
 
         step_label = QtGui.QLabel(self.__tr('Step:', 'A range selector label'),
@@ -445,7 +448,7 @@ class QueryDlg(QtGui.QDialog):
 
         :Parameter field_id: is the field identifier in the combobox current item
         """
-        self.query_le.insert(unicode(field_id).split(' ')[0])
+        self.query_le.insert(field_id.split(' ')[0])
 
 
     def slotInsertFunction(self, text):
@@ -457,6 +460,7 @@ class QueryDlg(QtGui.QDialog):
 
         :Parameter text: is the text of the combobox current item
         """
+
         name2call = {u'where': 'where(B, N, N)',
             'sin': 'sin(F|C)',
             'cos': 'cos(F|C)',
@@ -473,7 +477,7 @@ class QueryDlg(QtGui.QDialog):
             'imag': 'imag(C)',
             'complex': 'complex(F, F)'
             }
-        self.query_le.insert(name2call[unicode(text)])
+        self.query_le.insert(name2call[unicode(text.toUtf8(), 'utf_8')])
 
 
     def slotUpdateOKState(self):
@@ -501,7 +505,7 @@ class QueryDlg(QtGui.QDialog):
         status_ok = True
 
         # Check the table name
-        ft_name = unicode(self.name_le.text())
+        ft_name = unicode(self.name_le.text().toUtf8(), 'utf_8')
         if not ft_name:
             status_ok = False
         elif ft_name in self.used_names:
@@ -510,7 +514,7 @@ class QueryDlg(QtGui.QDialog):
                 """ choose another one.""", 'A logger info message')
 
         # Check the indices column name
-        indices_colname = unicode(self.indices_column.text())
+        indices_colname = unicode(self.indices_column.text().toUtf8(), 'utf_8')
         if self.indices_column.isEnabled():
             if indices_colname == '':
                 status_ok = False
@@ -530,13 +534,13 @@ class QueryDlg(QtGui.QDialog):
 
         # Check the condition.
         # If it is an empty string the OK button is not enabled
-        condition = unicode(self.query_le.text())
+        condition = unicode(self.query_le.text().toUtf8(), 'utf_8')
         if condition.isspace() or (condition in [None, '']):
             status_ok = False
 
         # Check the range values
-        start_str = unicode(self.rstart.text())
-        stop_str = unicode(self.rstop.text())
+        start_str = unicode(self.rstart.text().toUtf8(), 'utf_8')
+        stop_str = unicode(self.rstop.text().toUtf8(), 'utf_8')
         if not (start_str and stop_str):
             status_ok = False
         else:
@@ -600,7 +604,7 @@ class QueryDlg(QtGui.QDialog):
         """Compose the query and return."""
 
         # Get the query
-        condition = unicode(self.query_le.text())
+        condition = unicode(self.query_le.text().toUtf8(), 'utf_8')
         # Blanks at the begining of condition raise a SyntaxError
         condition = condition.strip()
         if not self.checkConditionSyntax(condition):
@@ -609,7 +613,7 @@ class QueryDlg(QtGui.QDialog):
         self.query_info['condition'] = condition
 
         # Get the table name and the name of the column with indices (if any)
-        self.query_info['ft_name'] = unicode(self.name_le.text())
+        self.query_info['ft_name'] = unicode(self.name_le.text().toUtf8(), 'utf_8')
         if self.indices_column.isEnabled():
             self.query_info['indices_field_name'] = \
                 unicode(self.indices_column.text())

@@ -199,24 +199,26 @@ class AttrEditor(object):
                 multidim = False
             # Empty Value cells are acceptable for string attributes
             # but empty Name cells are marked as invalid
-            name = model.item(row, 0).text()
+            name = model.item(row, 0).text().toUtf8()
             if name.isEmpty():
                 name = -1
             else:
-                name = unicode(name)
-            value = unicode(model.item(row, 1).text())
+                name = unicode(name, 'utf_8')
+            value = unicode(model.item(row, 1).text().toUtf8(), 'utf_8')
             dtype_index = model.indexFromItem(model.item(row, 2))
-            dtype = unicode(user_table.indexWidget(dtype_index).currentText())
+            current_dtype = user_table.indexWidget(dtype_index).currentText() 
+            dtype = unicode(current_dtype.toUtf8(), 'utf_8')
             self.edited_attrs[row] = (name, value, dtype, multidim)
 
         # Add the TITLE attribute to the dictionary
         if title is not None:
+            title = unicode(title.toUtf8(), 'utf_8')
             self.edited_attrs[rows] = ('TITLE', title, 'string', False)
-
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('AttrEditor', source, comment))
+        return unicode(QtGui.qApp.translate('AttrEditor', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def checkAttributes(self):
@@ -277,9 +279,13 @@ class AttrEditor(object):
                     return (False, dtype_error % name)
                 # Check if values are out of range
                 else:
+                    if dtype.startswith('string'):
+                        dtype = unicode('string', 'utf_8')
                     try:
                         value = checkOverflow(dtype, value)
-                        numpy.array(value).astype(dtype) [()]
+                        value_enc = value.encode('utf_8')
+                        dtype_enc = dtype.encode('utf_8')
+                        numpy.array(value_enc).astype(dtype_enc)[()]
                     except IndexError:
                         return (False, range_error % name)
                     except ValueError:
@@ -329,7 +335,11 @@ class AttrEditor(object):
                 else:
                     value = eval('%s' % value)
             else:
-                value = numpy.array(value).astype(dtype)
+                if dtype.startswith('string'):
+                    dtype = unicode('string', 'utf_8')
+                value_enc = value.encode('utf_8')
+                dtype_enc = dtype.encode('utf_8')
+                value = numpy.array(value_enc).astype(dtype_enc)
 
             # Updates the ASI
             try:

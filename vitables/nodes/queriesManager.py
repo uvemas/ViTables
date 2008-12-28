@@ -80,7 +80,8 @@ class QueriesManager:
 
     def __tr(self,  source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('QueriesManager', source, comment))
+        return unicode(QtGui.qApp.translate('QueriesManager', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def getQueryInfo(self, table):

@@ -98,7 +98,8 @@ class Logger(QtGui.QTextEdit):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('Logger', source, comment))
+        return unicode(QtGui.qApp.translate('Logger', source, comment).toUtf8(), 
+                       'utf_8')
 
 
     def write(self, text):

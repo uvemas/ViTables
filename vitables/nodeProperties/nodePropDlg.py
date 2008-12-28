@@ -129,9 +129,11 @@ class NodePropDlg(QtGui.QDialog):
         # Show the dialog
         self.show()
 
+
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('NodePropDlg', source, comment))
+        return unicode(QtGui.qApp.translate('NodePropDlg', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def makeGeneralPage(self, info):
@@ -149,23 +151,25 @@ class NodePropDlg(QtGui.QDialog):
         database_gb.setTitle(self.__tr('Database', 'Title of a groupbox'))
 
         # Nodename/filename label
+        if info.node_type == 'root group':
+            name = info.filename
+        else:
+            name = info.nodename
         name_label = QtGui.QLabel(self.__tr('Name:', 'A label'), database_gb)
         name_ledit = vitables.utils.customLineEdit(database_gb)
-        if info.node_type == 'root group':
-            name_ledit.setText(info.filename)
-        else:
-            name_ledit.setText(info.nodename)
+        name_ledit.setText(name)
         database_layout.addWidget(name_label, 0, 0)
         database_layout.addWidget(name_ledit, 0, 1)
 
         # Nodepath/filepath label
+        if info.node_type == 'root group':
+            path = info.filepath
+        else:
+            path = info.nodepath
         path_label = QtGui.QLabel(self.__tr('Path:', 'A label'), database_gb)
         path_ledit = vitables.utils.customLineEdit(database_gb)
-        if info.node_type == 'root group':
-            path_ledit.setText(info.filepath)
-            path_ledit.setToolTip(info.filepath)
-        else:
-            path_ledit.setText(info.nodepath)
+        path_ledit.setText(path)
+        path_ledit.setToolTip(path)
         database_layout.addWidget(path_label, 1, 0)
         database_layout.addWidget(path_ledit, 1, 1)
 
@@ -242,13 +246,13 @@ class NodePropDlg(QtGui.QDialog):
         for name in info.hanging_groups.keys():
             name_item = QtGui.QStandardItem(name)
             name_item.setEditable(False)
-            type_item = QtGui.QStandardItem('group')
+            type_item = QtGui.QStandardItem(self.__tr('group'))
             type_item.setEditable(False)
             self.children_model.appendRow([name_item, type_item])
         for name in info.hanging_leaves.keys():
             name_item = QtGui.QStandardItem(name)
             name_item.setEditable(False)
-            type_item = QtGui.QStandardItem('leaf')
+            type_item = QtGui.QStandardItem(self.__tr('leaf'))
             type_item.setEditable(False)
             self.children_model.appendRow([name_item, type_item])
         layout.addWidget(table, 1, 0, 1, 2)
@@ -284,7 +288,7 @@ class NodePropDlg(QtGui.QDialog):
         dtype_label = QtGui.QLabel(self.__tr('Data type:', 'A label'), 
             groupbox)
         dtype_ledit = vitables.utils.customLineEdit(groupbox)
-        dtype_ledit.setText(unicode(info.dtype))
+        dtype_ledit.setText(info.dtype)
         layout.addWidget(dtype_label, 2, 0)
         layout.addWidget(dtype_ledit, 2, 1)
 
@@ -292,7 +296,10 @@ class NodePropDlg(QtGui.QDialog):
         compression_label = QtGui.QLabel(self.__tr('Compression:', 'A label'), 
             groupbox)
         compression_ledit = vitables.utils.customLineEdit(groupbox)
-        compression_ledit.setText(unicode(info.filters.complib))
+        if info.filters.complib is None:
+            compression_ledit.setText(unicode('uncompressed', 'utf_8'))
+        else:
+            compression_ledit.setText(unicode(info.filters.complib, 'utf_8'))
         layout.addWidget(compression_label, 3, 0)
         layout.addWidget(compression_ledit, 3, 1)
 
@@ -325,24 +332,26 @@ class NodePropDlg(QtGui.QDialog):
                         seen_paths.append(field_name)
                     pathname_item = QtGui.QStandardItem(field_name)
                     pathname_item.setEditable(False)
-                    type_item = QtGui.QStandardItem('nested')
+                    type_item = QtGui.QStandardItem(self.__tr('nested'))
                     type_item.setEditable(False)
-                    shape_item = QtGui.QStandardItem('-')
+                    shape_item = QtGui.QStandardItem(self.__tr('-'))
                     shape_item.setEditable(False)
                 else:
-                    pathname_item = QtGui.QStandardItem(pathname)
+                    pathname_item = QtGui.QStandardItem(unicode(pathname, 
+                                                                'utf_8'))
                     pathname_item.setEditable(False)
-                    type_item = \
-                        QtGui.QStandardItem(info.columns_types[pathname])
+                    type_item = QtGui.QStandardItem(\
+                            unicode(info.columns_types[pathname], 'utf_8'))
                     type_item.setEditable(False)
-                    shape_item = \
-                        QtGui.QStandardItem(unicode(info.columns_shapes[pathname]))
+                    shape_item = QtGui.QStandardItem(\
+                                        unicode(info.columns_shapes[pathname]))
                     shape_item.setEditable(False)
                 self.fields_model.appendRow([pathname_item, type_item, 
                                             shape_item])
             layout.addWidget(table, 4, 0, 1, 2)
 
         return groupbox
+
 
     def makeSysAttrsPage(self, info):
         """Make the System attributes page of the Properties dialog."""
@@ -377,36 +386,39 @@ class NodePropDlg(QtGui.QDialog):
         bg_brush = page.palette().brush(QtGui.QPalette.Background)
         base_brush = page.palette().brush(QtGui.QPalette.Base)
         for name, value in info.system_attrs.items():
-            name_item = QtGui.QStandardItem(unicode(name))
+            name_item = QtGui.QStandardItem(unicode(name, 'utf_8'))
             name_item.setEditable(False)
             name_item.setBackground(bg_brush)
-            value_item = QtGui.QStandardItem(unicode(value))
+            # Find out the attribute datatype.
+            if isinstance(value, tables.Filters):
+                dtype_name = unicode('tables.filters.Filters', 'utf_8')
+            # Since PyTables1.1 scalar attributes are stored as numarray arrays
+            # Since PyTables2.0 scalar attributes are stored as numpy arrays
+            # It includes the TITLE attribute
+            elif isinstance(value, str):
+                dtype_name = unicode('string', 'utf_8')
+            elif hasattr(value, 'shape'):
+                dtype_name = unicode(value.dtype.name, 'utf_8')
+            else:
+                # The attributes are scalar Python objects (PyTables<1.1)
+                # or N-dimensional attributes
+                dtype_name = unicode(type(value), 'utf_8')
+            dtype_item = QtGui.QStandardItem(dtype_name)
+            dtype_item.setEditable(False)
+            dtype_item.setBackground(bg_brush)
+            if dtype_name.startswith('string'):
+                value_item = QtGui.QStandardItem(unicode(value, 'utf_8'))
+            else:
+                value_item = QtGui.QStandardItem(unicode(value))
             value_item.setEditable(False)
             value_item.setBackground(bg_brush)
             # When the database is in read-only mode the TITLE attribute
             # cannot be edited
-            if name == 'TITLE':
+            if (name == 'TITLE') and (info.mode != 'read-only'):
                 # The position of the TITLE value in the table
-                self.title_pos = (self.sysattr_model.rowCount(), 1)
-                if info.mode != 'read-only':
-                    value_item.setEditable(True)
-                    value_item.setBackground(base_brush)
-            # Find out the attribute datatype
-            if isinstance(value, tables.Filters):
-                dtype_name = 'tables.filters.Filters'
-            elif isinstance(value, str):
-                dtype_name = 'string'
-            # Since PyTables1.1 scalar attributes are stored as numarray arrays
-            # Since PyTables2.0 scalar attributes are stored as numpy arrays
-            elif hasattr(value, 'shape'):
-                dtype_name = value.dtype.name
-            else:
-                # The attributes are scalar Python objects (PyTables<1.1)
-                # or N-dimensional attributes
-                dtype_name = unicode(type(value))
-            dtype_item = QtGui.QStandardItem(dtype_name)
-            dtype_item.setEditable(False)
-            dtype_item.setBackground(bg_brush)
+                self.title_row = self.sysattr_model.rowCount()
+                value_item.setEditable(True)
+                value_item.setBackground(base_brush)
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
         page_layout.addWidget(sys_table, 1, 0, 1, 2)
 
@@ -462,25 +474,30 @@ class NodePropDlg(QtGui.QDialog):
         bg_brush = page.palette().brush(QtGui.QPalette.Background)
         base_brush = page.palette().brush(QtGui.QPalette.Base)
         for name, value in info.user_attrs.items():
-            name_item = QtGui.QStandardItem(unicode(name))
-            value_item = QtGui.QStandardItem(unicode(value))
+            name_item = QtGui.QStandardItem(unicode(name, 'utf_8'))
             dtype_item = QtGui.QStandardItem()
-            self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo = QtGui.QComboBox()
             dtypes_combo.addItems(dtypes_list)
             dtypes_combo.setEditable(False)
-            self.user_table.setIndexWidget(dtype_item.index(), dtypes_combo)
             # In PyTables < 1.1 scalar attributes are stored as Python objects
             # In PyTables >=1.1 scalar attributes are stored as numarray arrays
             # In PyTables >= 2.0 scalar attributes are stored as numpy arrays
             if hasattr(value, 'shape'):
-                dtype_name = value.dtype.name
+                dtype_name = unicode(value.dtype.name, 'utf_8').encode('utf_8')
                 if dtype_name.startswith('string'):
                     dtype_name = 'string'
             else:
                 # But attributes can also be non scalar Python objects.
                 dtype_name = 'python'
+            if dtype_name.startswith('string'):
+                value_item = QtGui.QStandardItem(unicode(value, 'utf_8'))
+            else:
+                value_item = QtGui.QStandardItem(unicode(value))
+            self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo.setCurrentIndex(dtypes_combo.findText(dtype_name))
+            self.user_table.setIndexWidget(dtype_item.index(), dtypes_combo)
+
+            # Complex attributes and ND_array attributes need some visual adjusts
             if dtype_name.startswith('complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.
@@ -636,7 +653,7 @@ class NodePropDlg(QtGui.QDialog):
         current_row = current_index.row()
         current_column = current_index.column()
         if current_column != 0:
-            current_index = current_index.sibling(0, current_row)
+            current_index = current_index.sibling(current_row, 0)
         name = self.userattr_model.itemFromIndex(current_index).text()
 
         # Delete the marked attribute
@@ -644,7 +661,7 @@ class NodePropDlg(QtGui.QDialog):
             self.__tr('User attribute deletion',
             'Caption of the attr deletion dialog'),
             self.__tr("""\n\nYou are about to delete the attribute:\n%s\n\n""",
-            'Ask for confirmation') % unicode(name),
+            'Ask for confirmation') % unicode(name, 'utf_8'),
             QtGui.QMessageBox.Yes|QtGui.QMessageBox.Default,
             QtGui.QMessageBox.No|QtGui.QMessageBox.Escape)
 
@@ -669,9 +686,8 @@ class NodePropDlg(QtGui.QDialog):
             # Get the value of the TITLE attribute. Checking is required
             # because the attribute is mandatory in PyTables but not in
             # generic HDF5 files
-            if hasattr(self, 'title_pos'):
-                title = unicode(self.sysattr_model.item(self.title_pos[0], 
-                                                self.title_pos[1]).text())
+            if hasattr(self, 'title_row'):
+                title = self.sysattr_model.item(self.title_row, 1).text()
             else:
                 title = None
             # Check the editable attributes

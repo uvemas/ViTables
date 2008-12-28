@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Dec 27, 2008**
+	Strings are managed via unicode strings with utf-8 encoding.
+
 ** Dec 22, 2008**
 	The User's Guide has been updated.
 

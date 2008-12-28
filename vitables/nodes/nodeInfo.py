@@ -86,6 +86,9 @@ class NodeInfo(object):
     def __init__(self, node_item):
         """Collects information about a given node.
 
+        Some PyTables string attributes are regular Python strings instead
+        of unicode strings and have to be explicitely converted to unicode.
+
         node_item is an instance of RootGroupNode, GroupNode or LeafNode.
         """
 
@@ -93,21 +96,22 @@ class NodeInfo(object):
 
         # The hosting File instance, filepath, filename and opening mode
         self.h5file = self.node._v_file
-        self.filepath = self.h5file.filename
-        self.filename = os.path.basename(self.filepath)
+        self.filepath = unicode(self.h5file.filename, 'utf_8')
+        self.filename = unicode(os.path.basename(self.h5file.filename), 
+                                'utf_8')
         mode = self.h5file.mode
         if mode == 'a':
-            self.mode = 'append'
+            self.mode = unicode('append', 'utf_8')
         elif mode == 'r':
-            self.mode = 'read-only'
+            self.mode = unicode('read-only', 'utf_8')
         else:
-            self.mode = 'read-write'
+            self.mode = unicode('read-write', 'utf_8')
 
         # The node type is a string with one of the following values:
         # root group, group, table, vlarray, earray, carray, array
         # or unimplemented
         self.node_type = node_item.node_kind
-        self.file_type = '%s, %s' % (self.format, self.size)
+        self.file_type = self.format + ', ' + self.size
         self.nodename = self.node._v_name
         self.nodepath = self.node._v_pathname
 
@@ -126,9 +130,9 @@ class NodeInfo(object):
     def _format(self):
         """The format of the hosting File instance"""
         if self.h5file._isPTFile:
-            return 'PyTables file'
+            return unicode('PyTables file', 'utf_8')
         else:
-            return 'Generic HDF5 file'
+            return unicode('Generic HDF5 file', 'utf_8')
 
     format = property(fget=_format)
 
@@ -151,7 +155,7 @@ class NodeInfo(object):
             size = '%.0f GB' % (gbytes)
         else:
             size = '%.0f TB' % (tbytes)
-        return size
+        return unicode(size, 'utf_8')
 
     size = property(fget=_size)
 
@@ -198,11 +202,11 @@ class NodeInfo(object):
 
         if self.node_type.count('array'):
             try:
-                return self.node.atom.type
+                return unicode(self.node.atom.type, 'utf_8')
             except AttributeError:
                 return None
         elif self.node_type == 'table':
-            return 'record'
+            return unicode('record', 'utf_8')
 
     dtype = property(fget=_dtype)
 
@@ -235,7 +239,7 @@ class NodeInfo(object):
         """The type of data object read from the table/array node."""
 
         try:
-            return self.node.flavor
+            return unicode(self.node.flavor, 'utf_8')
         except AttributeError:
             return None
 

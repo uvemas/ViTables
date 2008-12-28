@@ -137,7 +137,8 @@ class Preferences(QtCore.QObject):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('Preferences', source, comment))
+        return unicode(QtGui.qApp.translate('Preferences', source, 
+                                            comment).toUtf8(), 'utf_8')
 
 
     def setPreferences(self, preferences):
