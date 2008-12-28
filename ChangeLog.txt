@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Dec 27, 2008**
+	Fixed bug 014953.
+
 	Strings are managed via unicode strings with utf-8 encoding.
 
 ** Dec 22, 2008**

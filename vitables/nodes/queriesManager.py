@@ -93,7 +93,7 @@ class QueriesManager:
         # Information about table
         info = {}
         info['nrows'] = table.nrows
-        info['src_filepath'] = table._v_file.filename
+        info['src_filepath'] = unicode(table._v_file.filename, 'utf_8')
         info['src_path'] = table._v_pathname
         info['name'] = table._v_name
         # Fields info: top level fields names, flat fields shapes and types
@@ -233,7 +233,7 @@ class QueriesManager:
                     # the source table so a new description dictionary
                     # is needed Int64 values are necessary to keep full
                     # 64-bit indices
-                    ft_dict = {indices_field_name: tables.Int64Col(pos=-1)}
+                    ft_dict = {indices_field_name.encode('utf_8'): tables.Int64Col(pos=-1)}
                     ft_dict.update(src_dict)
                     f_table = self.tmp_h5file.createTable('/', name, ft_dict, 
                                                           title)
@@ -269,9 +269,9 @@ class QueriesManager:
                 f_table.flush()
                 # Set some user attributes that define this filtered table
                 asi = f_table.attrs
-                asi.query_path = query_info['src_filepath']
-                asi.query_table = query_info['src_path']
-                asi.query_condition = f_table.title
+                asi.query_path = numpy.array(query_info['src_filepath'].encode('utf_8'))
+                asi.query_table = numpy.array(query_info['src_path'].encode('utf_8'))
+                asi.query_condition = numpy.array(f_table.title.encode('utf_8'))
                 self.tmp_h5file.flush()
 
             # Update the list of names in use for filtered tables

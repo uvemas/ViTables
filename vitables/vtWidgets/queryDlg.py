@@ -616,7 +616,7 @@ class QueryDlg(QtGui.QDialog):
         self.query_info['ft_name'] = unicode(self.name_le.text().toUtf8(), 'utf_8')
         if self.indices_column.isEnabled():
             self.query_info['indices_field_name'] = \
-                unicode(self.indices_column.text())
+                unicode(self.indices_column.text().toUtf8(), 'utf_8')
 
         # Get the range and convert it into a Python range
         self.query_info['rows_range'] = (
