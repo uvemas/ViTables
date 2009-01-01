@@ -32,7 +32,7 @@ Here is defined the DBDoc class.
 
 Classes:
 
-* DBDoc(QtCore.QObject)
+* DBDoc(QObject)
 
 Methods:
 
@@ -68,12 +68,12 @@ import os
 import uuid
 
 import tables
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 import vitables.utils
 
-class DBDoc(QtCore.QObject):
+class DBDoc(QObject):
     """
     A database contained in an hdf5/PyTables file.
 
@@ -100,7 +100,7 @@ class DBDoc(QtCore.QObject):
         - `tmp_dbdoc`: a reference to the temporary database DBDoc instance
         """
 
-        QtCore.QObject.__init__(self)
+        QObject.__init__(self)
 
         # The opening mode
         self.mode = mode
@@ -124,12 +124,10 @@ class DBDoc(QtCore.QObject):
             self.tmp_dbdoc = self
             self.tmp_h5file = self.h5file
 
-
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('DBDoc', source, 
+        return unicode(qApp.translate('DBDoc', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def openH5File(self):
         """Open the file tied to this instance."""

@@ -32,7 +32,7 @@ Here is defined the RenameDlg class.
 
 Classes:
 
-* RenameDlg(QtGui.QDialog)
+* RenameDlg(QDialog)
 
 Methods:
 
@@ -53,10 +53,10 @@ __docformat__ = 'restructuredtext'
 
 import re
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class RenameDlg(QtGui.QDialog):
+class RenameDlg(QDialog):
     """
     Ask user for help when a name issue raises.
     
@@ -98,14 +98,14 @@ class RenameDlg(QtGui.QDialog):
         """
 
         # Makes the dialog and gives it a layout
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
-        QtGui.QVBoxLayout(self)
+        QDialog.__init__(self, qApp.activeWindow())
+        QVBoxLayout(self)
 
         # Sets dialog caption
         self.setWindowTitle(info[0])
 
         self.troubled_name = name
-        self.pattern = QtCore.QRegExp(pattern)
+        self.pattern = QRegExp(pattern)
         self.cpattern = re.compile(pattern)
         self.info_text = info[1]
 
@@ -117,41 +117,39 @@ class RenameDlg(QtGui.QDialog):
         self.action = {'overwrite': False, 'new_name': ''}
 
         # Main widgets
-        self.value_le = QtGui.QLineEdit(self)
-        self.rename_button = QtGui.QPushButton(self.__tr('Rename', 
+        self.value_le = QLineEdit(self)
+        self.rename_button = QPushButton(self.__tr('Rename', 
                                                     'A button label'), self)
-        self.overwrite_button = QtGui.QPushButton(self.__tr('Overwrite', 
+        self.overwrite_button = QPushButton(self.__tr('Overwrite', 
                                                     'A button label'), self)
-        self.cancel_button = QtGui.QPushButton(self.__tr('Cancel',
+        self.cancel_button = QPushButton(self.__tr('Cancel',
                                                     'A button label'), self)
 
-        self.buttons_box = QtGui.QDialogButtonBox(QtCore.Qt.Horizontal, self)
+        self.buttons_box = QDialogButtonBox(Qt.Horizontal, self)
         self.buttons_box.addButton(self.rename_button, 
-            QtGui.QDialogButtonBox.AcceptRole)
+            QDialogButtonBox.AcceptRole)
         self.buttons_box.addButton(self.overwrite_button, 
-            QtGui.QDialogButtonBox.AcceptRole)
+            QDialogButtonBox.AcceptRole)
         self.buttons_box.addButton(self.cancel_button, 
-            QtGui.QDialogButtonBox.RejectRole)
+            QDialogButtonBox.RejectRole)
 
         # Connects SIGNALs to SLOTs
         self.connect(self.value_le, 
-            QtCore.SIGNAL('textChanged(const QString)'),self.slotCheckNewName)
-        self.connect(self.buttons_box, QtCore.SIGNAL('clicked(QAbstractButton *)'), 
+            SIGNAL('textChanged(const QString)'),self.slotCheckNewName)
+        self.connect(self.buttons_box, SIGNAL('clicked(QAbstractButton *)'), 
             self.chooseAction)
-        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
-            QtCore.SLOT('reject()'))
+        self.connect(self.buttons_box, SIGNAL('rejected()'),
+            SLOT('reject()'))
 
         self.addComponents()
         self.value_le.selectAll()
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), (self.value_le.text()))
-
+        self.value_le.emit(SIGNAL('textChanged(const QString)'), (self.value_le.text()))
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('RenameDlg', source, 
+        return unicode(qApp.translate('RenameDlg', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def addComponents(self):
         """
@@ -166,17 +164,17 @@ class RenameDlg(QtGui.QDialog):
         """
 
         # FIRST ROW -- An informative label
-        info = QtGui.QLabel(self.info_text, self)
+        info = QLabel(self.info_text, self)
         self.layout().addWidget(info)
 
         # SECOND ROW -- An input box
         # Blanks are not allowed. First character cannot be a digit
-        newname_layout = QtGui.QHBoxLayout()
+        newname_layout = QHBoxLayout()
         newname_layout.setSpacing(5)
-        value_label = QtGui.QLabel(self.__tr('New name:', 'A text box label'),
+        value_label = QLabel(self.__tr('New name:', 'A text box label'),
             self)
         newname_layout.addWidget(value_label)
-        validator = QtGui.QRegExpValidator(self)
+        validator = QRegExpValidator(self)
         validator.setRegExp(self.pattern)
         self.value_le.setValidator(validator)
         self.value_le.setText(self.troubled_name)
@@ -186,7 +184,6 @@ class RenameDlg(QtGui.QDialog):
         # LAST ROW -- A set of  buttons
         self.rename_button.setDefault(1)
         self.layout().addWidget(self.buttons_box)
-
     def slotCheckNewName(self, new_name):
         """
         Check the new name value.

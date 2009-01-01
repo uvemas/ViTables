@@ -32,7 +32,7 @@ Here is defined the HelpBrowser class.
 
 Classes:
 
-* HelpBrowser(QtCore.QObject) 
+* HelpBrowser(QObject) 
 
 Methods:
 
@@ -69,15 +69,15 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 import vitables.utils
 import vitables.qrc_resources
 from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 
-class HelpBrowser(QtCore.QObject) :
+class HelpBrowser(QObject) :
     """
     Very simple documentation browser.
 
@@ -103,7 +103,7 @@ class HelpBrowser(QtCore.QObject) :
         :Parameter vtapp: an instance of `VTApp`
         """
 
-        QtCore.QObject.__init__(self)
+        QObject.__init__(self)
 
         self.vtapp = vtapp
 
@@ -125,12 +125,10 @@ class HelpBrowser(QtCore.QObject) :
         self.slotDisplaySrc('index.html')
         self.gui.show()
 
-
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('HelpBrowser', source, 
+        return unicode(qApp.translate('HelpBrowser', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def connectSignals(self):
         """
@@ -141,28 +139,27 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         self.connect(self.gui.combo_history, 
-            QtCore.SIGNAL('activated(QString)'), self.slotDisplaySrc)
+            SIGNAL('activated(QString)'), self.slotDisplaySrc)
 
         # This is the most subtle connection. It encompasses source
         # changes coming from anywhere, including slots (home, backward
         # and forward), menus (Go and Bookmarks), clicked links and
         # programatic changes (setSource calls).
         self.connect(self.gui.text_browser, 
-            QtCore.SIGNAL('sourceChanged(QUrl)'), 
+            SIGNAL('sourceChanged(QUrl)'), 
             self.updateHistory)
 
         self.connect(self.gui.text_browser, 
-            QtCore.SIGNAL('backwardAvailable(bool)'), 
+            SIGNAL('backwardAvailable(bool)'), 
             self.slotUpdateBackward)
 
         self.connect(self.gui.text_browser, 
-            QtCore.SIGNAL('forwardAvailable(bool)'), 
+            SIGNAL('forwardAvailable(bool)'), 
             self.slotUpdateForward)
 
         self.connect(self.gui.bookmarks_menu, 
-            QtCore.SIGNAL('aboutToShow()'), 
+            SIGNAL('aboutToShow()'), 
             self.slotRecentSubmenuAboutToShow)
-
 
     def slotDisplaySrc(self, src=None):
         """
@@ -175,12 +172,12 @@ class HelpBrowser(QtCore.QObject) :
         if src is None:
             action = self.gui.sender()
             action_text = action.text()
-            if action_text.count(QtCore.QRegExp("^\d")):
-                src = action_text.remove(QtCore.QRegExp("^\d+\.\s+"))
+            if action_text.count(QRegExp("^\d")):
+                src = action_text.remove(QRegExp("^\d+\.\s+"))
 
-        src = QtCore.QDir().fromNativeSeparators(src) # src can be a QString
+        src = QDir().fromNativeSeparators(src) # src can be a QString
         (dirname, basename) = os.path.split(unicode(src))
-        url = QtCore.QUrl("qrc:/doc/html/%s" % basename)
+        url = QUrl("qrc:/doc/html/%s" % basename)
         self.gui.text_browser.setSource(url)
 
 
@@ -214,8 +211,8 @@ class HelpBrowser(QtCore.QObject) :
         :Parameter filepath: the path of the file being open
         """
 
-        file_dlg = QtGui.QFileDialog(self.gui)
-        file_dlg.setFilters(QtCore.QStringList(self.__tr(
+        file_dlg = QFileDialog(self.gui)
+        file_dlg.setFilters(QStringList(self.__tr(
             """HTML files (*.html *.htm);;"""
             """Any file (*.*)""", 'File filter for the Open File dialog')))
         file_dlg.setWindowTitle(self.__tr('Select a file for opening', 
@@ -327,17 +324,17 @@ class HelpBrowser(QtCore.QObject) :
         # Clear the last bookmarks menu...
         menu_actions = self.gui.bookmarks_menu.actions()
         for action in menu_actions:
-            if action.text().count(QtCore.QRegExp("^\d")):
+            if action.text().count(QRegExp("^\d")):
                 self.gui.bookmarks_menu.removeAction(action)
         # and refresh it
         index = 0
         for item in self.bookmarks:
             index += 1
             filepath = unicode(item)
-            action = QtGui.QAction('%s. %s' % (index, filepath), 
+            action = QAction('%s. %s' % (index, filepath), 
                                                self.gui.bookmarks_menu)
-            action.setData(QtCore.QVariant(item))
-            self.gui.connect(action, QtCore.SIGNAL("triggered()"), 
+            action.setData(QVariant(item))
+            self.gui.connect(action, SIGNAL("triggered()"), 
                 self.slotDisplaySrc)
             self.gui.bookmarks_menu.addAction(action)
 
@@ -358,8 +355,7 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         bmark = self.bookmarks[bmark_id - 1]
-        self.slotDisplaySrc(bmark) # QtCore.SIGNAL sourceChanged() emited
-
+        self.slotDisplaySrc(bmark) # SIGNAL sourceChanged() emited
 
     def slotAddBookmark(self) :
         """
@@ -368,7 +364,7 @@ class HelpBrowser(QtCore.QObject) :
         Bookmarks --> Add bookmark
         """
 
-        src = self.gui.text_browser.source().toString(QtCore.QUrl.RemoveScheme)
+        src = self.gui.text_browser.source().toString(QUrl.RemoveScheme)
         src = vitables.utils.forwardPath(unicode(src))
         src = src.replace('///', '/')
         if self.bookmarks.count(src) :
@@ -431,15 +427,14 @@ class HelpBrowser(QtCore.QObject) :
         :Parameter src: the path being added to the combo
         """
 
-        url = QtCore.QUrl(src).toString(QtCore.QUrl.RemoveScheme)
-        url = QtCore.QDir().fromNativeSeparators(url)
+        url = QUrl(src).toString(QUrl.RemoveScheme)
+        url = QDir().fromNativeSeparators(url)
         if not self.history.count(url):
             self.history.append(url)
             self.gui.combo_history.addItem(url)
 
         self.gui.combo_history.setCurrentIndex(self.history.indexOf(url))
         self.updateHome()
-
 
     #########################################################
     #
@@ -467,13 +462,12 @@ class HelpBrowser(QtCore.QObject) :
             'About Help browser text')
 
         # Display a customized About dialog
-        about = QtGui.QMessageBox(caption, text, 
-            QtGui.QMessageBox.Information, 
-            QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton, 
-            QtGui.QMessageBox.NoButton, self.gui)
+        about = QMessageBox(caption, text, 
+            QMessageBox.Information, 
+            QMessageBox.NoButton, QMessageBox.NoButton, 
+            QMessageBox.NoButton, self.gui)
         # Show the message
         about.show()
-
 
     def slotAboutQt(self) :
         """
@@ -483,4 +477,4 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         caption = self.__tr('About Qt', 'A dialog caption')
-        QtGui.QMessageBox.aboutQt(self.gui, caption)
+        QMessageBox.aboutQt(self.gui, caption)

@@ -30,7 +30,7 @@
 
 Classes:
 
-* Logger(QtGui.QTextEdit)
+* Logger(QTextEdit)
 
 Methods:
 
@@ -52,10 +52,10 @@ Misc variables:
 
 __docformat__ = 'restructuredtext'
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class Logger(QtGui.QTextEdit):
+class Logger(QTextEdit):
     """
     Logger that receives all informational application messages.
 
@@ -73,11 +73,11 @@ class Logger(QtGui.QTextEdit):
         :Parameter parent: the parent widget of the Logger
         """
 
-        QtGui.QTextEdit.__init__(self, parent)
+        QTextEdit.__init__(self, parent)
         self.setAcceptRichText(True)
         self.setReadOnly(1)
         self.setMinimumHeight(50)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setWhatsThis(self.__tr(
             """<qt>
             <h3>The Logger</h3>
@@ -92,15 +92,12 @@ class Logger(QtGui.QTextEdit):
         self.setStyleSheet("""background-color: #ffffff""")
 
         # Connect signals to slots
-        self.connect(self, QtCore.SIGNAL("customContextMenuRequested(QPoint)"),
+        self.connect(self, SIGNAL("customContextMenuRequested(QPoint)"),
             self.createCustomContextMenu)
-
-
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('Logger', source, comment).toUtf8(), 
+        return unicode(qApp.translate('Logger', source, comment).toUtf8(), 
                        'utf_8')
-
 
     def write(self, text):
         """
@@ -120,18 +117,17 @@ class Logger(QtGui.QTextEdit):
         if text in ['\n', '\r\n']:
             return
         if text.startswith('\nError: '):
-            self.setTextColor(QtGui.QColor('red'))
+            self.setTextColor(QColor('red'))
         elif text.startswith('\nWarning: '):
-            self.setTextColor(QtGui.QColor(243, 137, 8))
+            self.setTextColor(QColor(243, 137, 8))
         self.append(text)
         # Warning! Append() doesn't change the cursor position
         # Because we want to reset the current color **at the end** of
         # the console in order to give the proper color to new messages
         # we must update the cursor position **before** the current
         # color is reset
-        self.moveCursor(QtGui.QTextCursor.EndOfLine)
+        self.moveCursor(QTextCursor.EndOfLine)
         self.setTextColor(current_color)
-
 
     def createCustomContextMenu(self, pos):
         """
@@ -141,29 +137,27 @@ class Logger(QtGui.QTextEdit):
         """
 
         # Make the menu
-        edit_menu = QtGui.QMenu(self)
+        edit_menu = QMenu(self)
         self.copy_action = edit_menu.addAction(
             self.__tr("&Copy", 'Logger menu entry'),
-            self, QtCore.SLOT('copy()'),
-            QtGui.QKeySequence('CTRL+C'))
+            self, SLOT('copy()'),
+            QKeySequence('CTRL+C'))
         self.clear_action = edit_menu.addAction(
             self.__tr("Cl&ear All", 'Logger menu entry'),
-            self, QtCore.SLOT('clear()'))
+            self, SLOT('clear()'))
         edit_menu.addSeparator()
         self.select_action = edit_menu.addAction(
             self.__tr("Select &All", 'Logger menu entry'),
-            self, QtCore.SLOT('selectAll()'))
+            self, SLOT('selectAll()'))
 
-        self.connect(edit_menu, QtCore.SIGNAL('aboutToShow()'),
+        self.connect(edit_menu, SIGNAL('aboutToShow()'),
             self.updateEditMenu)
-        self.connect(edit_menu, QtCore.SIGNAL('aboutToShow()'),
+        self.connect(edit_menu, SIGNAL('aboutToShow()'),
             self.disableCopyNodeAction)
-        self.connect(edit_menu, QtCore.SIGNAL('aboutToHide()'),
+        self.connect(edit_menu, SIGNAL('aboutToHide()'),
             self.updateCopyNodeAction)
 
         edit_menu.popup(self.mapToGlobal(pos))
-
-
     def updateEditMenu(self):
         """Update items availability when the menu is about to be shown."""
 
@@ -191,8 +185,7 @@ class Logger(QtGui.QTextEdit):
         This method is called whenever the logger gets keyboard
         focus or its contextual menu is shown.
         """
-        self.emit(QtCore.SIGNAL('disableCopyNodeAction()'), ())
-
+        self.emit(SIGNAL('disableCopyNodeAction()'), ())
 
     def updateCopyNodeAction(self):
         """
@@ -201,8 +194,7 @@ class Logger(QtGui.QTextEdit):
         This method is called whenever the logger losts keyboard
         focus or its contextual menu is hiden.
         """
-        self.emit(QtCore.SIGNAL('updateCopyNodeAction()'), ())
-
+        self.emit(SIGNAL('updateCopyNodeAction()'), ())
 
     def focusInEvent(self, event):
         """Update the ``Node --> Copy`` action in accordance with the keyboard
@@ -216,12 +208,10 @@ class Logger(QtGui.QTextEdit):
 
         self.disableCopyNodeAction()
         self.setLineWidth(2)
-        self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
+        self.setFrameStyle(QFrame.Panel|QFrame.Plain)
         pal = self.palette()
-        pal.setColor(QtGui.QPalette.Foreground, QtCore.Qt.darkBlue)
-        QtGui.QTextEdit.focusInEvent(self, event)
-
-
+        pal.setColor(QPalette.Foreground, Qt.darkBlue)
+        QTextEdit.focusInEvent(self, event)
     def focusOutEvent(self, event):
         """Update the ``Node --> Copy`` action in accordance with the keyboard
         focus.
@@ -234,15 +224,14 @@ class Logger(QtGui.QTextEdit):
 
         self.updateCopyNodeAction()
         self.setLineWidth(0)
-        self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
+        self.setFrameStyle(QFrame.Panel|QFrame.Plain)
         pal = self.palette()
-        pal.setColor(QtGui.QPalette.Foreground, QtCore.Qt.black)
-        QtGui.QTextEdit.focusOutEvent(self, event)
-
+        pal.setColor(QPalette.Foreground, Qt.black)
+        QTextEdit.focusOutEvent(self, event)
 
 if __name__ == '__main__':
     import sys
-    APP = QtGui.QApplication(sys.argv)
+    APP = QApplication(sys.argv)
     LOGGER = Logger()
     LOGGER.show()
     # Redirect standard output and standard error to the Logger instance

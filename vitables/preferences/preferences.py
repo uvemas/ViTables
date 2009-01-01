@@ -32,7 +32,7 @@ Here is defined the Preferences class.
 
 Classes:
 
-* Preferences(QtCore.QObject)
+* Preferences(QObject)
 
 Methods:
 
@@ -60,12 +60,12 @@ Misc variables:
 
 __docformat__ = 'restructuredtext'
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 from vitables.preferences.preferencesGUI import PreferencesGUI
 
-class Preferences(QtCore.QObject):
+class Preferences(QObject):
     """
     Gives functionality to the `Preferences` dialog.
     """
@@ -82,7 +82,7 @@ class Preferences(QtCore.QObject):
         - `vtapp`: an instance of VTApp
         """
 
-        QtCore.QObject.__init__(self)
+        QObject.__init__(self)
 
         # Radio button names are not usable, we need the numerical IDs
         self.button2id = {u'home': 1, u'last': 2}
@@ -94,7 +94,7 @@ class Preferences(QtCore.QObject):
         self.initial_prefs = {}
         style_sheet = vtapp.logger.styleSheet()
         paper = style_sheet[-7:]
-        self.initial_prefs['Logger/Paper'] = QtGui.QColor(paper)
+        self.initial_prefs['Logger/Paper'] = QColor(paper)
         self.initial_prefs['Logger/Text'] = vtapp.logger.textColor()
         self.initial_prefs['Logger/Font'] = vtapp.logger.font()
         self.initial_prefs['Workspace/Background'] = \
@@ -113,33 +113,30 @@ class Preferences(QtCore.QObject):
         # Connect SIGNALS to SLOTS
         # Apply, OK, Reset and Cancel buttons
         self.connect(self.gui.buttons_box, 
-            QtCore.SIGNAL('clicked(QAbstractButton *)'),
+            SIGNAL('clicked(QAbstractButton *)'),
             self.slotButtonClicked)
         # Startup groupbox
-        self.connect(self.gui.hiden_bg, QtCore.SIGNAL('buttonClicked(int)'),
+        self.connect(self.gui.hiden_bg, SIGNAL('buttonClicked(int)'),
             self.slotSetStartupDir)
-        self.connect(self.gui.restore_cb, QtCore.SIGNAL('toggled(bool)'),
+        self.connect(self.gui.restore_cb, SIGNAL('toggled(bool)'),
             self.slotSetStartupSession)
         # Logger groupbox
-        self.connect(self.gui.font_pb, QtCore.SIGNAL('clicked()'),
+        self.connect(self.gui.font_pb, SIGNAL('clicked()'),
             self.slotSetLoggerFont)
-        self.connect(self.gui.foreground_pb, QtCore.SIGNAL('clicked()'),
+        self.connect(self.gui.foreground_pb, SIGNAL('clicked()'),
             self.slotSetLoggerForeground)
-        self.connect(self.gui.background_pb, QtCore.SIGNAL('clicked()'),
+        self.connect(self.gui.background_pb, SIGNAL('clicked()'),
             self.slotSetLoggerBackground)
         # Workspace groupbox
-        self.connect(self.gui.workspace_pb, QtCore.SIGNAL('clicked()'),
+        self.connect(self.gui.workspace_pb, SIGNAL('clicked()'),
             self.slotSetWorkspaceBackground)
         # Style groupbox
         self.connect(self.gui.styles_cb,
-            QtCore.SIGNAL('activated(QString)'), self.slotSetStyle)
-
-
+            SIGNAL('activated(QString)'), self.slotSetStyle)
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('Preferences', source, 
+        return unicode(qApp.translate('Preferences', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def setPreferences(self, preferences):
         """
@@ -158,7 +155,7 @@ class Preferences(QtCore.QObject):
 
         self.gui.sample_te.selectAll()
         self.gui.sample_te.setTextColor(preferences['Logger/Text'])
-        self.gui.sample_te.moveCursor(QtGui.QTextCursor.End)  # Unselect text
+        self.gui.sample_te.moveCursor(QTextCursor.End)  # Unselect text
         self.gui.sample_te.setStyleSheet("""background-color: %s""" % 
                                         preferences['Logger/Paper'].name())
         self.gui.sample_te.setFont(preferences['Logger/Font'])
@@ -170,7 +167,6 @@ class Preferences(QtCore.QObject):
             preferences['Look/currentStyle'])
         self.gui.styles_cb.setCurrentIndex(index)
 
-
     def slotButtonClicked(self, button):
         """Manages dialog button cliksin the Preferences dialog.
 
@@ -180,13 +176,12 @@ class Preferences(QtCore.QObject):
         :Parameter button: the clicked button.
         """
 
-        if button == self.gui.buttons_box.button(QtGui.QDialogButtonBox.Reset):
+        if button == self.gui.buttons_box.button(QDialogButtonBox.Reset):
             self.slotResetButton()
-        elif button == self.gui.buttons_box.button(QtGui.QDialogButtonBox.Cancel):
+        elif button == self.gui.buttons_box.button(QDialogButtonBox.Cancel):
             self.gui.reject()
         else:
             self.slotOKButton()
-
 
     def slotResetButton(self):
         """
@@ -207,9 +202,8 @@ class Preferences(QtCore.QObject):
         """
 
         for key, value in self.new_prefs.items():
-            self.new_prefs[key] = QtCore.QVariant(value)
+            self.new_prefs[key] = QVariant(value)
         self.gui.accept()
-
 
     def slotSetStartupDir(self, button_id):
         """
@@ -249,51 +243,47 @@ class Preferences(QtCore.QObject):
     def slotSetLoggerFont(self):
         """Set the logger font."""
 
-        new_font, is_ok = QtGui.QFontDialog.getFont(self.gui.sample_te.font())
+        new_font, is_ok = QFontDialog.getFont(self.gui.sample_te.font())
         # The selected font is applied to the sample text
         if is_ok:
             self.new_prefs['Logger/Font'] = new_font
             self.gui.sample_te.setFont(new_font)
 
-
     def slotSetLoggerForeground(self):
         """Set the logger foreground color."""
 
         text_color = self.gui.sample_te.textColor()
-        color = QtGui.QColorDialog.getColor(text_color)
+        color = QColorDialog.getColor(text_color)
         # The selected text color is applied to the sample text
         if color.isValid():
             self.new_prefs['Logger/Text'] = color
             self.gui.sample_te.selectAll()
             self.gui.sample_te.setTextColor(color)
-            self.gui.sample_te.moveCursor(QtGui.QTextCursor.End)
-
+            self.gui.sample_te.moveCursor(QTextCursor.End)
 
     def slotSetLoggerBackground(self):
         """Set the logger background color."""
 
         stylesheet = self.gui.sample_te.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QColorDialog.getColor(QColor(background))
         # The selected paper color is applied to the sample text window
         if color.isValid():
             self.new_prefs['Logger/Paper'] = color
             stylesheet.replace(background, color.name())
             self.gui.sample_te.setStyleSheet(stylesheet)
 
-
     def slotSetWorkspaceBackground(self):
         """Set the workspace background color."""
 
         stylesheet = self.gui.workspace_label.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QColorDialog.getColor(QColor(background))
         # The selected color is applied to the sample label besides the button
         if color.isValid():
-            self.new_prefs['Workspace/Background'] = QtGui.QBrush(color)
+            self.new_prefs['Workspace/Background'] = QBrush(color)
             stylesheet.replace(background, color.name())
             self.gui.workspace_label.setStyleSheet(stylesheet)
-
 
     def slotSetStyle(self, style_name):
         """

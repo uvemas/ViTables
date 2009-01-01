@@ -31,7 +31,7 @@ Here is defined the DataSheet class.
 
 Classes:
 
-* DataSheet(QtGui.QMdiSubWindow)
+* DataSheet(QMdiSubWindow)
 
 Methods:
 
@@ -46,10 +46,10 @@ Misc variables:
 
 __docformat__ = 'restructuredtext'
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class DataSheet(QtGui.QMdiSubWindow):
+class DataSheet(QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
     """
@@ -65,10 +65,10 @@ class DataSheet(QtGui.QMdiSubWindow):
             - `parent`: the parent of the widget
         """
 
-        QtGui.QMdiSubWindow.__init__(self, parent)
+        QMdiSubWindow.__init__(self, parent)
         view.data_sheet = self
         self.setWidget(view)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         # The main application window
         self.vtapp = parent
@@ -94,18 +94,15 @@ class DataSheet(QtGui.QMdiSubWindow):
         leaf.has_view = True
         self.vtapp.slotUpdateActions()
 
-        self.connect(self, QtCore.SIGNAL("aboutToActivate()"), 
+        self.connect(self, SIGNAL("aboutToActivate()"), 
                      self.syncTreeView)
-
-
     def closeEvent(self, event):
         """Close the window cleanly with the close button of the title bar."""
 
         # Ensure that Node menu actions are properly updated
         self.leaf.has_view = False
         self.vtapp.slotUpdateActions()
-        QtGui.QMdiSubWindow.closeEvent(self, event)
-
+        QMdiSubWindow.closeEvent(self, event)
 
     def syncTreeView(self):
         """When the view becomes active select its leaf in the tree view.

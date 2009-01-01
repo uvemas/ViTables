@@ -31,7 +31,7 @@ Here is defined the DBsTreeView class.
 
 Classes:
 
-* DBsTreeView(QtGui.QTreeView)
+* DBsTreeView(QTreeView)
 
 Methods:
 
@@ -55,12 +55,12 @@ __docformat__ = 'restructuredtext'
 
 import sets
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 from vitables.h5db.nodeItemDelegate import NodeItemDelegate
 
-class DBsTreeView(QtGui.QTreeView):
+class DBsTreeView(QTreeView):
     """
     The tree of DBs view.
     
@@ -78,7 +78,7 @@ class DBsTreeView(QtGui.QTreeView):
             - `parent`: the parent widget.
         """
 
-        QtGui.QTreeView.__init__(self, parent)
+        QTreeView.__init__(self, parent)
         self.vtapp = vtapp
 
         # The custom delegate used for editing items
@@ -87,15 +87,15 @@ class DBsTreeView(QtGui.QTreeView):
 
 
         # Setup drag and drop
-        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.setDragDropMode(QAbstractItemView.DragDrop)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
 
         # Misc. setup
         self.setRootIsDecorated(True)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setWhatsThis(self.__tr(
             """<qt>
             <h3>The Tree of databases</h3>
@@ -105,21 +105,18 @@ class DBsTreeView(QtGui.QTreeView):
             'WhatsThis help for the tree pane'))
 
         # Connect signals to slots
-        self.connect(self, QtCore.SIGNAL("customContextMenuRequested(QPoint)"),
+        self.connect(self, SIGNAL("customContextMenuRequested(QPoint)"),
             self.createCustomContextMenu)
-        self.connect(self, QtCore.SIGNAL('activated(QModelIndex)'),
+        self.connect(self, SIGNAL('activated(QModelIndex)'),
             self.activateNode)
-        self.connect(self, QtCore.SIGNAL('expanded(QModelIndex)'),
+        self.connect(self, SIGNAL('expanded(QModelIndex)'),
             self.updateExpandedGroup)
-        self.connect(self, QtCore.SIGNAL('collapsed(QModelIndex)'),
+        self.connect(self, SIGNAL('collapsed(QModelIndex)'),
             self.updateCollapsedGroup)
-
-
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('DBsTreeView', source, 
+        return unicode(qApp.translate('DBsTreeView', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def mouseDoubleClickEvent(self, event):
         """Specialised handler for mouse double click events.
@@ -135,12 +132,11 @@ class DBsTreeView(QtGui.QTreeView):
 
         modifier = event.modifiers()
         current = self.currentIndex()
-        if modifier == QtCore.Qt.ShiftModifier:
-            if current.flags() & QtCore.Qt.ItemIsEditable:
+        if modifier == Qt.ShiftModifier:
+            if current.flags() & Qt.ItemIsEditable:
                 self.edit(current)
         else:
             self.activateNode(current)
-
 
     def updateCollapsedGroup(self, index):
         """After collapsing a group update its icon.
@@ -151,9 +147,8 @@ class DBsTreeView(QtGui.QTreeView):
         model = self.model()
         node = model.nodeFromIndex(index)
         if node.node_kind == 'group':
-            model.setData(index, QtCore.QVariant(node.closed_folder),
-                QtCore.Qt.DecorationRole)
-
+            model.setData(index, QVariant(node.closed_folder),
+                Qt.DecorationRole)
 
     def updateExpandedGroup(self, index):
         """After a group expansion update the icon and the displayed children.
@@ -172,10 +167,9 @@ class DBsTreeView(QtGui.QTreeView):
         if node_kind in ['group', 'root group']:
             model.lazyAddChildren(index)
         if node_kind == 'group':
-            model.setData(index, QtCore.QVariant(node.open_folder),
-                QtCore.Qt.DecorationRole)
+            model.setData(index, QVariant(node.open_folder),
+                Qt.DecorationRole)
         self.update(index)
-
 
     def activateNode(self, index):
         """Expands/collapses an item.
@@ -237,14 +231,12 @@ class DBsTreeView(QtGui.QTreeView):
         self.vtapp.updateStatusBar()
 
         # Activate the view (if any) of the selected node
-        pcurrent = QtCore.QPersistentModelIndex(current)
+        pcurrent = QPersistentModelIndex(current)
         for window in self.vtapp.workspace.subWindowList():
             if pcurrent == window.pindex:
                 self.vtapp.workspace.setActiveSubWindow(window)
 
-        QtGui.QTreeView.currentChanged(self, current, previous)
-
-
+        QTreeView.currentChanged(self, current, previous)
     def dropEvent(self, event):
         """
         Event handler for `QDropEvent` events.
@@ -259,13 +251,12 @@ class DBsTreeView(QtGui.QTreeView):
         mime_data = event.mimeData()
         model = self.model()
         if mime_data.hasFormat('text/uri-list'):
-            if model.dropMimeData(mime_data, QtCore.Qt.CopyAction, -1, -1, 
+            if model.dropMimeData(mime_data, Qt.CopyAction, -1, -1, 
                 self.currentIndex()):
-                event.setDropAction(QtCore.Qt.CopyAction)
+                event.setDropAction(Qt.CopyAction)
                 event.accept()
         else:
-            QtGui.QTreeView.dropEvent(self, event)
-
+            QTreeView.dropEvent(self, event)
     def dragEnterEvent(self, event):
         """
         Event handler for `QDragEnterEvent` events.
@@ -277,12 +268,10 @@ class DBsTreeView(QtGui.QTreeView):
 
         mime_data = event.mimeData()
         if mime_data.hasFormat('text/uri-list'):
-            event.setDropAction(QtCore.Qt.CopyAction)
+            event.setDropAction(Qt.CopyAction)
             event.acceptProposedAction()
         else:
-            QtGui.QTreeView.dragEnterEvent(self, event)
-
-
+            QTreeView.dragEnterEvent(self, event)
     def dragMoveEvent(self, event):
         """
         Event handler for `QDragMoveEvent` events.
@@ -296,18 +285,14 @@ class DBsTreeView(QtGui.QTreeView):
 
         mime_data = event.mimeData()
         if mime_data.hasFormat('text/uri-list'):
-            event.setDropAction(QtCore.Qt.CopyAction)
+            event.setDropAction(Qt.CopyAction)
             event.acceptProposedAction()
         else:
-            return QtGui.QTreeView.dragMoveEvent(self, event)
-
-
-
+            return QTreeView.dragMoveEvent(self, event)
 
 if __name__ == '__main__':
     import sys
-    APP = QtGui.QApplication(sys.argv)
+    APP = QApplication(sys.argv)
     TREE = DBsTreeView()
     TREE.show()
     APP.exec_()
-

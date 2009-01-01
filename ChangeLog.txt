@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Jan 01, 2009**
+	PyQt4 imports changed to remove unnecessary code verbosity.
+
 ** Dec 27, 2008**
 	Fixed bug 014953.
 

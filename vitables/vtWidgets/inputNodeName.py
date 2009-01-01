@@ -32,7 +32,7 @@ Here is defined the InputNodeName class.
 
 Classes:
 
-* InputNodeName(QtGui.QDialog)
+* InputNodeName(QDialog)
 
 Methods:
 
@@ -49,10 +49,10 @@ Misc variables:
 
 __docformat__ = 'restructuredtext'
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class InputNodeName(QtGui.QDialog):
+class InputNodeName(QDialog):
     """
     Dialog for interactively entering a name for a given node.
     
@@ -74,8 +74,8 @@ class InputNodeName(QtGui.QDialog):
         """
 
         # Makes the dialog and gives it a layout
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
-        QtGui.QVBoxLayout(self)
+        QDialog.__init__(self, qApp.activeWindow())
+        QVBoxLayout(self)
 
         # Sets dialog caption
         self.setWindowTitle(title)
@@ -83,38 +83,35 @@ class InputNodeName(QtGui.QDialog):
         self.info = info
 
         # Main widgets
-        self.value_le = QtGui.QLineEdit(self)
+        self.value_le = QLineEdit(self)
 
-        self.edit_button = QtGui.QPushButton(action, self)
+        self.edit_button = QPushButton(action, self)
         self.cancel_button = \
-            QtGui.QPushButton(self.__tr('Cancel', 'A button label'), self)
+            QPushButton(self.__tr('Cancel', 'A button label'), self)
 
-        self.buttons_box = QtGui.QDialogButtonBox(QtCore.Qt.Horizontal, self)
+        self.buttons_box = QDialogButtonBox(Qt.Horizontal, self)
         self.buttons_box.addButton(self.edit_button, 
-            QtGui.QDialogButtonBox.AcceptRole)
+            QDialogButtonBox.AcceptRole)
         self.buttons_box.addButton(self.cancel_button, 
-            QtGui.QDialogButtonBox.RejectRole)
+            QDialogButtonBox.RejectRole)
 
         # Connects SIGNALs to SLOTs
         self.connect(self.value_le, 
-            QtCore.SIGNAL('textChanged(const QString)'),self.slotCheckName)
-        self.connect(self.buttons_box, QtCore.SIGNAL('accepted()'),
+            SIGNAL('textChanged(const QString)'),self.slotCheckName)
+        self.connect(self.buttons_box, SIGNAL('accepted()'),
             self.slotAccept)
-        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
-            QtCore.SLOT('reject()'))
+        self.connect(self.buttons_box, SIGNAL('rejected()'),
+            SLOT('reject()'))
 
         self.addComponents()
         self.value_le.selectAll()
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), (self.value_le.text()))
-
-
+        self.value_le.emit(SIGNAL('textChanged(const QString)'), (self.value_le.text()))
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('InputNodeName', source, 
+        return unicode(qApp.translate('InputNodeName', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def addComponents(self):
         """
@@ -129,18 +126,18 @@ class InputNodeName(QtGui.QDialog):
         """
 
         # FIRST ROW -- An informative label
-        info = QtGui.QLabel(self.info, self)
+        info = QLabel(self.info, self)
         self.layout().addWidget(info)
 
         # SECOND ROW -- An input box
         # Blanks are not allowed. First character cannot be a digit
-        name_layout = QtGui.QHBoxLayout()
+        name_layout = QHBoxLayout()
         name_layout.setSpacing(5)
-        value_label = QtGui.QLabel(self.__tr('Node name:', 'A text box label'),
+        value_label = QLabel(self.__tr('Node name:', 'A text box label'),
             self)
         name_layout.addWidget(value_label)
-        validator = QtGui.QRegExpValidator(self)
-        pattern = QtCore.QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
+        validator = QRegExpValidator(self)
+        pattern = QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
         validator.setRegExp(pattern)
         self.value_le.setValidator(validator)
         name_layout.addWidget(self.value_le)
@@ -148,8 +145,6 @@ class InputNodeName(QtGui.QDialog):
 
         # LAST ROW -- A set of  buttons
         self.layout().addWidget(self.buttons_box)
-
-
     def slotCheckName(self, current):
         """
         Check the current name value.

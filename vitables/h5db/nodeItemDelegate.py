@@ -31,7 +31,7 @@ Here is defined the NodeItemDelegate class.
 
 Classes:
 
-* NodeItemDelegate(QtGui.QItemDelegate)
+* NodeItemDelegate(QItemDelegate)
 
 Methods:
 
@@ -51,12 +51,12 @@ __docformat__ = 'restructuredtext'
 
 import tables
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 import vitables.utils
 
-class NodeItemDelegate(QtGui.QItemDelegate):
+class NodeItemDelegate(QItemDelegate):
     """
     A custom delegate for editing items of the tree of databases model.
 
@@ -70,16 +70,14 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         Creates the custom delegate.
         """
 
-        QtGui.QItemDelegate.__init__(self, parent)
+        QItemDelegate.__init__(self, parent)
         self.current_name = None
         self.vtapp = parent.vtapp
 
-
     def __tr(self, source, comment=None):
         """Translate function."""
-        return unicode(QtGui.qApp.translate('NodeItemDelegate', source, 
+        return unicode(qApp.translate('NodeItemDelegate', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def setEditorData(self, editor, index):
         """
@@ -94,10 +92,9 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         - `index`: the index of the item being edited
         """
 
-        node_name = index.model().data(index, QtCore.Qt.DisplayRole).toString()
+        node_name = index.model().data(index, Qt.DisplayRole).toString()
         self.current_name = node_name
         editor.setText(node_name)
-
 
     def setModelData(self, editor, model, index):
         """
@@ -143,7 +140,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
 
         # Update the underlying data structure
         model.renameNode(index, nodename, overwrite)
-        self.emit(QtCore.SIGNAL('closeEditor(QWidget *)'), editor)
+        self.emit(SIGNAL('closeEditor(QWidget *)'), editor)
 
         # Update the application status bar
         self.vtapp.updateStatusBar()

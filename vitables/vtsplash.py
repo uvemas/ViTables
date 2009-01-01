@@ -32,7 +32,7 @@ Here is defined the VTSplash class.
 
 Classes:
 
-* VTSplash(QtGui.QSplashScreen)
+* VTSplash(QSplashScreen)
 
 Methods:
 
@@ -50,10 +50,10 @@ __docformat__ = 'restructuredtext'
 
 import time
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class VTSplash(QtGui.QSplashScreen):
+class VTSplash(QSplashScreen):
     """The application splash screen."""
 
     def __init__(self, png):
@@ -66,8 +66,7 @@ class VTSplash(QtGui.QSplashScreen):
         :Parameter png: the pixmap image displayed as a splash screen.
         """
 
-        QtGui.QSplashScreen.__init__(self, png)
-
+        QSplashScreen.__init__(self, png)
 
     def drawContents(self, painter):
         """Draw the contents of the splash screen using a given painter.
@@ -78,13 +77,11 @@ class VTSplash(QtGui.QSplashScreen):
         :Parameter painter: the painter used to draw the splash screen
         """
 
-        painter.setPen(QtGui.QColor(QtCore.Qt.white))
+        painter.setPen(QColor(Qt.white))
         font = painter.font()
         font.setBold(True)
         painter.setFont(font)
         painter.drawText(10, 213, self.msg)
-
-
     def drawMessage(self, msg):
         """
         Draws the message text onto the splash screen.
@@ -92,31 +89,29 @@ class VTSplash(QtGui.QSplashScreen):
         :Parameter msg: the message to be displayed
         """
 
-        QtGui.qApp.processEvents()
+        qApp.processEvents()
         self.msg = msg
         self.showMessage(self.msg)
         time.sleep(0.500)
         self.clearMessage()
 
-
 if __name__ == '__main__':
     import sys
     import time
-    APP = QtGui.QApplication(sys.argv)
-    LOGO = QtGui.QPixmap("""/home/vmas/repositoris.nobackup/"""
+    APP = QApplication(sys.argv)
+    LOGO = QPixmap("""/home/vmas/repositoris.nobackup/"""
         """vitables/icons/vitables_logo.png""")
     SPLASH = VTSplash(LOGO)
     SPLASH.show()
     # Check that messages are not overwritten:
     # write a message, wait a little bit, write another message
     SPLASH.drawMessage('hola, que tal estas?')
-    QtGui.qApp.processEvents()
+    qApp.processEvents()
     time.sleep(3)
     SPLASH.drawMessage('hasta luego, lucas!')
-#    qtGui.qApp.processEvents()
-    TIMER = QtCore.QTimer()
-    TIMER.connect(TIMER, QtCore.SIGNAL('timeout()'), QtGui.qApp.quit)
+#    qApp.processEvents()
+    TIMER = QTimer()
+    TIMER.connect(TIMER, SIGNAL('timeout()'), qApp.quit)
     TIMER.setSingleShot(True)
     TIMER.start(3000)
     APP.exec_()
-

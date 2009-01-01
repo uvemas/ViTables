@@ -58,8 +58,8 @@ import tables.exceptions
 
 import numpy
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 import vitables.utils
 import vitables.vtWidgets.queryDlg as queryDlg
@@ -80,9 +80,8 @@ class QueriesManager:
 
     def __tr(self,  source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('QueriesManager', source, 
+        return unicode(qApp.translate('QueriesManager', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def getQueryInfo(self, table):
         """Retrieves useful info about the query.
@@ -169,7 +168,7 @@ class QueriesManager:
         try:
             query.exec_()
             # Cancel clicked
-            if query.result() == QtGui.QDialog.Rejected:
+            if query.result() == QDialog.Rejected:
                 self.counter = self.counter - 1 # Restore the counter value
         finally:
             query_info = dict(query.query_info)
@@ -191,7 +190,6 @@ class QueriesManager:
 
         return query_info, title
 
-
     def queryTable(self, table, query_info, title):
         """
         Query a table and add a the result to the temporary database.
@@ -204,7 +202,7 @@ class QueriesManager:
         """
 
         # QUERY THE TABLE
-        QtGui.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+        qApp.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
 
             # Define shorthands
@@ -279,7 +277,7 @@ class QueriesManager:
             self.last_query = [query_info['src_filepath'], 
                 query_info['src_path'], query_info['condition']]
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            qApp.restoreOverrideCursor()
 
         # RETURN THE RESULT
         return query_info['ft_name']

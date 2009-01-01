@@ -59,7 +59,7 @@ import sets
 
 import numpy
 
-import PyQt4.QtGui as QtGui
+from PyQt4.QtGui import *
 
 
 import vitables.utils
@@ -217,9 +217,8 @@ class AttrEditor(object):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('AttrEditor', source, 
+        return unicode(qApp.translate('AttrEditor', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def checkAttributes(self):
         """

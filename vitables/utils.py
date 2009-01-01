@@ -63,8 +63,8 @@ import sets
 
 import numpy
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 import vitables.qrc_resources
 import vitables.vtWidgets.renameDlg as renameDlg
@@ -93,23 +93,21 @@ def createIcons(large_icons, small_icons, icons_dict):
     all_icons = large_icons.union(small_icons)
 
     for name in all_icons:
-        icon = QtGui.QIcon()
+        icon = QIcon()
         if name in large_icons:
-            pixmap = QtGui.QPixmap(':/icons/big_icons/%s.png' % name)
-            pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
-            icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
+            pixmap = QPixmap(':/icons/big_icons/%s.png' % name)
+            pixmap.scaled(QSize(22, 22), Qt.KeepAspectRatio)
+            icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
         if name in small_icons:
-            pixmap = QtGui.QPixmap(':/icons/small_icons/%s.png' % name)
-            icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
+            pixmap = QPixmap(':/icons/small_icons/%s.png' % name)
+            icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
         icons_dict[name] = icon
 
     # Add an empty iconSet for the Default button of some dialogs
-    icons_dict[''] = QtGui.QIcon()
+    icons_dict[''] = QIcon()
 
     # Application icon
-    icons_dict['vitables_wm'] = QtGui.QIcon(':/icons/vitables_wm.png')
-
-
+    icons_dict['vitables_wm'] = QIcon(':/icons/vitables_wm.png')
 def getIcons():
     """Return the icons dictionary to be used by the main window."""
 
@@ -189,7 +187,7 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
     - `checkable`: True if the action is checkable
     """
 
-    action = QtGui.QAction(parent)
+    action = QAction(parent)
     action.setText(text)
     if icon is not None:
         action.setIcon(icon)
@@ -201,10 +199,8 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
     if checkable:
         action.setCheckable(True)
     if slot is not None:
-        parent.connect(action, QtCore.SIGNAL("triggered()"), slot)
+        parent.connect(action, SIGNAL("triggered()"), slot)
     return action
-
-
 def addActions(target, actions, actions_dict):
     """Add a list of actions to a menu or a toolbar.
 
@@ -221,11 +217,10 @@ def addActions(target, actions, actions_dict):
     for action in actions:
         if action is None:
             target.addSeparator()
-        elif isinstance(action, QtGui.QMenu):
+        elif isinstance(action, QMenu):
             target.addMenu(action)
         else:
             target.addAction(actions_dict[action])
-
 
 def formatArrayContent(content):
     """
@@ -301,8 +296,7 @@ def getHomeDir():
         home = forwardPath(home)
     else:
         home = os.getenv('HOME')
-    return QtCore.QString(home)
-
+    return QString(home)
 
 def forwardPath(path):
     """Replace backslashes with slashes in a given path."""
@@ -366,24 +360,22 @@ def customLineEdit(parent):
     :Parameter parent: the parent widge of the QLineEdit
     """
 
-    ledit = QtGui.QLineEdit(parent)
+    ledit = QLineEdit(parent)
     ledit.setFrame(False)
     ledit.setReadOnly(True)
     palette = ledit.palette()
-    bg_color = palette.color(QtGui.QPalette.Window)
-    palette.setColor(QtGui.QPalette.Base, bg_color)
+    bg_color = palette.color(QPalette.Window)
+    palette.setColor(QPalette.Base, bg_color)
     return ledit
-
 
 def getLicense():
     """The ViTables license in Rich Text format."""
 
-    input_file = QtCore.QFile(":/LICENSE.html")
-    input_file.open(QtCore.QIODevice.ReadOnly)
-    stream = QtCore.QTextStream(input_file)
+    input_file = QFile(":/LICENSE.html")
+    input_file.open(QIODevice.ReadOnly)
+    stream = QTextStream(input_file)
     license_text = stream.readAll()
     input_file.close()
 
     return license_text
-
 

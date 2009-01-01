@@ -30,7 +30,7 @@ Here is defined the BookmarksDlg class.
 
 Classes:
 
-* BookmarksDlg(QtGui.QDialog)
+* BookmarksDlg(QDialog)
 
 Methods:
 
@@ -52,10 +52,10 @@ __docformat__ = 'restructuredtext'
 import sys
 import os.path
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class BookmarksDlg(QtGui.QDialog):
+class BookmarksDlg(QDialog):
     """
     The dialog for editing bookmarks.
 
@@ -79,15 +79,15 @@ class BookmarksDlg(QtGui.QDialog):
         """
 
         # The HelpBrowser GUI instance from which this dialog has been opened
-        QtGui.QDialog.__init__(self, hbgui)
+        QDialog.__init__(self, hbgui)
 
         self.setWindowTitle(self.__tr('Bookmarks editor', 'Dialog caption'))
-        dlg_layout = QtGui.QVBoxLayout(self)
+        dlg_layout = QVBoxLayout(self)
 
         # Add a tree view
-        self.tree = QtGui.QTreeView(self)
+        self.tree = QTreeView(self)
         self.tree.setItemsExpandable(False)
-        self.model = QtGui.QStandardItemModel()
+        self.model = QStandardItemModel()
         self.tree.setModel(self.model)
         self.model.setHorizontalHeaderLabels([
             self.__tr('Bookmark', 
@@ -97,41 +97,38 @@ class BookmarksDlg(QtGui.QDialog):
         dlg_layout.addWidget(self.tree)
 
         # Add a group of buttons
-        self.button_group = QtGui.QDialogButtonBox(self)
+        self.button_group = QDialogButtonBox(self)
         self.ok_button = self.button_group.addButton(self.__tr('&OK', 
-            'Button label'), QtGui.QDialogButtonBox.AcceptRole)
+            'Button label'), QDialogButtonBox.AcceptRole)
         self.del_button = self.button_group.addButton(self.__tr('&Delete', 
-            'Button label'), QtGui.QDialogButtonBox.ActionRole)
+            'Button label'), QDialogButtonBox.ActionRole)
         self.cancel_button = self.button_group.addButton(self.__tr('&Cancel', 
-            'Button label'), QtGui.QDialogButtonBox.RejectRole)
+            'Button label'), QDialogButtonBox.RejectRole)
         dlg_layout.addWidget(self.button_group)
 
         # We dont work directly on the HelpBrowser bookmarks list,
         # instead we make a copy. This is convenient if, after doing
         # some changes in the list, we decide to cancel the changes.
-        self.blist = QtCore.QStringList(blist)
+        self.blist = QStringList(blist)
         self.fillBookmarksTable()
         self.show()
 
         # Finally we connect signals to slots
         self.connect(self.model, 
-            QtCore.SIGNAL('itemChanged(QStandardItem *)'), 
+            SIGNAL('itemChanged(QStandardItem *)'), 
             self.slotCheckDeleteButton)
         self.connect(self.tree, 
-            QtCore.SIGNAL('doubleClicked(QModelIndex)'), 
+            SIGNAL('doubleClicked(QModelIndex)'), 
             self.slotDisplayBookmark)
         self.connect(self.button_group, 
-            QtCore.SIGNAL('clicked(QAbstractButton *)'), 
+            SIGNAL('clicked(QAbstractButton *)'), 
             self.slotButtonClicked)
 
         self.del_button.setEnabled(False)
-
-
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(QtGui.qApp.translate('BookmarksDlg', source, 
+        return unicode(qApp.translate('BookmarksDlg', source, 
                                             comment).toUtf8(), 'utf_8')
-
 
     def fillBookmarksTable(self):
         """Add entries to the bookmarks table."""
@@ -144,10 +141,10 @@ class BookmarksDlg(QtGui.QDialog):
             # /home/vmas/estilo.html --> estilo.html
             # /home/vmas/estilo.html#color --> estilo.html#color
             shortname = os.path.basename(unicode(entry))
-            item = QtGui.QStandardItem(shortname)
+            item = QStandardItem(shortname)
             item.setCheckable(True)
             item.setEditable(False)
-            item1 = QtGui.QStandardItem(entry)
+            item1 = QStandardItem(entry)
             item1.setEditable(False)
             parent_item.appendRow([item, item1])
         self.tree.setExpanded(self.model.indexFromItem(parent_item), True)
@@ -186,14 +183,13 @@ class BookmarksDlg(QtGui.QDialog):
         row = 0
         item = parent_item.child(row)
         while item != None:
-            if item.checkState() == QtCore.Qt.Checked:
+            if item.checkState() == Qt.Checked:
                 enabled = 1
                 break
             row = row + 1
             item = parent_item.child(row)
 
         self.del_button.setEnabled(enabled)
-
 
     def slotButtonClicked(self, button):
         """
@@ -205,17 +201,16 @@ class BookmarksDlg(QtGui.QDialog):
 
         role = self.button_group.buttonRole(button)
         # OK button clicked
-        if role == QtGui.QDialogButtonBox.AcceptRole:
+        if role == QDialogButtonBox.AcceptRole:
             gui = self.parent()
             gui.browser.bookmarks = self.blist
             self.accept()
         # Delete button clicked
-        elif role == QtGui.QDialogButtonBox.ActionRole:
+        elif role == QDialogButtonBox.ActionRole:
             self.deleteBookmarks()
         # Cancel button clicked
-        elif role == QtGui.QDialogButtonBox.RejectRole:
+        elif role == QDialogButtonBox.RejectRole:
             self.reject()
-
 
     def deleteBookmarks(self) :
         """Delete all selected bookmarks."""
@@ -226,7 +221,7 @@ class BookmarksDlg(QtGui.QDialog):
         row = 0
         item = parent_item.child(row)
         while item != None:
-            if item.checkState() == QtCore.Qt.Checked:
+            if item.checkState() == Qt.Checked:
                 deleted_rows.append(row)
             row = row + 1
             item = parent_item.child(row)
@@ -240,8 +235,7 @@ class BookmarksDlg(QtGui.QDialog):
 
         # After deletion we udpate the dialog
         self.del_button.setEnabled(0)
-
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     dlg = BookmarksDlg(['uno', 'dos'], None)
     app.exec_()
