@@ -65,6 +65,8 @@ import vitables.utils
 import vitables.vtWidgets.queryDlg as queryDlg
 
 class QueriesManager:
+    """This is the class in charge of managing table queries.
+    """
 
     def __init__(self, tmp_h5file):
         """Setup the queries manager.
@@ -158,7 +160,7 @@ class QueriesManager:
             initial_condition = ''
 
         # GET THE QUERY COMPONENTS
-        # Update the sufix of the suggested name to ensure that it is not in use
+        # Update the suggested name sufix to ensure that it is not in use
         self.counter = self.counter + 1
         # Retrieve information about the query: condition to
         # be applied, involved range of rows, name of the
@@ -231,7 +233,8 @@ class QueriesManager:
                     # the source table so a new description dictionary
                     # is needed Int64 values are necessary to keep full
                     # 64-bit indices
-                    ft_dict = {indices_field_name.encode('utf_8'): tables.Int64Col(pos=-1)}
+                    ft_dict = {indices_field_name.encode('utf_8'): \
+                        tables.Int64Col(pos=-1)}
                     ft_dict.update(src_dict)
                     f_table = self.tmp_h5file.createTable('/', name, ft_dict, 
                                                           title)
@@ -240,20 +243,20 @@ class QueriesManager:
                         dtype = f_table.read().dtype
                         # A one row array with the proper dtype will be used
                         # to fill the table
-                        buffer = \
-                        numpy.array([(coordinates[0], ) + tuple(selection[0])], 
-                            dtype=dtype)
-                        f_table.append(buffer)
+                        row_buffer = \
+                        numpy.array([(coordinates[0], ) + \
+                            tuple(selection[0])], dtype=dtype)
+                        f_table.append(row_buffer)
                         selection_index = 0
                         for row_index in coordinates[1:]:
                             selection_index = selection_index + 1
                             # Set the first field with the row index
-                            buffer[0][0] = row_index
+                            row_buffer[0][0] = row_index
                             # The rest of fields are set using the query result
                             for field_index in range(0, len(dtype) - 1):
-                                buffer[0][field_index+1] = \
+                                row_buffer[0][field_index+1] = \
                                     selection[selection_index][field_index]
-                            f_table.append(buffer)
+                            f_table.append(row_buffer)
                 else:
                     # The array of rows that fullfill the condition
                     selection = table.readWhere(condition, condvars, 
@@ -267,9 +270,12 @@ class QueriesManager:
                 f_table.flush()
                 # Set some user attributes that define this filtered table
                 asi = f_table.attrs
-                asi.query_path = numpy.array(query_info['src_filepath'].encode('utf_8'))
-                asi.query_table = numpy.array(query_info['src_path'].encode('utf_8'))
-                asi.query_condition = numpy.array(f_table.title.encode('utf_8'))
+                asi.query_path = \
+                    numpy.array(query_info['src_filepath'].encode('utf_8'))
+                asi.query_table = \
+                    numpy.array(query_info['src_path'].encode('utf_8'))
+                asi.query_condition = \
+                    numpy.array(f_table.title.encode('utf_8'))
                 self.tmp_h5file.flush()
 
             # Update the list of names in use for filtered tables

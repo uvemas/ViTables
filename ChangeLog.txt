@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Jan 02, 2009**
+	Code style of the preferences, nodes and nodeProperties subpackages has been improved.
+
 	Code style of the vtWidgets and vtTables subpackages has been improved.
 
 ** Jan 01, 2009**

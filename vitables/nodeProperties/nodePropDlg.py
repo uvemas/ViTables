@@ -38,16 +38,15 @@ Methods:
 
 * __init__(self, info)
 * __tr(self, source, comment=None)
-* accept(self)
-* customLineEdit(self, parent)
+* makeGeneralPage(self, info)
 * groupGB(self, info, page, title)
 * leafGB(self, info, page, table=False)
-* makeGeneralPage(self, info)
 * makeSysAttrsPage(self, info)
 * makeUserAttrsPage(self, info)
+* slotDisplayCellContent(self, index)
 * slotAddAttr(self)
 * slotDelAttr(self)
-* slotDisplayCellContent(self, index)
+* accept(self)
 
 Functions:
 
@@ -489,7 +488,8 @@ class NodePropDlg(QDialog):
             dtypes_combo.setCurrentIndex(dtypes_combo.findText(dtype_name))
             self.user_table.setIndexWidget(dtype_item.index(), dtypes_combo)
 
-            # Complex attributes and ND_array attributes need some visual adjusts
+            # Complex attributes and ND_array attributes need some visual
+            # adjustments
             if dtype_name.startswith('complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.

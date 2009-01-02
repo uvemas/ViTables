@@ -36,11 +36,6 @@ Classes:
 
 Methods:
 
-* __init__(self)
-* readStartupWorkingDir(self)
-* readStyle(self)
-* readValue(self, key)
-* writeValue(self, key, value)
 
 Functions:
 
@@ -182,7 +177,8 @@ class Config(QSettings):
         if sys.platform.startswith('win'):
             # On windows systems settings will be stored in the registry
             # under the Carabos key
-            pyversion = 'Python%s%s' % (sys.version_info[0], sys.version_info[1])
+            pyversion = 'Python%s%s' % (sys.version_info[0], 
+                sys.version_info[1])
             self.base_key = 'ViTables/%s/%s' % (__version__, pyversion)
         elif sys.platform.startswith('darwin'):
             # Mac OS X saves settings in a properties list stored in a

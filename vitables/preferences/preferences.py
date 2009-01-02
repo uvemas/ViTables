@@ -39,18 +39,16 @@ Methods:
 * __init__(self, vtapp)
 * __tr(self, source, comment=None)
 * setPreferences(self, preferences)
-* slotApplyButton(self)
 * slotButtonClicked(self, button)
-* slotCancelButton(self)
-* slotOKButton(self)
 * slotResetButton(self)
-* slotSetLoggerBackground(self)
-* slotSetLoggerFont(self)
-* slotSetLoggerForeground(self)
+* slotOKButton(self)
 * slotSetStartupDir(self, button_id)
 * slotSetStartupSession(self, cb_on)
-* slotSetStyle(self, style_name)
+* slotSetLoggerFont(self)
+* slotSetLoggerForeground(self)
+* slotSetLoggerBackground(self)
 * slotSetWorkspaceBackground(self)
+* slotSetStyle(self, style_name)
 
 Misc variables:
 
