@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -36,12 +36,13 @@ Classes:
 
 Methods:
 
-* __init__(self, parent, name, pattern, info, overw_enabled=True)
+* __init__(self, name, pattern, info)
 * __tr(self, source, comment=None)
 * addComponents(self)
-* slotCheckNewName(self, current)
-* slotOverwrite(self)
-* slotRename(self)
+* slotCheckNewName(self, new_name)
+* chooseAction(self, button)
+* overwriteNode(self)
+* renameNode(self)
 
 Misc variables:
 
@@ -145,7 +146,10 @@ class RenameDlg(QDialog):
         self.value_le.selectAll()
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(SIGNAL('textChanged(const QString)'), (self.value_le.text()))
+        self.value_le.emit(SIGNAL('textChanged(const QString)'), 
+            (self.value_le.text()))
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate('RenameDlg', source, 
@@ -184,6 +188,8 @@ class RenameDlg(QDialog):
         # LAST ROW -- A set of  buttons
         self.rename_button.setDefault(1)
         self.layout().addWidget(self.buttons_box)
+
+
     def slotCheckNewName(self, new_name):
         """
         Check the new name value.
@@ -230,6 +236,7 @@ class RenameDlg(QDialog):
             self.rename_button.setEnabled(1)
             self.overwrite_button.setEnabled(0)
 
+
     def chooseAction(self, button):
         """Perform the action specified by the clicked button."""
 
@@ -237,6 +244,7 @@ class RenameDlg(QDialog):
             self.renameNode()
         elif button == self.overwrite_button:
             self.overwriteNode()
+
 
     def overwriteNode(self):
         """

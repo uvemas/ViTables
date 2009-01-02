@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -36,10 +36,11 @@ Classes:
 
 Methods:
 
-* __init__(self, parent, pattern, info)
+* __init__(self, title, info, action)
 * __tr(self, source, comment=None)
 * addComponents(self)
 * slotCheckNewName(self, current)
+* slotAccept(self)
 
 Misc variables:
 
@@ -107,11 +108,15 @@ class InputNodeName(QDialog):
         self.value_le.selectAll()
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(SIGNAL('textChanged(const QString)'), (self.value_le.text()))
+        self.value_le.emit(SIGNAL('textChanged(const QString)'), 
+            (self.value_le.text()))
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate('InputNodeName', source, 
                                             comment).toUtf8(), 'utf_8')
+
 
     def addComponents(self):
         """
@@ -145,6 +150,8 @@ class InputNodeName(QDialog):
 
         # LAST ROW -- A set of  buttons
         self.layout().addWidget(self.buttons_box)
+
+
     def slotCheckName(self, current):
         """
         Check the current name value.

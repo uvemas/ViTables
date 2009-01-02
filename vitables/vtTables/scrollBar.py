@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -35,6 +35,8 @@ Classes:
 
 Methods:
 
+* __init__(self, scrollbar)
+* __tr(self, source, comment=None)
 
 Functions:
 

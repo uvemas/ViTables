@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -35,6 +35,9 @@ Classes:
 
 Methods:
 
+* __init__(self, leaf, view, pindex, parent=None)
+* closeEvent(self)
+* syncTreeView(self) 
 
 Functions:
 

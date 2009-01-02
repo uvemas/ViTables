@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -36,11 +36,11 @@ Classes:
 
 Methods:
 
-* __init__(self, document)
+* __init__(self, leaf)
 * leafNumberOfRows(self)
-* getReadParameters(self, start, bs)
-* readBuffer(self, start, bs)
+* getReadParameters(self, start, buffer_size)
 * isDataSourceReadable(self)
+* readBuffer(self, start, buffer_size)
 * scalarCell(self, row, col)
 * vectorCell(self, row, col)
 * arrayCell(self, row, col)
@@ -53,7 +53,6 @@ Misc variables:
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import warnings
 
 import numpy
@@ -161,39 +160,37 @@ class Buffer:
         return numpy.array(nrows, dtype=numpy.int64)
 
 
-    def getReadParameters(self, start, bs):
+    def getReadParameters(self, start, buffer_size):
         """
         Returns acceptable parameters for the read method.
 
         :Parameters:
 
-        - `start`: is the document row that is the first row of the chunk.
+        - `start`: the document row that is the first row of the chunk.
           It *must* be a 64 bits integer.
-        - `bs`: is the buffer size, i.e. the number of rows to be read.
+        - `buffer_size`: the buffer size, i.e. the number of rows to be read.
 
         :Returns:
             a tuple with tested values for the parameters of the read method
         """
 
-        firstRow = numpy.array(0, dtype=numpy.int64)
-        lastRow = self.leaf_numrows
+        first_row = numpy.array(0, dtype=numpy.int64)
+        last_row = self.leaf_numrows
 
-        # When scrolling up we must keep start value >= firstRow
-        if start <  firstRow:
-            start = firstRow
+        # When scrolling up we must keep start value >= first_row
+        if start <  first_row:
+            start = first_row
 
-        # When scrolling down we must keep stop value <= lastRow
-        stop = start + bs
-        if stop > lastRow:
-            stop = lastRow
+        # When scrolling down we must keep stop value <= last_row
+        stop = start + buffer_size
+        if stop > last_row:
+            stop = last_row
 
         # Ensure that the whole buffer will be filled
         if stop - start < self.chunk_size:
             start = stop - self.chunk_size
 
         return start, stop
-
-
     def isDataSourceReadable(self):
         """Find out if the dataset can be read or not.
 
@@ -206,7 +203,7 @@ class Buffer:
         start, stop = self.getReadParameters(\
                             numpy.array(0, dtype=numpy.int64), self.chunk_size)
         try:
-            data = self.data_source.read(start, stop)
+            self.data_source.read(start, stop)
         except tables.HDF5ExtError:
             readable = False
             print  self.__tr("""\nError: problems reading records. """\
@@ -219,7 +216,7 @@ class Buffer:
         return readable
 
 
-    def readBuffer(self, start, bs):
+    def readBuffer(self, start, buffer_size):
         """
         Read a chunk from the data source.
 
@@ -233,12 +230,12 @@ class Buffer:
 
         :Parameters:
 
-        - `start`: is the document row that is the first row of the chunk.
+        - `start`: the document row that is the first row of the chunk.
           It *must* be a 64 bits integer.
-        - `bs`: is the buffer size, i.e. the number of rows to be read.
+        - `buffer_size`: the buffer size, i.e. the number of rows to be read.
         """
 
-        start, stop = self.getReadParameters(start, bs)
+        start, stop = self.getReadParameters(start, buffer_size)
         try:
             data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
@@ -251,7 +248,6 @@ class Buffer:
             # Update the buffer contents and its start position
             self.chunk = data
             self.start = start
-
 
     def scalarCell(self, row, col):
         """
@@ -270,8 +266,9 @@ class Buffer:
 
         try:
             return self.chunk[()]
-        except IndexError, v:
-            print 'IndexError! buffer start: %s row, column: %s, %s' % (self.start, row, col)
+        except IndexError:
+            print 'IndexError! buffer start: %s row, column: %s, %s' % \
+                (self.start, row, col)
 
 
     def vectorCell(self, row, col):
@@ -297,8 +294,9 @@ class Buffer:
         # and columns can be read from a given row using indexing notation
         try:
             return self.chunk[int(row - self.start)]
-        except IndexError, v:
-            print 'IndexError! buffer start: %s row, column: %s, %s' % (self.start, row, col)
+        except IndexError:
+            print 'IndexError! buffer start: %s row, column: %s, %s' % \
+                (self.start, row, col)
 
 
     def arrayCell(self, row, col):
@@ -328,6 +326,7 @@ class Buffer:
         # and fields can be read from nestedrecordJ using indexing notation
         try:
             return self.chunk[int(row - self.start)][col]
-        except IndexError, v:
-            print 'IndexError! buffer start: %s row, column: %s, %s' % (self.start, row, col)
+        except IndexError:
+            print 'IndexError! buffer start: %s row, column: %s, %s' % \
+                (self.start, row, col)
 

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -117,7 +117,8 @@ class LeafView(QTableView):
         # Connect SIGNALS to slots
         self.connect(self, SIGNAL("doubleClicked(QModelIndex)"), self.zoomCell)
         if self.rbuffer.leaf_numrows > self.model.numrows:
-            self.connect(self.tricky_vscrollbar, SIGNAL("actionTriggered(int)"), self.navigateWithMouse)
+            self.connect(self.tricky_vscrollbar, 
+                        SIGNAL("actionTriggered(int)"), self.navigateWithMouse)
             self.connect(self.selection_model, 
                         SIGNAL("currentChanged(QModelIndex, QModelIndex)"), 
                         self.trackValidCurrentCell)
@@ -151,7 +152,8 @@ class LeafView(QTableView):
 
         if event.type() in (QEvent.MouseButtonRelease, QEvent.Wheel):
             top_left = self.model.index(0, 0)
-            bottom_right = self.model.index(self.model.numrows - 1, self.model.numcols - 1)
+            bottom_right = self.model.index(self.model.numrows - 1, 
+                                            self.model.numcols - 1)
             self.dataChanged(top_left, bottom_right)
         return QTableView.eventFilter(self, widget, event)
     def navigateWithMouse(self, int_action):
@@ -242,7 +244,7 @@ class LeafView(QTableView):
         self.syncView()
 
     def dragSlider(self):
-        """Move upward/downward the slider by dragging it or wheeling the mouse.
+        """Move the slider by dragging it or wheeling the mouse.
 
         When navigating large datasets we must beware that the number of
         rows of the dataset is greater than the number of values in the
@@ -485,7 +487,6 @@ class LeafView(QTableView):
         buffer_column = current_index.column()
         self.loadValidCurrentCell(buffer_row)
         dataset_row = self.rbuffer.start + buffer_row
-        old_buffer_end = self.rbuffer.start + table_size - 1
 
         # If we are at the last page of the buffer but not at the last
         # row of the dataset we still can go downwards so we have to
@@ -575,7 +576,6 @@ class LeafView(QTableView):
 
         table_size = self.model.numrows
         current_section = self.current_cell[0]
-        current_column = self.current_cell[1]
         if not current_section in (self.rbuffer.start, 
             self.rbuffer.start + table_size):
             self.model.loadData(current_section - row - 1, table_size)

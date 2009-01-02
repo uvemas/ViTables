@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 
 ########################################################################
 #
@@ -47,6 +49,7 @@ Misc variables:
 * __docformat__
 
 """
+
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -125,10 +128,13 @@ class BookmarksDlg(QDialog):
             self.slotButtonClicked)
 
         self.del_button.setEnabled(False)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate('BookmarksDlg', source, 
                                             comment).toUtf8(), 'utf_8')
+
 
     def fillBookmarksTable(self):
         """Add entries to the bookmarks table."""
@@ -191,6 +197,7 @@ class BookmarksDlg(QDialog):
 
         self.del_button.setEnabled(enabled)
 
+
     def slotButtonClicked(self, button):
         """
         Action selector method.
@@ -211,6 +218,7 @@ class BookmarksDlg(QDialog):
         # Cancel button clicked
         elif role == QDialogButtonBox.RejectRole:
             self.reject()
+
 
     def deleteBookmarks(self) :
         """Delete all selected bookmarks."""
@@ -235,6 +243,7 @@ class BookmarksDlg(QDialog):
 
         # After deletion we udpate the dialog
         self.del_button.setEnabled(0)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     dlg = BookmarksDlg(['uno', 'dos'], None)

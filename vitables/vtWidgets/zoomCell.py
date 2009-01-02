@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -35,15 +35,15 @@ Classes:
 
 Methods:
 
-* __init__(self, cell, caption, workspace, name=None)
+* __init__(self, data, title, workspace, leaf)
 * hasShape(self)
 * getGridDimensions(self)
 * getPyObjectDimensions(self)
 * getArrayDimensions(self, shape)
-* getTableDimensions(self, dtype)
+* getNestedFieldDimensions(self)
 * zoomTable(self)
 * zoomArray(self)
-* slotZoomView(self, row, col, button, position)
+* slotZoomView(self, row, col)
 
 Misc variables:
 
@@ -52,10 +52,6 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-
-import numpy
-
-import tables.utilsExtension
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -128,8 +124,8 @@ class ZoomCell(QMdiSubWindow):
         self.setWidget(self.grid)
         # Configure the titlebar
         self.setWindowTitle(self.title)
-        iconsDictionary = vitables.utils.getIcons()
-        self.setWindowIcon(iconsDictionary['zoom'])
+        icons_dictionary = vitables.utils.getIcons()
+        self.setWindowIcon(icons_dictionary['zoom'])
 
         # Decide how the cell content will be formatted. Content can be:
         # - a numpy array
@@ -200,9 +196,9 @@ class ZoomCell(QMdiSubWindow):
             # The cell contains a numpy object
             shape = self.data.shape
             dtype = self.data.dtype
-            if dtype.fields:
+            if dtype.fields is not None:
                 # Table nested fields come here
-                return self.getNestedFieldDimensions(dtype)
+                return self.getNestedFieldDimensions()
             else:
                 # Any other case come here
                 return self.getArrayDimensions(shape)
@@ -254,15 +250,13 @@ class ZoomCell(QMdiSubWindow):
         return (nrows, ncols)
 
 
-    def getNestedFieldDimensions(self, dtype):
+    def getNestedFieldDimensions(self):
         """
         Get the dimensions of the grid where the cell will be zoomed.
 
         The zoomed cell contains a nested field and will be displayed
         in a table with only one row and one column per (top - 1)
         level field. Note that fields have `shape`=().
-
-        :Parameter dtype: the cell data type
 
         :Returns: a tuple (rows, columns)
         """
@@ -286,30 +280,29 @@ class ZoomCell(QMdiSubWindow):
     def zoomArray(self):
         """Fill the zoom view with the content of the clicked cell."""
 
-        numRows = self.grid.rowCount()
-        numCols = self.grid.columnCount()
+        num_rows = self.grid.rowCount()
+        num_cols = self.grid.columnCount()
         # Numpy scalars are displayed in a 1x1 grid
-        if numRows == numCols == 1:
+        if num_rows == num_cols == 1:
             content = self.data
             text = self.formatContent(content)
             item = QTableWidgetItem(text)
             self.grid.setItem(0, 0, item)
         # 1-D arrays
-        elif numCols == 1:
-            for row in range(0, numRows):
+        elif num_cols == 1:
+            for row in range(0, num_rows):
                 content = self.data[row]
                 text = self.formatContent(content)
                 item = QTableWidgetItem(text)
                 self.grid.setItem(row, 0, item)
         # N-D arrays
         else:
-            for row in range(0, numRows):
-                for column in range(0, numCols):
+            for row in range(0, num_rows):
+                for column in range(0, num_cols):
                     content = self.data[row][column]
                     text = self.formatContent(content)
                     item = QTableWidgetItem(text)
                     self.grid.setItem(row, column, item)
-
     def slotZoomView(self, row, col):
         """Makes the content of the clicked cell fully visible.
 
@@ -324,7 +317,7 @@ class ZoomCell(QMdiSubWindow):
             if not (self.data.shape !=() or self.field_names):
                 return
         elif not (isinstance(self.data, list) or isinstance(self.data, tuple)):
-                return
+            return
 
         # Get data
         if self.data_shape:

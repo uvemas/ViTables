@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 ########################################################################
@@ -36,19 +36,19 @@ Classes:
 
 Methods:
 
-* __init__(self, query_info, info, ft_names, counter, initial_query, qtable)
+* __init__(self, info, ft_names, counter, initial_query, table)
 * __tr(self,  source, comment=None)
-* checkConditionSyntax(self, condition)
-* makeSectionFour(self, buttons_layout)
 * makeSectionOne(self, global_opt_gb)
-* makeSectionThree(self, rows_range_gb, nrows)
 * makeSectionTwo(self, condition_gb, valid_fields)
-* slotAccept(self)
+* makeSectionThree(self, rows_range_gb, nrows)
+* makeSectionFour(self, buttons_layout)
 * slotEnableIndicesColumn(self, cb_on)
+* slotInsertOperator(self, operator)
 * slotInsertField(self, field_id)
 * slotInsertFunction(self, text)
-* slotInsertOperator(self, operator)
 * slotUpdateOKState(self)
+* checkConditionSyntax(self, condition)
+* slotAccept(self)
 
 Functions:
 
@@ -61,8 +61,6 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-
-import tables.exceptions
 
 import numpy
 
@@ -285,6 +283,8 @@ class QueryDlg(QDialog):
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
         self.name_le.emit(text_changed, self.name_le.text())
+
+
     def __tr(self,  source, comment=None):
         """Translate method."""
         return unicode(qApp.translate('QueryDlg', source, 
@@ -318,6 +318,7 @@ class QueryDlg(QDialog):
         global_opt_gb.setLayout(global_layout)
         global_layout.addLayout(name_layout)
         global_layout.addLayout(indices_layout)
+
 
     def makeSectionTwo(self, condition_gb, valid_fields):
         """
@@ -354,6 +355,8 @@ class QueryDlg(QDialog):
         sorted_fields = [field for field in valid_fields]
         sorted_fields.sort()
         self.columns_cb.insertItems(0, QStringList(sorted_fields))
+
+
     def makeSectionThree(self, rows_range_gb, nrows):
         """
         Make the Range Selectors section.
@@ -386,6 +389,7 @@ class QueryDlg(QDialog):
         range_layout.addWidget(self.rstep, 2, 1)
 
         range_layout.setColumnStretch(2, 1)
+
 
     def makeSectionFour(self, buttons_layout):
         """
@@ -606,7 +610,8 @@ class QueryDlg(QDialog):
         self.query_info['condition'] = condition
 
         # Get the table name and the name of the column with indices (if any)
-        self.query_info['ft_name'] = unicode(self.name_le.text().toUtf8(), 'utf_8')
+        self.query_info['ft_name'] = unicode(self.name_le.text().toUtf8(), 
+                                            'utf_8')
         if self.indices_column.isEnabled():
             self.query_info['indices_field_name'] = \
                 unicode(self.indices_column.text().toUtf8(), 'utf_8')
