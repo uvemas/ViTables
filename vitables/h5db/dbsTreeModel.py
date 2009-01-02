@@ -36,43 +36,44 @@ Classes:
 Methods:
 
 * __init__(self, parent=None)
-* __createTempDB(self)
 * __tr(self, source, comment=None)
-* addNode(self, parent, child,row=0, index=QModelIndex())
-* checkOpening(self, filepath)
-* closeDBDoc(self, filepath)
-* columnCount(self, parent)
-* copyNode(self,index)
-* createDBDoc(self, filepath)
-* createGroup(self, index, childname, overwrite=False)
-* cutNode(self, index)
-* data(self, index, role)
-* deleteNode(self,index)
-* dropMimeData(self, data, action, row, column, parent)
-* flags(self, index)
+* mapDB(self, filepath, db_doc)
+* removeMappedDB(self, filepath)
 * getDBDoc(self, filepath)
 * getDBList(self)
-* hasChildren(self, index)
-* headerData(self, section, orientation, role)
-* index(self, row, column, parent)
-* lazyAddChildren(self, index)
-* mapDB(self, filepath, db_doc)
-* mimeData(self, indexes)
-* mimeTypes(self)
-* moveNode(self, src_filepath, childpath, dst_filepath, parentpath,
-    childname=None)
-* nodeFromIndex(self, index)
-* openDBDoc(self, filepath, mode)
-* overwriteNode(self, parent_node, parent_index, nodename)
-* parent(self, index)
-* pasteNode(self,index)
-* removeMappedDB(self, filepath)
-* removeRows(self, position, count=1, parent=QModelIndex())
-* renameNode(self, index, new_name)
-* rowCount(self, parent)
-* setData(self, index, value, role=Qt.EditRole)
-* supportedDropActions(self)
+* checkOpening(self, filepath)
+* openDBDoc(self, filepath, mode='a', position=0)
+* closeDBDoc(self, filepath)
+* createDBDoc(self, filepath, tmp_db=False)
+* __createTempDB(self)
+* columnCount(self, parent)
+* deleteNode(self,index)
+* copyNode(self,index)
+* cutNode(self, index)
+* pasteNode(self, index, childname, overwrite=False)
+* createGroup(self, index, childname, overwrite=False)
+* renameNode(self, index, new_name, overwrite=False)
 * walkTreeView(self, index)
+* moveNode(self, src_filepath, childpath, parent_index, overwrite=False)
+* overwriteNode(self, parent_node, parent_index, nodename)
+* lazyAddChildren(self, index)
+* flags(self, index)
+* data(self, index, role)
+* setData(self, index, value, role=Qt.EditRole)
+* headerData(self, section, orientation, role)
+* columnCount(self, parent)
+* rowCount(self, parent)
+* hasChildren(self, index)
+* index(self, row, column, parent)
+* nodeFromIndex(self, index)
+* parent(self, child)
+* addNode(self, parent, child, row=0, index=QModelIndex())
+* removeRows(self, position, count=1, parent=QModelIndex())
+* closeViews(self, parent, start, end)
+* supportedDropActions(self)
+* mimeTypes(self)
+* mimeData(self, indexes)
+* dropMimeData(self, data, action, row, column, parent)
 
 Functions:
 
@@ -316,7 +317,8 @@ class DBsTreeModel(QAbstractItemModel):
         (f_handler, self.tmp_filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)
         self.tmp_filepath = \
-            unicode(QDir.fromNativeSeparators(self.tmp_filepath).toUtf8(), 'utf_8')
+            unicode(QDir.fromNativeSeparators(self.tmp_filepath).toUtf8(), 
+                    'utf_8')
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         return db_doc
 
@@ -822,7 +824,7 @@ class DBsTreeModel(QAbstractItemModel):
     def parent(self, child):
         """The parent index of a given index.
 
-        :Parameter index: the child index whose parent is being retrieved.
+        :Parameter child: the child index whose parent is being retrieved.
         """
 
         node = self.nodeFromIndex(child)
@@ -975,7 +977,8 @@ class DBsTreeModel(QAbstractItemModel):
             # Convert the binary array into a string with suitable format
             uris_string = QUrl.fromEncoded(encoded_data).toString().toUtf8()
             # Split the string using the apropriate separators
-            uris_list = re.split('(\r\n)|\r|\n\0', unicode(uris_string, 'utf_8'))
+            uris_list = re.split('(\r\n)|\r|\n\0', unicode(uris_string, 
+                                                            'utf_8'))
             # Get rid of the separators
             uris = [uris_list[i] for i in range(0, len(uris_list) - 1, 2)]
             # Transform every element of the sequence into a path and open it

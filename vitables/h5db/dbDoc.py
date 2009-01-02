@@ -38,21 +38,19 @@ Methods:
 
 * __init__(self, filepath, mode, tmp_dbdoc=None)
 * __tr(self, source, comment=None)
-* clearHiddenGroup(self)
+* openH5File(self)
 * closeH5File(self)
-* copyFile(self, dst_filepath)
-* copyNode(self, nodepath)
-* createGroup(self, where, final_name)
-* cutNode(self, nodepath)
-* deleteNode(self, nodepath)
 * getFileFormat(self)
 * getNode(self, where)
 * listNodes(self)
-* moveNode(self, src_h5file, childpath, dst_h5file, parentpath,
-  childname=None)
-* openH5File(self)
-* pasteNode(self, parentpath)
+* copyFile(self, dst_filepath)
+* deleteNode(self, nodepath)
+* createHiddenGroup(self)
+* cutNode(self, nodepath)
+* pasteNode(self, src_nodepath, parent, childname)
 * renameNode(self, nodepath, new_name)
+* createGroup(self, where, final_name)
+* moveNode(self, childpath, dst_dbdoc, parentpath, childname)
 
 Functions:
 

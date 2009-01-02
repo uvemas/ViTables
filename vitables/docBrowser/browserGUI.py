@@ -36,12 +36,12 @@ Classes:
 
 Methods:
 
-* __init__(self, hb) 
+* __init__(self, browser, parent=None) 
 * __tr(self, source, comment=None)
-* closeEvent(self, event) 
-* initPopups(self) 
 * setupActions(self)
+* initPopups(self) 
 * setupHistoryCombo(self)
+* closeEvent(self, event) 
 
 Misc variables:
 
@@ -50,8 +50,6 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-
-import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

@@ -35,12 +35,17 @@ Classes:
 
 Methods:
 
-* __init__(self, parent=None)
+* __init__(self, vtapp, parent=None)
 * __tr(self, source, comment=None)
+* mouseDoubleClickEvent(self, event)
+* updateCollapsedGroup(self, index)
+* updateExpandedGroup(self, index)
 * activateNode(self, index)
-* collapseNode(self, index)
 * createCustomContextMenu(self, pos)
-* expandNode(self, index)
+* currentChanged(self, current, previous)
+* dropEvent(self, event)
+* dragEnterEvent(self, event)
+* dragMoveEvent(self, event)
 
 Functions:
 
@@ -52,8 +57,6 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-
-import sets
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

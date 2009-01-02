@@ -35,11 +35,12 @@ Classes:
 
 Methods:
 
-* __init__(self, db_doc, nodepath)
+* __init__(self, parent=None)
+* __tr(self, source, comment=None)
+* setEditorData(self, editor, index)
+* setModelData(self, editor, model, index)
 
 Functions:
-
-* __tr(source, comment=None)
 
 Misc variables:
 
@@ -48,8 +49,6 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-
-import tables
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -74,10 +73,12 @@ class NodeItemDelegate(QItemDelegate):
         self.current_name = None
         self.vtapp = parent.vtapp
 
+
     def __tr(self, source, comment=None):
         """Translate function."""
         return unicode(qApp.translate('NodeItemDelegate', source, 
                                             comment).toUtf8(), 'utf_8')
+
 
     def setEditorData(self, editor, index):
         """
@@ -95,6 +96,7 @@ class NodeItemDelegate(QItemDelegate):
         node_name = index.model().data(index, Qt.DisplayRole).toString()
         self.current_name = node_name
         editor.setText(node_name)
+
 
     def setModelData(self, editor, model, index):
         """
@@ -118,7 +120,6 @@ class NodeItemDelegate(QItemDelegate):
         #
         # Check if the nodename is already in use
         #
-        dst_dbdoc = model.getDBDoc(node.filepath)
         sibling = getattr(parent.node, '_v_children').keys()
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
@@ -128,12 +129,13 @@ class NodeItemDelegate(QItemDelegate):
         info = [self.__tr('Renaming a node: name already in use', 
                 'A dialog caption'), 
                 self.__tr("""Source file: %s\nParent group: %s\n\nThere is """
-                          """already a node named '%s' in that parent group.\n""", 
+                          """already a node named '%s' in that parent """
+                          """group.\n""", 
                           'A dialog label') % \
                     (parent.filepath, parent.nodepath, suggested_nodename)]
         # Validate the nodename
-        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, sibling, 
-            pattern, info)
+        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
+            sibling, pattern, info)
         if nodename is None:
             editor.setText(self.current_name)
             return

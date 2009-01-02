@@ -36,28 +36,28 @@ Classes:
 
 Methods:
 
-* __init__(self, parent) 
+* __init__(self, vtapp) 
 * __tr(self, source, comment=None)
 * connectSignals(self)
-* slotAboutHelpBrowser(self)
-* slotAboutQt(self)
-* slotAddBookmark(self)
-* slotClearBookmarks(self)
-* slotClearHistory(self)
-* slotCloseWindow(self)
 * slotDisplaySrc(self, src=None)
-* slotEditBookmarks(self)
-* slotExitBrowser(self)
 * slotNewBrowser(self)
-* slotOpenBookmark(self, bmark_id)
 * slotOpenFile(self, filepath=None)
-* slotRecentSubmenuAboutToShow(self)
-* slotUpdateBackward(self, available)
-* slotUpdateForward(self, available)
+* slotCloseWindow(self)
+* slotExitBrowser(self)
 * slotZoomIn(self) 
 * slotZoomOut(self) 
-* updateHistory(self, src) 
 * updateHome(self) 
+* slotUpdateForward(self, available)
+* slotUpdateBackward(self, available)
+* slotRecentSubmenuAboutToShow(self)
+* slotOpenBookmark(self, bmark_id)
+* slotAddBookmark(self)
+* slotEditBookmarks(self)
+* slotClearBookmarks(self)
+* slotClearHistory(self)
+* updateHistory(self, src) 
+* slotAboutHelpBrowser(self)
+* slotAboutQt(self)
 
 Misc variables:
 
@@ -176,7 +176,7 @@ class HelpBrowser(QObject) :
                 src = action_text.remove(QRegExp("^\d+\.\s+"))
 
         src = QDir().fromNativeSeparators(src) # src can be a QString
-        (dirname, basename) = os.path.split(unicode(src))
+        basename = os.path.basename(unicode(src))
         url = QUrl("qrc:/doc/html/%s" % basename)
         self.gui.text_browser.setSource(url)
 
@@ -225,7 +225,8 @@ class HelpBrowser(QObject) :
                 # The absolut path of the selected file
                 filepath = file_dlg.selectedFiles()[0]
                 # Update the working directory
-                self.working_dir = unicode(file_dlg.directory().canonicalPath())
+                self.working_dir = \
+                    unicode(file_dlg.directory().canonicalPath())
                 # Displays the document (history is automatically updated)
                 self.slotDisplaySrc(filepath)
             # Cancel clicked. Working directory doesn't change

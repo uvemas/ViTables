@@ -38,11 +38,11 @@ Methods:
 
 * __init__(self, blist, hbgui)
 * __tr(self, source, comment=None)
-* deleteBookmarks(self)
 * fillBookmarksTable(self)
-* slotButtonClicked(self, button)
-* slotCheckDeleteButton(self, item)
 * slotDisplayBookmark(self, index)
+* slotCheckDeleteButton(self, item)
+* slotButtonClicked(self, button)
+* deleteBookmarks(self)
 
 Misc variables:
 
@@ -245,6 +245,6 @@ class BookmarksDlg(QDialog):
         self.del_button.setEnabled(0)
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    dlg = BookmarksDlg(['uno', 'dos'], None)
-    app.exec_()
+    APP = QApplication(sys.argv)
+    DLG = BookmarksDlg(['uno', 'dos'], None)
+    APP.exec_()
