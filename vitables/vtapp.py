@@ -161,8 +161,8 @@ class VTApp(QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        #sys.stdout = self.logger
-        #sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -960,7 +960,7 @@ class VTApp(QMainWindow):
         enabled = sets.Set([])
 
         model_rows = self.dbs_tree_model.rowCount(QModelIndex())
-        if model_rows <=0:
+        if model_rows <= 0:
             return
 
         # If there are open files aside the temporary DB
@@ -1113,11 +1113,12 @@ class VTApp(QMainWindow):
             accel = ""
             if counter < 10:
                 accel = "&%d " % counter
-            elif i < 36:
+            elif counter < 36:
                 accel = "&%c " % chr(counter + ord("@") - 9)
             action = menu.addAction("%s%s" % (accel, title))
             action.setCheckable(True)
-            if self.workspace.activeSubWindow() == window: action.setChecked(True)
+            if self.workspace.activeSubWindow() == window:
+                action.setChecked(True)
             menu.action_group.addAction(action)
             self.connect(action, SIGNAL("triggered()"), 
                         self.window_mapper, SLOT("map()"))
@@ -1201,7 +1202,7 @@ class VTApp(QMainWindow):
                 self.mdi_cm.popup(pos)
             return QMdiArea.eventFilter(widget, widget, event)
         else:
-           return QMainWindow.eventFilter(self, widget, event)
+            return QMainWindow.eventFilter(self, widget, event)
     def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
         """Raise a file selector dialog and get a filepath.
 
@@ -1314,7 +1315,6 @@ class VTApp(QMainWindow):
         # The file being saved
         initial_filepath = \
             self.dbs_tree_model.nodeFromIndex(current_index).filepath
-        initial_dirname, initial_filename = os.path.split(initial_filepath)
 
         # The trier filepath
         trier_filepath = self.getFilepath(
@@ -1476,8 +1476,8 @@ class VTApp(QMainWindow):
         self.dbs_tree_model.openDBDoc(filepath, mode, position)
         database = self.dbs_tree_model.getDBDoc(filepath)
         if database:
-            self.dbs_tree_view.setCurrentIndex(self.dbs_tree_model.index(position, 
-                0, QModelIndex()))
+            self.dbs_tree_view.setCurrentIndex(\
+                self.dbs_tree_model.index(position, 0, QModelIndex()))
             self.updateRecentFiles(filepath, mode)
     def slotFileClose(self, current=None):
         """
@@ -1561,7 +1561,7 @@ class VTApp(QMainWindow):
 
         # tables.UnImplemented datasets cannot be read so are not opened
         if isinstance(leaf, tables.UnImplemented):
-            info_box = QMessageBox.information(self, 
+            QMessageBox.information(self, 
                 self.__tr('About UnImplemented nodes', 'A dialog caption'), 
                 self.__tr(
                 """Actual data for this node are not accesible.<br> """
@@ -1635,11 +1635,11 @@ class VTApp(QMainWindow):
         info = [self.__tr('Creating a new group: name already in use', 
                 'A dialog caption'), 
                 self.__tr("""Source file: %s\nParent group: %s\n\nThere is """
-                          """already a node named '%s' in that parent group.\n""", 
-                          'A dialog label') % \
+                          """already a node named '%s' in that parent group"""
+                          """.\n""", 'A dialog label') % \
                     (parent.filepath, parent.nodepath, suggested_nodename)]
-        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, sibling, 
-            pattern, info)
+        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
+            sibling, pattern, info)
         if nodename is None:
             return
 
@@ -1690,11 +1690,11 @@ class VTApp(QMainWindow):
         info = [self.__tr('Renaming a node: name already in use', 
                 'A dialog caption'), 
                 self.__tr("""Source file: %s\nParent group: %s\n\nThere is """
-                          """already a node named '%s' in that parent group.\n""", 
-                          'A dialog label') % \
+                          """already a node named '%s' in that parent """
+                          """group.\n""", 'A dialog label') % \
                     (parent.filepath, parent.nodepath, suggested_nodename)]
-        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, sibling, 
-            pattern, info)
+        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
+            sibling, pattern, info)
         if nodename is None:
             return
 
@@ -1738,11 +1738,11 @@ class VTApp(QMainWindow):
             leaf = dbs_tree_node.node # A PyTables node
             leaf_buffer = rbuffer.Buffer(leaf)
             if not leaf_buffer.isDataSourceReadable():
-                info_box = QMessageBox.information(self, 
-                    self.__tr('About unreadable datasets', 'A dialog caption'), 
+                QMessageBox.information(self, 
+                    self.__tr('About unreadable datasets', 'Dialog caption'), 
                     self.__tr(
-                    """Sorry, actual data for this node are not accesible.<br>"""
-                    """The node will not be copied.""", 
+                    """Sorry, actual data for this node are not accesible."""
+                    """<br>The node will not be copied.""", 
                     'Text of the Unimplemented node dialog'))
                 return
 
@@ -1776,7 +1776,8 @@ class VTApp(QMainWindow):
             # The database where the copied/cut node lived has been closed
             return
         if src_filepath != copied_node_info['initial_filepath']:
-            # The copied/cut node doesn't exist. It has been moved to other file
+            # The copied/cut node doesn't exist. It has been moved to
+            # other file
             return
 
         # Check if the copied node still exists in the tree of databases
@@ -1794,7 +1795,7 @@ class VTApp(QMainWindow):
             if (src_filepath == parent.filepath):
                 if (src_nodepath == parent.nodepath) or \
                    (parent.nodepath == src_node.parent.nodepath):
-                       return
+                    return
 
         #
         # Check if the nodename is already in use
@@ -1803,7 +1804,6 @@ class VTApp(QMainWindow):
         # Nodename pattern
         pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
         # Bad nodename conditions
-        nodename_in_sibling = nodename in sibling
         info = [self.__tr('Node paste: nodename already exists', 
                 'A dialog caption'), 
                 self.__tr("""Source file: %s\nCopied node: %s\n"""

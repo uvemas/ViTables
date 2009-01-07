@@ -60,8 +60,8 @@ if sys.platform.startswith('win'):
     PYQT_DIR = os.path.join(vitables.vtSite.INSTALLDIR, 'pyqt')
     sys.path = [os.path.normpath(PYQT_DIR)] + sys.path
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 def main(args):
     """The application launcher.
@@ -70,7 +70,7 @@ def main(args):
     loop is started.
     """
 
-    app = QtGui.QApplication(args)
+    app = QApplication(args)
     # These imports must be done after the QApplication has been instantiated
     from vitables.vtapp import VTApp
     from vitables.preferences import vtconfig
@@ -90,9 +90,9 @@ def main(args):
     locale.setlocale(locale.LC_NUMERIC, 'C')
     language = locale.getlocale()[0]
     # Future translations (if any) will use resource files
-    # vt_translator = QtCore.QTranslator()
+    # vt_translator = QTranslator()
     # vt_translator.load('vitables_%s' % language, config.translations_dir)
-    # qt_translator = QtCore.QTranslator()
+    # qt_translator = QTranslator()
     # qt_translator.load('qt_%s' % language, config.translations_dir)
     # app.installTranslator(vt_translator)
     # app.installTranslator(qt_translator)
@@ -116,7 +116,6 @@ def main(args):
     main_window = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
     main_window.show()
     app.exec_()
-
 
 if __name__ == '__main__':
     # How to run in Mac OS X

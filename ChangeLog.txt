@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Jan 07, 2009**
+	Code style of the vitables package has been improved.
+
 ** Jan 02, 2009**
 	Code style of the h5db and docBrowser subpackages has been improved.
 

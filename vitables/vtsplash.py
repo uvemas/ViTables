@@ -97,7 +97,6 @@ class VTSplash(QSplashScreen):
 
 if __name__ == '__main__':
     import sys
-    import time
     APP = QApplication(sys.argv)
     LOGO = QPixmap("""/home/vmas/repositoris.nobackup/"""
         """vitables/icons/vitables_logo.png""")

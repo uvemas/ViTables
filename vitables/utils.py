@@ -66,7 +66,6 @@ import numpy
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-import vitables.qrc_resources
 import vitables.vtWidgets.renameDlg as renameDlg
 
 ICONS_DICT = {}
