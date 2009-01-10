@@ -138,7 +138,7 @@ Section "ViTables @VERSION@" VT
 
   # Copy the ViTables sources in the Python site-packages directory
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables
-  File /r /x .svn @REPO_VITABLES@\vitables\*.py
+  File /r @REPO_VITABLES@\vitables\*.py
 
   # The text files: TODO.txt, INSTALL.txt and stuff like that
   SetOutPath $INSTDIR
@@ -149,7 +149,7 @@ Section "ViTables @VERSION@" VT
 
   # The documentation directory
   SetOutPath $INSTDIR\doc\html
-  File /r /x .svn @REPO_VITABLES@\doc\html\*
+  File /r @REPO_VITABLES@\doc\html\*
   SetOutPath $INSTDIR\doc
   File @REPO_VITABLES@\doc\usersguide.pdf
 
@@ -157,16 +157,12 @@ Section "ViTables @VERSION@" VT
   SetOutPath $INSTDIR\examples
   File @REPO_VITABLES@\examples\*.h5
   SetOutPath $INSTDIR\examples\scripts
-  File /r /x .svn @REPO_VITABLES@\examples\scripts\*
+  File /r @REPO_VITABLES@\examples\scripts\*
 
   # The translations directory
   SetOutPath $INSTDIR\translations
   File @REPO_VITABLES@\translations\*.txt
   File @REPO_VITABLES@\translations\*.qm
-
-  # The icons directory
-  SetOutPath $INSTDIR\icons
-  File /r /x .svn @REPO_VITABLES@\icons\*
 
   # Create the uninstaller and put it in the aplication directory
   WriteUninstaller "$INSTDIR\Uninstall.exe"

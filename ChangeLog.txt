@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Jan 10, 2009**
+	More improvements to installer for Windows.
+
 	Fixed a serious bug in the installer for Windows.
 
 ** Jan 07, 2009**

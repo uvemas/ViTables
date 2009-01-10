@@ -7,8 +7,10 @@
 vtdoc:
 	cd ./doc && make
 
-unix: vtdoc
+resources: resources.qrc
 	pyrcc4 -o vitables/qrc_resources.py resources.qrc
+
+unix: vtdoc resources
 	python setup.py sdist
 
 clean:
