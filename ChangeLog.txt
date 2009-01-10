@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Jan 10, 2009**
+	Fixed a serious bug in the installer for Windows.
+
 ** Jan 07, 2009**
 	Code style of the vitables package has been improved.
 

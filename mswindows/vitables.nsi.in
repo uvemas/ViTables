@@ -126,9 +126,11 @@ Browse and select another folder. Click Next to Continue."
 Section "ViTables @VERSION@" VT
 
   # Copy the MingW, Qt and PyQt libraries in the installation directory
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\pyqt
+  File @PYQTDIR@\sip.pyd
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\pyqt\PyQt4
   File @MINGWDIR@\bin\mingwm10.dll
-  File @PYQTDIR@\*
+  File /x sip.pyd @PYQTDIR@\*
 
   # Copy the ViTables script in the Python Scripts directory
   SetOutPath $PYTHONDIR\Scripts
