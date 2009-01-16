@@ -589,16 +589,16 @@ class LeafView(QTableView):
 
         row = index.row()
         column = index.column()
-        data = self.rbuffer.getCell(row, column)
+        data = self.rbuffer.getCell(self.rbuffer.start + row, column)
 
         # The title of the zoomed view
         node = self.data_sheet.leaf
         info = nodeInfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
-            title = '%s: %s[%s]' % (node.name, col, row + 1)
+            title = '%s: %s[%s]' % (node.name, col, self.rbuffer.start + row + 1)
         else:
-            title = '%s: (%s,%s)' % (node.name, row + 1, column + 1)
+            title = '%s: (%s,%s)' % (node.name, self.rbuffer.start + row + 1, column + 1)
 
         zoomCell.ZoomCell(data, title, self.data_sheet.vtapp.workspace, 
                           self.data_sheet.leaf)

@@ -325,7 +325,7 @@ class ZoomCell(QMdiSubWindow):
             if self.field_names:
                 cell = self.data[self.field_names[col]]
             elif len(self.data.shape) > 1:
-                cell = self.data[row][ col]
+                cell = self.data[row][col]
             elif len(self.data.shape) == 1:
                 cell = self.data[row]
         else:

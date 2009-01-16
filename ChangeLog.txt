@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Jan 16, 2009**
+	Fixed a bug in the zoom cell feature.
+
 ** Jan 10, 2009**
 	More improvements to installer for Windows.
 
