@@ -60,6 +60,7 @@ import sys
 import os
 import traceback
 import sets
+import time
 
 import numpy
 
@@ -264,6 +265,20 @@ def formatStringContent(content):
     """
 
     return content
+
+
+def formatTimeContent(content):
+    """
+    Nicely format the contents of a table widget cell.
+
+    Used when:
+    
+    - the content atom is TimeAtom
+    - content belongs to a time serie created via scikits.timeseries module
+      and stored in the _dates column of a TimeSeriesTable table
+    """
+
+    return time.ctime(content)
 
 
 def formatExceptionInfo(limit=1):

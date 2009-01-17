@@ -50,6 +50,7 @@ import tempfile
 import os
 import sets
 import exceptions
+import time
 
 import tables
 
@@ -112,15 +113,29 @@ class LeafModel(QAbstractTableModel):
                 self.numcols = 1
 
         #
-        # Choose a format for cells
+        # Choose a format for cells. The support for dates includes the
+        # scikits.timeseries module
         #
 
         self.formatContent = vitables.utils.formatArrayContent
-        if isinstance(self.data_source, tables.VLArray):
-            type = self.data_source.atom.type
-            if type == 'object':
+        self.time_cols = []
+        if self.data_source._v_attrs.CLASS == 'TimeSeriesTable':
+            # Leaf is a TimeSeriesTable table
+            self.time_cols.append(self.data_source.coldescrs['_dates']._v_pos)
+        elif isinstance(self.data_source, tables.Table):
+            # Leaf is a regular Table
+            for cpathname in self.data_source.colpathnames:
+                if self.data_source.coltypes[cpathname] in ['time32', 'time64']:
+                    position = self.data_source.coldescrs[cpathname]._v_pos
+                    self.time_cols.append(position)
+        else:
+            # Leaf is some kind of PyTables array
+            atom_type = self.data_source.atom.type
+            if atom_type in ['time32', 'time64']:
+                self.formatContent = vitables.utils.formatTimeContent
+            if atom_type == 'object':
                 self.formatContent = vitables.utils.formatObjectContent
-            elif type in ('vlstring', 'vlunicode'):
+            elif atom_type in ('vlstring', 'vlunicode'):
                 self.formatContent = vitables.utils.formatStringContent
 
         # Populate the model with the first chunk of data
@@ -170,6 +185,8 @@ class LeafModel(QAbstractTableModel):
             return QVariant()
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), index.column())
         if role == Qt.DisplayRole:
+            if index.column() in self.time_cols:
+                return QVariant(time.ctime(cell))
             return QVariant(self.formatContent(cell))
         elif role == Qt.TextAlignmentRole:
             return QVariant(int(Qt.AlignLeft|Qt.AlignTop))
