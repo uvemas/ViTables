@@ -119,15 +119,17 @@ class LeafModel(QAbstractTableModel):
 
         self.formatContent = vitables.utils.formatArrayContent
         self.time_cols = []
-        if self.data_source._v_attrs.CLASS == 'TimeSeriesTable':
-            # Leaf is a TimeSeriesTable table
-            self.time_cols.append(self.data_source.coldescrs['_dates']._v_pos)
-        elif isinstance(self.data_source, tables.Table):
-            # Leaf is a regular Table
-            for cpathname in self.data_source.colpathnames:
-                if self.data_source.coltypes[cpathname] in ['time32', 'time64']:
-                    position = self.data_source.coldescrs[cpathname]._v_pos
-                    self.time_cols.append(position)
+        if isinstance(self.data_source, tables.Table):
+            if hasattr(self.data_source._v_attrs, 'CLASS') and \
+            self.data_source._v_attrs.CLASS == 'TimeSeriesTable':
+                # Leaf is a TimeSeriesTable table
+                self.time_cols.append(self.data_source.coldescrs['_dates']._v_pos)
+            else:
+                # Leaf is a regular Table
+                for cpathname in self.data_source.colpathnames:
+                    if self.data_source.coltypes[cpathname] in ['time32', 'time64']:
+                        position = self.data_source.coldescrs[cpathname]._v_pos
+                        self.time_cols.append(position)
         else:
             # Leaf is some kind of PyTables array
             atom_type = self.data_source.atom.type

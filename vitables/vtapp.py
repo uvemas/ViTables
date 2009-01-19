@@ -228,10 +228,14 @@ class VTApp(QMainWindow):
         self.slotUpdateWindowsMenu()
 
         self.workspace.installEventFilter(self)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate('VTApp', source, comment).toUtf8(), 
                        'utf_8')
+
+
     def setupActions(self):
         """Provide actions to the menubar and the toolbars.
         """
@@ -432,6 +436,7 @@ class VTApp(QMainWindow):
 
         return actions
 
+
     def setupToolBars(self):
         """
         Set up the main window toolbars.
@@ -482,6 +487,7 @@ class VTApp(QMainWindow):
         whatis.setStatusTip(self.__tr('Context help',
                     'Status bar text for the Help -> Whats This action'))
         self.help_toolbar.addAction(whatis)
+
 
     def setupMenus(self):
         """
@@ -593,6 +599,8 @@ class VTApp(QMainWindow):
         actions = ['mdiTabbed', None, 
             self.windows_menu]
         vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
+
+
     def initStatusBar(self):
         """Init status bar."""
 
@@ -606,6 +614,7 @@ class VTApp(QMainWindow):
             'The Selected node box startup message'))
         status_bar.showMessage(self.__tr('Ready...',
             'The status bar startup message'))
+
 
     def readConfiguration(self):
         """
@@ -762,6 +771,7 @@ class VTApp(QMainWindow):
         # QVariant::load: unable to load type 64 (appears 1 time)
         self.config.sync()
 
+
     def getSessionFilesNodes(self):
         """
         The list of files and nodes currently open.
@@ -861,6 +871,7 @@ class VTApp(QMainWindow):
                 leaf = group.findChild(leaf_name)
                 row = leaf.row()
                 self.slotNodeOpen(self.dbs_tree_model.index(row, 0, index))
+
 
     def processCommandLineArgs(self, mode='', h5files=None, dblist=''):
         """Open files passed in the command line."""
@@ -1018,6 +1029,7 @@ class VTApp(QMainWindow):
         for action in disabled:
             self.gui_actions[action].setDisabled(True)
 
+
     def updateRecentFiles(self, filepath, mode):
         """
         Add a new path to the list of most recently open files.
@@ -1124,6 +1136,8 @@ class VTApp(QMainWindow):
                         self.window_mapper, SLOT("map()"))
             self.window_mapper.setMapping(action, window)
             counter = counter + 1
+
+
     def updateStatusBar(self):
         """Update the permanent message of the status bar.
         """
@@ -1135,6 +1149,7 @@ class VTApp(QMainWindow):
         else:
             message = ''
         self.sb_node_info.setText(message)
+
 
     def popupContextualMenu(self, kind, pos):
         """
@@ -1178,6 +1193,7 @@ class VTApp(QMainWindow):
             if wnodepath[0:len(nodepath)] == nodepath:
                 window.close()
 
+
     def changeMDIViewMode(self):
         """Toggle the view mode of the workspace.
         """
@@ -1203,6 +1219,8 @@ class VTApp(QMainWindow):
             return QMdiArea.eventFilter(widget, widget, event)
         else:
             return QMainWindow.eventFilter(self, widget, event)
+
+
     def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
         """Raise a file selector dialog and get a filepath.
 
@@ -1252,6 +1270,8 @@ class VTApp(QMainWindow):
         finally:
             del file_selector
         return unicode(filepath.toUtf8(), 'utf_8')
+
+
     def checkFileExtension(self, filepath):
         """
         Check the filename extension of a given file.
@@ -1300,6 +1320,7 @@ class VTApp(QMainWindow):
             # The write mode must be replaced by append mode or the file
             # will be created from scratch in the next ViTables session
             self.updateRecentFiles(filepath, 'a')
+
 
     def slotFileSaveAs(self):
         """
@@ -1423,6 +1444,8 @@ class VTApp(QMainWindow):
             position = position - 1
         self.slotFileClose()
         self.slotFileOpen(filepath, 'a', position) 
+
+
     def slotFileOpenRO(self, filepath=None):
         """
         Open a file that contains a ``PyTables`` database in read-only mode.
@@ -1479,6 +1502,8 @@ class VTApp(QMainWindow):
             self.dbs_tree_view.setCurrentIndex(\
                 self.dbs_tree_model.index(position, 0, QModelIndex()))
             self.updateRecentFiles(filepath, mode)
+
+
     def slotFileClose(self, current=None):
         """
         Close a file.
@@ -1522,6 +1547,7 @@ class VTApp(QMainWindow):
             index = self.dbs_tree_model.index(row, 0, QModelIndex())
             self.slotFileClose(index)
 
+
     def slotFileExit(self):
         """
         Safely closes the application.
@@ -1541,6 +1567,8 @@ class VTApp(QMainWindow):
         self.slotFileClose(index)
         # Application quit
         qApp.quit()
+
+
     def slotNodeOpen(self, current=None):
         """
         Opens a leaf node for viewing.
@@ -1584,6 +1612,8 @@ class VTApp(QMainWindow):
         subwindow = dataSheet.DataSheet(dbs_tree_leaf, leaf_view, pindex, self)
         self.workspace.addSubWindow(subwindow)
         subwindow.show()
+
+
     def slotNodeClose(self, current=None):
         """
         Closes the view of the selected node.
@@ -1651,6 +1681,7 @@ class VTApp(QMainWindow):
 
         self.dbs_tree_model.createGroup(current, nodename, overwrite)
 
+
     def slotNodeRename(self):
         """
         Rename the selected node.
@@ -1710,6 +1741,7 @@ class VTApp(QMainWindow):
         # Update the Selected node indicator of the status bar
         self.updateStatusBar()
 
+
     def slotNodeCut(self):
         """Cut the selected node."""
 
@@ -1724,6 +1756,7 @@ class VTApp(QMainWindow):
 
         # Cut the node
         self.dbs_tree_model.cutNode(current)
+
 
     def slotNodeCopy(self):
         """
@@ -1748,6 +1781,7 @@ class VTApp(QMainWindow):
 
         # Copy the node
         self.dbs_tree_model.copyNode(current)
+
 
     def slotNodePaste(self):
         """
@@ -1828,6 +1862,7 @@ class VTApp(QMainWindow):
         # Paste the node
         self.dbs_tree_model.pasteNode(current, nodename, overwrite)
 
+
     def slotNodeDelete(self, current=None, force=None):
         """
         Delete a given node.
@@ -1871,6 +1906,8 @@ class VTApp(QMainWindow):
         select_model = self.dbs_tree_view.selectionModel()
         new_current = self.dbs_tree_view.currentIndex()
         select_model.select(new_current, QItemSelectionModel.Select)
+
+
     def slotNodeProperties(self):
         """
         Display the properties dialog for the currently selected node.
@@ -1921,6 +1958,7 @@ class VTApp(QMainWindow):
             index = self.dbs_tree_model.index(0, 0, tmp_index)
             self.slotNodeOpen(index)
 
+
     def slotQueryDeleteAll(self):
         """Delete all nodes from the query results tree."""
 
@@ -1949,9 +1987,12 @@ class VTApp(QMainWindow):
         # Reset the queries manager
         self.queries_mgr.counter = 0
         self.queries_mgr.ft_names = []
+
+
     def slotWindowsClose(self):
         """Close the window currently active in the workspace."""
         self.workspace.activeSubWindow().close()
+
 
     def slotWindowsCloseAll(self):
         """Close all open windows."""
@@ -1959,16 +2000,21 @@ class VTApp(QMainWindow):
         for window in self.workspace.subWindowList():
             window.close()
 
+
     def slotWindowsRestoreAll(self):
         """Restore every window in the workspace to its normal size."""
 
         for window in self.workspace.subWindowList():
             window.showNormal()
+
+
     def slotWindowsMinimizeAll(self):
         """Restore every window in the workspace to its normal size."""
 
         for window in self.workspace.subWindowList():
             window.showMinimized()
+
+
     def slotToolsPreferences(self):
         """
         Launch the Preferences dialog.
@@ -1983,6 +2029,7 @@ class VTApp(QMainWindow):
                 self.loadConfiguration(prefs.new_prefs)
         finally:
             del prefs
+
 
     def slotHelpDocBrowser(self):
         """
@@ -2057,6 +2104,8 @@ class VTApp(QMainWindow):
 
         # Show the dialog
         about_dlg.exec_()
+
+
     def slotHelpAboutQt(self):
         """
         Shows a message box with the Qt About info.
@@ -2066,6 +2115,7 @@ class VTApp(QMainWindow):
 
         QMessageBox.aboutQt(self, self.__tr('About Qt',
             'Caption of the About Qt dialog'))
+
 
     def slotHelpVersions(self):
         """

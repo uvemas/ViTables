@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Jan 19, 2009**
+	Fixed a small bug in the support for date/time.
+
 ** Jan 17, 2009**
 	Date/time information is displayed now as legal time.
 
