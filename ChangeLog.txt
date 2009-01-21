@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Jan 21, 2009**
+	A better support for unicode filenames has been added.
+
 ** Jan 19, 2009**
 	Fixed a small bug in the support for date/time.
 

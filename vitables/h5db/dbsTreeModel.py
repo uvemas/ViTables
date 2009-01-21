@@ -213,7 +213,8 @@ class DBsTreeModel(QAbstractItemModel):
 
         # Check the file format
         try:
-            if not tables.isHDF5File(filepath.encode('utf_8')):
+            codec, codec_name = vitables.utils.getCodec()
+            if not tables.isHDF5File(filepath.encode(codec_name)):
                 error = self.__tr(\
                     'Opening cancelled: %s has not HDF5 format.', 
                     'A logger error message') % filepath
@@ -314,11 +315,11 @@ class DBsTreeModel(QAbstractItemModel):
         # Create the database
         print self.__tr('Creating the Query results file...',
             'A logger info message')
-        (f_handler, self.tmp_filepath) = tempfile.mkstemp('.h5', 'FT_')
+        (f_handler, filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)
-        self.tmp_filepath = \
-            unicode(QDir.fromNativeSeparators(self.tmp_filepath).toUtf8(), 
-                    'utf_8')
+        codec, codec_name = vitables.utils.getCodec()
+        filepath = QDir.fromNativeSeparators(filepath)
+        self.tmp_filepath = unicode(codec.fromUnicode(filepath), codec_name)
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         return db_doc
 

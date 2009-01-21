@@ -61,6 +61,7 @@ import os
 import traceback
 import sets
 import time
+import codecs
 
 import numpy
 
@@ -393,3 +394,13 @@ def getLicense():
 
     return license_text
 
+
+def getCodec():
+    """Try to obtain the a sensible codec for encoding filepaths.
+    """
+    
+    fs_encoding = sys.getfilesystemencoding()
+    codec_name = codecs.lookup(fs_encoding).name
+    codec = QTextCodec.codecForName(codec_name)
+    return codec, codec_name
+    

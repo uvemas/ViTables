@@ -1252,6 +1252,7 @@ class VTApp(QMainWindow):
             file_selector.selectFile(filepath)
 
         # Execute the dialog
+        codec, codec_name = vitables.utils.getCodec()
         try:
             if file_selector.exec_():  # OK clicked
                 filepath = file_selector.selectedFiles()[0]
@@ -1259,8 +1260,8 @@ class VTApp(QMainWindow):
                 filepath = QDir.fromNativeSeparators(filepath)
                 # Update the working directory
                 working_dir = file_selector.directory().canonicalPath()
-                self.last_working_directory = unicode(working_dir.toUtf8(), 
-                                                      'utf_8')
+                self.last_working_directory = \
+                    unicode(codec.fromUnicode(working_dir), codec_name)
                 # Update the history
                 if not file_selector.history().contains(working_dir):
                     self.file_selector_history.append(\
@@ -1269,8 +1270,7 @@ class VTApp(QMainWindow):
                 filepath = QString('')
         finally:
             del file_selector
-        return unicode(filepath.toUtf8(), 'utf_8')
-
+        return unicode(codec.fromUnicode(filepath), codec_name)
 
     def checkFileExtension(self, filepath):
         """
@@ -1389,11 +1389,12 @@ class VTApp(QMainWindow):
 
             dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
             if dialog.exec_():
+                codec, codec_name = vitables.utils.getCodec()
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
-                trier_filepath = \
-                    QDir.fromNativeSeparators(trier_filepath).toUtf8()
-                trier_filepath = unicode(trier_filepath, 'utf_8')
+                trier_filepath = QDir.fromNativeSeparators(trier_filepath)
+                trier_filepath = unicode(codec.fromUnicode(trier_filepath), 
+                    codec_name)
                 overwrite = dialog.action['overwrite']
                 # Update the error conditions
                 is_initial_filepath = trier_filepath == initial_filepath
@@ -1492,7 +1493,8 @@ class VTApp(QMainWindow):
         else:
             # Make sure the path contains no backslashes
             filepath = QDir.fromNativeSeparators(filepath)
-            filepath = unicode(filepath.toUtf8(), 'utf_8')
+            codec, codec_name = vitables.utils.getCodec()
+            filepath = unicode(codec.fromUnicode(filepath), codec_name)
 
 
         # Open the database and select it in the tree view

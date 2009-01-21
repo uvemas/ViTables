@@ -240,5 +240,5 @@ if __name__ == '__main__':
     print 'Hola mundo!'
     print '\nError: El viatger del crepuscle'
     print '\nWarning: Adolf Piquer'
-    print 'Adéu!'
+    print 'Adeu!'
     APP.exec_()

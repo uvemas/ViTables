@@ -197,6 +197,7 @@ class Config(QSettings):
             self.setPath(QSettings.NativeFormat,
                 QSettings.UserScope, config_directory)
 
+
     def loggerPaper(self):
         """
         Returns the logger background color.
