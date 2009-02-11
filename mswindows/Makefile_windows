@@ -19,8 +19,6 @@ VTNSIS=vitables-py$(DOTPYTHONVERSION).nsi
 REPO_VITABLES=..
 MISDOCS="C:\Documents and Settings\vmas\Mis documentos"
 WINDOWS32=C:\\Windows\\system32
-PYQTDIR=C:\\Python$(PYTHONVERSION)\\pyqt4_for_vitables_installer
-MINGWDIR=C:\\MinGW
 VENDORID=$(MISDOCS)\VendorID-1.0.0
 
 .PHONY: vitables.exe
@@ -53,8 +51,6 @@ installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vitables.exe doc resour
 	-e "s/@PYTHONVERSION@/$(PYTHONVERSION)/g" \
 	-e "s/@DOTPYTHONVERSION@/$(DOTPYTHONVERSION)/g" \
 	-e "s/@REPO_VITABLES@/$(REPO_VITABLES)/g" \
-	-e "s/@MINGWDIR@/$(MINGWDIR)/g" \
-	-e "s/@PYQTDIR@/$(PYQTDIR)/g" \
 	-e "s/@WINDOWS32@/$(WINDOWS32)/g" \
 	-e "s/@LICENSE@/$(LICENSE)/g" \
 	-e "s/@LICENSEFILENAME@/$(LICENSEFILENAME)/g" \

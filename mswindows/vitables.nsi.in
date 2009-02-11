@@ -57,6 +57,20 @@ Function .onInit
 	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyTables is not \
 	  installed. Aborting the ViTables installation process."
 	  Abort
+
+	# Check the PyQt4 installation
+	ExecWait "C:\python@PYTHONVERSION@\pythonw.exe -c $\"from PyQt4.QtGui import *$\""
+	IfErrors 0 +3
+	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtGui is not \
+	  installed. Aborting the ViTables installation process."
+	  Abort
+
+	# Check the tables installation
+	ExecWait "C:\python@PYTHONVERSION@\pythonw.exe -c $\"from PyQt4.QtCore import *$\""
+	IfErrors 0 +3
+	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtCore is not \
+	  installed. Aborting the ViTables installation process."
+	  Abort
 FunctionEnd
 
 Function preInstallDir
@@ -124,13 +138,6 @@ Browse and select another folder. Click Next to Continue."
 # ------------------------------------------
 
 Section "ViTables @VERSION@" VT
-
-  # Copy the MingW, Qt and PyQt libraries in the installation directory
-  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\pyqt
-  File @PYQTDIR@\sip.pyd
-  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\pyqt\PyQt4
-  File @MINGWDIR@\bin\mingwm10.dll
-  File /x sip.pyd @PYQTDIR@\*
 
   # Copy the ViTables script in the Python Scripts directory
   SetOutPath $PYTHONDIR\Scripts
