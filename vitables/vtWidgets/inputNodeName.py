@@ -114,8 +114,7 @@ class InputNodeName(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('InputNodeName', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('InputNodeName', source, comment))
 
 
     def addComponents(self):
@@ -172,7 +171,5 @@ class InputNodeName(QDialog):
         """Save the entered group name and hide the dialog.
         """
 
-        self.node_name = unicode(self.value_le.text().toUtf8(), 'utf_8')
+        self.node_name = unicode(self.value_le.text())
         self.accept()
-
-

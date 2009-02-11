@@ -287,8 +287,8 @@ class QueryDlg(QDialog):
 
     def __tr(self,  source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('QueryDlg', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('QueryDlg', source, comment))
+
 
     def makeSectionOne(self, global_opt_gb):
         """
@@ -474,7 +474,7 @@ class QueryDlg(QDialog):
             'imag': 'imag(C)',
             'complex': 'complex(F, F)'
             }
-        self.query_le.insert(name2call[unicode(text.toUtf8(), 'utf_8')])
+        self.query_le.insert(name2call[unicode(text)])
 
 
     def slotUpdateOKState(self):
@@ -502,7 +502,7 @@ class QueryDlg(QDialog):
         status_ok = True
 
         # Check the table name
-        ft_name = unicode(self.name_le.text().toUtf8(), 'utf_8')
+        ft_name = unicode(self.name_le.text())
         if not ft_name:
             status_ok = False
         elif ft_name in self.used_names:
@@ -511,7 +511,7 @@ class QueryDlg(QDialog):
                 """ choose another one.""", 'A logger info message')
 
         # Check the indices column name
-        indices_colname = unicode(self.indices_column.text().toUtf8(), 'utf_8')
+        indices_colname = unicode(self.indices_column.text())
         if self.indices_column.isEnabled():
             if indices_colname == '':
                 status_ok = False
@@ -531,13 +531,13 @@ class QueryDlg(QDialog):
 
         # Check the condition.
         # If it is an empty string the OK button is not enabled
-        condition = unicode(self.query_le.text().toUtf8(), 'utf_8')
+        condition = unicode(self.query_le.text())
         if condition.isspace() or (condition in [None, '']):
             status_ok = False
 
         # Check the range values
-        start_str = unicode(self.rstart.text().toUtf8(), 'utf_8')
-        stop_str = unicode(self.rstop.text().toUtf8(), 'utf_8')
+        start_str = unicode(self.rstart.text())
+        stop_str = unicode(self.rstop.text())
         if not (start_str and stop_str):
             status_ok = False
         else:
@@ -601,7 +601,7 @@ class QueryDlg(QDialog):
         """Compose the query and return."""
 
         # Get the query
-        condition = unicode(self.query_le.text().toUtf8(), 'utf_8')
+        condition = unicode(self.query_le.text())
         # Blanks at the begining of condition raise a SyntaxError
         condition = condition.strip()
         if not self.checkConditionSyntax(condition):
@@ -610,11 +610,10 @@ class QueryDlg(QDialog):
         self.query_info['condition'] = condition
 
         # Get the table name and the name of the column with indices (if any)
-        self.query_info['ft_name'] = unicode(self.name_le.text().toUtf8(), 
-                                            'utf_8')
+        self.query_info['ft_name'] = unicode(self.name_le.text())
         if self.indices_column.isEnabled():
             self.query_info['indices_field_name'] = \
-                unicode(self.indices_column.text().toUtf8(), 'utf_8')
+                unicode(self.indices_column.text())
 
         # Get the range and convert it into a Python range
         self.query_info['rows_range'] = (

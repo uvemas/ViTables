@@ -129,8 +129,8 @@ class NodePropDlg(QDialog):
         self.show()
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('NodePropDlg', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('NodePropDlg', source, comment))
+
 
     def makeGeneralPage(self, info):
         """Make the General page of the Properties dialog."""

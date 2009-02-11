@@ -137,8 +137,8 @@ class DBsTreeModel(QAbstractItemModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('DBsTreeModel', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('DBsTreeModel', source, comment))
+
 
     def mapDB(self, filepath, db_doc):
         """Maps a file path with a DBDoc instance.
@@ -985,7 +985,7 @@ class DBsTreeModel(QAbstractItemModel):
             # Transform every element of the sequence into a path and open it
             for item in uris[:]:
                 uri = QUrl(item)
-                path = unicode(uri.path().toUtf8(), 'utf_8')
+                path = unicode(uri.path())
                 index = uris.index(item)
                 if sys.platform.startswith('win'):
                     path = path[1:]

@@ -96,8 +96,8 @@ class Logger(QTextEdit):
             self.createCustomContextMenu)
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('Logger', source, comment).toUtf8(), 
-                       'utf_8')
+        return unicode(qApp.translate('Logger', source, comment))
+
 
     def write(self, text):
         """

@@ -78,8 +78,10 @@ class ScrollBar(QScrollBar):
         scrollbar.setVisible(False)
         scrollbar.parent().layout().addWidget(self)
         self.setOrientation(Qt.Vertical)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('VScrollBar', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('VScrollBar', source, comment))
+
 

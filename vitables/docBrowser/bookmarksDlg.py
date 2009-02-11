@@ -132,8 +132,7 @@ class BookmarksDlg(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('BookmarksDlg', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('BookmarksDlg', source, comment))
 
 
     def fillBookmarksTable(self):

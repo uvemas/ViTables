@@ -152,8 +152,8 @@ class RenameDlg(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('RenameDlg', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('RenameDlg', source, comment))
+
 
     def addComponents(self):
         """
@@ -219,7 +219,7 @@ class RenameDlg(QDialog):
 
         # If the new name and the current nodename are the same then the
         # group 1 of the pattern is matched
-        new_name = unicode(new_name.toUtf8(), 'utf_8')
+        new_name = unicode(new_name)
         result = self.cpattern.search(new_name)
         if (result == None) or \
             ((result != None) and (result.lastindex == 1)) or \
@@ -267,7 +267,7 @@ class RenameDlg(QDialog):
         the dialog finishes.
         """
 
-        new_name = unicode(self.value_le.text().toUtf8(), 'utf_8')
+        new_name = unicode(self.value_le.text())
         self.action['overwrite'] = False
         self.action['new_name'] = new_name
         self.accept()

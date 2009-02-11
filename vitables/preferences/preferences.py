@@ -131,10 +131,12 @@ class Preferences(QObject):
         # Style groupbox
         self.connect(self.gui.styles_cb,
             SIGNAL('activated(QString)'), self.slotSetStyle)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('Preferences', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('Preferences', source, comment))
+
 
     def setPreferences(self, preferences):
         """

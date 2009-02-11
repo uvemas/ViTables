@@ -204,21 +204,22 @@ class AttrEditor(object):
                 name = -1
             else:
                 name = unicode(name, 'utf_8')
-            value = unicode(model.item(row, 1).text().toUtf8(), 'utf_8')
+            value = unicode(model.item(row, 1).text())
             dtype_index = model.indexFromItem(model.item(row, 2))
             current_dtype = user_table.indexWidget(dtype_index).currentText() 
-            dtype = unicode(current_dtype.toUtf8(), 'utf_8')
+            dtype = unicode(current_dtype)
             self.edited_attrs[row] = (name, value, dtype, multidim)
 
         # Add the TITLE attribute to the dictionary
         if title is not None:
-            title = unicode(title.toUtf8(), 'utf_8')
+            title = unicode(title)
             self.edited_attrs[rows] = ('TITLE', title, 'string', False)
+
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('AttrEditor', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('AttrEditor', source, comment))
+
 
     def checkAttributes(self):
         """

@@ -124,8 +124,8 @@ class DBDoc(QObject):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('DBDoc', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('DBDoc', source, comment))
+
 
     def openH5File(self):
         """Open the file tied to this instance."""

@@ -125,10 +125,12 @@ class LeafView(QTableView):
             self.connect(self.model, 
                         SIGNAL("headerDataChanged(int, int, int)"), 
                         self.repaintCurrentCell)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('LeafView', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('LeafView', source, comment))
+
 
     def syncView(self):
         """Syncronize the displayed data and the position of the visible

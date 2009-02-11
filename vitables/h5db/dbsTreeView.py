@@ -118,8 +118,8 @@ class DBsTreeView(QTreeView):
             self.updateCollapsedGroup)
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('DBsTreeView', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('DBsTreeView', source, comment))
+
 
     def mouseDoubleClickEvent(self, event):
         """Specialised handler for mouse double click events.

@@ -232,8 +232,7 @@ class VTApp(QMainWindow):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('VTApp', source, comment).toUtf8(), 
-                       'utf_8')
+        return unicode(qApp.translate('VTApp', source, comment))
 
 
     def setupActions(self):
@@ -677,8 +676,7 @@ class VTApp(QMainWindow):
                 self.workspace.setBackground(QBrush(value))
             elif key == 'Look/currentStyle':
                 # Default style is provided by the underlying window manager
-                self.current_style = unicode(value.toString().toUtf8(), 
-                                             'utf_8')
+                self.current_style = unicode(value.toString())
                 if self.current_style != 'default':
                     qApp.setStyle(self.current_style)
             elif key == 'Geometry/Position':
@@ -701,10 +699,10 @@ class VTApp(QMainWindow):
                 self.restore_last_session = value.toBool()
             elif key == 'Startup/startupWorkingDir':
                 self.startup_working_directory = \
-                                unicode(value.toString().toUtf8(), 'utf_8')
+                                unicode(value.toString())
             elif key == 'Startup/lastWorkingDir':
                 self.last_working_directory = \
-                                unicode(value.toString().toUtf8(), 'utf_8')
+                                unicode(value.toString())
             elif key == 'Recent/Files':
                 self.recent_files = value.toStringList()
             elif key == 'Session/Files':
@@ -827,7 +825,7 @@ class VTApp(QMainWindow):
 
         expanded_signal = SIGNAL("expanded(QModelIndex)")
         for file_data in self.session_files_nodes:
-            item = unicode(file_data.toUtf8(), 'utf_8').split('#@#')
+            item = unicode(file_data).split('#@#')
             # item looks like [mode, filepath1, nodepath1, nodepath2, ...]
             mode = item.pop(0)
             filepath = item.pop(0)

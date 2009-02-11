@@ -145,8 +145,8 @@ class LeafModel(QAbstractTableModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('LeafModel', source, 
-                                            comment).toUtf8(), 'utf_8')
+        return unicode(qApp.translate('LeafModel', source, comment))
+
 
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
