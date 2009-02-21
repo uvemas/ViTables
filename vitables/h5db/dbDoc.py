@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-########################################################################
-#
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008 Vicent Mas. All rights reserved
+#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -21,11 +19,6 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
-#
-#       $Source$
-#       $Id: dbDoc.py 1068 2008-10-11 17:15:42Z vmas $
-#
-########################################################################
 
 """
 Here is defined the DBDoc class.

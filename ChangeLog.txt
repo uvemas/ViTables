@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 **Feb 21, 2009**
+License files and license notes have been updated.
+
 Fixed a little bug in the time_series plugin.
 
 The examples foder has been reorganized.

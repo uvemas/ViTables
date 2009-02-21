@@ -2,10 +2,8 @@
 #!/usr/bin/env python
 
 
-########################################################################
-#
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008 Vicent Mas. All rights reserved
+#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -21,11 +19,6 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
-#
-#       $Source$
-#       $Id: vtapp.py 1082 2008-10-31 12:24:08Z vmas $
-#
-########################################################################
 
 
 """Here is defined the VTApp class."""
