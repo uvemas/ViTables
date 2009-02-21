@@ -91,6 +91,13 @@ class Logger(QTextEdit):
 
         self.setStyleSheet("""background-color: #ffffff""")
 
+        # The frame especification
+        self.frame_style = {'shape': self.frameShape(),
+            'shadow': self.frameShadow(),
+            'lwidth': self.lineWidth(),
+            'foreground': self.palette().color(QPalette.Active, 
+                QPalette.WindowText)}
+
         # Connect signals to slots
         self.connect(self, SIGNAL("customContextMenuRequested(QPoint)"),
             self.createCustomContextMenu)
@@ -197,11 +204,7 @@ class Logger(QTextEdit):
         self.emit(SIGNAL('updateCopyNodeAction()'), ())
 
     def focusInEvent(self, event):
-        """Update the ``Node --> Copy`` action in accordance with the keyboard
-        focus.
-
-        If the logger gets keyboard focus the ``Node --> Copy`` action
-        is disabled.
+        """Specialised handler for focus events.
 
         :Parameter event: the event being processed
         """
@@ -210,8 +213,10 @@ class Logger(QTextEdit):
         self.setLineWidth(2)
         self.setFrameStyle(QFrame.Panel|QFrame.Plain)
         pal = self.palette()
-        pal.setColor(QPalette.Foreground, Qt.darkBlue)
+        pal.setColor(QPalette.Active, QPalette.WindowText, Qt.darkBlue)
         QTextEdit.focusInEvent(self, event)
+
+
     def focusOutEvent(self, event):
         """Update the ``Node --> Copy`` action in accordance with the keyboard
         focus.
@@ -223,10 +228,12 @@ class Logger(QTextEdit):
         """
 
         self.updateCopyNodeAction()
-        self.setLineWidth(0)
-        self.setFrameStyle(QFrame.Panel|QFrame.Plain)
+        self.setLineWidth(self.frame_style['lwidth'])
+        self.setFrameShape(self.frame_style['shape'])
+        self.setFrameShadow(self.frame_style['shadow'])
         pal = self.palette()
-        pal.setColor(QPalette.Foreground, Qt.black)
+        pal.setColor(QPalette.Active, QPalette.WindowText, 
+            self.frame_style['foreground'])
         QTextEdit.focusOutEvent(self, event)
 
 if __name__ == '__main__':

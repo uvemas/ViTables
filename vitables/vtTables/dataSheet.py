@@ -92,7 +92,7 @@ class DataSheet(QMdiSubWindow):
         wtitle = u"%s\t%s" % (leaf.name, title)
         self.setWindowTitle(wtitle)
         self.setWindowIcon(leaf.icon)
-
+    
         # Eventually update the Node menu actions
         leaf.has_view = True
         self.vtapp.slotUpdateActions()

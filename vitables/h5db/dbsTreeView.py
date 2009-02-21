@@ -88,6 +88,12 @@ class DBsTreeView(QTreeView):
         self.setItemDelegate(NodeItemDelegate(self))
         self.setObjectName('dbs_tree_view')
 
+        # The frame especification
+        self.frame_style = {'shape': self.frameShape(),
+            'shadow': self.frameShadow(),
+            'lwidth': self.lineWidth(),
+            'foreground': self.palette().color(QPalette.Active, 
+                QPalette.WindowText)}
 
         # Setup drag and drop
         self.setDragDropMode(QAbstractItemView.DragDrop)
@@ -116,6 +122,8 @@ class DBsTreeView(QTreeView):
             self.updateExpandedGroup)
         self.connect(self, SIGNAL('collapsed(QModelIndex)'),
             self.updateCollapsedGroup)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate('DBsTreeView', source, comment))
@@ -292,6 +300,34 @@ class DBsTreeView(QTreeView):
             event.acceptProposedAction()
         else:
             return QTreeView.dragMoveEvent(self, event)
+
+
+    def focusInEvent(self, event):
+        """Specialised handler for focus events.
+
+        :Parameter event: the event being processed
+        """
+
+        self.setLineWidth(2)
+        self.setFrameStyle(QFrame.Panel|QFrame.Plain)
+        pal = self.palette()
+        pal.setColor(QPalette.Active, QPalette.WindowText, Qt.darkBlue)
+        QTreeView.focusInEvent(self, event)
+
+
+    def focusOutEvent(self, event):
+        """Specialised handler for focus events.
+
+        :Parameter event: the event being processed
+        """
+
+        self.setLineWidth(self.frame_style['lwidth'])
+        self.setFrameShape(self.frame_style['shape'])
+        self.setFrameShadow(self.frame_style['shadow'])
+        pal = self.palette()
+        pal.setColor(QPalette.Active, QPalette.WindowText, 
+            self.frame_style['foreground'])
+        QTreeView.focusOutEvent(self, event)
 
 if __name__ == '__main__':
     import sys
