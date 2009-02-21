@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 **Feb 21, 2009**
+Fixed a silly bug in the time_series plugin.
+
 Focus indicators for the logger and the tree panel have been improved.
 
 The support for time series has been fixed and improved.

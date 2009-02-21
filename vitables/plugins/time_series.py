@@ -41,6 +41,8 @@ try:
 except ImportError:
     pass
 
+import vitables.utils
+
 class TSFormatter(object):
     """An inspector class intended for finding out if a Leaf instance contains
     a time serie and formatting it in a user friendly way.
