@@ -61,7 +61,6 @@ class TSFormatter(object):
         self.formatTime = self.timeFormatter()
 
 
-    
     def findTS(self):
         """Find out if the inspected leaf contains a time serie.
         """
@@ -89,7 +88,7 @@ class TSFormatter(object):
 
     def tsPosition(self):
         """Return the position of every column containing a time serie.
-    
+
         TimeSeriesTable instances contain just one time serie, in a column
         labeled as _dates.
         Regular Table instances can contain any number of time series so we
@@ -99,7 +98,9 @@ class TSFormatter(object):
         """
 
         positions = []
-        if self.ts_kind == 'scikits_ts':
+        if self.ts_kind == 'scikits_ts' and self.locateTSModule():
+            # If scikits.timeseries module is not available then ViTables
+            # cannot format the time serie so it is ignored 
             positions.append(self.leaf.coldescrs['_dates']._v_pos)
         elif self.ts_kind == 'pytables_ts':
             if isinstance(self.leaf, tables.Table):
