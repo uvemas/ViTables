@@ -407,3 +407,6 @@ def getCodec():
     codec = QTextCodec.codecForName(codec_name)
     return codec, codec_name
     
+def registeredPlugins():
+    from vitables.plugins import __all__
+    return __all__

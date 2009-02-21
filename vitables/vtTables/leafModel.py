@@ -113,32 +113,32 @@ class LeafModel(QAbstractTableModel):
                 self.numcols = 1
 
         #
-        # Choose a format for cells. The support for dates includes the
-        # scikits.timeseries module
+        # Choose a format for cells
         #
 
         self.formatContent = vitables.utils.formatArrayContent
         self.time_cols = []
-        if isinstance(self.data_source, tables.Table):
-            if hasattr(self.data_source._v_attrs, 'CLASS') and \
-            self.data_source._v_attrs.CLASS == 'TimeSeriesTable':
-                # Leaf is a TimeSeriesTable table
-                self.time_cols.append(self.data_source.coldescrs['_dates']._v_pos)
-            else:
-                # Leaf is a regular Table
-                for cpathname in self.data_source.colpathnames:
-                    if self.data_source.coltypes[cpathname] in ['time32', 'time64']:
-                        position = self.data_source.coldescrs[cpathname]._v_pos
-                        self.time_cols.append(position)
-        else:
+
+        plugins = vitables.utils.registeredPlugins()
+        if 'time_series' in plugins:
+            import vitables.plugins.time_series as time_series
+            ts_formatter = time_series.TSFormatter(self.data_source)
+            self.time_cols = ts_formatter.ts_positions
+            self.formatTime = ts_formatter.formatTime
+            if (ts_formatter.ts_kind == 'scikits_ts') and \
+            (ts_formatter.locateTSModule()):
+                import scikits.timeseries as ts           
+                self.ts_frequency = ts_formatter.ts_frequency
+
+        if not isinstance(self.data_source, tables.Table):
             # Leaf is some kind of PyTables array
             atom_type = self.data_source.atom.type
-            if atom_type in ['time32', 'time64']:
-                self.formatContent = vitables.utils.formatTimeContent
             if atom_type == 'object':
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
                 self.formatContent = vitables.utils.formatStringContent
+            elif atom_type in ['time32', 'time64']:
+                self.formatContent = self.formatTime
 
         # Populate the model with the first chunk of data
         self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)
@@ -188,7 +188,7 @@ class LeafModel(QAbstractTableModel):
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), index.column())
         if role == Qt.DisplayRole:
             if index.column() in self.time_cols:
-                return QVariant(time.ctime(cell))
+                return QVariant(self.formatTime(cell))
             return QVariant(self.formatContent(cell))
         elif role == Qt.TextAlignmentRole:
             return QVariant(int(Qt.AlignLeft|Qt.AlignTop))

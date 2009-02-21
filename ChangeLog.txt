@@ -1,5 +1,13 @@
 ViTables ChangeLog
 ==================
+**Feb 21, 2009**
+The support for time series has been fixed and improved.
+
+** Feb 11, 2009**
+An ubiquitous misuse of the Python unicode() built-in has been fixed. 
+
+The recent fix to the windows installer is now in the repository. 
+
 ** Jan 21, 2009**
 	Fixed a bug in the support for unicode filenames in Windows.
 
