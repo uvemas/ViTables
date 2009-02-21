@@ -140,8 +140,7 @@ class DBDoc(QObject):
                     'A logger error message')
 
         try:
-            codec, codec_name = vitables.utils.getCodec()
-            h5file = tables.openFile(self.filepath.encode(codec_name), self.mode)
+            h5file = tables.openFile(self.filepath, self.mode)
         except IOError, inst:
             print self.__tr("""\nError: %s.""",
                 'A logger error message') % inst

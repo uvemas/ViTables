@@ -39,6 +39,7 @@ import sets
 import sys
 
 import tables
+import numpy
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -1250,7 +1251,6 @@ class VTApp(QMainWindow):
             file_selector.selectFile(filepath)
 
         # Execute the dialog
-        codec, codec_name = vitables.utils.getCodec()
         try:
             if file_selector.exec_():  # OK clicked
                 filepath = file_selector.selectedFiles()[0]
@@ -1258,8 +1258,7 @@ class VTApp(QMainWindow):
                 filepath = QDir.fromNativeSeparators(filepath)
                 # Update the working directory
                 working_dir = file_selector.directory().canonicalPath()
-                self.last_working_directory = \
-                    unicode(codec.fromUnicode(working_dir), codec_name)
+                self.last_working_directory = unicode(working_dir)
                 # Update the history
                 if not file_selector.history().contains(working_dir):
                     self.file_selector_history.append(\
@@ -1268,7 +1267,7 @@ class VTApp(QMainWindow):
                 filepath = QString('')
         finally:
             del file_selector
-        return unicode(codec.fromUnicode(filepath), codec_name)
+        return unicode(filepath)
 
     def checkFileExtension(self, filepath):
         """
@@ -1387,12 +1386,9 @@ class VTApp(QMainWindow):
 
             dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
             if dialog.exec_():
-                codec, codec_name = vitables.utils.getCodec()
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
-                trier_filepath = QDir.fromNativeSeparators(trier_filepath)
-                trier_filepath = unicode(codec.fromUnicode(trier_filepath), 
-                    codec_name)
+                trier_filepath = unicode(QDir.fromNativeSeparators(trier_filepath))
                 overwrite = dialog.action['overwrite']
                 # Update the error conditions
                 is_initial_filepath = trier_filepath == initial_filepath
@@ -1490,9 +1486,7 @@ class VTApp(QMainWindow):
                 return
         else:
             # Make sure the path contains no backslashes
-            filepath = QDir.fromNativeSeparators(filepath)
-            codec, codec_name = vitables.utils.getCodec()
-            filepath = unicode(codec.fromUnicode(filepath), codec_name)
+            filepath = unicode(QDir.fromNativeSeparators(filepath))
 
 
         # Open the database and select it in the tree view
@@ -1612,6 +1606,33 @@ class VTApp(QMainWindow):
         subwindow = dataSheet.DataSheet(dbs_tree_leaf, leaf_view, pindex, self)
         self.workspace.addSubWindow(subwindow)
         subwindow.show()
+
+        # pixmap = QPixmap.grabWidget(subwindow)
+        # noalpha_image = pixmap.toImage()
+        # noalpha_image.save('/tmp/sin_alfa.png')
+        # alpha_image = noalpha_image.convertToFormat(QImage.Format_ARGB32)
+        # # Create a dummy image with the desired alpha channel
+        # #alpha_image = QImage(noalpha_image.size(), QImage.Format_ARGB32)
+        # #color = QColor(0, 0, 0, 127).rgba()
+        # #ctable = alpha_image.colorTable()
+        # #ctable.append(color)
+        # #alpha_image.setColorTable(ctable)
+        # for row in range(0, alpha_image.height()):
+            # for column in range(0, alpha_image.width()):
+                # rgb = alpha_image.pixel(column, row)
+                # color = QColor(rgb)
+                # color.setAlpha(127)
+                # alpha_image.setPixel(column, row, color.rgba())
+        # pixmap2 = QPixmap.fromImage(alpha_image)
+        # pixmap2.save('/tmp/con_alfa.png')
+        # subwindow.widget().viewport().setStyleSheet("background-image: url(/tmp/con_alfa.png);")
+
+    # #    waste_array = QByteArray()
+    # #    stream = QDataStream(waste_array, QIODevice.WriteOnly)
+    # #    for index in range(0, pixmap_size):
+    # #        stream.writeUInt32(128)
+
+
 
 
     def slotNodeClose(self, current=None):

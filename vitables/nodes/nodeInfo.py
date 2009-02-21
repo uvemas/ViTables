@@ -96,9 +96,8 @@ class NodeInfo(object):
 
         # The hosting File instance, filepath, filename and opening mode
         self.h5file = self.node._v_file
-        self.filepath = unicode(self.h5file.filename, 'utf_8')
-        self.filename = unicode(os.path.basename(self.h5file.filename), 
-                                'utf_8')
+        self.filepath = self.h5file.filename
+        self.filename = os.path.basename(self.filepath)
         mode = self.h5file.mode
         if mode == 'a':
             self.mode = unicode('append', 'utf_8')

@@ -61,7 +61,6 @@ import os
 import traceback
 import sets
 import time
-import codecs
 import locale
 
 import numpy
@@ -396,17 +395,6 @@ def getLicense():
     return license_text
 
 
-def getCodec():
-    """Try to obtain the a sensible codec for encoding filepaths.
-    """
-    
-    fs_encoding = sys.getfilesystemencoding()
-    if sys.platform.startswith('win'):
-        fs_encoding = locale.getlocale()[1]
-    codec_name = codecs.lookup(fs_encoding).name
-    codec = QTextCodec.codecForName(codec_name)
-    return codec, codec_name
-    
 def registeredPlugins():
     from vitables.plugins import __all__
     return __all__
