@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 **Feb 21, 2009**
+The examples foder has been reorganized.
+
 Support for unicode filenames has been improved.
 
 Fixed a silly bug in the time_series plugin.
