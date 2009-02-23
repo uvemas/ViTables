@@ -52,9 +52,9 @@ class TSFormatter(object):
 
         self.leaf = data
         self.ts_kind = self.findTS()
-        self.ts_positions = self.tsPosition()
         self.ts_frequency = self.tsFrequency()
         self.formatTime = self.timeFormatter()
+        self.ts_positions = self.tsPosition()
 
 
     def findTS(self):
@@ -83,14 +83,20 @@ class TSFormatter(object):
 
 
     def tsPosition(self):
-        """Return the position of every column containing a time serie.
+        """Return the position of the time series going to be formatted.
 
-        TimeSeriesTable instances contain just one time serie, in a column
-        labeled as _dates.
-        Regular Table instances can contain any number of time series so we
-        must inspect every column.
-        Arrays are homogeneous. If a column contains a time serie then every
-        column contains a time serie. Specific positions are not required.
+        *If a time series cannot be formatted then it is ignored*.
+
+        The following cases can occur:
+        - leaf contains no time series that ViTables can format
+        - leaf is a TimeSeriesTable instance. It contains just one time serie,
+          in a column labeled as _dates. If scikits.timeseries module is not
+          available this time serie cannot be formatted and will be ignored
+        - leaf is a regular Table instance. Every column can contain a time
+          serie so we must inspect every column
+        - leaf is an Array instance. As it is a homogeneous data container if
+          a column contains a time serie then every column contains a time
+          serie. Specific positions are not required
         """
 
         positions = []
@@ -150,11 +156,12 @@ class TSFormatter(object):
 
         time_formatter = None
         if self.ts_kind == 'scikits_ts':
-            return self.formatScikitsTS
+            time_formatter = self.formatScikitsTS
         elif self.ts_kind == 'pytables_ts':
             if isinstance(self.leaf, tables.Table):
-                return time.ctime
+                time_formatter = time.ctime
             else:
-                return vitables.utils.formatTimeContent
+                time_formatter = vitables.utils.formatTimeContent
+        return time_formatter
 
 

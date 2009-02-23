@@ -76,6 +76,9 @@ class LeafModel(QAbstractTableModel):
         self.data_source = rbuffer.data_source
         self.rbuffer = rbuffer
 
+        # The indices of columns containing time series (if any)
+        self.time_cols = []
+
         # The number of digits of the last row
         self.last_row_width = len(unicode(self.rbuffer.leaf_numrows))
 
@@ -111,18 +114,20 @@ class LeafModel(QAbstractTableModel):
         #
 
         self.formatContent = vitables.utils.formatArrayContent
-        self.time_cols = []
 
+        # Format time series (if they are found)
         plugins = vitables.utils.registeredPlugins()
         if 'time_series' in plugins:
             import vitables.plugins.time_series as time_series
             ts_formatter = time_series.TSFormatter(self.data_source)
             self.time_cols = ts_formatter.ts_positions
-            self.formatTime = ts_formatter.formatTime
-            if (ts_formatter.ts_kind == 'scikits_ts') and \
-            (ts_formatter.locateTSModule()):
-                import scikits.timeseries as ts           
-                self.ts_frequency = ts_formatter.ts_frequency
+            if self.time_cols != []:
+                if ts_formatter.ts_kind == 'scikits_ts':
+                    import scikits.timeseries as ts           
+                    self.ts_frequency = ts_formatter.ts_frequency
+                self.formatTime = ts_formatter.formatTime
+                if self.time_cols == [-1]:
+                    self.formatContent = self.formatTime
 
         if not isinstance(self.data_source, tables.Table):
             # Leaf is some kind of PyTables array
@@ -131,8 +136,6 @@ class LeafModel(QAbstractTableModel):
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
                 self.formatContent = vitables.utils.formatStringContent
-            elif atom_type in ['time32', 'time64']:
-                self.formatContent = self.formatTime
 
         # Populate the model with the first chunk of data
         self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)

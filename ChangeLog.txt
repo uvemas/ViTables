@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Feb 23, 2009 **
+Code dealing with formatting time series has been refactored.
+
 **Feb 21, 2009**
 License files and license notes have been updated.
 
