@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Feb 24, 2009 **
+The resources module has been added to the repository.
+
 A couple of Makefile files have been changed.
 
 ** Feb 23, 2009 **

@@ -9,4 +9,4 @@ syntax: glob
 *.e4*
 doc/html
 ./vitables.py
-./vitables/qrc_resources.py
+
