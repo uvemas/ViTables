@@ -21,7 +21,7 @@ MISDOCS="C:\Documents and Settings\vmas\Mis documentos"
 WINDOWS32=C:\\Windows\\system32
 VENDORID=$(MISDOCS)\VendorID-1.0.0
 
-.PHONY: vitables.exe
+.PHONY: vitables.exe vtdoc
 
 clean:
 	del $(VTNSIS)
@@ -29,6 +29,8 @@ clean:
 	del vitables.exe
 	del LICENSE.html
 	$(MAKE) -f Makefile_windows -C ..\doc $@
+	del ..\vitables\qrc_resources.py
+	del ..\vitables\qrc_resources.pyc
 
 vitables.exe:
 	copy $(REPO_VITABLES)\scripts\vitables $(VENDORID)\sib\vitables.py
@@ -39,13 +41,13 @@ vitables.exe:
 	del $(VENDORID)\sib\vitables.py
 	rmdir $(VENDORID)\sib\build_vitables
 
-doc:
+vtdoc:
 	$(MAKE) -f Makefile_windows -C ..\doc all
 
-resources:
+resources: vtdoc
 	$(MAKE) -f Makefile -C .. $@
 
-installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vitables.exe doc resources
+installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vitables.exe vtdoc resources
 	copy ..\LICENSE.html LICENSE.html
 	type vitables.nsi.in | sed -e "s/@VERSION@/$(VERSION)/g" \
 	-e "s/@PYTHONVERSION@/$(PYTHONVERSION)/g" \

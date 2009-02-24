@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Feb 24, 2009 **
+A couple of Makefile files have been changed.
+
 ** Feb 23, 2009 **
 setup.py has been updated.
 

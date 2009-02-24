@@ -2,19 +2,20 @@
 # sources imported from a repository.  For building and installing ViTables,
 # please use ``setup.py`` as described in the ``INSTALL.txt`` file.
 
-#.PHONY:	vtdoc
+.PHONY:	vtdoc
 
 vtdoc:
 	cd ./doc && make
 
-resources: resources.qrc
+resources: vtdoc resources.qrc
 	pyrcc4 -o vitables/qrc_resources.py resources.qrc
 
-unix: vtdoc resources
+unix: resources
 	python setup.py sdist
 
 clean:
 	cd ./doc && make clean
 	-rm -f vitables/qrc_resources.py
+	-rm -f vitables/qrc_resources.pyc
 	-rm -f MANIFEST
 	-rm -rf build dist
