@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** Feb 26, 2009 **
+Fixed a unicode bug in the queries manager.
+
 ** Feb 24, 2009 **
 The resources module has been added to the repository.
 
