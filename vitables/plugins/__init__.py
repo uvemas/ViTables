@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['time_series']
+__all__ = ['export_csv', 'time_series']

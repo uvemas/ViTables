@@ -89,6 +89,9 @@ class VTApp(QMainWindow):
 
         QMainWindow.__init__(self)
 
+        # Make the main window easily accessible for external modules
+        self.setObjectName('VTApp')
+
         self.is_startup = True  # for Open file dialogs
         self.icons_dictionary = vitables.utils.getIcons()
         # Instantiate a configurator object for the application
@@ -223,6 +226,12 @@ class VTApp(QMainWindow):
 
         self.workspace.installEventFilter(self)
 
+        # Load plugins
+        plugins = vitables.utils.registeredPlugins()
+        if 'export_csv' in plugins:
+            import vitables.plugins.export_csv as vtplugin_csv
+            self.exporter = vtplugin_csv.ExportToCSV()
+
 
     def __tr(self, source, comment=None):
         """Translate method."""
@@ -337,7 +346,7 @@ class VTApp(QMainWindow):
                 'Status bar text for the Node -> Copy action'))
 
         actions['queryNew'] = vitables.utils.createAction(self, 
-            self.__tr('&New...', 'Query -> New...'), None, 
+            self.__tr('&Query...', 'Query -> New...'), None, 
             self.slotQueryNew, self.icons_dictionary['new_filter'], 
             self.__tr('Create a new filter for the selected table', 
                 'Status bar text for the Query -> New... action'))
@@ -519,11 +528,12 @@ class VTApp(QMainWindow):
             'nodeDelete']
         vitables.utils.addActions(node_menu, node_actions, self.gui_actions)
 
-        # Create the Query menu and add actions/submenus/separators to it
-        query_menu = self.menuBar().addMenu(self.__tr("&Query", 
-            'The Query menu entry'))
-        query_actions = ['queryNew', None, 'queryDeleteAll']
-        vitables.utils.addActions(query_menu, query_actions, self.gui_actions)
+        # Create the Dataset menu and add actions/submenus/separators to it
+        self.dataset_menu = self.menuBar().addMenu(self.__tr("&Dataset", 
+            'The Dataset menu entry'))
+        dataset_actions = ['queryNew', None]
+        vitables.utils.addActions(self.dataset_menu, dataset_actions, 
+            self.gui_actions)
 
         # Create the Windows menu and add actions/menus/separators to it
         self.windows_menu = self.menuBar().addMenu(self.__tr("&Windows", 
@@ -1213,7 +1223,8 @@ class VTApp(QMainWindow):
             return QMainWindow.eventFilter(self, widget, event)
 
 
-    def getFilepath(self, caption, accept_mode, file_mode, filepath=''):
+    def getFilepath(self, caption, accept_mode, file_mode, filepath='', 
+        dfilter='', label=''):
         """Raise a file selector dialog and get a filepath.
 
         :Parameters:
@@ -1222,20 +1233,22 @@ class VTApp(QMainWindow):
         - `accept_mode`: the dialog accept mode
         - `file_mode`: the dialog file mode
         - `filepath`: the filepath initially selected
+        - `dfilter`: the display filter for the dialog
+        - `label`: the label of the Accept button
         """
 
-        file_selector = QFileDialog(self, 
-                                    caption, 
-                                    '', 
-                                    self.__tr("""HDF5 Files (*.h5 *."""
-                                    """hd5 *.hdf5);;All Files (*)""", 
-                                    'Filter for the Open New dialog'))
+        if dfilter == '':
+            dfilter = self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
+                """All Files (*)""", 'Filter for the Open New dialog')
+        file_selector = QFileDialog(self, caption, '', dfilter)
         # Misc. setup
         if self.is_startup and self.startup_working_directory == 'home':
             self.is_startup = False
             self.last_working_directory = vitables.utils.getHomeDir()
         file_selector.setDirectory(self.last_working_directory)
         file_selector.setAcceptMode(accept_mode)
+        if label != '':
+            file_selector.setLabelText(QFileDialog.Accept, label)
         if accept_mode == QFileDialog.AcceptSave:
             file_selector.setConfirmOverwrite(False)
         file_selector.setFileMode(file_mode)

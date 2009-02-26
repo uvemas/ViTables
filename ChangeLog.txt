@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** Feb 26, 2009 **
+New feature added: export a dataset to plain text file with CSV format.
+
 Fixed a unicode bug in the queries manager.
 
 ** Feb 24, 2009 **

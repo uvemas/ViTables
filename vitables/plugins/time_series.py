@@ -139,6 +139,8 @@ class TSFormatter(object):
         except ImportError:
             is_available = False
         return is_available
+
+
     def formatScikitsTS(self, value):
         """Format a given date in a user friendly way.
 
@@ -150,6 +152,8 @@ class TSFormatter(object):
 
         date = ts.Date(self.ts_frequency, value=value)
         return date.datetime.strftime('%a %b %d %H:%M:%S %Y')
+
+
     def timeFormatter(self):
         """Return the function to be used for formatting time series.
         """
@@ -163,5 +167,7 @@ class TSFormatter(object):
             else:
                 time_formatter = vitables.utils.formatTimeContent
         return time_formatter
+
+
 
 
