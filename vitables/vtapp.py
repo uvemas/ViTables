@@ -403,12 +403,12 @@ class VTApp(QMainWindow):
             self.__tr('Change the workspace view mode', 
                 'Status bar text for the MDI -> Tabbed action'))
 
-        actions['toolsUserOptions'] = vitables.utils.createAction(self, 
-            self.__tr('&Preferences...', 'Tools -> Preferences'), None, 
-            self.slotToolsPreferences, 
+        actions['settingsPreferences'] = vitables.utils.createAction(self, 
+            self.__tr('&Preferences...', 'Settings -> Preferences'), None, 
+            self.slotSettingsPreferences, 
             self.icons_dictionary['appearance'], 
             self.__tr('Configure ViTables', 
-                'Status bar text for the Tools -> Preferences action'))
+                'Status bar text for the Settings -> Preferences action'))
 
         actions['helpUsersGuide'] = vitables.utils.createAction(self, 
             self.__tr("&User's Guide", 'Help -> Users Guide'), 
@@ -496,8 +496,8 @@ class VTApp(QMainWindow):
         Set up the main window menus.
 
         Popus are made of actions, items and separators.
-        The Windows menu is a special case due to its dynamic nature.
-        The menu contents depend on the number of existing views.
+        The Window menu is a special case due to its dynamic nature. Its
+        contents depend on the number of existing views.
         In order to track changes and keep updated the menu, it is reloaded
         every time it is about to be displayed. This goal is achieved using
         signal/slot mechanism (see code below).
@@ -535,8 +535,26 @@ class VTApp(QMainWindow):
         vitables.utils.addActions(self.dataset_menu, dataset_actions, 
             self.gui_actions)
 
-        # Create the Windows menu and add actions/menus/separators to it
-        self.windows_menu = self.menuBar().addMenu(self.__tr("&Windows", 
+        # Create the Tools menu and add actions/submenus/separators to it
+        tools_menu = self.menuBar().addMenu(self.__tr("&Tools", 
+            'The Tools menu entry'))
+
+        # The popup containing checkable entries for the toolbars and
+        # dock widgets present in the main window
+        self.hide_toolbar_submenu = self.createPopupMenu()
+        self.hide_toolbar_submenu.menuAction().setText(self.__tr('ToolBars', 
+                                                'Tools -> ToolBars action'))
+        tools_actions = [self.hide_toolbar_submenu]
+        vitables.utils.addActions(tools_menu, tools_actions, self.gui_actions)
+
+        # Create the Settings menu and add actions/submenus/separators to it
+        tools_menu = self.menuBar().addMenu(self.__tr("&Settings", 
+            'The Settings menu entry'))
+        settings_actions = ['settingsPreferences']
+        vitables.utils.addActions(tools_menu, settings_actions, self.gui_actions)
+
+        # Create the Window menu and add actions/menus/separators to it
+        self.windows_menu = self.menuBar().addMenu(self.__tr("&Window", 
             'The Windows menu entry'))
         self.windows_menu
         action_group = QActionGroup(self.windows_menu)
@@ -556,22 +574,9 @@ class VTApp(QMainWindow):
                     'Status bar text for the Help -> Whats This action'))
         help_menu.addAction(whatis)
 
-        # Create the Tools menu and add actions/submenus/separators to it
-        tools_menu = QMenu(self.__tr("&Tools", 'The Tools menu entry'),
-                                 self.menuBar())
-        self.menuBar().insertMenu(self.menuBar().actions()[-1], tools_menu)
-
-        # The popup containing checkable entries for the toolbars and
-        # dock widgets present in the main window
-        self.hide_toolbar_submenu = self.createPopupMenu()
-        self.hide_toolbar_submenu.menuAction().setText(self.__tr('ToolBars', 
-                                                'Tools -> ToolBars action'))
-        tools_actions = ['toolsUserOptions', None, self.hide_toolbar_submenu]
-        vitables.utils.addActions(tools_menu, tools_actions, self.gui_actions)
-
         #########################################################
         #
-        # 					Context menus
+        # 				Context menus
         #
         #########################################################
 
@@ -2042,7 +2047,7 @@ class VTApp(QMainWindow):
             window.showMinimized()
 
 
-    def slotToolsPreferences(self):
+    def slotSettingsPreferences(self):
         """
         Launch the Preferences dialog.
 

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 01, 2009 **
+The main menu bar has been reorganised.
+
 ** Feb 26, 2009 **
 New feature added: export a dataset to plain text file with CSV format.
 
