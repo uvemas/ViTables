@@ -86,33 +86,33 @@ class QueriesManager:
 
         # Information about table
         info = {}
-        info['nrows'] = table.nrows
-        info['src_filepath'] = unicode(table._v_file.filename)
-        info['src_path'] = table._v_pathname
-        info['name'] = table._v_name
+        info[u'nrows'] = table.nrows
+        info[u'src_filepath'] = unicode(table._v_file.filename)
+        info[u'src_path'] = table._v_pathname
+        info[u'name'] = table._v_name
         # Fields info: top level fields names, flat fields shapes and types
-        info['col_names'] = sets.Set(table.colnames)
-        info['col_shapes'] = \
+        info[u'col_names'] = sets.Set(table.colnames)
+        info[u'col_shapes'] = \
             dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
-        info['col_types'] = table.coltypes
+        info[u'col_types'] = table.coltypes
         # Fields that can be queried
-        info['condvars'] = {}
-        info['valid_fields'] = []
+        info[u'condvars'] = {}
+        info[u'valid_fields'] = []
 
-        if info['nrows'] <= 0:
+        if info[u'nrows'] <= 0:
             print self.__tr("""Caveat: table %s is empty. Nothing to query.""",
-                'Warning message for users') % info['name']
+                'Warning message for users') % info[u'name']
             return None
 
         # The searchable fields and condition variables
         # First discard nested fields
         valid_fields = \
-        info['col_names'].intersection(info['col_shapes'].keys())
+        info[u'col_names'].intersection(info[u'col_shapes'].keys())
 
         # Then discard fields that aren't scalar and those that are complex
         for name in valid_fields.copy():
-            if (info['col_shapes'][name] != ()) or \
-            info['col_types'][name].count('complex'):
+            if (info[u'col_shapes'][name] != ()) or \
+            info[u'col_types'][name].count(u'complex'):
                 valid_fields.remove(name)
 
         # Among the remaining fields, those whose names contain blanks
@@ -121,23 +121,23 @@ class QueriesManager:
         index = 0
         for name in valid_fields.copy():
             if name.count(' '):
-                while ('col%s' % index) in valid_fields:
+                while (u'col%s' % index) in valid_fields:
                     index = index + 1
-                info['condvars']['col%s' % index] = \
+                info[u'condvars'][u'col%s' % index] = \
                     table.cols._f_col(name)
                 valid_fields.remove(name)
-                valid_fields.add('col%s (%s)' % (index, name))
+                valid_fields.add(u'col%s (%s)' % (index, name))
                 index = index + 1
-        info['valid_fields'] = valid_fields
+        info[u'valid_fields'] = valid_fields
 
         # If table has not columns suitable to be filtered does nothing
-        if not info['valid_fields']:
+        if not info[u'valid_fields']:
             print self.__tr("""\nError: table %s has no """
             """columns suitable to be queried. All columns are nested, """
             """multidimensional or have a Complex data type.""",
             'An error when trying to query a table') % info['name']
             return None
-        elif len(info['valid_fields']) != len(info['col_names']):
+        elif len(info[u'valid_fields']) != len(info[u'col_names']):
         # Log a message if non selectable fields exist
             print self.__tr("""\nWarning: some table columns contain """
                """nested, multidimensional or Complex data. They """
@@ -147,7 +147,7 @@ class QueriesManager:
 
         # Setup the initial condition
         if (self.last_query[0], self.last_query[1]) == \
-        (info['src_filepath'], info['src_path']):
+        (info[u'src_filepath'], info[u'src_path']):
             initial_condition = self.last_query[2]
         else:
             initial_condition = ''
@@ -169,18 +169,18 @@ class QueriesManager:
             query_info = dict(query.query_info)
             del query
 
-        if not query_info['condition']:
+        if not query_info[u'condition']:
             return None
 
         # SET THE TITLE OF THE RESULT TABLE
-        title = query_info['condition']
-        for name in info['valid_fields']:
+        title = query_info[u'condition']
+        for name in info[u'valid_fields']:
             # Valid fields can have the format 'fieldname' or 
             # 'varname (name with blanks)' so a single blank shouldn't
             # be used as separator
-            components = name.split(' (')
+            components = name.split(u' (')
             if len(components) > 1:
-                fieldname = '(%s' % components[-1]
+                fieldname = u'(%s' % components[-1]
                 title = title.replace(components[0], fieldname)
 
         return query_info, title
@@ -201,11 +201,11 @@ class QueriesManager:
         try:
 
             # Define shorthands
-            (start, stop, step) = query_info['rows_range']
-            name = query_info['ft_name']
-            condition = query_info['condition']
-            condvars = query_info['condvars']
-            indices_field_name = query_info['indices_field_name']
+            (start, stop, step) = query_info[u'rows_range']
+            name = query_info[u'ft_name']
+            condition = query_info[u'condition']
+            condvars = query_info[u'condvars']
+            indices_field_name = query_info[u'indices_field_name']
 
             # If no slice is passed the best choice is to set the start, stop,
             # step arguments to None. It is due to the implementation of
@@ -229,7 +229,7 @@ class QueriesManager:
                     ft_dict = {indices_field_name.encode('utf_8'): \
                         tables.Int64Col(pos=-1)}
                     ft_dict.update(src_dict)
-                    f_table = self.tmp_h5file.createTable('/', name, ft_dict, 
+                    f_table = self.tmp_h5file.createTable(u'/', name, ft_dict, 
                                                           title)
                     # Fill the destination table
                     if selection.shape != (0, ):
@@ -254,7 +254,7 @@ class QueriesManager:
                     # The array of rows that fullfill the condition
                     selection = table.readWhere(condition, condvars, 
                         start=start, stop=stop, step=step)
-                    f_table = self.tmp_h5file.createTable('/', name, src_dict, 
+                    f_table = self.tmp_h5file.createTable(u'/', name, src_dict, 
                                                           title)
                     f_table.append(selection)
             except:
@@ -263,20 +263,17 @@ class QueriesManager:
                 f_table.flush()
                 # Set some user attributes that define this filtered table
                 asi = f_table.attrs
-                asi.query_path = \
-                    numpy.array(query_info['src_filepath'].encode('utf_8'))
-                asi.query_table = \
-                    numpy.array(query_info['src_path'].encode('utf_8'))
-                asi.query_condition = \
-                    numpy.array(f_table.title.encode('utf_8'))
+                asi.query_path = query_info[u'src_filepath']
+                asi.query_table = query_info[u'src_path']
+                asi.query_condition = f_table.title
                 self.tmp_h5file.flush()
 
             # Update the list of names in use for filtered tables
-            self.ft_names.append(query_info['ft_name'])
-            self.last_query = [query_info['src_filepath'], 
-                query_info['src_path'], query_info['condition']]
+            self.ft_names.append(query_info[u'ft_name'])
+            self.last_query = [query_info[u'src_filepath'], 
+                query_info[u'src_path'], query_info[u'condition']]
         finally:
             qApp.restoreOverrideCursor()
 
         # RETURN THE RESULT
-        return query_info['ft_name']
+        return query_info[u'ft_name']

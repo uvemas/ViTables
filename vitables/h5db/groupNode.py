@@ -70,7 +70,7 @@ class GroupNode(object):
         self.children = []
         self.parent = parent
         self.node = parent.node._f_getChild(name)
-        self.node_kind = 'group'
+        self.node_kind = u'group'
 
         self.has_view = False
 
@@ -81,15 +81,15 @@ class GroupNode(object):
         # icon --> DecorationRole
         self.name = name
         parentpath = parent.nodepath
-        if parentpath.endswith('/'):
+        if parentpath.endswith(u'/'):
             parentpath = parentpath[:-1]
-        self.nodepath = '%s/%s' % (parentpath, name)
+        self.nodepath = u'%s/%s' % (parentpath, name)
         self.filepath = parent.filepath
-        self.as_record = '%s->%s' % (self.filepath, self.nodepath)
+        self.as_record = u'%s->%s' % (self.filepath, self.nodepath)
         icons = vitables.utils.getIcons()
-        self.closed_folder = icons['folder']
-        self.open_folder = icons['folder_open']
-        self.icon = icons['folder']
+        self.closed_folder = icons[u'folder']
+        self.open_folder = icons[u'folder_open']
+        self.icon = icons[u'folder']
 
 
     def __len__(self):

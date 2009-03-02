@@ -967,10 +967,9 @@ class DBsTreeModel(QAbstractItemModel):
             # NULL byte
             encoded_data = data.data("text/uri-list")
             # Convert the binary array into a string with suitable format
-            uris_string = QUrl.fromEncoded(encoded_data).toString().toUtf8()
+            uris_string = QUrl.fromEncoded(encoded_data).toString()
             # Split the string using the apropriate separators
-            uris_list = re.split('(\r\n)|\r|\n\0', unicode(uris_string, 
-                                                            'utf_8'))
+            uris_list = re.split(u'(\r\n)|\r|\n\0', unicode(uris_string))
             # Get rid of the separators
             uris = [uris_list[i] for i in range(0, len(uris_list) - 1, 2)]
             # Transform every element of the sequence into a path and open it

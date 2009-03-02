@@ -82,7 +82,7 @@ class DataSheet(QMdiSubWindow):
         if not isinstance(leaf.node.title, unicode):
             title = unicode(leaf.node.title, 'utf_8')
         else:
-            title = leaf.node.title.encode('utf_8')
+            title = leaf.node.title
         wtitle = u"%s\t%s" % (leaf.name, title)
         self.setWindowTitle(wtitle)
         self.setWindowIcon(leaf.icon)

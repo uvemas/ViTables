@@ -670,7 +670,7 @@ class VTApp(QMainWindow):
         for key in keys:
             value = config[key]
             if key == 'Logger/Paper':
-                paper = unicode(QColor(value).name(), 'utf_8')
+                paper = unicode(QColor(value).name())
                 stylesheet = self.logger.styleSheet()
                 old_paper = stylesheet[-7:]
                 stylesheet.replace(old_paper, paper)
@@ -1467,8 +1467,8 @@ class VTApp(QMainWindow):
         """
 
         action = self.sender()
-        item = action.data().toString().toUtf8()
-        (mode, filepath) = unicode(item, 'utf_8').split('#@#')
+        item = action.data().toString()
+        (mode, filepath) = unicode(item).split('#@#')
         self.slotFileOpen(filepath, mode)
 
 

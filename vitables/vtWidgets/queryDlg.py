@@ -101,27 +101,27 @@ class QueryDlg(QDialog):
         dlg_layout = QVBoxLayout(self)
         dlg_layout.setSpacing(6)
         self.setWindowTitle(self.__tr('New query on table: %s',
-            'A dialog caption') % info['name'])
+            'A dialog caption') % info[u'name'])
 
         # Attributes used by method slotUpdateOKState
         self.used_names = ft_names
-        self.col_names = info['col_names']
-        self.condvars = info['condvars']
+        self.col_names = info[u'col_names']
+        self.condvars = info[u'condvars']
         self.source_table = table
-        self.num_rows = info['nrows']
+        self.num_rows = info[u'nrows']
 
         # Attributes used by method slotAccept
         # If the dialog is cancelled these initial values will be returned to
         # the caller. If the dialog is accepted then these values will be
         # updated (in the slotAccept method) and returned to the caller
         self.query_info = {}
-        self.query_info['condition'] = ''
-        self.query_info['rows_range'] = ()
-        self.query_info['ft_name'] = ''
-        self.query_info['indices_field_name'] = ''
-        self.query_info['condvars'] = self.condvars
-        self.query_info['src_filepath'] = info['src_filepath']
-        self.query_info['src_path'] = info['src_path']
+        self.query_info[u'condition'] = u''
+        self.query_info[u'rows_range'] = ()
+        self.query_info[u'ft_name'] = u''
+        self.query_info[u'indices_field_name'] = u''
+        self.query_info[u'condvars'] = self.condvars
+        self.query_info[u'src_filepath'] = info[u'src_filepath']
+        self.query_info[u'src_path'] = info[u'src_path']
 
         # Main widgets
         # Global Options section
@@ -246,8 +246,8 @@ class QueryDlg(QDialog):
 
         # Add components to dialog
         self.makeSectionOne(global_opt_gb)
-        self.makeSectionTwo(condition_gb, info['valid_fields'])
-        self.makeSectionThree(rows_range_gb, info['nrows'])
+        self.makeSectionTwo(condition_gb, info[u'valid_fields'])
+        self.makeSectionThree(rows_range_gb, info[u'nrows'])
         self.makeSectionFour(buttons_layout)
 
         # Use the values of the last query done on this table (if any)
@@ -338,12 +338,12 @@ class QueryDlg(QDialog):
         condition_gb_layout.addLayout(combos_layout)
 
         # Fill the combos
-        operators = ['&', '|', '~', '<', '<=', '==', '!=', '>', '>=', '+',
-            '-', '*', '/', '**', '%']
+        operators = [u'&', u'|', u'~', u'<', u'<=', u'==', u'!=', u'>', u'>=', u'+',
+            u'-', u'*', u'/', u'**', u'%']
         self.operators_cb.insertItems(0, QStringList(operators))
-        functions = ['where', 'sin', 'cos', 'tan', 'arcsin', 'arccos',
-            'arctan', 'arctan2', 'sinh', 'cosh', 'tanh', 'sqrt', 'real',
-            'imag', 'complex']
+        functions = [u'where', u'sin', u'cos', u'tan', u'arcsin', u'arccos', 
+            u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', u'sqrt', 
+            u'real', u'imag', u'complex']
         self.functions_cb.insertItems(0, QStringList(functions))
         sorted_fields = [field for field in valid_fields]
         sorted_fields.sort()
@@ -378,7 +378,7 @@ class QueryDlg(QDialog):
         step_label = QLabel(self.__tr('Step:', 'A range selector label'),
             rows_range_gb)
         range_layout.addWidget(step_label, 2, 0)
-        self.rstep.setText('1')
+        self.rstep.setText(u'1')
         range_layout.addWidget(self.rstep, 2, 1)
 
         range_layout.setColumnStretch(2, 1)
@@ -423,7 +423,7 @@ class QueryDlg(QDialog):
 
         :Parameter operator: is the operator in the combobox current item
         """
-        self.query_le.insert(' %s ' % operator)
+        self.query_le.insert(u' %s ' % operator)
 
 
     def slotInsertField(self, field_id):
@@ -438,7 +438,7 @@ class QueryDlg(QDialog):
 
         :Parameter field_id: is the field identifier in the combobox current item
         """
-        self.query_le.insert(field_id.split(' ')[0])
+        self.query_le.insert(field_id.split(u' ')[0])
 
 
     def slotInsertFunction(self, text):
@@ -451,21 +451,21 @@ class QueryDlg(QDialog):
         :Parameter text: is the text of the combobox current item
         """
 
-        name2call = {u'where': 'where(B, N, N)',
-            'sin': 'sin(F|C)',
-            'cos': 'cos(F|C)',
-            'tan': 'tan(F|C)',
-            'arcsin': 'arcsin(F|C)',
-            'arccos': 'arccos(F|C)',
-            'arctan': 'arctan(F|C)',
-            'arctan2': 'arctan2(F, F)',
-            'sinh': 'sinh(F|C)',
-            'cosh': 'cosh(F|C)',
-            'tanh': 'tanh(F|C)',
-            'sqrt': 'sqrt(F|C)',
-            'real': 'real(C)',
-            'imag': 'imag(C)',
-            'complex': 'complex(F, F)'
+        name2call = {u'where': u'where(B, N, N)',
+            u'sin': u'sin(F|C)',
+            u'cos': u'cos(F|C)',
+            u'tan': u'tan(F|C)',
+            u'arcsin': u'arcsin(F|C)',
+            u'arccos': u'arccos(F|C)',
+            u'arctan': u'arctan(F|C)',
+            u'arctan2': u'arctan2(F, F)',
+            u'sinh': u'sinh(F|C)',
+            u'cosh': u'cosh(F|C)',
+            u'tanh': u'tanh(F|C)',
+            u'sqrt': u'sqrt(F|C)',
+            u'real': u'real(C)',
+            u'imag': u'imag(C)',
+            u'complex': u'complex(F, F)'
             }
         self.query_le.insert(name2call[unicode(text)])
 
@@ -525,7 +525,7 @@ class QueryDlg(QDialog):
         # Check the condition.
         # If it is an empty string the OK button is not enabled
         condition = unicode(self.query_le.text())
-        if condition.isspace() or (condition in [None, '']):
+        if condition.isspace() or (condition in [None, u'']):
             status_ok = False
 
         # Check the range values
@@ -600,16 +600,16 @@ class QueryDlg(QDialog):
         if not self.checkConditionSyntax(condition):
             return
 
-        self.query_info['condition'] = condition
+        self.query_info[u'condition'] = condition
 
         # Get the table name and the name of the column with indices (if any)
-        self.query_info['ft_name'] = unicode(self.name_le.text())
+        self.query_info[u'ft_name'] = unicode(self.name_le.text())
         if self.indices_column.isEnabled():
-            self.query_info['indices_field_name'] = \
+            self.query_info[u'indices_field_name'] = \
                 unicode(self.indices_column.text())
 
         # Get the range and convert it into a Python range
-        self.query_info['rows_range'] = (
+        self.query_info[u'rows_range'] = (
            numpy.array(unicode(self.rstart.text())).astype(numpy.int64) - 1,
            numpy.array(unicode(self.rstop.text())).astype(numpy.int64),
            numpy.array(unicode(self.rstep.text())).astype(numpy.int64))

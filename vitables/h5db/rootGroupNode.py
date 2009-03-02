@@ -74,11 +74,11 @@ class RootGroupNode(object):
 
         self.children = []
         self.parent = parent
-        self.name = 'root node'
+        self.name = u'root node'
         self.filepath = None
         if data_source:
-            self.node = data_source.getNode('/')
-            self.node_kind = 'root group'
+            self.node = data_source.getNode(u'/')
+            self.node_kind = u'root group'
 
             self.has_view = False
 
@@ -88,20 +88,20 @@ class RootGroupNode(object):
             # as_record --> StatusTipRole
             # icon --> DecorationRole
             if tmp_db:
-                self.name = 'Query results'
+                self.name = u'Query results'
             else:
                 self.name = data_source.filename
-            self.nodepath = '/'
+            self.nodepath = u'/'
             self.filepath = data_source.filepath
-            self.as_record = '%s->%s' % (self.filepath, self.nodepath)
+            self.as_record = u'%s->%s' % (self.filepath, self.nodepath)
             self.mode = data_source.mode
             icons = vitables.utils.getIcons()
             if tmp_db:
-                self.icon = icons['dbfilters']
-            elif self.mode == 'r':
-                self.icon = icons['file_ro']
+                self.icon = icons[u'dbfilters']
+            elif self.mode == u'r':
+                self.icon = icons[u'file_ro']
             else:
-                self.icon = icons['file_rw']
+                self.icon = icons[u'file_rw']
 
 
     def __len__(self):

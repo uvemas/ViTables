@@ -76,38 +76,38 @@ class LeafNode(object):
         # icon --> DecorationRole
         self.name = name
         parentpath = parent.nodepath
-        if parentpath.endswith('/'):
+        if parentpath.endswith(u'/'):
             parentpath = parentpath[:-1]
-        self.nodepath = '%s/%s' % (parentpath, name)
+        self.nodepath = u'%s/%s' % (parentpath, name)
         self.filepath = parent.filepath
-        self.as_record = '%s->%s' % (self.filepath, self.nodepath)
+        self.as_record = u'%s->%s' % (self.filepath, self.nodepath)
 
         # Set the node icon
         icons = vitables.utils.getIcons()
         if isinstance(self.node, tables.Table):
-            self.node_kind = 'table'
-            self.icon = icons['table']
+            self.node_kind = u'table'
+            self.icon = icons[u'table']
         elif isinstance(self.node, tables.VLArray):
-            self.node_kind = 'vlarray'
+            self.node_kind = u'vlarray'
             data_type = self.node.atom.type
-            if data_type in ['vlstring', 'vlunicode']:
-                self.icon = icons['vlstring']
-            elif data_type == 'object':
+            if data_type in [u'vlstring', u'vlunicode']:
+                self.icon = icons[u'vlstring']
+            elif data_type == u'object':
                 self.icon = icons['object']
             else:
-                self.icon = icons['vlarray']
+                self.icon = icons[u'vlarray']
         elif isinstance(self.node, tables.EArray):
             self.node_kind = 'earray'
             self.icon = icons['earray']
         elif isinstance(self.node, tables.CArray):
-            self.node_kind = 'carray'
-            self.icon = icons['carray']
+            self.node_kind = u'carray'
+            self.icon = icons[u'carray']
         elif isinstance(self.node, tables.Array):
-            self.node_kind = 'array'
+            self.node_kind = u'array'
             self.icon = icons['array']
         elif isinstance(self.node, tables.UnImplemented):
-            self.node_kind = 'unimplemented'
-            self.icon = icons['unimplemented']
+            self.node_kind = u'unimplemented'
+            self.icon = icons[u'unimplemented']
 
 
     def row(self):
