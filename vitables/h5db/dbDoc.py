@@ -54,6 +54,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'DBDoc'
 
 import os
 import uuid
@@ -117,7 +118,7 @@ class DBDoc(QObject):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('DBDoc', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def openH5File(self):

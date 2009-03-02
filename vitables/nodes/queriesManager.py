@@ -44,6 +44,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'QueriesManager'
 
 import sets
 
@@ -73,9 +74,9 @@ class QueriesManager:
         self.tmp_h5file = tmp_h5file
 
 
-    def __tr(self,  source, comment=None):
+    def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('QueriesManager', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def getQueryInfo(self, table):

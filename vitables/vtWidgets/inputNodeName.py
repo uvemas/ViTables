@@ -42,6 +42,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'InputNodeName'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -107,7 +108,7 @@ class InputNodeName(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('InputNodeName', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def addComponents(self):

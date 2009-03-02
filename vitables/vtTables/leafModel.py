@@ -39,6 +39,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'LeafModel'
 
 import tempfile
 import os
@@ -142,7 +143,7 @@ class LeafModel(QAbstractTableModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('LeafModel', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def headerData(self, section, orientation, role):

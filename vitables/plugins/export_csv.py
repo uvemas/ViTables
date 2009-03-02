@@ -24,6 +24,7 @@
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'ExportToCSV'
 
 import os
 
@@ -60,7 +61,7 @@ class ExportToCSV(object):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('ExportCSV', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def addEntry(self):
@@ -68,7 +69,7 @@ class ExportToCSV(object):
         """
 
         menu = self.vtapp.dataset_menu
-    
+
         # Create the action
         action = QAction(menu)
         action.setText(self.__tr("E&xport to CSV...", "Save dataset as CSV"))
@@ -126,6 +127,6 @@ class ExportToCSV(object):
     #Some minor flaws: vlarrays with content other than ascii text cannot be exported
 
 
-    
+
 
 

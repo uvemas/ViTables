@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** March 02, 2009 **
+__tr method has changed.
+
 Attributes editing has been debugged and simplified.
 
 Unneeded encoding/decoding of strings has been removed.

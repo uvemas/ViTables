@@ -39,6 +39,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'LeafView'
 
 import numpy
 
@@ -123,7 +124,7 @@ class LeafView(QTableView):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('LeafView', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def syncView(self):

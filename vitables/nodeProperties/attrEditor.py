@@ -47,6 +47,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'AttrEditor'
 
 import sets
 
@@ -203,7 +204,7 @@ class AttrEditor(object):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('AttrEditor', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def checkAttributes(self):

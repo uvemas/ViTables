@@ -44,6 +44,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'BookmarksDlg'
 
 import sys
 import os.path
@@ -125,7 +126,7 @@ class BookmarksDlg(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('BookmarksDlg', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def fillBookmarksTable(self):

@@ -50,6 +50,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'Preferences'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -128,7 +129,7 @@ class Preferences(QObject):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('Preferences', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def setPreferences(self, preferences):

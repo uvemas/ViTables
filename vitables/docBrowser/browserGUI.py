@@ -43,6 +43,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'HeHelpBrowserGUI'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -88,7 +89,7 @@ class HelpBrowserGUI(QMainWindow) :
                                     'Status bar startup message'))
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('HelpBrowserGUI', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def setupActions(self):

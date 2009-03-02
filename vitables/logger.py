@@ -45,6 +45,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'Logger'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -97,7 +98,7 @@ class Logger(QTextEdit):
             self.createCustomContextMenu)
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('Logger', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def write(self, text):

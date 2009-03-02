@@ -50,6 +50,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'NodePropDlg'
 
 import tables
 
@@ -124,7 +125,7 @@ class NodePropDlg(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('NodePropDlg', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def makeGeneralPage(self, info):
@@ -682,7 +683,7 @@ class NodePropDlg(QDialog):
 
     def asiChanged(self):
         """Find out if the user has edited some attribute.
-    
+
         In order to decide if attributes have been edited we compare
         the attribute tables contents at dialog creation time and at
         dialog closing time.
@@ -733,7 +734,7 @@ class NodePropDlg(QDialog):
         if (self.mode == u'read-only') or (not self.asiChanged()):
             QDialog.accept(self)
             return  # This is mandatory!
-    
+
         # Check the editable attributes
         aeditor = attrEditor.AttrEditor(self.asi, self.title_after, 
             self.user_table)

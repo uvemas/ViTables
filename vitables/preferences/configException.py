@@ -39,6 +39,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'ConfigFileIOException'
 
 from PyQt4.QtGui import *
 
@@ -68,6 +69,6 @@ class ConfigFileIOException(Exception):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('ConfigFileIOException', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 

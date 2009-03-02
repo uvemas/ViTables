@@ -54,6 +54,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'QueryDlg'
 
 import numpy
 
@@ -278,9 +279,9 @@ class QueryDlg(QDialog):
         self.name_le.emit(text_changed, self.name_le.text())
 
 
-    def __tr(self,  source, comment=None):
+    def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('QueryDlg', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def makeSectionOne(self, global_opt_gb):

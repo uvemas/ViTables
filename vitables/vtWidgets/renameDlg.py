@@ -44,6 +44,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'RenameDlg'
 
 import re
 
@@ -145,7 +146,7 @@ class RenameDlg(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('RenameDlg', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def addComponents(self):

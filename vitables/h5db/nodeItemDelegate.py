@@ -43,6 +43,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'NodeItemDelegate'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -69,8 +70,8 @@ class NodeItemDelegate(QItemDelegate):
 
 
     def __tr(self, source, comment=None):
-        """Translate function."""
-        return unicode(qApp.translate('NodeItemDelegate', source, comment))
+        """Translate method."""
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def setEditorData(self, editor, index):

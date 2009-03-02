@@ -51,6 +51,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'DBsTreeView'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -120,7 +121,7 @@ class DBsTreeView(QTreeView):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('DBsTreeView', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def mouseDoubleClickEvent(self, event):

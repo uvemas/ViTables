@@ -78,6 +78,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'DBsTreeModel'
 
 import tempfile
 import os
@@ -131,7 +132,7 @@ class DBsTreeModel(QAbstractItemModel):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('DBsTreeModel', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def mapDB(self, filepath, db_doc):

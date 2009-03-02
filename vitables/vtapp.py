@@ -24,6 +24,7 @@
 """Here is defined the VTApp class."""
 
 __docformat__ = 'restructuredtext'
+_context = 'VTApp'
 
 import os
 import time
@@ -235,7 +236,7 @@ class VTApp(QMainWindow):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('VTApp', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def setupActions(self):

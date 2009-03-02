@@ -59,6 +59,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'HelpBrowser'
 
 import os
 
@@ -120,7 +121,7 @@ class HelpBrowser(QObject) :
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('HelpBrowser', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def connectSignals(self):

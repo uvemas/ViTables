@@ -43,6 +43,7 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'PreferencesGUI'
 
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -100,7 +101,7 @@ class PreferencesGUI(QDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate('PreferencesGUI', source, comment))
+        return unicode(qApp.translate(_context, source, comment))
 
 
     def makeGeneralPage(self, general_page):
