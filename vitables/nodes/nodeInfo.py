@@ -43,6 +43,8 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
+import vitables.utils
+
 
 
 class NodeInfo(object):
@@ -89,23 +91,23 @@ class NodeInfo(object):
 
         # The hosting File instance, filepath, filename and opening mode
         self.h5file = self.node._v_file
-        self.filepath = self.h5file.filename
+        self.filepath = vitables.utils.toUnicode(self.h5file.filename)
         self.filename = os.path.basename(self.filepath)
-        mode = self.h5file.mode
-        if mode == 'a':
-            self.mode = unicode('append', 'utf_8')
-        elif mode == 'r':
-            self.mode = unicode('read-only', 'utf_8')
+        mode = vitables.utils.toUnicode(self.h5file.mode)
+        if mode == u'a':
+            self.mode = u'append'
+        elif mode == u'r':
+            self.mode = u'read-only'
         else:
-            self.mode = unicode('read-write', 'utf_8')
+            self.mode = u'read-write'
 
         # The node type is a string with one of the following values:
         # root group, group, table, vlarray, earray, carray, array
         # or unimplemented
         self.node_type = node_item.node_kind
-        self.file_type = self.format + ', ' + self.size
-        self.nodename = self.node._v_name
-        self.nodepath = self.node._v_pathname
+        self.file_type = self.format + u', ' + self.size
+        self.nodename = vitables.utils.toUnicode(self.node._v_name)
+        self.nodepath = vitables.utils.toUnicode(self.node._v_pathname)
 
         # The attributes set instance
         self.asi = self.node._v_attrs
@@ -121,10 +123,11 @@ class NodeInfo(object):
 
     def _format(self):
         """The format of the hosting File instance"""
+
         if self.h5file._isPTFile:
-            return unicode('PyTables file', 'utf_8')
+            return u'PyTables file'
         else:
-            return unicode('Generic HDF5 file', 'utf_8')
+            return u'Generic HDF5 file'
 
     format = property(fget=_format)
 
@@ -138,16 +141,16 @@ class NodeInfo(object):
         gbytes = mbytes/1024
         tbytes = gbytes/1024
         if kbytes < 1:
-            size = '%d bytes' % bytes
+            size = u'%d bytes' % bytes
         elif mbytes < 1:
-            size = '%.0f KB' % (kbytes)
+            size = u'%.0f KB' % kbytes
         elif gbytes < 1:
-            size = '%.0f MB' % (mbytes)
+            size = u'%.0f MB' % mbytes
         elif tbytes < 1:
-            size = '%.0f GB' % (gbytes)
+            size = u'%.0f GB' % gbytes
         else:
-            size = '%.0f TB' % (tbytes)
-        return unicode(size, 'utf_8')
+            size = u'%.0f TB' % tbytes
+        return size
 
     size = property(fget=_size)
 
@@ -192,13 +195,13 @@ class NodeInfo(object):
     def _dtype(self):
         """The numpy dtype that most closely matches the atom of this leaf."""
 
-        if self.node_type.count('array'):
+        if self.node_type.count(u'array'):
             try:
-                return unicode(self.node.atom.type, 'utf_8')
+                return vitables.utils.toUnicode(self.node.atom.type)
             except AttributeError:
                 return None
-        elif self.node_type == 'table':
-            return unicode('record', 'utf_8')
+        elif self.node_type == u'table':
+            return u'record'
 
     dtype = property(fget=_dtype)
 
@@ -231,7 +234,7 @@ class NodeInfo(object):
         """The type of data object read from the table/array node."""
 
         try:
-            return unicode(self.node.flavor, 'utf_8')
+            return vitables.utils.toUnicode(self.node.flavor)
         except AttributeError:
             return None
 

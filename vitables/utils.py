@@ -65,6 +65,28 @@ import vitables.vtWidgets.renameDlg as renameDlg
 
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
+DEFAULT_LOCALE = locale.getdefaultlocale()[1]
+
+def toUnicode(thing):
+    """Convert a byte string into a unicode string using the default locale.
+    """
+
+    if isinstance(thing, str):
+        # thing is a byte string, e.g. an attribute whose type is numpy.string_
+        try:
+            return unicode(thing, DEFAULT_LOCALE)
+        except TypeError:
+            return unicode(thing)
+    else:
+        # thing can be:
+        # - a PyQt object, namely a QString or
+        # - a numpy array, eg. a multidimensional attribute 
+        #   like in examples/misc/MDobjects.h5
+        # - a numpy scalar object, e.g. an attribute whose
+        #   type is numpy.int32
+        # - a pure Python object e.g. a sequence
+        return unicode(thing)
+
 
 #
 # Icons related functions

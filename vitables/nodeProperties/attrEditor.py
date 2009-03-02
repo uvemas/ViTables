@@ -63,11 +63,11 @@ def checkSyntax(value):
     :Parameters value: the Python expression to be evaluated
     """
 
+    if value[0] in ("'", '"'):
+        # Quotes are not permitted in the first position
+        return False
     try:
-        if (value[0], value[-1]) in [("'", "'"), ('"', '"')]:
-            value = eval('\"%s\"' % value)
-        else:
-            value = eval('%s' % value)
+        eval(value)
     except:
         return False
     else:
@@ -85,21 +85,21 @@ def formatStrValue(dtype, str_value):
     """
 
     try:
-        if dtype == 'bool':
+        if dtype == u'bool':
             # Every listed value is valid but none of them would
             # pass the out of range test later so we use a fake
             # valid value.
             # Beware that numpy.array(True).astype('bool')[()] fails
             # with a TypeError so we use '1' as a fake value
-            if str_value in ['1', 'TRUE', 'True', 'true']:
-                str_value = '1'
-            elif str_value in ['0', 'FALSE', 'False', 'false']:
-                str_value = '0'
+            if str_value in [u'1', u'TRUE', u'True', u'true']:
+                str_value = u'1'
+            elif str_value in [u'0', u'FALSE', u'False', u'false']:
+                str_value = u'0'
             else:
                 raise TypeError
-        elif dtype.startswith('complex'):
+        elif dtype.startswith(u'complex'):
             # Valid complex literal strings do not have parenthesis
-            if str_value.startswith('(') and str_value.endswith(')'):
+            if str_value.startswith(u'(') and str_value.endswith(u')'):
                 str_value = str_value[1:-1]
     except TypeError:
         return None
@@ -129,17 +129,17 @@ def checkOverflow(dtype, str_value):
     """
 
     dtypes_map = {
-        'int8': numpy.int8, 'int16': numpy.int16,
-        'int32': numpy.int32, 'int64': numpy.int64,
-        'uint8': numpy.uint8, 'uint16': numpy.uint16,
-        'uint32': numpy.uint32, 'uint64': numpy.uint64,
-        'float32': numpy.float32, 'float64': numpy.float64,
+        u'int8': numpy.int8, u'int16': numpy.int16,
+        u'int32': numpy.int32, u'int64': numpy.int64,
+        u'uint8': numpy.uint8, u'uint16': numpy.uint16,
+        u'uint32': numpy.uint32, u'uint64': numpy.uint64,
+        u'float32': numpy.float32, u'float64': numpy.float64,
         }
 
     if dtype not in dtypes_map:
         return str_value
 
-    if dtype.startswith('float'):
+    if dtype.startswith(u'float'):
         max_value = numpy.finfo(dtypes_map[dtype]).max
         min_value = numpy.finfo(dtypes_map[dtype]).min
         value = float(str_value)
@@ -174,7 +174,6 @@ class AttrEditor(object):
         - `user_table`: the table of user attributes edited by the user in the Properties dialog
         """
 
-        self.attrs_are_ok = True
         self.asi = asi
 
         # A dictionary with the attributes that have to be checked
@@ -190,13 +189,7 @@ class AttrEditor(object):
                 multidim = True
             else:
                 multidim = False
-            # Empty Value cells are acceptable for string attributes
-            # but empty Name cells are marked as invalid
-            name = model.item(row, 0).text().toUtf8()
-            if name.isEmpty():
-                name = -1
-            else:
-                name = unicode(name, 'utf_8')
+            name = unicode(model.item(row, 0).text())
             value = unicode(model.item(row, 1).text())
             dtype_index = model.indexFromItem(model.item(row, 2))
             current_dtype = user_table.indexWidget(dtype_index).currentText() 
@@ -205,8 +198,7 @@ class AttrEditor(object):
 
         # Add the TITLE attribute to the dictionary
         if title is not None:
-            title = unicode(title)
-            self.edited_attrs[rows] = ('TITLE', title, 'string', False)
+            self.edited_attrs[rows] = (u'TITLE', title, u'string', False)
 
 
     def __tr(self, source, comment=None):
@@ -244,9 +236,11 @@ class AttrEditor(object):
         # Check for empty Name cells
         for row in rows_range:
             name = self.edited_attrs[row][0]
-            if name == -1:
+            # Empty Value cells are acceptable for string attributes
+            # but empty Name cells are invalid
+            if name == u'':
                 return (False, 
-                        self.__tr("\nError: empty field Name in the row |%i|", 
+                        self.__tr("\nError: empty field Name in the row %i", 
                         'User attributes table editing error') % int(row + 1))
 
         # Check for repeated names
@@ -265,27 +259,26 @@ class AttrEditor(object):
             name, value, dtype, multidim = self.edited_attrs[row]
             if multidim == True:
                 continue
-            if dtype != 'python':
+            if dtype == 'python':
+                # Check the syntax of the Python expression
+                if not checkSyntax(value):
+                    return (False, syntax_error % name)
+            else:
                 # Format properly the string representation of value
                 value = formatStrValue(dtype, value)
                 if value is None :
                     return (False, dtype_error % name)
                 # Check if values are out of range
                 else:
-                    if dtype.startswith('string'):
-                        dtype = unicode('string', 'utf_8')
                     try:
                         value = checkOverflow(dtype, value)
-                        value_enc = value.encode('utf_8')
+                        # astype() doesn't support unicode arguments
                         dtype_enc = dtype.encode('utf_8')
-                        numpy.array(value_enc).astype(dtype_enc)[()]
+                        numpy.array(value).astype(dtype_enc)[()]
                     except IndexError:
                         return (False, range_error % name)
                     except ValueError:
                         return (False, dtype_error % name)
-            # Check the syntax of the Python expression
-            elif not checkSyntax(value):
-                return (False, syntax_error % name)
 
             # If the attribute passes every test then its entry in the
             # dictionary of edited attributes is updated
@@ -303,8 +296,8 @@ class AttrEditor(object):
         """
 
         # Get rid of deleted attributes
-        if self.edited_attrs.has_key('TITLE'):
-            all_attrs = sets.Set(self.asi._v_attrnamesuser + ["TITLE"])
+        if self.edited_attrs.has_key(u'TITLE'):
+            all_attrs = sets.Set(self.asi._v_attrnamesuser + [u"TITLE"])
         else:
             all_attrs = sets.Set(self.asi._v_attrnamesuser)
         edited_attrs_names = sets.Set([self.edited_attrs[row][0] 
@@ -322,17 +315,11 @@ class AttrEditor(object):
             if multidim == True:
                 continue
 
-            if dtype == 'python':
-                if (value[0], value[-1]) in [("'", "'"), ('"', '"')]:
-                    value = eval('\"%s\"' % value)
-                else:
-                    value = eval('%s' % value)
+            if dtype == u'python':
+                value = eval(u'%s' % value)
             else:
-                if dtype.startswith('string'):
-                    dtype = unicode('string', 'utf_8')
-                value_enc = value.encode('utf_8')
                 dtype_enc = dtype.encode('utf_8')
-                value = numpy.array(value_enc).astype(dtype_enc)
+                value = numpy.array(value).astype(dtype_enc)[()]
 
             # Updates the ASI
             try:
