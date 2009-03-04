@@ -56,7 +56,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.utils
-import vitables.vtWidgets.queryDlg as queryDlg
+import vitables.queries.queryDlg as queryDlg
 
 class QueriesManager:
     """This is the class in charge of managing table queries.
@@ -186,6 +186,7 @@ class QueriesManager:
 
         return query_info, title
 
+
     def queryTable(self, table, query_info, title):
         """
         Query a table and add a the result to the temporary database.
@@ -278,3 +279,5 @@ class QueriesManager:
 
         # RETURN THE RESULT
         return query_info[u'ft_name']
+
+

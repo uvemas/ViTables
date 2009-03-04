@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["attrEditor", "nodePropDlg"]
+__all__ = ["attrEditor", "nodeInfo", "nodePropDlg"]

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 04, 2009 **
+Some subpackages have been reorganised.
+
 ** March 02, 2009 **
 __tr method has changed.
 

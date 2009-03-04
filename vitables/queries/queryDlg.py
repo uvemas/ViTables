@@ -83,7 +83,6 @@ class QueryDlg(QDialog):
     are used to enter operators, functions and field names. Textboxes
     are used to enter the range of the query.
     """
-
     def __init__(self, info, ft_names, counter, initial_query, table):
         """
         Ctor.
@@ -617,3 +616,5 @@ class QueryDlg(QDialog):
 
         # Exit
         self.accept()
+
+

@@ -47,7 +47,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.vtTables.scrollBar as scrollBar
-import vitables.nodes.nodeInfo as nodeInfo
+import vitables.nodeProperties.nodeInfo as nodeInfo
 import vitables.vtWidgets.zoomCell as zoomCell
 
 class LeafView(QTableView):

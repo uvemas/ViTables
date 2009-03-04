@@ -48,12 +48,12 @@ from  vitables.preferences import preferences
 import vitables.h5db.dbsTreeModel as dbsTreeModel
 import vitables.h5db.dbsTreeView as dbsTreeView
 
-import vitables.nodes.queriesManager as qmgr
-import vitables.nodes.nodeInfo as nodeInfo
+import vitables.queries.queriesManager as qmgr
 
 import vitables.vtWidgets.inputNodeName as inputNodeName
 import vitables.vtWidgets.renameDlg as renameDlg
 
+import vitables.nodeProperties.nodeInfo as nodeInfo
 from vitables.nodeProperties import nodePropDlg
 from vitables.docBrowser import helpBrowser
 

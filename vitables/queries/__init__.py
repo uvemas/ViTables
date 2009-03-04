@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["nodeInfo", "queriesManager"]
+__all__ = ["queryDlg", "queriesManager"]
