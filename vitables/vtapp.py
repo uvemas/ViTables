@@ -159,8 +159,8 @@ class VTApp(QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+        #sys.stdout = self.logger
+        #sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -552,7 +552,8 @@ class VTApp(QMainWindow):
         tools_menu = self.menuBar().addMenu(self.__tr("&Settings", 
             'The Settings menu entry'))
         settings_actions = ['settingsPreferences']
-        vitables.utils.addActions(tools_menu, settings_actions, self.gui_actions)
+        vitables.utils.addActions(tools_menu, settings_actions, 
+            self.gui_actions)
 
         # Create the Window menu and add actions/menus/separators to it
         self.windows_menu = self.menuBar().addMenu(self.__tr("&Window", 
@@ -1400,7 +1401,8 @@ class VTApp(QMainWindow):
             if dialog.exec_():
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
-                trier_filepath = unicode(QDir.fromNativeSeparators(trier_filepath))
+                trier_filepath = \
+                    unicode(QDir.fromNativeSeparators(trier_filepath))
                 overwrite = dialog.action['overwrite']
                 # Update the error conditions
                 is_initial_filepath = trier_filepath == initial_filepath

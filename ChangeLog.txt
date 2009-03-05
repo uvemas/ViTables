@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 05, 2009 **
+The "New query" dialog is generated automatically (via Qt Designer) now.
+
 ** March 04, 2009 **
 Some subpackages have been reorganised.
 
