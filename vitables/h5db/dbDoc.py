@@ -115,6 +115,9 @@ class DBDoc(QObject):
         else:
             self.tmp_dbdoc = self
             self.tmp_h5file = self.h5file
+            self.h5file.createGroup(u'/', u'_p_query_results', u'Hide the result of queries')
+            self.h5file.flush()
+
 
     def __tr(self, source, comment=None):
         """Translate method."""

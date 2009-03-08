@@ -31,10 +31,6 @@ Methods:
 
 * __init__(self, info, ft_names, counter, initial_query, table)
 * __tr(self,  source, comment=None)
-* makeSectionOne(self, global_opt_gb)
-* makeSectionTwo(self, condition_gb, valid_fields)
-* makeSectionThree(self, rows_range_gb, nrows)
-* makeSectionFour(self, buttons_layout)
 * slotEnableIndicesColumn(self, cb_on)
 * slotInsertOperator(self, operator)
 * slotInsertField(self, field_id)
@@ -127,7 +123,7 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         sorted_fields.sort()
         self.columns_cb.insertItems(0, QStringList(sorted_fields))
         self.rstop.setText(u'%s' % info[u'nrows'])
-    
+
         whatsthis_button = self.button_box.button(QDialogButtonBox.Help)
         whatsthis_button.setText("&What's this")
 
@@ -187,7 +183,6 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
         self.name_le.emit(text_changed, self.name_le.text())
-
 
     def __tr(self, source, comment=None):
         """Translate method."""

@@ -159,6 +159,7 @@ class DBsTreeModel(QAbstractItemModel):
 
         :Parameter filepath: the full path of an open database.
         """
+
         if self.__openDBs.has_key(filepath):
             return self.__openDBs[filepath]
         else:

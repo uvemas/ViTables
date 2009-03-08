@@ -29,10 +29,6 @@ Classes:
 
 Methods:
 
-* __init__(self, tmp_h5file)
-* __tr(self,  source, comment=None)
-* getQueryInfo(self, table)
-* queryTable(self, table, query_info, title)
 
 Functions:
 
@@ -44,240 +40,215 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'QueriesManager'
 
-import sets
-
-import tables.exceptions
-
+import tables
 import numpy
 
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
 import vitables.utils
-import vitables.queries.queryDlg as queryDlg
 
-class QueriesManager:
-    """This is the class in charge of managing table queries.
+
+class QueriesManager(QThread):
+    """This is the class in charge of threading the execution of queries.
+    
+    Making queries in a separated execution thread is an important improvement.
+    It allows to query very large tables without freezing the rest of the
+    application.
+    
+    The thread is implemented in a clever way that doesn't interfer with the
+    lazy population of the tree of databases view: the query results table is
+    stored under a hidden group of the temporary database until the query
+    finishes. Then it is moved to the root node and becomes visible to the
+    world. This way, while the query results table is partially filled it
+    is not seen by the lazy population algorithm so it is not added to the
+    tree of databases view and neither the user nor ViTables will try to read
+    it. So no problems can occur trying to read a partially filled table.
+    
+    Also no more than one query can be made at the same time on a given table.
+    This goal is achieved in a very simple way: tracking the tables currently
+    being queried in a data structure (a dictionary at present).
+    
+    Note: what would happen if several very large tables are being run at the
+    same time has not been (yet) checked. They could take all the available CPU
+    of all available processors (so the application will be frozen until some
+    query ended and released CPU). If there is a processor devoted to thread
+    then the queries would take more time to finish but the rest of the application
+    would not be affected (i.e. would not freeze).
     """
-
-    def __init__(self, tmp_h5file):
+    def __init__(self, tmp_h5file, parent=None):
         """Setup the queries manager.
 
-        :Parameter tmp_h5file: the temporary database.
+        The manager is in charge of:
+
+        - keep a description of the last query made
+        - automatically generate names for new queries
+        - track the query names already in use
+        - track the tables that are currently being queried
+
+        The last query description has three components: the filepath of
+        the file where the queried table lives, the nodepath of the queried
+        table and the query condition.
+
+        A query name is the name of the table where the query results are
+        stored. By default it has the format "Filtered_TableUID" where UID
+        is an integer automatically generated. User can customise the query
+        name in the New Query dialog.
+
+        :Parameter tmp_h5file: the file where the query results are stored
         """
 
-        self.last_query = [None, None, None]
-        self.counter = 0
-        self.ft_names = []
+        QThread.__init__(self, parent)
+
         self.tmp_h5file = tmp_h5file
+        # Description of the last query made
+        self.last_query = [None, None, None]
+        # UID for automatically generating query names
+        self.counter = 0
+        # The list of query names currently in use
+        self.ft_names = []
+        # A mapping of tables being currently queried
+        self.in_progress = {}
 
 
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
+    def trackTable(self, tableID):
+        """Add a new entry to the queries track system.
+
+        :Parameter tableID: the ID of the table being tracked
+        """
+        self.in_progress[tableID] = True
 
 
-    def getQueryInfo(self, table):
-        """Retrieves useful info about the query.
+    def untrackTable(self, tableID):
+        """Remove an entry from the queries track system.
 
-        :Parameter table: the tables.Table instance being queried.
+        :Parameter tableID: the ID of the table being released
+        """
+        del self.in_progress[tableID]
+
+
+
+    def isTracked(self, tableID):
+        """Find out if a table is being queried.
+
+        :Parameter tableID: the ID of the table being checked
         """
 
-        # Information about table
-        info = {}
-        info[u'nrows'] = table.nrows
-        info[u'src_filepath'] = unicode(table._v_file.filename)
-        info[u'src_path'] = table._v_pathname
-        info[u'name'] = table._v_name
-        # Fields info: top level fields names, flat fields shapes and types
-        info[u'col_names'] = sets.Set(table.colnames)
-        info[u'col_shapes'] = \
-            dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
-        info[u'col_types'] = table.coltypes
-        # Fields that can be queried
-        info[u'condvars'] = {}
-        info[u'valid_fields'] = []
-
-        if info[u'nrows'] <= 0:
-            print self.__tr("""Caveat: table %s is empty. Nothing to query.""",
-                'Warning message for users') % info[u'name']
-            return None
-
-        # The searchable fields and condition variables
-        # First discard nested fields
-        valid_fields = \
-        info[u'col_names'].intersection(info[u'col_shapes'].keys())
-
-        # Then discard fields that aren't scalar and those that are complex
-        for name in valid_fields.copy():
-            if (info[u'col_shapes'][name] != ()) or \
-            info[u'col_types'][name].count(u'complex'):
-                valid_fields.remove(name)
-
-        # Among the remaining fields, those whose names contain blanks
-        # cannot be used in conditions unless they are mapped to
-        # variables with valid names
-        index = 0
-        for name in valid_fields.copy():
-            if name.count(' '):
-                while (u'col%s' % index) in valid_fields:
-                    index = index + 1
-                info[u'condvars'][u'col%s' % index] = \
-                    table.cols._f_col(name)
-                valid_fields.remove(name)
-                valid_fields.add(u'col%s (%s)' % (index, name))
-                index = index + 1
-        info[u'valid_fields'] = valid_fields
-
-        # If table has not columns suitable to be filtered does nothing
-        if not info[u'valid_fields']:
-            print self.__tr("""\nError: table %s has no """
-            """columns suitable to be queried. All columns are nested, """
-            """multidimensional or have a Complex data type.""",
-            'An error when trying to query a table') % info['name']
-            return None
-        elif len(info[u'valid_fields']) != len(info[u'col_names']):
-        # Log a message if non selectable fields exist
-            print self.__tr("""\nWarning: some table columns contain """
-               """nested, multidimensional or Complex data. They """
-               """cannot be queried so are not included in the Column"""
-               """ selector of the query dialog.""",
-               'An informational note for users')
-
-        # Setup the initial condition
-        if (self.last_query[0], self.last_query[1]) == \
-        (info[u'src_filepath'], info[u'src_path']):
-            initial_condition = self.last_query[2]
+        if self.in_progress.has_key(tableID):
+            return True
         else:
-            initial_condition = ''
-
-        # GET THE QUERY COMPONENTS
-        # Update the suggested name sufix to ensure that it is not in use
-        self.counter = self.counter + 1
-        # Retrieve information about the query: condition to
-        # be applied, involved range of rows, name of the
-        # filtered table and name of the column of returned indices
-        query = queryDlg.QueryDlg(info, self.ft_names, 
-            self.counter, initial_condition, table)
-        try:
-            query.exec_()
-            # Cancel clicked
-            if query.result() == QDialog.Rejected:
-                self.counter = self.counter - 1 # Restore the counter value
-        finally:
-            query_info = dict(query.query_info)
-            del query
-
-        if not query_info[u'condition']:
-            return None
-
-        # SET THE TITLE OF THE RESULT TABLE
-        title = query_info[u'condition']
-        for name in info[u'valid_fields']:
-            # Valid fields can have the format 'fieldname' or 
-            # 'varname (name with blanks)' so a single blank shouldn't
-            # be used as separator
-            components = name.split(u' (')
-            if len(components) > 1:
-                fieldname = u'(%s' % components[-1]
-                title = title.replace(components[0], fieldname)
-
-        return query_info, title
-
-
-    def queryTable(self, table, query_info, title):
-        """
-        Query a table and add a the result to the temporary database.
+            return False
+    def query(self, tableID, table, query_description):
+        """Start a new query.
 
         :Parameters:
 
-        - `table`: the tables.Table instance being queried
-        - `query_info`: a dictionary with information about the query
-        - `title`: the title of the result table
+        - `tableID`:the UID of the table to be queried
+        - `table`: the table to be queried
+        - `query_description`: the description of the query to be performed
         """
 
-        # QUERY THE TABLE
-        qApp.setOverrideCursor(QCursor(Qt.WaitCursor))
+        self.tableID = tableID
+        self.table = table
+        self.query_description = query_description
+        self.start()
+
+
+    def run(self):
+        """
+        Query a table and add a the result to the temporary database.
+        """
+
+        table = self.table
+        query_description = self.query_description
+        tmp_h5file = self.tmp_h5file
+
+        # Define shorthands
+        (start, stop, step) = query_description[u'rows_range']
+        name = query_description[u'ft_name']
+        title = query_description[u'title']
+        condition = query_description[u'condition']
+        condvars = query_description[u'condvars']
+        indices_field_name = query_description[u'indices_field_name']
+
+        # If no slice is passed the best choice is to set the start, stop,
+        # step arguments to None. It is due to the implementation of
+        # readWhere
+        if (start, stop, step) == (0, table.nrows, 1):
+            (start, stop, step) = (None, None, None)
+
         try:
+            src_dict = table.description._v_colObjects
+            # Query the source table and build the result table
+            if indices_field_name:
+                            # Create the destination table: its first column
+                            # will contain the indices of the rows selected in
+                            # the source table so a new description dictionary
+                            # is needed. Int64 values are necessary to keep full
+                            # 64-bit indices
+                            ft_dict = {indices_field_name.encode('utf_8'): \
+                                tables.Int64Col(pos=-1)}
+                            ft_dict.update(src_dict)
+                            f_table = tmp_h5file.createTable(u'/_p_query_results', name, 
+                                ft_dict, title)
 
-            # Define shorthands
-            (start, stop, step) = query_info[u'rows_range']
-            name = query_info[u'ft_name']
-            condition = query_info[u'condition']
-            condvars = query_info[u'condvars']
-            indices_field_name = query_info[u'indices_field_name']
+                            # Get the array of rows that fullfill the condition
+                            coordinates = table.getWhereList(condition, condvars, 
+                                start=start, stop=stop, step=step)
+                            selection = table.readCoordinates(coordinates)
 
-            # If no slice is passed the best choice is to set the start, stop,
-            # step arguments to None. It is due to the implementation of
-            # readWhere
-            if (start,  stop, step) == (0, table.nrows, 1):
-                (start, stop, step) = (None, None, None)
-            try:
-                src_dict = table.description._v_colObjects
-                # Query the source table and build the result table
-                if indices_field_name:
-                    # Get the list of indices
-                    coordinates = table.getWhereList(condition, condvars, 
-                        start=start, stop=stop, step=step)
-                    # The array of rows that fullfill the condition
-                    selection = table.readCoordinates(coordinates)
-                    # Create the destination table: its first column
-                    # will contain the indices of the rows selected in
-                    # the source table so a new description dictionary
-                    # is needed Int64 values are necessary to keep full
-                    # 64-bit indices
-                    ft_dict = {indices_field_name.encode('utf_8'): \
-                        tables.Int64Col(pos=-1)}
-                    ft_dict.update(src_dict)
-                    f_table = self.tmp_h5file.createTable(u'/', name, ft_dict, 
-                                                          title)
-                    # Fill the destination table
-                    if selection.shape != (0, ):
-                        dtype = f_table.read().dtype
-                        # A one row array with the proper dtype will be used
-                        # to fill the table
-                        row_buffer = \
-                        numpy.array([(coordinates[0], ) + \
-                            tuple(selection[0])], dtype=dtype)
-                        f_table.append(row_buffer)
-                        selection_index = 0
-                        for row_index in coordinates[1:]:
-                            selection_index = selection_index + 1
-                            # Set the first field with the row index
-                            row_buffer[0][0] = row_index
-                            # The rest of fields are set using the query result
-                            for field_index in range(0, len(dtype) - 1):
-                                row_buffer[0][field_index+1] = \
-                                    selection[selection_index][field_index]
-                            f_table.append(row_buffer)
-                else:
-                    # The array of rows that fullfill the condition
-                    selection = table.readWhere(condition, condvars, 
-                        start=start, stop=stop, step=step)
-                    f_table = self.tmp_h5file.createTable(u'/', name, src_dict, 
-                                                          title)
-                    f_table.append(selection)
-            except:
-                vitables.utils.formatExceptionInfo()
+                            # Fill the destination table
+                            if selection.shape != (0, ):
+                                dtype = f_table.read().dtype
+                                # A one row array with the proper dtype will be used
+                                # to fill the table
+                                row_buffer = \
+                                numpy.array([(coordinates[0], ) + \
+                                    tuple(selection[0])], dtype=dtype)
+                                f_table.append(row_buffer)
+                                selection_index = 0
+                                for row_index in coordinates[1:]:
+                                    selection_index = selection_index + 1
+                                    # Set the first field with the row index
+                                    row_buffer[0][0] = row_index
+                                    # The rest of fields are set using the query result
+                                    for field_index in range(0, len(dtype) - 1):
+                                        row_buffer[0][field_index+1] = \
+                                            selection[selection_index][field_index]
+                                    f_table.append(row_buffer)
+                            # Move table to its final destination
+                            tmp_h5file.moveNode(u'/_p_query_results/' + name, u'/',
+                                newname=name, overwrite=True)
             else:
-                f_table.flush()
-                # Set some user attributes that define this filtered table
-                asi = f_table.attrs
-                asi.query_path = query_info[u'src_filepath']
-                asi.query_table = query_info[u'src_path']
-                asi.query_condition = f_table.title
-                self.tmp_h5file.flush()
-
+                            # Create the destination table
+                            f_table = tmp_h5file.createTable(u'/_p_query_results', name, 
+                                src_dict, title)
+                            # Get the array of rows that fullfill the condition
+                            selection = table.readWhere(condition, condvars, 
+                                start=start, stop=stop, step=step)
+                            # Fill the destination table
+                            f_table.append(selection)
+                            # Move table to its final destination
+                            tmp_h5file.moveNode(u'/_p_query_results/' + name, u'/',
+                                newname=name, overwrite=True)
+        except:
+            vitables.utils.formatExceptionInfo()
+        else:
+            f_table.flush()
+            # Set some user attributes that define this filtered table
+            asi = f_table.attrs
+            asi.query_path = query_description[u'src_filepath']
+            asi.query_table = query_description[u'src_path']
+            asi.query_condition = f_table.title
+            tmp_h5file.flush()
             # Update the list of names in use for filtered tables
-            self.ft_names.append(query_info[u'ft_name'])
-            self.last_query = [query_info[u'src_filepath'], 
-                query_info[u'src_path'], query_info[u'condition']]
-        finally:
-            qApp.restoreOverrideCursor()
+            self.ft_names.append(query_description[u'ft_name'])
+            self.last_query = [query_description[u'src_filepath'], 
+                query_description[u'src_path'], 
+                query_description[u'condition']]
 
-        # RETURN THE RESULT
-        return query_info[u'ft_name']
+        # Unlock the table for future queries
+        self.untrackTable(self.tableID)
+        self.emit(SIGNAL("queryFinished()"), )
 
 
