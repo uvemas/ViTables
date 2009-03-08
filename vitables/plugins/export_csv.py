@@ -47,11 +47,7 @@ class ExportToCSV(object):
         """
 
         # Get a reference to the application instance
-        self.vtapp = None
-        for widget in qApp.topLevelWidgets():
-            if widget.objectName() == unicode('VTApp'):
-                self.vtapp = widget
-                break
+        self.vtapp = vitables.utils.getVTApp()
 
         if self.vtapp is None:
             return

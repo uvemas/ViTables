@@ -88,6 +88,21 @@ def toUnicode(thing):
         return unicode(thing)
 
 
+def getVTApp():
+    """Get a reference to the application instance.
+
+    This is useful namely for plugins.
+    """
+
+    vtapp = None
+    for widget in qApp.topLevelWidgets():
+        if widget.objectName() == u'VTApp':
+            vtapp = widget
+            break
+
+    return vtapp
+
+
 #
 # Icons related functions
 #

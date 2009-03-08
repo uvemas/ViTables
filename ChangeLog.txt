@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** March 08, 2009 **
+New utility function added to utils.py module.
+
 Table queries are done in a separated execution thread now.
 
 ** March 05, 2009 **
