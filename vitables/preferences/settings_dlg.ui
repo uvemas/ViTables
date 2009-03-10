@@ -1,0 +1,208 @@
+<ui version="4.0" >
+ <class>SettingsDialog</class>
+ <widget class="QDialog" name="SettingsDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>337</width>
+    <height>394</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string comment="Caption of the Settings dialog" >ViTables settings</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QTabWidget" name="tab_widget" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="general_page" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>315</width>
+        <height>309</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>&amp;General</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2" >
+       <item>
+        <widget class="QGroupBox" name="startup_gb" >
+         <property name="title" >
+          <string comment="The name of the groupbox where startup is configured" >Startup</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3" >
+          <item>
+           <widget class="QCheckBox" name="restore_cb" >
+            <property name="text" >
+             <string comment="Label of the restore last session check button" >Restore last session</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="current_dir_rb" >
+            <property name="text" >
+             <string comment="Label of the startup in current directory radio button" >Start in current directory</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="last_dir_rb" >
+            <property name="text" >
+             <string comment="Label of the startup in the last open directory radio button" >Start in last opened directory</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="lf_page" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>315</width>
+        <height>309</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>&amp;Look and Feel</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5" >
+       <item>
+        <widget class="QGroupBox" name="logger_gb" >
+         <property name="title" >
+          <string comment="The title of the logger groubox" >Logger</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout" >
+          <item row="0" column="0" >
+           <widget class="QPushButton" name="font_pb" >
+            <property name="text" >
+             <string comment="The label of the logger font chooser button" >&amp;Font</string>
+            </property>
+           </widget>
+          </item>
+          <item rowspan="3" row="0" column="1" >
+           <widget class="QTextEdit" name="sample_te" >
+            <property name="readOnly" >
+             <bool>true</bool>
+            </property>
+            <property name="textInteractionFlags" >
+             <set>Qt::NoTextInteraction</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QPushButton" name="foreground_pb" >
+            <property name="text" >
+             <string comment="The label of the logger text color button" >F&amp;oreground</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QPushButton" name="background_pb" >
+            <property name="text" >
+             <string comment="The label of the logger color button" >&amp;Background</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="workspace_gb" >
+         <property name="title" >
+          <string comment="The title of the workspace groupbox" >Workspace</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout" >
+          <item>
+           <widget class="QPushButton" name="workspace_pb" >
+            <property name="text" >
+             <string comment="The label of the workspace color button" >&amp;Background</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="workspace_label" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="text" >
+             <string comment="A label for the workspace color sample" >Background color sample</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="style_gb" >
+         <property name="title" >
+          <string comment="The title of the global aspect groupbox" >Style</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4" >
+          <item>
+           <widget class="QComboBox" name="styles_cb" />
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttons_box" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttons_box</sender>
+   <signal>accepted()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttons_box</sender>
+   <signal>rejected()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

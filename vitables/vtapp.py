@@ -160,8 +160,8 @@ class VTApp(QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        #sys.stdout = self.logger
-        #sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -2187,7 +2187,7 @@ class VTApp(QMainWindow):
 
         prefs =  preferences.Preferences(self)
         try:
-            if prefs.gui.exec_() == QDialog.Accepted:
+            if prefs.exec_() == QDialog.Accepted:
                 self.loadConfiguration(prefs.new_prefs)
         finally:
             del prefs

@@ -21,30 +21,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the resources module.
-
-Functions:
-
-* addActions(target, actions, actions_dict)
-* addRow(label, text, parent)
-* createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
-                checkable=False)
-* createIcons(large_icons, small_icons, icons_dict)
-* formatArrayContent(content)
-* formatExceptionInfo(limit=1)
-* formatObjectContent(content)
-* formatStringContent(content)
-* forwardPath(path)
-* getFinalName(nodename, sibling, pattern, info)
-* getHBIcons()
-* getHomeDir()
-* getIcons()
-* getLicense()
-
-Misc variables:
-
-* __docformat__
-
+Here is defined the utilities module. It contains functions that perform
+tasks that are required at several parts of the application.
 """
 
 __docformat__ = 'restructuredtext'
@@ -325,6 +303,7 @@ def formatExceptionInfo(limit=1):
     print '\n%s\n' % traceback.format_exc(limit)
 
 
+
 #
 # Path related functions
 #
@@ -342,6 +321,7 @@ def getHomeDir():
     else:
         home = os.getenv('HOME')
     return QString(home)
+
 
 def forwardPath(path):
     """Replace backslashes with slashes in a given path."""

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 10, 2009 **
+The Preferences subpackage has been updated.
+
 ** March 08, 2009 **
 New utility function added to utils.py module.
 
