@@ -47,7 +47,7 @@
           <item>
            <widget class="QRadioButton" name="current_dir_rb" >
             <property name="text" >
-             <string comment="Label of the startup in current directory radio button" >Start in current directory</string>
+             <string comment="Label of the startup in current directory radio button" >Start in home directory</string>
             </property>
            </widget>
           </item>

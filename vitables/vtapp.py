@@ -94,7 +94,7 @@ class VTApp(QMainWindow):
         # Make the main window easily accessible for external modules
         self.setObjectName('VTApp')
 
-        self.is_startup = True  # for Open file dialogs
+        self.is_first_opening = True  # for Open file dialogs
         self.icons_dictionary = vitables.utils.getIcons()
         # Instantiate a configurator object for the application
         self.config = vtconfig.Config()
@@ -1233,6 +1233,17 @@ class VTApp(QMainWindow):
             return QMainWindow.eventFilter(self, widget, event)
 
 
+    def setupFirstOpening(self):
+        """Setup the behavior of the very first called Open File dialog.
+
+        This method is called just once.
+        """
+
+        self.is_first_opening = False
+        if self.startup_working_directory == 'home':
+            self.last_working_directory = vitables.utils.getHomeDir()
+
+
     def getFilepath(self, caption, accept_mode, file_mode, filepath='', 
         dfilter='', label=''):
         """Raise a file selector dialog and get a filepath.
@@ -1247,14 +1258,14 @@ class VTApp(QMainWindow):
         - `label`: the label of the Accept button
         """
 
+        if self.is_first_opening:
+            self.setupFirstOpening()
+
         if dfilter == '':
             dfilter = self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
                 """All Files (*)""", 'Filter for the Open New dialog')
         file_selector = QFileDialog(self, caption, '', dfilter)
         # Misc. setup
-        if self.is_startup and self.startup_working_directory == 'home':
-            self.is_startup = False
-            self.last_working_directory = vitables.utils.getHomeDir()
         file_selector.setDirectory(self.last_working_directory)
         file_selector.setAcceptMode(accept_mode)
         if label != '':
