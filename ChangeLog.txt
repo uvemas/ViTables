@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** March 11, 2009 **
+Code for creating DBDoc objects was confusing and has been refactored.
+
 Added a couple of (subtle) usability improvements.
 
 ** March 10, 2009 **

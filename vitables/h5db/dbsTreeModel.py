@@ -120,7 +120,7 @@ class DBsTreeModel(QAbstractItemModel):
         self.__openDBs = {}
 
         # Create the temporary database that will contain filtered tables
-        self.tmp_filepath = ''
+        self.tmp_filepath = u''
         self.tmp_dbdoc = self.__createTempDB()
 
         self.copied_node_info = {}
@@ -238,7 +238,7 @@ class DBsTreeModel(QAbstractItemModel):
 
         if self.checkOpening(filepath):
             # Open the database and add it to model
-            db_doc = dbDoc.DBDoc(filepath, mode, self.tmp_dbdoc)
+            db_doc = dbDoc.DBDoc(filepath, mode)
             self.mapDB(filepath, db_doc)
             root_node = rootGroupNode.RootGroupNode(db_doc, self.root)
             self.addNode(self.root, root_node, position)
@@ -268,25 +268,26 @@ class DBsTreeModel(QAbstractItemModel):
                 self.removeMappedDB(filepath)
                 break
 
-    def createDBDoc(self, filepath, tmp_db=False):
+    def createDBDoc(self, filepath, is_tmp_db=False):
         """
         Create a new, empty database (DBDoc instance).
 
         :Parameters:
 
         - `filepath`: the full path of the file being created.
-        - `tmp_db`: True if the DBDoc is tied to the temporary database
+        - `is_tmp_db`: True if the DBDoc is tied to the temporary database
         """
 
         try:
             qApp.setOverrideCursor(QCursor(Qt.WaitCursor))
             try:
-                if not tmp_db:
-                    db_doc = dbDoc.DBDoc(filepath, 'w', self.tmp_dbdoc)
+                db_doc = dbDoc.DBDoc(filepath, 'w', is_tmp_db)
+                if is_tmp_db:
+                    db_doc.tieToTempDB(db_doc)
                 else:
-                    db_doc = dbDoc.DBDoc(filepath, 'w')
+                    db_doc.tieToTempDB(self.tmp_dbdoc)
                 self.mapDB(filepath, db_doc)
-                root = rootGroupNode.RootGroupNode(db_doc, self.root, tmp_db)
+                root = rootGroupNode.RootGroupNode(db_doc, self.root, is_tmp_db)
                 self.addNode(self.root, root)
             except:
                 db_doc = None

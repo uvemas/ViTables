@@ -73,7 +73,7 @@ class DBDoc(QObject):
     a thin wrapper to the tables.File class
     """
 
-    def __init__(self, filepath, mode, tmp_dbdoc=None):
+    def __init__(self, filepath, mode, is_tmp_dbdoc=False):
         """
         Makes a data structure that defines a given database.
 
@@ -89,7 +89,7 @@ class DBDoc(QObject):
         - `filePath`: full path of the DB
         - `mode`: indicate the open mode of the database file. It
             can be 'r'ead-only or 'a'ppend
-        - `tmp_dbdoc`: a reference to the temporary database DBDoc instance
+        - `is_tmp_dbdoc`: True if this object represents the temporary database
         """
 
         QObject.__init__(self)
@@ -106,15 +106,11 @@ class DBDoc(QObject):
         # The tables.File instance
         self.h5file = self.openH5File()
 
-        # The temporary database. It is used as an intermediate storage
-        # in copy and cut operations
+        # The hidden group is used as an intermediate storage
+        # in cut operations
         self.hidden_group = None
-        self.tmp_dbdoc = tmp_dbdoc
-        if tmp_dbdoc != None:
-            self.tmp_h5file = self.tmp_dbdoc.h5file
-        else:
-            self.tmp_dbdoc = self
-            self.tmp_h5file = self.h5file
+
+        if is_tmp_dbdoc:
             self.h5file.createGroup(u'/', u'_p_query_results', u'Hide the result of queries')
             self.h5file.flush()
 
@@ -122,6 +118,14 @@ class DBDoc(QObject):
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate(_context, source, comment))
+
+
+    def tieToTempDB(self, tmp_dbdoc):
+        """Setup the `tmp_dbdoc` instance variable.
+        """
+
+        self.tmp_dbdoc = tmp_dbdoc
+        self.tmp_h5file = self.tmp_dbdoc.h5file
 
 
     def openH5File(self):
