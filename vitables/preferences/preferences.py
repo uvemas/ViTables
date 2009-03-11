@@ -79,12 +79,6 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
         QDialog.__init__(self, qApp.activeWindow())
         self.setupUi(self)
 
-        # An invisible button group is used to make radio buttons exclusive
-        self.hiden_bg = QButtonGroup()
-        self.hiden_bg.setExclusive(1)
-        self.hiden_bg.addButton(self.current_dir_rb, 1)
-        self.hiden_bg.addButton(self.last_dir_rb, 2)
-
         # Set the sample text in the Logger groupbox
         text = """<p>En un lugar de La Mancha,<br>""" \
         """de cuyo nombre no quiero acordarme,<br>""" \
@@ -142,7 +136,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             SIGNAL('clicked(QAbstractButton *)'),
             self.slotButtonClicked)
         # Startup groupbox
-        self.connect(self.hiden_bg, SIGNAL('buttonClicked(int)'),
+        self.connect(self.last_dir_cb, SIGNAL('toggled(bool)'),
             self.slotSetStartupDir)
         self.connect(self.restore_cb, SIGNAL('toggled(bool)'),
             self.slotSetStartupSession)
@@ -174,9 +168,9 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             a dictionary with current configuration settings
         """
 
-        rb_id = self.button2id[\
-            preferences['Startup/startupWorkingDir']]
-        self.hiden_bg.button(rb_id).setChecked(True)
+        self.last_dir_cb.setChecked(False)
+        if preferences['Startup/startupWorkingDir'] == u'last':
+            self.last_dir_cb.setChecked(True)
 
         self.restore_cb.setChecked(\
             preferences['Startup/restoreLastSession'])
@@ -233,22 +227,27 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             self.new_prefs[key] = QVariant(value)
         self.accept()
 
-    def slotSetStartupDir(self, button_id):
+    def slotSetStartupDir(self, cb_on):
         """
-        Set the working directory of the application at startup.
+        Set startup behavior of the application.
 
-        The working directory to be used at startup can be:
+        If the `Start in last opened directory` check box is checked
+        then when the user opens a file *for the very first time* the
+        current directory of the file selector dialog (CDFSD) will be
+        the last directory accessed in the previous ViTables session. If
+        it is not checked then ViTables follows the standard behavior:
+        if it has been started from a console session then the CDFSD
+        will be the current working directory of the session, if it has
+        been started from a menu/desktop-icon/run-command-applet the
+        CDFSD will be the users home.
 
-        - the home directory (this is the default)
-        - the last directory opened by the application in the
-        precedent session
-
-        :Parameter button_id: a unique identifier of the checked radio button
+        :Parameter cb_on: a boolean indicator of the checkbox state.
         """
 
-        for (key, value) in self.button2id.items():
-            if value == button_id:
-                self.new_prefs['Startup/startupWorkingDir'] = key
+        if cb_on:
+            self.new_prefs['Startup/startupWorkingDir'] = 'last'
+        else:
+            self.new_prefs['Startup/startupWorkingDir'] = 'home'
 
 
     def slotSetStartupSession(self, cb_on):

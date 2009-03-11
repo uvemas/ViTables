@@ -1236,12 +1236,21 @@ class VTApp(QMainWindow):
     def setupFirstOpening(self):
         """Setup the behavior of the very first called Open File dialog.
 
-        This method is called just once.
+        This method is called just once. When the user opens a file *for
+        the very first time* if the `startup_working_directory` flag is
+        set to `last` then the current directory of the file selector
+        dialog (CDFSD) will be the last directory accessed in the
+        previous ViTables session. If not then ViTables follows the
+        standard behavior: if it has been started from a console session
+        then the CDFSD will be the current working directory of the
+        session, if it has been started in any other way (a.k.a menu,
+        desktop icon or run-command applet) the CDFSD will be the users
+        home.
         """
 
         self.is_first_opening = False
-        if self.startup_working_directory == 'home':
-            self.last_working_directory = vitables.utils.getHomeDir()
+        if self.startup_working_directory != u'last':
+            self.last_working_directory = os.getcwdu()
 
 
     def getFilepath(self, caption, accept_mode, file_mode, filepath='', 

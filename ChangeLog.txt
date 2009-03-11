@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 11, 2009 **
+Added a couple of (subtle) usability improvements.
+
 ** March 10, 2009 **
 The Preferences subpackage has been updated.
 

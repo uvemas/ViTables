@@ -45,16 +45,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="current_dir_rb" >
+           <widget class="QCheckBox" name="last_dir_cb" >
             <property name="text" >
-             <string comment="Label of the startup in current directory radio button" >Start in home directory</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="last_dir_rb" >
-            <property name="text" >
-             <string comment="Label of the startup in the last open directory radio button" >Start in last opened directory</string>
+             <string comment="Label of the startup in the last open directory check box" >Start in last opened directory</string>
             </property>
            </widget>
           </item>
