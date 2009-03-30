@@ -6,11 +6,15 @@
 # from a ViTables repository. It is not intended for distribution.
 
 # Use Modern User Interface style
-!include "MUI.nsh"
+!include MUI.nsh
 
 !include Library.nsh
 !include Sections.nsh
 !include LogicLib.nsh
+#!include WordFunc.nsh
+#!insertmacro VersionCompare
+#!insertmacro VersionConvert
+#!insertmacro WordReplace
 
 # Select the compressor that will compress the installer
 SetCompressor /SOLID lzma
@@ -44,29 +48,36 @@ Var PYTHONDIR
 # --------------------------------
 # Functions
 # --------------------------------
-
 Function .onInit
 	# The registry key where application settings will be stored
 	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
 	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
 	StrCpy $STARTMENU_FOLDER "ViTables @VERSION@ for Python @DOTPYTHONVERSION@"
 
+	# Check the python installation
+	ExecWait "pythonw -c $\"import sys; (sys.version_info[0:3] > (2, 5)) or 0/0$\"" $R0
+	${If} $R0 == "1"
+	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that Python 2.5 is not \
+	  installed. Aborting the ViTables installation process.$R0 $R1 $R2"
+	  Abort
+	${EndIf}
+
 	# Check the tables installation
-	ExecWait "C:\python@PYTHONVERSION@\pythonw.exe -c $\"import tables$\""
+	ExecWait "pythonw -c $\"import tables$\""
 	IfErrors 0 +3
 	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyTables is not \
 	  installed. Aborting the ViTables installation process."
 	  Abort
 
-	# Check the PyQt4 installation
-	ExecWait "C:\python@PYTHONVERSION@\pythonw.exe -c $\"from PyQt4.QtGui import *$\""
+	# Check the PyQt4.QtGui installation
+	ExecWait "pythonw -c $\"from PyQt4.QtGui import *$\""
 	IfErrors 0 +3
 	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtGui is not \
 	  installed. Aborting the ViTables installation process."
 	  Abort
 
-	# Check the tables installation
-	ExecWait "C:\python@PYTHONVERSION@\pythonw.exe -c $\"from PyQt4.QtCore import *$\""
+	# Check the PyQt4.QtCore installation
+	ExecWait "pythonw -c $\"from PyQt4.QtCore import *$\""
 	IfErrors 0 +3
 	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtCore is not \
 	  installed. Aborting the ViTables installation process."
@@ -162,9 +173,7 @@ Section "ViTables @VERSION@" VT
 
   # The examples directory
   SetOutPath $INSTDIR\examples
-  File @REPO_VITABLES@\examples\*.h5
-  SetOutPath $INSTDIR\examples\scripts
-  File /r @REPO_VITABLES@\examples\scripts\*
+  File /r @REPO_VITABLES@\examples\*.*
 
   # The translations directory
   SetOutPath $INSTDIR\translations
