@@ -6,6 +6,9 @@
     <xsl:import href="tldp-chapters.xsl"/>
     <xsl:include href="../common/pytables_common.xsl"/>
 
+    <!-- The output encoding -->
+    <xsl:param name="chunker.output.encoding" select="'UTF-8'"></xsl:param>
+
     <!-- The CSS location -->
     <xsl:param name="html.stylesheet" select="'pytables_style.css'"></xsl:param>
 

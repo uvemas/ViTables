@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** May 01, 2009 **
+INSTALL.txt and setup.py have been updated.
+
+HTML documentation uses utf-8 encoding now.
+
 ** March 11, 2009 **
 Code for creating DBDoc objects was confusing and has been refactored.
 

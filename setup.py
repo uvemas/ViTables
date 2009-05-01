@@ -32,9 +32,9 @@ def checkVersions():
 
     # Check versions
     pyVersion = sys.version_info
-    if pyVersion < (2, 4) :
+    if pyVersion < (2, 5) :
         print "###############################################################"
-        print "You need Python 2.4 or greater to run ViTables!. Exiting..."
+        print "You need Python 2.5 or greater to run ViTables!. Exiting..."
         print "###############################################################"
         sys.exit(1)
 
