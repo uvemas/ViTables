@@ -50,7 +50,7 @@ from PyQt4.QtGui import *
 class InputNodeName(QDialog):
     """
     Dialog for interactively entering a name for a given node.
-    
+
     This dialog is called when a new group is being created and also when
     a node of any kind is being renamed.
 

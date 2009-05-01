@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 01, 2009 **
+Added missing licensing information to several files.
+
 Sources of Users Guide are now distributed in the ViTables tarball.
 
 Procedure for generating the usersguide has been updated.

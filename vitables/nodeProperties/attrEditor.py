@@ -78,7 +78,7 @@ def checkSyntax(value):
 def formatStrValue(dtype, str_value):
     """
     Format the string representation of a value accordingly to its data type.
-    
+
     :Parameters:
 
     - dtype: the value data type

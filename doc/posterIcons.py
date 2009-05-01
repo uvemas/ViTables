@@ -1,13 +1,32 @@
 # -*- coding: utf-8 -*-
 
+#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#
+#       This program is free software: you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation, either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#       Author:  Vicent Mas - vmas@vitables.org
+
 #
 # posterIcons.py
 #
-import sys, os
+import sys
 
-from qt import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-iconsDir = '/home/vmas/vitables/icons/'
+iconsDir = '/home/vmas/ViTables/hg_branches/vitables_default/icons/'
 big_icons = [('file_rw', 'The root node (read-write)'),
     ('file_ro', 'The root node (read-only)'),
     ('dbfilters', 'The root node of the Query Results file'),
@@ -25,42 +44,44 @@ small_icons = [('table', 'A table (heterogeneus dataset) '),
 class Poster(QMainWindow) :
     def __init__(self, *args) :
         apply(QMainWindow.__init__, (self,) + args)
-        # intermediate container
         w = QWidget(self)
-        l = QGridLayout(w, 13, 2, 6, 6)
-        self.makePoster(w)
+        l = QGridLayout(w)
         self.setCentralWidget(w)
-        w.setEraseColor(QColor(Qt.white))
-        self.setEraseColor(QColor(Qt.white))
+        self.makePoster()
 
 
-    def makePoster(self, widget) :
+    def changePalette(self, widget):
+        palette = QPalette()
+        self.palette().setColor(widget.backgroundRole(), Qt.white)
+        widget.setPalette(palette)
+
+
+    def makePoster(self):
+        widget = self.centralWidget()
         layout = widget.layout()
         r = 0
         iconsDict = {'big_icons': big_icons, 'small_icons': small_icons}
         for key in iconsDict.keys():
-            for icon in iconsDict[key] :
+            for (name, caption) in iconsDict[key] :
                 pixmap = QPixmap()
-                image = '%s/%s.png' % ("%s%s" % (iconsDir, key), icon[0])
-                print image
-                pixmap.load(image)
-                text = icon[1]
+                image_path = '%s/%s.png' % ("%s%s" % (iconsDir, key), name)
+                print image_path
+                pixmap.load(image_path)
                 imLabel = QLabel(widget)
                 imLabel.setPixmap(pixmap)
-                imLabel.setEraseColor(QColor(Qt.white))
-                layout.addWidget(imLabel, r, 0)
-                textLabel = QLabel(text,widget)
-                textLabel.setEraseColor(QColor(Qt.white))
-                layout.addWidget(textLabel, r, 1)
+                self.changePalette(imLabel)
+                layout.addWidget(imLabel, r, 0, 1, 1)
+                textLabel = QLabel(caption,widget)
+                self.changePalette(textLabel)
+                layout.addWidget(textLabel, r, 1, 1, 1)
                 r = r + 1
 
 
 def main(args) :
     app = QApplication(args)
     poster = Poster()
-    app.setMainWidget(poster)
     poster.show()
-    app.exec_loop()
+    app.exec_()
 
 if __name__ == '__main__' :
     main(sys.argv)

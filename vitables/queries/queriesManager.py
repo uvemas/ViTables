@@ -51,11 +51,11 @@ import vitables.utils
 
 class QueriesManager(QThread):
     """This is the class in charge of threading the execution of queries.
-    
+
     Making queries in a separated execution thread is an important improvement.
     It allows to query very large tables without freezing the rest of the
     application.
-    
+
     The thread is implemented in a clever way that doesn't interfer with the
     lazy population of the tree of databases view: the query results table is
     stored under a hidden group of the temporary database until the query
@@ -64,11 +64,11 @@ class QueriesManager(QThread):
     is not seen by the lazy population algorithm so it is not added to the
     tree of databases view and neither the user nor ViTables will try to read
     it. So no problems can occur trying to read a partially filled table.
-    
+
     Also no more than one query can be made at the same time on a given table.
     This goal is achieved in a very simple way: tracking the tables currently
     being queried in a data structure (a dictionary at present).
-    
+
     Note: what would happen if several very large tables are being run at the
     same time has not been (yet) checked. They could take all the available CPU
     of all available processors (so the application will be frozen until some

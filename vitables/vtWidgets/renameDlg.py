@@ -54,7 +54,7 @@ from PyQt4.QtGui import *
 class RenameDlg(QDialog):
     """
     Ask user for help when a name issue raises.
-    
+
     Some times naming problems appear when during file editing:
 
     - when a file is being saved as a different one and its name is

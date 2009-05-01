@@ -1,10 +1,27 @@
+#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#
+#       This program is free software: you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation, either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#       Author:  Vicent Mas - vmas@vitables.org
+
 # This is meant to exercise ViTables capability to zoom into
 # multidimensional cells.
 # It also works to check views of multidimensional attributes.
 
 from tables import *
 import numpy
-import numarray.strings
 
 class Particle(IsDescription):
     name = StringCol(16, pos=1)
@@ -12,10 +29,7 @@ class Particle(IsDescription):
     vector = Int32Col(shape=(200,), pos=3)
     matrix1 = Int32Col(shape=(2, 200), pos=4)
     matrix2 = FloatCol(shape=(100, 2), pos=5)
-    # If the column below is uncommented, ViTables loops forever
-    # when trying to visualize them
     matrix3 = FloatCol(shape=(10, 100, 2), pos=5)
-    # Ideally, ViTables should be able to show even the one below
     matrix4 = FloatCol(shape=(2, 10, 100, 2), pos=5)
 
 # Open a file in "w"rite mode
