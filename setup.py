@@ -286,7 +286,9 @@ setup(name = 'ViTables', # The name of the distribution
     ('examples/tables', glob.glob('examples/tables/*.h5')),
     ('examples/tests', glob.glob('examples/tests/*.h5')),
     ('examples/timeseries', glob.glob('examples/timeseries/*.h5')),
+    ('doc', ['doc/usersguide.xml']),
     ('doc', glob.glob('doc/*.pdf')),
+    ('doc/images', glob.glob('doc/images/*.png')),
     ('', ['LICENSE.txt', 'LICENSE.html']),
     ('', ['VERSION'])
     ],

@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 01, 2009 **
+Sources of Users Guide are now distributed in the ViTables tarball.
+
 Procedure for generating the usersguide has been updated.
 
 INSTALL.txt and setup.py have been updated.
