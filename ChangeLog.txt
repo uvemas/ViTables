@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 01, 2009 **
+Procedure for generating the usersguide has been updated.
+
 INSTALL.txt and setup.py have been updated.
 
 HTML documentation uses utf-8 encoding now.
