@@ -281,7 +281,7 @@ def formatTimeContent(content):
     Nicely format the contents of a table widget cell.
 
     Used when:
-    
+
     - the content atom is TimeAtom
     - content belongs to a time serie created via scikits.timeseries module
       and stored in the _dates column of a TimeSeriesTable table

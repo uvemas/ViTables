@@ -61,7 +61,7 @@ from vitables.h5db.nodeItemDelegate import NodeItemDelegate
 class DBsTreeView(QTreeView):
     """
     The tree of DBs view.
-    
+
     This is one of the views of the tree of databases model.
     This view is used to display the tree of open databases. Each top level
     node of the tree contains the object tree of a database.

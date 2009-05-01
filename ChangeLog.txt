@@ -1,5 +1,16 @@
 ViTables ChangeLog
 ==================
+** May 01, 2009 **
+Added missing licensing information to several files.
+
+Sources of Users Guide are now distributed in the ViTables tarball.
+
+Procedure for generating the usersguide has been updated.
+
+INSTALL.txt and setup.py have been updated.
+
+HTML documentation uses utf-8 encoding now.
+
 ** March 11, 2009 **
 Code for creating DBDoc objects was confusing and has been refactored.
 

@@ -8,7 +8,7 @@
     <xsl:import href="tldp-print.xsl"/>
     <xsl:import href="bookmarks_fop.xsl"/>
     <xsl:include href="graphical_titlepage.xsl"/>
-    <xsl:include href="../common/pytables_common.xsl"/>
+    <xsl:include href="../common/custom_common.xsl"/>
 
     <!-- Render correctly the greater equal symbol -->
     <xsl:template	match="symbol[@role='geq']"><fo:inline font-family="Symbol">&#x2265;</fo:inline></xsl:template>

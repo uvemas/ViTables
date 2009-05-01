@@ -1,5 +1,23 @@
 #!/usr/bin/env python
 
+#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#
+#       This program is free software: you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation, either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#       Author:  Vicent Mas - vmas@vitables.org
+
 #----------------------------------------------------------------------
 # Setup script for the vitables package
 
@@ -32,9 +50,9 @@ def checkVersions():
 
     # Check versions
     pyVersion = sys.version_info
-    if pyVersion < (2, 4) :
+    if pyVersion < (2, 5) :
         print "###############################################################"
-        print "You need Python 2.4 or greater to run ViTables!. Exiting..."
+        print "You need Python 2.5 or greater to run ViTables!. Exiting..."
         print "###############################################################"
         sys.exit(1)
 
@@ -286,7 +304,9 @@ setup(name = 'ViTables', # The name of the distribution
     ('examples/tables', glob.glob('examples/tables/*.h5')),
     ('examples/tests', glob.glob('examples/tests/*.h5')),
     ('examples/timeseries', glob.glob('examples/timeseries/*.h5')),
+    ('doc', ['doc/usersguide.xml']),
     ('doc', glob.glob('doc/*.pdf')),
+    ('doc/images', glob.glob('doc/images/*.png')),
     ('', ['LICENSE.txt', 'LICENSE.html']),
     ('', ['VERSION'])
     ],
