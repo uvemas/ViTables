@@ -200,8 +200,8 @@ def add_unix_icons():
         # Then, the scalable icon
         dname = os.path.join(data_dir, "icons/hicolor/scalable/apps")
         if os.path.isdir(dname):
-            print "@copying %s -> %s" % ("unixapp/vitables.svgz", dname)
-            os.system("cp %s %s" % ("unixapp/vitables.svgz", dname))
+            print "@copying %s -> %s" % ("unixapp/vitables.svg", dname)
+            os.system("cp %s %s" % ("unixapp/vitables.svg", dname))
         # Finally, the .desktop file
         dname = os.path.join(data_dir, "applications")
         if os.path.isdir(dname):
