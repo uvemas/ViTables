@@ -1,5 +1,7 @@
 include *.txt VERSION LICENSE.html
 recursive-include unixapp vitables.desktop vitables.svg
+recursive-include vitables/queries *.ui
+recursive-include vitables/preferences *.ui
 recursive-include doc Makefile usersguide.xml usersguide.pdf
 recursive-include doc/images *.png
 recursive-include examples *.h5 scripts/*.py
