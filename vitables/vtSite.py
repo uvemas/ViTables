@@ -23,26 +23,21 @@
 """
 Site configuration module.
 
-This module allows for testing ViTables IN the source tree.
-In Linux and Windows boxes the module is rewritten at installing time.
+This module indicates the full install path to vitables top level module
 Mac OS X boxes use the module as is.
 
 Misc variables:
 
 * __docformat__
 * INSTALLDIR
-* DATADIR
-* VERSION
 
 """
 
+import os.path
+
 __docformat__ = 'restructuredtext'
 
-INSTALLDIR = '.'
+INSTALLDIR = os.path.dirname(__file__)
+ICONDIR = os.path.join(INSTALLDIR, "icons")
+DOCDIR = os.path.join(INSTALLDIR, "htmldocs")
 
-import sys as _sys
-if (_sys.platform == 'darwin'
-    and getattr(_sys, 'frozen', None) == 'macosx_app'):
-    import __main__
-    import os.path as _path
-    INSTALLDIR = _path.dirname(_path.abspath(__main__.__file__))
