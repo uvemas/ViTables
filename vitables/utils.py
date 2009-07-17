@@ -104,11 +104,11 @@ def createIcons(large_icons, small_icons, icons_dict):
     for name in all_icons:
         icon = QIcon()
         if name in large_icons:
-            pixmap = QPixmap(':/icons/big_icons/%s.png' % name)
+            pixmap = QPixmap(os.path.join(ICONDIR,'big_icons','%s.png') % name)
             pixmap.scaled(QSize(22, 22), Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
         if name in small_icons:
-            pixmap = QPixmap(':/icons/small_icons/%s.png' % name)
+            pixmap = QPixmap(os.path.join(ICONDIR,'small_icons','%s.png') % name)
             icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
         icons_dict[name] = icon
 
@@ -116,7 +116,7 @@ def createIcons(large_icons, small_icons, icons_dict):
     icons_dict[''] = QIcon()
 
     # Application icon
-    icons_dict['vitables_wm'] = QIcon(':/icons/vitables_wm.png')
+    icons_dict['vitables_wm'] = QIcon(os.path.join(ICONDIR,'vitables_wm.png'))
 def getIcons():
     """Return the icons dictionary to be used by the main window."""
 

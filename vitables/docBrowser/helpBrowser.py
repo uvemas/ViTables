@@ -67,7 +67,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.utils
-import vitables.qrc_resources
+
 from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 
@@ -171,7 +171,7 @@ class HelpBrowser(QObject) :
 
         src = QDir().fromNativeSeparators(src) # src can be a QString
         basename = os.path.basename(unicode(src))
-        url = QUrl("qrc:/doc/html/%s" % basename)
+        url = QUrl(os.path.join(DOCDIR, basename))
         self.gui.text_browser.setSource(url)
 
 
