@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** July 21, 2009 **
+The "Node properties" dialog is generated automatically (via Qt Designer) now.
+
 ** May 01, 2009 **
 Added missing licensing information to several files.
 

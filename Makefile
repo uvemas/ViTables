@@ -13,6 +13,7 @@ resources: vtdoc resources.qrc
 uis:
 	pyuic4 -o vitables/queries/queryUI.py vitables/queries/query_dlg.ui
 	pyuic4 -o vitables/preferences/settingsUI.py vitables/preferences/settings_dlg.ui
+	pyuic4 -o vitables/nodeProperties/nodePropUI.py vitables/nodeProperties/prop_dlg.ui
 
 unix: resources uis
 	python setup.py sdist

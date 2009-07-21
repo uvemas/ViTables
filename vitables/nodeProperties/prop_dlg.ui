@@ -1,0 +1,626 @@
+<ui version="4.0" >
+ <class>NodePropDialog</class>
+ <widget class="QDialog" name="NodePropDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>438</width>
+    <height>269</height>
+   </rect>
+  </property>
+  <property name="palette" >
+   <palette>
+    <active>
+     <colorrole role="Base" >
+      <brush brushstyle="SolidPattern" >
+       <color alpha="255" >
+        <red>239</red>
+        <green>239</green>
+        <blue>239</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </active>
+    <inactive>
+     <colorrole role="Base" >
+      <brush brushstyle="SolidPattern" >
+       <color alpha="255" >
+        <red>239</red>
+        <green>239</green>
+        <blue>239</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </inactive>
+    <disabled>
+     <colorrole role="Base" >
+      <brush brushstyle="SolidPattern" >
+       <color alpha="255" >
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </disabled>
+   </palette>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QTabWidget" name="tabw" >
+     <property name="palette" >
+      <palette>
+       <active>
+        <colorrole role="Base" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>239</red>
+           <green>239</green>
+           <blue>239</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="AlternateBase" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>255</red>
+           <green>255</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Base" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>239</red>
+           <green>239</green>
+           <blue>239</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="AlternateBase" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>255</red>
+           <green>255</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Base" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>255</red>
+           <green>255</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="AlternateBase" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>255</red>
+           <green>255</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="whatsThis" >
+      <string/>
+     </property>
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="general_page" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>416</width>
+        <height>185</height>
+       </rect>
+      </property>
+      <property name="palette" >
+       <palette>
+        <active>
+         <colorrole role="Base" >
+          <brush brushstyle="SolidPattern" >
+           <color alpha="255" >
+            <red>239</red>
+            <green>239</green>
+            <blue>239</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </active>
+        <inactive>
+         <colorrole role="Base" >
+          <brush brushstyle="SolidPattern" >
+           <color alpha="255" >
+            <red>239</red>
+            <green>239</green>
+            <blue>239</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </inactive>
+        <disabled>
+         <colorrole role="Base" >
+          <brush brushstyle="SolidPattern" >
+           <color alpha="255" >
+            <red>255</red>
+            <green>255</green>
+            <blue>255</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </disabled>
+       </palette>
+      </property>
+      <attribute name="title" >
+       <string>&amp;General</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5" >
+       <item>
+        <layout class="QVBoxLayout" name="general_layout" >
+         <item>
+          <widget class="QGroupBox" name="database_gb" >
+           <property name="title" >
+            <string>Database</string>
+           </property>
+           <layout class="QGridLayout" name="database_layout" >
+            <item row="0" column="0" >
+             <widget class="QLabel" name="name_label" >
+              <property name="text" >
+               <string>Name:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QLineEdit" name="name_ledit" >
+              <property name="frame" >
+               <bool>false</bool>
+              </property>
+              <property name="readOnly" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="path_label" >
+              <property name="text" >
+               <string>Path:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QLineEdit" name="path_ledit" >
+              <property name="frame" >
+               <bool>false</bool>
+              </property>
+              <property name="readOnly" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" >
+             <widget class="QLabel" name="type_label" >
+              <property name="text" >
+               <string>Type:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QLineEdit" name="type_ledit" >
+              <property name="frame" >
+               <bool>false</bool>
+              </property>
+              <property name="readOnly" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="bottom_gb" >
+           <property name="title" >
+            <string>GroupBox</string>
+           </property>
+           <layout class="QGridLayout" name="bottomgb_layout" />
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="sysattr_page" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>416</width>
+        <height>185</height>
+       </rect>
+      </property>
+      <property name="palette" >
+       <palette>
+        <active>
+         <colorrole role="Base" >
+          <brush brushstyle="SolidPattern" >
+           <color alpha="255" >
+            <red>239</red>
+            <green>239</green>
+            <blue>239</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </active>
+        <inactive>
+         <colorrole role="Base" >
+          <brush brushstyle="SolidPattern" >
+           <color alpha="255" >
+            <red>239</red>
+            <green>239</green>
+            <blue>239</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </inactive>
+        <disabled>
+         <colorrole role="Base" >
+          <brush brushstyle="SolidPattern" >
+           <color alpha="255" >
+            <red>255</red>
+            <green>255</green>
+            <blue>255</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </disabled>
+       </palette>
+      </property>
+      <attribute name="title" >
+       <string>&amp;System attributes</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2" >
+       <item>
+        <layout class="QGridLayout" name="sysattr_layout" >
+         <item row="0" column="0" >
+          <widget class="QLabel" name="sattr_label" >
+           <property name="text" >
+            <string>System attributes:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QLineEdit" name="sattr_ledit" >
+           <property name="frame" >
+            <bool>false</bool>
+           </property>
+           <property name="readOnly" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2" >
+          <widget class="QTableView" name="sys_table" >
+           <property name="palette" >
+            <palette>
+             <active>
+              <colorrole role="Base" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="AlternateBase" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </active>
+             <inactive>
+              <colorrole role="Base" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="AlternateBase" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </inactive>
+             <disabled>
+              <colorrole role="Base" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="AlternateBase" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </disabled>
+            </palette>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="2" >
+          <widget class="QLineEdit" name="scc_display" >
+           <property name="readOnly" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="userattrs_page" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>416</width>
+        <height>185</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>&amp;User Attributes</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4" >
+       <item>
+        <layout class="QGridLayout" name="userattr_layout" >
+         <item row="0" column="2" >
+          <widget class="QLabel" name="uattr_label" >
+           <property name="text" >
+            <string>User attributes:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3" >
+          <widget class="QLineEdit" name="uattr_ledit" >
+           <property name="frame" >
+            <bool>false</bool>
+           </property>
+           <property name="readOnly" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2" colspan="2" >
+          <widget class="QTableView" name="user_table" >
+           <property name="palette" >
+            <palette>
+             <active>
+              <colorrole role="Base" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="AlternateBase" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </active>
+             <inactive>
+              <colorrole role="Base" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="AlternateBase" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </inactive>
+             <disabled>
+              <colorrole role="Base" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="AlternateBase" >
+               <brush brushstyle="SolidPattern" >
+                <color alpha="255" >
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </disabled>
+            </palette>
+           </property>
+           <property name="whatsThis" >
+            <string comment="Help text for the User Attributes page" >&lt;qt>
+        &lt;h3>User's attributes editing table&lt;/h3>
+        Here you can perform the editing of user's attributes for
+        this node. It is quite straightforward. &lt;p>For adding an
+        attribute click the &lt;b>Add&lt;/b> button. A new row will
+        be added to the table. Enter the attribute name and its
+        value in the corresponding cells. Finally, select the
+        attribute datatype in the combobox of the DataType column.
+        In order to delete an attribute just select it by clicking
+        any of its cells, then click the &lt;b>Delete&lt;/b> button.&lt;/p>
+        &lt;p>Beware that PyTables stores scalar attributes as numpy
+        scalar arrays so you will be unable to save them as Python
+        objects even if you choose the Python datatype in the
+        combobox selector. Also note that multidimensional attributes
+         other than Python lists and tuples are not supported.&lt;/p>
+        &lt;/qt></string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2" colspan="2" >
+          <widget class="QLineEdit" name="ucc_display" >
+           <property name="readOnly" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item rowspan="5" row="4" column="0" colspan="5" >
+          <layout class="QHBoxLayout" name="horizontalLayout" >
+           <item>
+            <spacer name="horizontalSpacer_2" >
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="add_button" >
+             <property name="text" >
+              <string>&amp;Add</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="del_button" >
+             <property name="text" >
+              <string>&amp;Delete</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="help_button" >
+             <property name="text" >
+              <string>&amp;What's this</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer" >
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttons_box" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttons_box</sender>
+   <signal>accepted()</signal>
+   <receiver>NodePropDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttons_box</sender>
+   <signal>rejected()</signal>
+   <receiver>NodePropDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

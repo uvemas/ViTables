@@ -58,9 +58,10 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 import vitables.utils
+from vitables.nodeProperties import nodePropUI
 import vitables.nodeProperties.attrEditor as attrEditor
 
-class NodePropDlg(QDialog):
+class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
     """
     Node properties dialog.
 
@@ -77,6 +78,7 @@ class NodePropDlg(QDialog):
         """
 
         QDialog.__init__(self, qApp.activeWindow())
+        self.setupUi(self)
 
         # The dialog caption
         caption_for_type = {
@@ -89,26 +91,10 @@ class NodePropDlg(QDialog):
             u'array': self.__tr('Array properties', 'Dialog caption'), }
         self.setWindowTitle(caption_for_type[info.node_type])
 
-        # The tabbed widget
-        self.tabw = QTabWidget(self)
-        general_page = self.makeGeneralPage(info)
-        sysattrs_page = self.makeSysAttrsPage(info)
-        userattrs_page = self.makeUserAttrsPage(info)
-        self.tabw.addTab(general_page, self.__tr('&General', 
-            'Title of the first dialog tab'))
-        self.tabw.addTab(sysattrs_page, self.__tr('&System Attributes',
-            'Title of the second dialog tab'))
-        self.tabw.addTab(userattrs_page, self.__tr('&User Attributes',
-            'Title of the second dialog tab'))
-
-        # Dialog buttons
-        self.buttons_box = QDialogButtonBox(QDialogButtonBox.Ok|
-                                            QDialogButtonBox.Cancel)
-
-        # Dialog layout
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.tabw)
-        layout.addWidget(self.buttons_box)
+        # Customise the dialog's pages
+        self.makeGeneralPage(info)
+        self.makeSysAttrsPage(info)
+        self.makeUserAttrsPage(info)
 
         # Variables used for checking the table of user attributes
         self.mode = info.mode
@@ -129,106 +115,69 @@ class NodePropDlg(QDialog):
 
 
     def makeGeneralPage(self, info):
-        """Make the General page of the Properties dialog."""
+        """Make the General page of the Properties dialog.
 
-        # The page contains two groupboxes that are laid out vertically
-        page = QWidget()
-        page_layout = QVBoxLayout(page)
+        The page contains two groupboxes that are laid out vertically.
+        """
 
         ###############################
         # Setup the Database groupbox #
         ###############################
-        database_gb = QGroupBox(page)
-        database_layout = QGridLayout(database_gb)
-        database_gb.setTitle(self.__tr('Database', 'Title of a groupbox'))
-
-        # Nodename/filename label
         if info.node_type == u'root group':
-            name = info.filename
-        else:
-            name = info.nodename
-        name_label = QLabel(self.__tr('Name:', 'A label'), database_gb)
-        name_ledit = vitables.utils.customLineEdit(database_gb)
-        name_ledit.setText(name)
-        database_layout.addWidget(name_label, 0, 0)
-        database_layout.addWidget(name_ledit, 0, 1)
-
-        # Nodepath/filepath label
-        if info.node_type == u'root group':
-            path = info.filepath
-        else:
-            path = info.nodepath
-        path_label = QLabel(self.__tr('Path:', 'A label'), database_gb)
-        path_ledit = vitables.utils.customLineEdit(database_gb)
-        path_ledit.setText(path)
-        path_ledit.setToolTip(path)
-        database_layout.addWidget(path_label, 1, 0)
-        database_layout.addWidget(path_ledit, 1, 1)
-
-        # Node type or file format
-        type_label = QLabel(self.__tr('Type:', 'A label'), database_gb)
-        type_ledit = vitables.utils.customLineEdit(database_gb)
-        if info.node_type == u'root group':
-            type_ledit.setText(info.file_type)
-        else:
-            type_ledit.setText(info.node_type)
-        database_layout.addWidget(type_label, 2, 0)
-        database_layout.addWidget(type_ledit, 2, 1)
-
-        # Database access mode
-        if info.node_type == u'root group':
+            self.name_ledit.setText(info.filename)
+            self.path_ledit.setText(info.filepath)
+            self.path_ledit.setToolTip(info.filepath)
+            self.type_ledit.setText(info.file_type)
             mode_label = QLabel(self.__tr('Access mode:', 'A label'), 
-                                    database_gb)
-            mode_ledit = vitables.utils.customLineEdit(database_gb)
+                                    self.database_gb)
+            mode_ledit = vitables.utils.customLineEdit(self.database_gb)
             mode_ledit.setText(info.mode)
-            database_layout.addWidget(mode_label, 3, 0)
-            database_layout.addWidget(mode_ledit, 3, 1)
+            self.database_layout.addWidget(mode_label, 3, 0)
+            self.database_layout.addWidget(mode_ledit, 3, 1)
+        else:
+            self.name_ledit.setText(info.nodename)
+            self.path_ledit.setText(info.nodepath)
+            self.path_ledit.setToolTip(info.nodepath)
+            self.type_ledit.setText(info.node_type)
 
-        #############################
-        # Setup the bottom groupbox #
-        #############################
+        ############################################
+        # Setup the Root group/Group/Leaf groupbox #
+        ############################################
         if info.node_type == u'root group':
             title = self.__tr('Root group', 'Title of a groupbox')
-            bottom_gb = self.groupGB(info, page, title)
+            self.groupGB(info, title)
         elif info.node_type == u'group':
             title = self.__tr('Group', 'Title of a groupbox')
-            bottom_gb = self.groupGB(info, page, title)
+            self.groupGB(info, title)
         elif info.node_type.count(u'array'):
-            bottom_gb = self.leafGB(info, page, table=False)
+            self.leafGB(info, table=False)
         else:
-            bottom_gb = self.leafGB(info, page, table=True)
-
-        # Page layout
-        page_layout.addWidget(database_gb)
-        page_layout.addWidget(bottom_gb)
-
-        return page
+            self.leafGB(info, table=True)
 
 
-    def groupGB(self, info, page, title):
+
+    def groupGB(self, info, title):
         """Make the groupbox of the General page for File/Group instances."""
 
         #######################################
         # Setup the Group/Root group groupbox #
         #######################################
-        groupbox = QGroupBox(page)
-        layout = QGridLayout(groupbox)
-        groupbox.setTitle(title)
+        self.bottom_gb.setTitle(title)
 
         # Number of children label
         label = QLabel(self.__tr('Number of children:', 'A label'), 
-                            groupbox)
-        ledit = vitables.utils.customLineEdit(groupbox)
-        ledit.setText(vitables.utils.toUnicode(len(info.hanging_nodes)))
-        layout.addWidget(label, 0, 0)
-        layout.addWidget(ledit, 0, 1)
+                            self.bottom_gb)
+        ledit = vitables.utils.customLineEdit(self.bottom_gb)
+        ledit.setText(unicode(len(info.hanging_nodes)))
+        self.bottomgb_layout.addWidget(label, 0, 0)
+        self.bottomgb_layout.addWidget(ledit, 0, 1)
 
         # The group's children table
-        table = QTableView(groupbox)
+        table = QTableView(self.bottom_gb)
         table.verticalHeader().hide()
         table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         background = table.palette().brush(QPalette.Window).color()
-        table.setStyleSheet(u'background-color: %s' % background.name())
+        table.setStyleSheet("background-color: %s" % background.name())
         self.children_model = QStandardItemModel()
         self.children_model.setHorizontalHeaderLabels([
             self.__tr('Child name', 
@@ -237,74 +186,68 @@ class NodePropDlg(QDialog):
             'Second column header of the table')])
         table.setModel(self.children_model)
         for name in info.hanging_groups.keys():
-            name_item = QStandardItem(vitables.utils.toUnicode(name))
+            name_item = QStandardItem(name)
             name_item.setEditable(False)
             type_item = QStandardItem(self.__tr('group'))
             type_item.setEditable(False)
             self.children_model.appendRow([name_item, type_item])
         for name in info.hanging_leaves.keys():
-            name_item = QStandardItem(vitables.utils.toUnicode(name))
+            name_item = QStandardItem(name)
             name_item.setEditable(False)
             type_item = QStandardItem(self.__tr('leaf'))
             type_item.setEditable(False)
             self.children_model.appendRow([name_item, type_item])
-        layout.addWidget(table, 1, 0, 1, 2)
+        self.bottomgb_layout.addWidget(table, 1, 0, 1, 2)
 
-        return groupbox
-
-
-    def leafGB(self, info, page, table=False):
+    def leafGB(self, info, table=False):
         """Make the groupbox of the General page for Leaf nodes."""
 
         ################################
         # Setup the Dataspace groupbox #
         ################################
-        groupbox = QGroupBox(page)
-        layout = QGridLayout(groupbox)
-        groupbox.setTitle(self.__tr('Dataspace', 'Title of a groupbox'))
+        self.bottom_gb.setTitle(self.__tr('Dataspace', 'Title of a groupbox'))
 
         # Number of dimensions label
-        dim_label = QLabel(self.__tr('Dimensions:', 'A label'), groupbox)
-        dim_ledit = vitables.utils.customLineEdit(groupbox)
-        dim_ledit.setText(vitables.utils.toUnicode(len(info.shape)))
-        layout.addWidget(dim_label, 0, 0)
-        layout.addWidget(dim_ledit, 0, 1)
+        dim_label = QLabel(self.__tr('Dimensions:', 'A label'), self.bottom_gb)
+        dim_ledit = vitables.utils.customLineEdit(self.bottom_gb)
+        dim_ledit.setText(unicode(len(info.shape)))
+        self.bottomgb_layout.addWidget(dim_label, 0, 0)
+        self.bottomgb_layout.addWidget(dim_ledit, 0, 1)
 
         # Shape label
-        shape_label = QLabel(self.__tr('Shape:', 'A label'), groupbox)
-        shape_ledit = vitables.utils.customLineEdit(groupbox)
-        shape_ledit.setText(vitables.utils.toUnicode(info.shape))
-        layout.addWidget(shape_label, 1, 0)
-        layout.addWidget(shape_ledit, 1, 1)
+        shape_label = QLabel(self.__tr('Shape:', 'A label'), self.bottom_gb)
+        shape_ledit = vitables.utils.customLineEdit(self.bottom_gb)
+        shape_ledit.setText(unicode(info.shape))
+        self.bottomgb_layout.addWidget(shape_label, 1, 0)
+        self.bottomgb_layout.addWidget(shape_ledit, 1, 1)
 
         # Data type label
         dtype_label = QLabel(self.__tr('Data type:', 'A label'), 
-            groupbox)
-        dtype_ledit = vitables.utils.customLineEdit(groupbox)
+            self.bottom_gb)
+        dtype_ledit = vitables.utils.customLineEdit(self.bottom_gb)
         dtype_ledit.setText(info.dtype)
-        layout.addWidget(dtype_label, 2, 0)
-        layout.addWidget(dtype_ledit, 2, 1)
+        self.bottomgb_layout.addWidget(dtype_label, 2, 0)
+        self.bottomgb_layout.addWidget(dtype_ledit, 2, 1)
 
         # Compression library label
         compression_label = QLabel(self.__tr('Compression:', 'A label'), 
-            groupbox)
-        compression_ledit = vitables.utils.customLineEdit(groupbox)
+            self.bottom_gb)
+        compression_ledit = vitables.utils.customLineEdit(self.bottom_gb)
         if info.filters.complib is None:
-            compression_ledit.setText(u'uncompressed')
+            compression_ledit.setText(unicode('uncompressed', 'utf_8'))
         else:
-            compression_ledit.setText(\
-                vitables.utils.toUnicode(info.filters.complib))
-        layout.addWidget(compression_label, 3, 0)
-        layout.addWidget(compression_ledit, 3, 1)
+            compression_ledit.setText(unicode(info.filters.complib, 'utf_8'))
+        self.bottomgb_layout.addWidget(compression_label, 3, 0)
+        self.bottomgb_layout.addWidget(compression_ledit, 3, 1)
 
         # Information about the fields of Table instances
         if table:
             # The Table's fields description
-            table = QTableView(groupbox)
+            table = QTableView(self.bottom_gb)
             table.verticalHeader().hide()
             table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
             background = table.palette().brush(QPalette.Window).color()
-            table.setStyleSheet(u'background-color: %s' % background.name())
+            table.setStyleSheet("background-color: %s" % background.name())
             self.fields_model = QStandardItemModel()
             self.fields_model.setHorizontalHeaderLabels([
                 self.__tr('Field name', 
@@ -318,9 +261,8 @@ class NodePropDlg(QDialog):
             # Fill the table. Nested fields will appear as (colname, nested, -)
             seen_paths = []
             for pathname in info.columns_pathnames:
-                pathname = vitables.utils.toUnicode(pathname)
-                if pathname.count(u'/'):
-                    field_name = pathname.split(u'/')[0]
+                if pathname.count('/'):
+                    field_name = pathname.split('/')[0]
                     if field_name in seen_paths:
                         continue
                     else:
@@ -332,40 +274,28 @@ class NodePropDlg(QDialog):
                     shape_item = QStandardItem(self.__tr('-'))
                     shape_item.setEditable(False)
                 else:
-                    pathname_item = QStandardItem(pathname)
+                    pathname_item = QStandardItem(unicode(pathname, 
+                                                                'utf_8'))
                     pathname_item.setEditable(False)
                     type_item = QStandardItem(\
-                        vitables.utils.toUnicode(info.columns_types[pathname]))
+                            unicode(info.columns_types[pathname], 'utf_8'))
                     type_item.setEditable(False)
                     shape_item = QStandardItem(\
-                        vitables.utils.toUnicode(info.columns_shapes[pathname]))
+                                        unicode(info.columns_shapes[pathname]))
                     shape_item.setEditable(False)
                 self.fields_model.appendRow([pathname_item, type_item, 
                                             shape_item])
-            layout.addWidget(table, 4, 0, 1, 2)
-
-        return groupbox
-
-
+            self.bottomgb_layout.addWidget(table, 4, 0, 1, 2)
     def makeSysAttrsPage(self, info):
         """Make the System attributes page of the Properties dialog."""
 
-        # The page contains a label and a table that laid out vertically
-        page = QWidget()
-        page_layout = QGridLayout(page)
-
         # Number of attributes label
-        nattr_label = QLabel(self.__tr('System attributes:', 'A label'), 
-                                    page)
-        nattr_ledit = vitables.utils.customLineEdit(page)
-        nattr_ledit.setText(vitables.utils.toUnicode(len(info.system_attrs)))
-        page_layout.addWidget(nattr_label, 0, 0)
-        page_layout.addWidget(nattr_ledit, 0, 1)
+        self.sattr_ledit.setText(\
+            vitables.utils.toUnicode(len(info.system_attrs)))
 
         # Table of system attributes
-        sys_table = QTableView(page)
-        sys_table.verticalHeader().hide()
-        sys_table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+        self.sys_table.verticalHeader().hide()
+        self.sys_table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         self.sysattr_model = QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
             self.__tr('Name', 
@@ -374,11 +304,11 @@ class NodePropDlg(QDialog):
             'Second column header of the table'), 
             self.__tr('Datatype', 
             'Third column header of the table')])
-        sys_table.setModel(self.sysattr_model)
+        self.sys_table.setModel(self.sysattr_model)
 
         # Fill the table
-        bg_brush = page.palette().brush(QPalette.Background)
-        base_brush = page.palette().brush(QPalette.Base)
+        bg_brush = self.sys_table.palette().brush(QPalette.Window)
+        base_brush = self.sys_table.palette().brush(QPalette.Base)
         for name, value in info.system_attrs.items():
             name = vitables.utils.toUnicode(name)
             name_item = QStandardItem(name)
@@ -430,37 +360,21 @@ class NodePropDlg(QDialog):
                 value_item.setEditable(True)
                 value_item.setBackground(base_brush)
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
-        page_layout.addWidget(sys_table, 1, 0, 1, 2)
 
         # The cell contents displayer
-        self.scc_display = vitables.utils.customLineEdit(page)
-        self.scc_display.setFrame(True)
-        page_layout.addWidget(self.scc_display, 2, 0, 1, 2)
-
-        self.connect(sys_table, SIGNAL('clicked(QModelIndex)'), 
+        self.connect(self.sys_table, SIGNAL('clicked(QModelIndex)'), 
                                 self.slotDisplayCellContent)
-
-        return page
 
     def makeUserAttrsPage(self, info):
         """Make the User attributes page of the Properties dialog."""
 
         self.user_attrs_before = []
-        # The page contains a label, a table and a group of buttons.
-        # This components are laid out vertically
-        page = QWidget()
-        page_layout = QGridLayout(page)
 
         # Number of attributes label
-        nattr_label = QLabel(self.__tr('User attributes:', 'A label'), 
-                                    page)
-        nattr_ledit = vitables.utils.customLineEdit(page)
-        nattr_ledit.setText(vitables.utils.toUnicode(len(info.user_attrs)))
-        page_layout.addWidget(nattr_label, 0, 0)
-        page_layout.addWidget(nattr_ledit, 0, 1)
+        self.uattr_ledit.setText(\
+            vitables.utils.toUnicode(len(info.user_attrs)))
 
         # Table of user attributes
-        self.user_table = QTableView(page)
         self.user_table.verticalHeader().hide()
         self.user_table.horizontalHeader().\
                         setResizeMode(QHeaderView.Stretch)
@@ -481,8 +395,8 @@ class NodePropDlg(QDialog):
             """string unicode python""")
         dtypes_list = QStringList(datatypes.split(u' '))
 
-        bg_brush = page.palette().brush(QPalette.Background)
-        base_brush = page.palette().brush(QPalette.Base)
+        bg_brush = self.user_table.palette().brush(QPalette.Window)
+        base_brush = self.user_table.palette().brush(QPalette.Base)
         for name, value in info.user_attrs.items():
             name_item = QStandardItem(vitables.utils.toUnicode(name))
             dtype_item = QStandardItem()
@@ -530,49 +444,11 @@ class NodePropDlg(QDialog):
                 unicode(value_item.text()), unicode(dtypes_combo.currentText())))
         self.user_attrs_before.sort()
 
-        page_layout.addWidget(self.user_table, 1, 0, 1, 2)
-
-        self.user_table.setWhatsThis(self.__tr(
-            """<qt>
-            <h3>User's attributes editing table</h3>
-            Here you can perform the editing of user's attributes for
-            this node. It is quite straightforward. <p>For adding an
-            attribute click the <b>Add</b> button. A new row will
-            be added to the table. Enter the attribute name and its
-            value in the corresponding cells. Finally, select the
-            attribute datatype in the combobox of the DataType column.
-            In order to delete an attribute just select it by clicking
-            any of its cells, then click the <b>Delete</b> button.</p>
-            <p>Beware that PyTables stores scalar attributes as numpy
-            scalar arrays so you will be unable to save them as Python
-            objects even if you choose the Python datatype in the
-            combobox selector. Also note that multidimensional attributes
-             other than Python lists and tuples are not supported.</p>
-            </qt>""",
-            'Help text for the User Attributes page')
-            )
-
-        # The cell contents displayer
-        self.ucc_display = vitables.utils.customLineEdit(page)
-        self.ucc_display.setFrame(True)
-        page_layout.addWidget(self.ucc_display, 2, 0, 1, 2)
-
         # The group of buttons Add, Delete, What's This
-        self.page_buttons = QButtonGroup(page)
-        add_button = QPushButton('&Add')
-        del_button = QPushButton('&Delete')
-        help_button = QPushButton("&What's This")
-        self.page_buttons.addButton(add_button, 0)
-        self.page_buttons.addButton(del_button, 1)
-        self.page_buttons.addButton(help_button, 2)
-
-        buttons_layout = QHBoxLayout()
-        buttons_layout.addStretch(1)
-        buttons_layout.addWidget(add_button)
-        buttons_layout.addWidget(del_button)
-        buttons_layout.addWidget(help_button)
-        buttons_layout.addStretch(1)
-        page_layout.addLayout(buttons_layout, 3, 0, 1, 2)
+        self.page_buttons = QButtonGroup(self.userattrs_page)
+        self.page_buttons.addButton(self.add_button, 0)
+        self.page_buttons.addButton(self.del_button, 1)
+        self.page_buttons.addButton(self.help_button, 2)
 
         # If the database is in read-only mode user attributes cannot be edited
         if info.mode == u'read-only':
@@ -581,14 +457,12 @@ class NodePropDlg(QDialog):
 
         self.connect(self.user_table, SIGNAL('clicked(QModelIndex)'), 
                                 self.slotDisplayCellContent)
-        self.connect(help_button, SIGNAL('clicked()'), 
+        self.connect(self.help_button, SIGNAL('clicked()'), 
                                 QWhatsThis.enterWhatsThisMode)
-        self.connect(add_button, SIGNAL('clicked()'), 
+        self.connect(self.add_button, SIGNAL('clicked()'), 
                                 self.slotAddAttr)
-        self.connect(del_button, SIGNAL('clicked()'), 
+        self.connect(self.del_button, SIGNAL('clicked()'), 
                                 self.slotDelAttr)
-
-        return page
 
 
     def slotDisplayCellContent(self, index):
@@ -619,7 +493,6 @@ class NodePropDlg(QDialog):
         This slot is connected to the clicked signal of the ``Add`` button.
         """
 
-        # Add a new empty row to the User Attributes table
         name_item = QStandardItem()
         value_item = QStandardItem()
         dtype_item = QStandardItem()
