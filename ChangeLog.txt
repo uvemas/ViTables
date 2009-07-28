@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** July 28, 2009 **
+A simple plugin framework has been implemented.
+
 ** July 21, 2009 **
 The "Node properties" dialog is generated automatically (via Qt Designer) now.
 

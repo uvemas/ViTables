@@ -16,4 +16,5 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['export_csv', 'time_series']
+__all__ = ['pluginsManager', 'export_csv', 'time_series']
+__path__ = ['vitables/plugins']

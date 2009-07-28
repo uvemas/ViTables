@@ -405,8 +405,3 @@ def getLicense():
     return license_text
 
 
-def registeredPlugins():
-    """The list of found plugins.
-    """
-    from vitables.plugins import __all__
-    return __all__

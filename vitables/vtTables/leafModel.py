@@ -77,9 +77,6 @@ class LeafModel(QAbstractTableModel):
         self.data_source = rbuffer.data_source
         self.rbuffer = rbuffer
 
-        # The indices of columns containing time series (if any)
-        self.time_cols = []
-
         # The number of digits of the last row
         self.last_row_width = len(unicode(self.rbuffer.leaf_numrows))
 
@@ -116,19 +113,8 @@ class LeafModel(QAbstractTableModel):
 
         self.formatContent = vitables.utils.formatArrayContent
 
-        # Format time series (if they are found)
-        plugins = vitables.utils.registeredPlugins()
-        if 'time_series' in plugins:
-            import vitables.plugins.time_series as time_series
-            ts_formatter = time_series.TSFormatter(self.data_source)
-            self.time_cols = ts_formatter.ts_positions
-            if self.time_cols != []:
-                if ts_formatter.ts_kind == 'scikits_ts':
-                    import scikits.timeseries as ts           
-                    self.ts_frequency = ts_formatter.ts_frequency
-                self.formatTime = ts_formatter.formatTime
-                if self.time_cols == [-1]:
-                    self.formatContent = self.formatTime
+        # Format time series (if they are found) are formatted transparently
+        # via the time_series.py plugin
 
         if not isinstance(self.data_source, tables.Table):
             # Leaf is some kind of PyTables array
@@ -185,8 +171,6 @@ class LeafModel(QAbstractTableModel):
             return QVariant()
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), index.column())
         if role == Qt.DisplayRole:
-            if index.column() in self.time_cols:
-                return QVariant(self.formatTime(cell))
             return QVariant(self.formatContent(cell))
         elif role == Qt.TextAlignmentRole:
             return QVariant(int(Qt.AlignLeft|Qt.AlignTop))

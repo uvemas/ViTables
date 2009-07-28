@@ -63,6 +63,8 @@ import vitables.vtTables.leafModel as leafModel
 import vitables.vtTables.leafView as leafView
 import vitables.vtTables.dataSheet as dataSheet
 
+import vitables.plugins.pluginsManager as pluginsMgr
+
 class VTApp(QMainWindow):
     """
     The application core.
@@ -190,6 +192,13 @@ class VTApp(QMainWindow):
         # List of HelpBrowser instances in memory
         self.doc_browsers = []
 
+        # Load plugins.
+        # Some plugins modify existing menus so plugins must be loaded after
+        # creating the user interface.
+        # Some plugins modify datasets displaying so plugins must be loaded
+        # before opening any file.
+        self.plugins_mgr = pluginsMgr.PluginsMgr()
+
         # Restore last session
         if self.restore_last_session:
             splash.drawMessage(self.__tr('Recovering last session...',
@@ -229,12 +238,6 @@ class VTApp(QMainWindow):
         self.slotUpdateWindowsMenu()
 
         self.workspace.installEventFilter(self)
-
-        # Load plugins
-        plugins = vitables.utils.registeredPlugins()
-        if 'export_csv' in plugins:
-            import vitables.plugins.export_csv as vtplugin_csv
-            self.exporter = vtplugin_csv.ExportToCSV()
 
 
     def __tr(self, source, comment=None):
@@ -1635,8 +1638,11 @@ class VTApp(QMainWindow):
         if not leaf_buffer.isDataSourceReadable():
             return
 
-        # Create a model and a view for the leaf
+        # Create a model, announce it and create a view for the leaf
+        # Announcing is potentially helpful for plugins in charge of
+        # datasets customisations (for instance, additional formatting)
         leaf_model = leafModel.LeafModel(leaf_buffer)
+        self.emit(SIGNAL("leaf_model_created"), leaf_model)
         leaf_view = leafView.LeafView(leaf_model)
 
         # Add the view to the MDI area
