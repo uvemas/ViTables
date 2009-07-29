@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** July 29, 2009 **
+Added support for packages to the plugins framework.
+
 ** July 28, 2009 **
 A simple plugin framework has been implemented.
 

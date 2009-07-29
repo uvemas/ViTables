@@ -26,7 +26,7 @@
 __docformat__ = 'restructuredtext'
 _context = 'ExportToCSV'
 __version__ = '0.1'
-class_name = 'ExportToCSV'
+plugin_class = 'ExportToCSV'
 
 import os
 

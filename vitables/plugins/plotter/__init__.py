@@ -16,5 +16,5 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['pluginsManager', 'export_csv', 'time_series', 'plotter']
-__path__ = ['vitables/plugins/']
+__all__ = ['mpl_plot']
+__path__ = ['vitables/plugins/plotter']

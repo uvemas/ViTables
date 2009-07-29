@@ -28,7 +28,7 @@ in PyTables tables generated via scikits.timeseries.
 
 __docformat__ = 'restructuredtext'
 __version__ = '0.6'
-class_name = 'TSFormatter'
+plugin_class = 'TSFormatter'
 
 import time
 
