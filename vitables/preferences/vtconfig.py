@@ -405,6 +405,33 @@ class Config(QSettings):
         else:
             return default_value
 
+
+    def readPluginsPaths(self):
+        """Return the list of directories where plugins live.
+        """
+
+        key = 'Plugins/Paths'
+        default_value = QVariant([])
+        setting_value = self.value(key)
+        if setting_value.canConvert(QVariant.StringList):
+            return setting_value
+        else:
+            return default_value
+
+
+    def enabledPlugins(self):
+        """Returns the list of enabled plugins.
+        """
+
+        key = 'Plugins/Enabled'
+        default_value = QVariant([])
+        setting_value = self.value(key)
+        if setting_value.canConvert(QVariant.StringList):
+            return setting_value
+        else:
+            return default_value
+
+
     def writeValue(self, key, value):
         """
         Write an entry to the configuration file.
