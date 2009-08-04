@@ -10,21 +10,12 @@ vtdoc:
 resources: vtdoc resources.qrc
 	pyrcc4 -o vitables/qrc_resources.py resources.qrc
 
-uis:
-	pyuic4 -o vitables/queries/queryUI.py vitables/queries/query_dlg.ui
-	pyuic4 -o vitables/preferences/settingsUI.py vitables/preferences/settings_dlg.ui
-	pyuic4 -o vitables/nodeProperties/nodePropUI.py vitables/nodeProperties/prop_dlg.ui
-
-unix: resources uis
+unix: resources
 	python setup.py sdist
 
 clean:
 	cd ./doc && make clean
 	-rm -f vitables/qrc_resources.py
 	-rm -f vitables/qrc_resources.pyc
-	-rm -f vitables/queries/queryUI.py
-	-rm -f vitables/queries/queryUI.pyc
-	-rm -f vitables/preferences/settingsUI.py
-	-rm -f vitables/preferences/settingsUI.pyc
 	-rm -f MANIFEST
 	-rm -rf build dist

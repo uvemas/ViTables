@@ -53,11 +53,11 @@ import locale
 from optparse import OptionParser
 import sys
 import os.path
+from vitables.vtSite import *
 
 # Location of Qt and PyQt libraries in Windows systems
 if sys.platform.startswith('win'):
-    import vitables.vtSite
-    PYQT_DIR = os.path.join(vitables.vtSite.INSTALLDIR, 'pyqt')
+    PYQT_DIR = os.path.join(INSTALLDIR, 'pyqt')
     sys.path = [os.path.normpath(PYQT_DIR)] + sys.path
 
 from PyQt4.QtCore import *

@@ -1,7 +1,6 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Encoding=UTF-8
 Name=ViTables
 GenericName=PyTables & HDF5 Files Visualizer
 GenericName[ca]=Visualitzador de fitxers PyTables i HDF5
@@ -13,4 +12,4 @@ Icon=vitables
 #Set this to the vitables documentation files
 #DocPath=vitables/index.html
 Terminal=false
-Categories=Qt;Database;Viewer;
+Categories=Qt;Database;DataVisualization;Science;Education

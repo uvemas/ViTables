@@ -91,8 +91,7 @@ class VTSplash(QSplashScreen):
 if __name__ == '__main__':
     import sys
     APP = QApplication(sys.argv)
-    LOGO = QPixmap("""/home/vmas/repositoris.nobackup/"""
-        """vitables/icons/vitables_logo.png""")
+    LOGO = QPixmap(os.path.join(ICONDIR, "vitables_logo.png"))
     SPLASH = VTSplash(LOGO)
     SPLASH.show()
     # Check that messages are not overwritten:

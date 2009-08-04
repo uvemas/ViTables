@@ -1,7 +1,7 @@
 include *.txt VERSION LICENSE.html
-recursive-include unixapp vitables.desktop vitables.svgz
-recursive-include doc Makefile usersguide.xml usersguide.pdf
-recursive-include doc/images *.png
+recursive-include unixapp vitables.desktop vitables.svg
+recursive-include doc Makefile usersguide.xml fop_conf.xml
+recursive-include doc/images *.png *.svg
 recursive-include examples *.h5 scripts/*.py
 recursive-include macosxapp *
 include scripts/vitables

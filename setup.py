@@ -25,217 +25,83 @@ import sys
 import os
 import glob
 
-from distutils.core import setup
+from distutils.core import setup, Command
+from distutils.command.build import build
+from distutils.command.install import install
 from distutils.command.install_data import install_data
+from distutils.command.clean import clean
+from distutils.dist import Distribution
+from distutils.spawn import find_executable, spawn
+from distutils.dir_util import copy_tree
+
+class DocbookDistribution(Distribution):
+    def __init__(self, attrs=None):
+        self.docbooks = None
+        Distribution.__init__(self, attrs)
+
+class BuildDocbook(Command):
+    description = "Build Docbook documentation"
+
+    user_options = [('xsltproc-path=', None, "Path to the XSLT processor"),
+                    ('fop-path=', None, "Path to FOP"),
+                    ('xsl-style=', None, "Catalogue URI to the XSL style sheet"),
+                    ('fop-style=', None, "Catalogue URI for the FOP style sheet")]
+
+    def initialize_options(self):
+        self.xsltproc_path = None
+        self.fop_path = None
+        self.xsl_style = None
+        self.fop_style = None
+
+    def finalize_options(self):
+        if self.xsltproc_path is None:
+            self.xsltproc_path = find_executable("xsltproc")
+            if self.xsltproc_path is None:
+                raise SystemExit, "Unable to find 'xsltproc', needed to generate Docbook documentation."
+
+        if self.fop_path is None:
+            self.fop_path = find_executable("fop")
+            if self.fop_path is None:
+                raise SystemExit, "Unable to find 'fop', needed to generate Docbook HTML documentation."
+
+        if self.xsl_style is None:
+            self.xsl_style = "http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl"
+
+        if self.fop_style is None:
+            self.fop_style = "http://docbook.sourceforge.net/release/xsl/current/fo/docbook.xsl"
+
+
+    def get_command_name(self):
+        return 'build_doc'
+
+    def run(self):
+        for input_file in self.distribution.docbooks:
+            self.announce("Building Docbook documentation from %s." % input_file)
+
+            if not os.path.exists(input_file):
+                raise SystemExit, "File %s is missing." % input_file
+
+            input_file_name = os.path.splitext(input_file)[0]
+            output_dir = os.path.join("vitables","htmldocs","")
+
+            if not os.access(output_dir, F_OK):
+                spawn([self.xsltproc_path, "--nonet", "-o", output_dir, self.xsl_style, input_file])
+                spawn([self.xsltproc_path, "--nonet", "-o", input_file_name+".fo", self.fop_style, input_file])
+                spawn([self.fop_path, "-q", input_file_name+".fo", input_file_name+".pdf"])
+                copy_tree(os.path.join(os.path.dirname(input_file),"images"),os.path.join(output_dir,"images"))
+
+def has_docbook(build):
+    return (build.distribution.docbooks is not None and
+            build.distribution.docbooks != [])
+
+class Build(build):
+    sub_commands = build.sub_commands[:]
+    sub_commands.insert(0,('build_doc', has_docbook))
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:
     import py2app
     use_py2app = True
-
-def checkVersions():
-    """Check libraries availability.
-
-    If a required library is not installed or it is too old then the setup
-    process is aborted.
-    """
-
-    # Check if PyTables and PyQt are installed
-    try:
-        from tables import __version__
-        from PyQt4.QtCore import qVersion, PYQT_VERSION_STR
-    except ImportError, e:
-        print e
-        sys.exit()
-
-    # Check versions
-    pyVersion = sys.version_info
-    if pyVersion < (2, 5) :
-        print "###############################################################"
-        print "You need Python 2.5 or greater to run ViTables!. Exiting..."
-        print "###############################################################"
-        sys.exit(1)
-
-    tablesVersion = __version__
-    if tablesVersion < '2.0' :
-        print "###############################################################"
-        print "You need PyTables 2.0 or greater to run ViTables!. Exiting..."
-        print "###############################################################"
-        sys.exit(1)
-
-    qtVersion = qVersion()
-    if qtVersion < '4.4' :
-        print "###############################################################"
-        print "You need Qt v4.4 or greater to run ViTables!. Exiting..."
-        print "###############################################################"
-        sys.exit(1)
-
-    pyqtVersion = PYQT_VERSION_STR
-    if pyqtVersion < '4.4' :
-        print "###############################################################"
-        print "You need PyQt v4.4 or greater to run ViTables!. Exiting..."
-        print "###############################################################"
-        sys.exit(1)
-
-# =================================================================
-
-# Customized install_data command. It creates a vitables module with
-# two attributes that will be used for configuring the application at
-# runtime.  This class is not used by py2app, which is OK, since the
-# vtSite.py included in sources is intelligent enough for the
-# packaged Mac OS X app.
-class smart_install_data(install_data):
-    def run(self):
-        install_cmd = self.get_finalized_command('install')
-
-        # The project installation directory can be set via --install-purelib
-        # and some other options
-        install_lib_dir = getattr(install_cmd, 'install_lib')
-        tmp = install_lib_dir.replace(chr(92),'/')
-
-        install_options = install_cmd.distribution.command_options["install"]
-        # If data directory is not specified (via configuration file
-        # or command line argument)...
-        if not install_options.has_key('install_data'):
-            # Data will not be located in the $base directory (default
-            # behavior) but in the project directory
-            install_data_dir = os.path.join(install_lib_dir, 'vitables')
-            setattr(self, 'install_dir', install_data_dir)
-        else:
-            # Data directory is specified via configuration file or
-            # or command line argument
-            install_data_dir = getattr(install_cmd, 'install_data')
-
-        # Create the module vtSite.py.
-        # The module has the attribute INSTALLDIR
-        # When installing this module will overwrite that included
-        # in the source package and will be used at runtime
-        vtpaths_module = open(os.path.join(install_lib_dir,
-            'vitables', 'vtSite.py'), 'w')
-        # If we are not installing ViTables but packaging it using a
-        # chrooted environment then the path to the chrooted environment
-        # shouldn't be included in the module attributes because this
-        # path will not exist in the installation target directory
-        if self.root != None:
-            tmp = tmp[len(self.root):]
-            install_data_dir = install_data_dir[len(self.root):]
-        installdir = os.path.join(os.path.normpath(tmp), 
-                                  'vitables').replace(chr(92),'/')
-        vtpaths_module.write('INSTALLDIR = "%s"\n' % installdir)
-        vtpaths_module.close()
-
-        return install_data.run(self)
-
-# =================================================================
-
-# =================================================================
-# Helper function to add icons in UNIX platforms that support the
-# FreeDesktop guidelines (http://standards.freedesktop.org). In
-# particular, it is based on the 0.6 version of the basedir specs
-# (http://standards.freedesktop.org/basedir-spec) and version 0.11 of
-# the icon theme specs
-# (http://www.freedesktop.org/wiki/Standards/icon-theme-spec). If you
-# find quirks or have suggestions on it, please, report them back.
-# F. Altet 2006-02-22
-def unix_icon_dir_lookup():
-
-    data_dirs_list = []
-    data_dirs = ''
-    if os.getuid() == 0:  # Running as root!
-        # Check for a XDG_DATA_DIRS environment variable, just in case the
-        # WM is installed in a non-standard place.
-        if 'XDG_DATA_DIRS' in os.environ:
-            data_dirs = os.environ['XDG_DATA_DIRS']
-        else:
-            # Check whether we should install data in /usr/local or /usr
-            for data_dir in ['/usr/local/share', '/usr/share']:
-                if (os.path.isdir(os.path.join(data_dir, 'icons/hicolor')) and
-                    os.path.isdir(os.path.join(data_dir, 'applications'))):
-                    data_dirs_list.append(data_dir)
-            data_dirs = ":".join(data_dirs_list)
-    else:  # The user is installing as a non-privilegied uid
-        # Check if the user can write in any of the XDG_DATA_DIRS
-        if 'XDG_DATA_DIRS' in os.environ:
-            for data_dir in os.environ['XDG_DATA_DIRS'].split(':'):
-                if os.access(data_dir, os.W_OK):
-                    data_dirs_list.append(data_dir)
-        if data_dirs_list != []:
-            # He can write. Choose this as the installation place.
-            data_dirs = ":".join(data_dirs_list)
-# It is not clear to me whether this is a standard or not. I'll disable
-# this until I can collect more info about this issue.
-#         else:
-#             # He cannot write there or there are no XDG_DATA_DIRS.
-#             # Try to save icons in the $HOME/.local/share
-#             local_dir = os.path.join(os.environ['HOME'], ".local")
-#             if not os.path.exists(local_dir):
-#                 os.mkdir(local_dir)
-#             share_dir = os.path.join(local_dir, "share")
-#             if not os.path.exists(share_dir):
-#                 os.mkdir(share_dir)
-#             if os.path.isdir(share_dir):
-#                 data_dirs = share_dir
-
-    return data_dirs
-
-# Main function to add icons in UNIX platforms
-def add_unix_icons():
-
-    data_dirs = unix_icon_dir_lookup()
-    if data_dirs != "":
-        # Great!, we have found something appropriate to write
-        # Select the first directory found
-        data_dir = data_dirs.split(':')[0]
-        # Copy there the icons
-        # First, the bitmap ones
-        # The bitmap icons doesn't seems to be necessary, as both KDE and Gnome
-        # seems to support scalable icons
-#         for size in ["16x16", "22x22", "32x32", "48x48", "64x64", "128x128"]:
-#             fname = "unixapp/vitables_%s.png" % (size)
-#             dname = os.path.join(data_dir, "icons/hicolor/%s/apps" % (size))
-#             if os.path.isdir(dname):
-#                 destname = os.path.join(dname, "vitables.png")
-#                 print "@copying cp %s -> %s" % (fname, destname)
-#                 os.system("cp %s %s" % (fname, destname))
-        # Then, the scalable icon
-        dname = os.path.join(data_dir, "icons/hicolor/scalable/apps")
-        if os.path.isdir(dname):
-            print "@copying %s -> %s" % ("unixapp/vitables.svgz", dname)
-            os.system("cp %s %s" % ("unixapp/vitables.svgz", dname))
-        # Finally, the .desktop file
-        dname = os.path.join(data_dir, "applications")
-        if os.path.isdir(dname):
-            print "@copying %s -> %s" % ("unixapp/vitables.desktop", dname)
-            os.system("cp %s %s" % ("unixapp/vitables.desktop", dname))
-    else:
-        print >> sys.stderr, """\
-.. NOTE::
-
-   The installer was unable to find sensible places to put the desktop icon
-   for ViTables. If you want to create a desktop link to ViTables you can find
-   the needed files (.desktop and icon) in the icons/ directory.
-
-"""
-# End of the code to add the application icons in Unix systems.
-# =================================================================
-
-
-helpAsked = False
-for item in ['-h', '--help', '--help-commands', '--help-formats',
-    '--help-compiler']:
-    if item in sys.argv:
-        helpAsked = True
-        break
-
-if not helpAsked:
-    checkVersions()
-
-# Proceed if required libraries are OK
-
-# Get the version number
-f = open('VERSION', 'r')
-vt_version = f.readline()[:-1]
-f.close()
 
 setup_args = {}
 if use_py2app:
@@ -267,8 +133,14 @@ if use_py2app:
    ``macosxapp/make.sh`` script.)
 """
 
+# Get the version number
+f = open('VERSION', 'r')
+vt_version = f.readline()[:-1]
+f.close()
+
 setup(name = 'ViTables', # The name of the distribution
     version = "%s" % vt_version,
+    distclass=DocbookDistribution,
     description = 'A viewer for pytables package',
     long_description = \
         """
@@ -295,7 +167,17 @@ setup(name = 'ViTables', # The name of the distribution
     'vitables.preferences', 'vitables.plugins', 
     'vitables.vtTables', 'vitables.vtWidgets'],
     scripts = ['scripts/vitables'],
-    cmdclass = {"install_data":smart_install_data},
+    package_data = {
+          'vitables':['icons/*.*','icons/*/*.*'],
+          'vitables.preferences':['*.ui'],
+          'vitables.queries':['*.ui'],
+          'vitables':['htmldocs/*.*','htmldocs/*/*.*']
+          },
+    cmdclass = {
+          'build': Build,
+          'build_doc': BuildDocbook,
+          },
+    docbooks=['doc/usersguide.xml'],
     data_files = [
     ('examples', glob.glob('examples/*.h5')),
     ('examples/arrays', glob.glob('examples/arrays/*.h5')),
@@ -305,10 +187,8 @@ setup(name = 'ViTables', # The name of the distribution
     ('examples/tests', glob.glob('examples/tests/*.h5')),
     ('examples/timeseries', glob.glob('examples/timeseries/*.h5')),
     ('doc', ['doc/usersguide.xml']),
-    ('doc', glob.glob('doc/*.pdf')),
-    ('doc/images', glob.glob('doc/images/*.png')),
+    ('doc', ['doc/usersguide.pdf']),
     ('', ['LICENSE.txt', 'LICENSE.html']),
-    ('', ['VERSION'])
     ],
 
     **setup_args
@@ -321,15 +201,19 @@ setup(name = 'ViTables', # The name of the distribution
 # $ python setup.py build --help
 # $ python setup.py build --help-compiler
 
+helpAsked = False
+for item in ['-h', '--help', '--help-commands', '--help-formats',
+    '--help-compiler']:
+    if item in sys.argv:
+        helpAsked = True
+        break
+
 if len(sys.argv) > 1 and not helpAsked:
     if sys.argv[1] == 'build' :
         print "\nBuild process completed.\n"
     elif sys.argv[1] == 'sdist' :
         print "\nSources package done.\n"
     elif sys.argv[1] == 'install' :
-        # Finally, copy the icons if we are on Unix systems, except MacOSX.
-        if os.name == "posix" and sys.platform != 'darwin':
-            add_unix_icons()
         print """\n
 Installation completed successfully!
 Enjoy Data with ViTables, the troll of the PyTables family."""

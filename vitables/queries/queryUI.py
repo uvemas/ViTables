@@ -1,9 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
-#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#       Copyright (C) 2009 Dmitrijs Ledkovs. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -20,24 +18,8 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""
-Site configuration module.
-
-This module indicates the full install path to vitables top level module
-Mac OS X boxes use the module as is.
-
-Misc variables:
-
-* __docformat__
-* INSTALLDIR
-
-"""
-
 import os.path
+from PyQt4.uic import loadUiType
 
-__docformat__ = 'restructuredtext'
-
-INSTALLDIR = os.path.dirname(__file__)
-ICONDIR = os.path.join(INSTALLDIR, "icons")
-DOCDIR = os.path.join(INSTALLDIR, "htmldocs")
+Ui_QueryDialog=loadUiType(os.path.join(os.path.dirname(__file__),'query_dlg.ui'))[0]
 
