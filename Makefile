@@ -14,7 +14,6 @@ uis:
 	pyuic4 -o vitables/queries/queryUI.py vitables/queries/query_dlg.ui
 	pyuic4 -o vitables/preferences/settingsUI.py vitables/preferences/settings_dlg.ui
 	pyuic4 -o vitables/nodeProperties/nodePropUI.py vitables/nodeProperties/prop_dlg.ui
-	pyuic4 -o vitables/pluginsManager/pluginsUI.py vitables/pluginsManager/pluginsmgr_dlg.ui
 
 unix: resources uis
 	python setup.py sdist
@@ -27,7 +26,5 @@ clean:
 	-rm -f vitables/queries/queryUI.pyc
 	-rm -f vitables/preferences/settingsUI.py
 	-rm -f vitables/preferences/settingsUI.pyc
-	-rm -f vitables/pluginsManager/pluginsUI.py
-	-rm -f vitables/pluginsManager/pluginsUI.pyc
 	-rm -f MANIFEST
 	-rm -rf build dist

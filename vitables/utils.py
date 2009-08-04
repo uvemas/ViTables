@@ -136,7 +136,6 @@ def getIcons():
             'editcut', 'editcopy','editdelete','editpaste', 'info', 
             'folder_new', 
             'new_filter', 'delete_filters', 
-            'configure', 
             'appearance', 
             'usersguide', 
             # Icons for tree pane items
