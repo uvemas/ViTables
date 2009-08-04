@@ -63,8 +63,7 @@ import vitables.vtTables.leafModel as leafModel
 import vitables.vtTables.leafView as leafView
 import vitables.vtTables.dataSheet as dataSheet
 
-import vitables.pluginsManager.pluginsManager as pluginsMgr
-import vitables.pluginsManager.pluginsDlg as pluginsDlg
+import vitables.plugins.pluginsManager as pluginsMgr
 
 class VTApp(QMainWindow):
     """
@@ -198,8 +197,7 @@ class VTApp(QMainWindow):
         # creating the user interface.
         # Some plugins modify datasets displaying so plugins must be loaded
         # before opening any file.
-        self.plugins_mgr = pluginsMgr.PluginsMgr(self.plugins_paths, 
-            self.enabled_plugins)
+        self.plugins_mgr = pluginsMgr.PluginsMgr()
 
         # Restore last session
         if self.restore_last_session:
@@ -367,20 +365,6 @@ class VTApp(QMainWindow):
             self.__tr('Remove all filters', 
                 'Status bar text for the Query -> Delete All action'))
 
-        actions['pluginsConfigure'] = vitables.utils.createAction(self, 
-            self.__tr('&Configure...', 'Plugins -> Configure'), None, 
-            self.slotPluginsConfigure, 
-            self.icons_dictionary['configure'], 
-            self.__tr('Configure plugins', 
-                'Status bar text for the Plugins -> Configure action'))
-
-        actions['settingsPreferences'] = vitables.utils.createAction(self, 
-            self.__tr('&Preferences...', 'Settings -> Preferences'), None, 
-            self.slotSettingsPreferences, 
-            self.icons_dictionary['appearance'], 
-            self.__tr('Configure ViTables', 
-                'Status bar text for the Settings -> Preferences action'))
-
         actions['windowCascade'] = vitables.utils.createAction(self, 
             self.__tr('&Cascade', 'Windows -> Cascade'), None, 
             self.workspace.cascadeSubWindows, None, 
@@ -425,6 +409,13 @@ class VTApp(QMainWindow):
             None, 
             self.__tr('Change the workspace view mode', 
                 'Status bar text for the MDI -> Tabbed action'))
+
+        actions['settingsPreferences'] = vitables.utils.createAction(self, 
+            self.__tr('&Preferences...', 'Settings -> Preferences'), None, 
+            self.slotSettingsPreferences, 
+            self.icons_dictionary['appearance'], 
+            self.__tr('Configure ViTables', 
+                'Status bar text for the Settings -> Preferences action'))
 
         actions['helpUsersGuide'] = vitables.utils.createAction(self, 
             self.__tr("&User's Guide", 'Help -> Users Guide'), 
@@ -563,18 +554,11 @@ class VTApp(QMainWindow):
         tools_actions = [self.hide_toolbar_submenu]
         vitables.utils.addActions(tools_menu, tools_actions, self.gui_actions)
 
-        # Create the Plugins menu and add actions/submenus/separators to it
-        plugins_menu = self.menuBar().addMenu(self.__tr("&Plugins", 
-            'The Plugins menu entry'))
-        plugins_actions = ['pluginsConfigure']
-        vitables.utils.addActions(plugins_menu, plugins_actions, 
-            self.gui_actions)
-
         # Create the Settings menu and add actions/submenus/separators to it
-        settings_menu = self.menuBar().addMenu(self.__tr("&Settings", 
+        tools_menu = self.menuBar().addMenu(self.__tr("&Settings", 
             'The Settings menu entry'))
         settings_actions = ['settingsPreferences']
-        vitables.utils.addActions(settings_menu, settings_actions, 
+        vitables.utils.addActions(tools_menu, settings_actions, 
             self.gui_actions)
 
         # Create the Window menu and add actions/menus/separators to it
@@ -679,8 +663,6 @@ class VTApp(QMainWindow):
         config['HelpBrowser/History'] = self.config.helpHistory()
         config['HelpBrowser/Bookmarks'] = self.config.helpBookmarks()
         config['Look/currentStyle'] = self.config.readStyle()
-        config['Plugins/Paths'] = self.config.readPluginsPaths()
-        config['Plugins/Enabled'] = self.config.enabledPlugins()
         return config
 
 
@@ -746,10 +728,6 @@ class VTApp(QMainWindow):
                 self.hb_history = value.toStringList()
             elif key == 'HelpBrowser/Bookmarks':
                 self.hb_bookmarks = value.toStringList()
-            elif key == 'Plugins/Paths':
-                self.plugins_paths = value.toStringList()
-            elif key == 'Plugins/Enabled':
-                self.enabled_plugins = value.toStringList()
 
 
     def saveConfiguration(self):
@@ -802,11 +780,6 @@ class VTApp(QMainWindow):
         self.config.writeValue('HelpBrowser/History', self.hb_history)
         # The Help Browser bookmarks
         self.config.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
-        # The directories where plugins live
-        self.config.writeValue('Plugins/Paths', self.plugins_mgr.plugins_paths)
-        # The list of enabled plugins
-        self.config.writeValue('Plugins/Enabled', \
-            self.plugins_mgr.enabled_plugins)
         # If we don't sync then errors appear for every QColor and QFont
         # instances trying to be saved
         # QVariant::load: unable to load type 67 (appears 3 times)
@@ -2204,27 +2177,6 @@ class VTApp(QMainWindow):
         self.queries_mgr.ft_names = []
 
 
-    def slotPluginsConfigure(self):
-        """Open the plugins management dialog.
-        """
-
-        mgr_dlg = pluginsDlg.PluginsDlg()
-    def slotSettingsPreferences(self):
-        """
-        Launch the Preferences dialog.
-
-        Clicking the ``OK`` button applies the configuration set in the
-        Preferences dialog.
-        """
-
-        prefs =  preferences.Preferences(self)
-        try:
-            if prefs.exec_() == QDialog.Accepted:
-                self.loadConfiguration(prefs.new_prefs)
-        finally:
-            del prefs
-
-
     def slotWindowsClose(self):
         """Close the window currently active in the workspace."""
         self.workspace.activeSubWindow().close()
@@ -2249,6 +2201,22 @@ class VTApp(QMainWindow):
 
         for window in self.workspace.subWindowList():
             window.showMinimized()
+
+
+    def slotSettingsPreferences(self):
+        """
+        Launch the Preferences dialog.
+
+        Clicking the ``OK`` button applies the configuration set in the
+        Preferences dialog.
+        """
+
+        prefs =  preferences.Preferences(self)
+        try:
+            if prefs.exec_() == QDialog.Accepted:
+                self.loadConfiguration(prefs.new_prefs)
+        finally:
+            del prefs
 
 
     def slotHelpDocBrowser(self):
