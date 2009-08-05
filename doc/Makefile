@@ -5,8 +5,8 @@ allpngs := $(wildcard images/*.png)
 TPSVG=./images/title_page_plain.svg
 
 # HTML guide stuff
-HTMLDIR=html
-IMAGESDIR=html/images
+HTMLDIR=../vitables/htmldocs
+IMAGESDIR=../vitables/htmldocs/images
 CSS=./usersguide_style.css
 
 # PDF guide stuff

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 05, 2009 **
+Last 2 commits backed out + Dima's patches merged + backed out commits restored
+
 ** July 29, 2009 **
 Added support for packages to the plugins framework.
 

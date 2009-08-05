@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 
-#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+
+#       Copyright (C) 2009 Dmitrijs Ledkovs. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -17,7 +18,9 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__version__ = '2.0'
-__all__ = ["docBrowser", "h5db", "logger", "nodeProperties", "nodes",
-    "plugins", "pluginsManager", "preferences", "vtTables", "vtWidgets",
-    "utils", "vtSite", "vtapp", "vtsplash"]
+import os.path
+from PyQt4.uic import loadUiType
+
+Ui_PluginsDialog = \
+    loadUiType(os.path.join(os.path.dirname(__file__),'pluginsmgr_dlg.ui'))[0]
+

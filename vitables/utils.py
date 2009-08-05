@@ -40,6 +40,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.vtWidgets.renameDlg as renameDlg
+from vitables.vtSite import *
 
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
@@ -135,7 +136,8 @@ def getIcons():
             'fileclose', 'filenew', 'fileopen', 'filesaveas', 'exit', 
             'editcut', 'editcopy','editdelete','editpaste', 'info', 
             'folder_new', 
-            'new_filter', 'delete_filters', 
+            'new_filter', 'delete_filters',
+            'configure', 
             'appearance', 
             'usersguide', 
             # Icons for tree pane items

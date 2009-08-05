@@ -67,7 +67,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.utils
-
+from vitables.vtSite import *
 from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 

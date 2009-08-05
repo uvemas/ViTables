@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -84,7 +85,7 @@ class BuildDocbook(Command):
             input_file_name = os.path.splitext(input_file)[0]
             output_dir = os.path.join("vitables","htmldocs","")
 
-            if not os.access(output_dir, F_OK):
+            if not os.access(output_dir, os.F_OK):
                 spawn([self.xsltproc_path, "--nonet", "-o", output_dir, self.xsl_style, input_file])
                 spawn([self.xsltproc_path, "--nonet", "-o", input_file_name+".fo", self.fop_style, input_file])
                 spawn([self.fop_path, "-q", input_file_name+".fo", input_file_name+".pdf"])
@@ -96,7 +97,7 @@ def has_docbook(build):
 
 class Build(build):
     sub_commands = build.sub_commands[:]
-    sub_commands.insert(0,('build_doc', has_docbook))
+    #sub_commands.insert(0,('build_doc', has_docbook))
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:
@@ -164,13 +165,15 @@ setup(name = 'ViTables', # The name of the distribution
     'Programming Language :: Python'],
     packages = ['vitables', 'vitables.docBrowser',
     'vitables.h5db', 'vitables.nodeProperties', 'vitables.queries', 
-    'vitables.preferences', 'vitables.plugins', 
+    'vitables.preferences', 'vitables.pluginsManager', 'vitables.plugins', 
     'vitables.vtTables', 'vitables.vtWidgets'],
     scripts = ['scripts/vitables'],
     package_data = {
-          'vitables':['icons/*.*','icons/*/*.*'],
+          'vitables':['icons/*.png','icons/*.ico','icons/*/*.png'],
+          'vitables.nodeProperties':['*.ui'],
           'vitables.preferences':['*.ui'],
           'vitables.queries':['*.ui'],
+          'vitables.pluginsManager':['*.ui'],
           'vitables':['htmldocs/*.*','htmldocs/*/*.*']
           },
     cmdclass = {
