@@ -48,7 +48,11 @@ DEFAULT_LOCALE = locale.getdefaultlocale()[1]
 
 
 def toUnicode(thing):
-    """Convert a byte string into a unicode string using the default locale.
+    """Convert byte strings into unicode strings using the default locale.
+
+    Conversion to unicode is required when showing data in dialogs and
+    tables. The User Attributes of the node Properties dialog requires
+    special care because it can show data with a wide variety of types.
     """
 
     if isinstance(thing, str):

@@ -152,15 +152,21 @@ class PluginsMgr(object):
         """
 
         try:
+            finding_failed = True
             (folder, name) = plugin.split('#@#')
             file_obj, filepath, desc = imp.find_module(name, [folder])
-            if file_obj is None:
-                raise ImportError
+            finding_failed = False
             module = imp.load_module(name, file_obj, filepath, desc)
         except ImportError:
-            print "Error: module %s cannot be loaded" % name
+            #vitables.utils.formatExceptionInfo()
+            if finding_failed:
+                print """\nError: plugin %s cannot be found.""" % name
+            else:
+                print """\nError: plugin %s cannot be loaded.""" % name
+            return
         finally:
-            file_obj.close()
+            if not finding_failed:
+                file_obj.close()
 
         # Instantiate plugin classes
         #module_classes = [cls for (name, cls) in \

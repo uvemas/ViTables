@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** August 06, 2009 **
+The plugins framework has been made more robust.
+
 Fixed some small problems in the new build system.
 
 ** August 05, 2009 **

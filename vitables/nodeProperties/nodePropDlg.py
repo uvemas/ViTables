@@ -357,7 +357,7 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
             if (name == u'TITLE') and (info.mode != u'read-only'):
                 # The position of the TITLE value in the table
                 self.title_row = self.sysattr_model.rowCount()
-                self.title_before = unicode(value_item.text())
+                self.title_before = vitables.utils.toUnicode(value_item.text())
                 value_item.setEditable(True)
                 value_item.setBackground(base_brush)
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
@@ -427,8 +427,9 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
             if dtype_name.startswith(u'complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.
-                if (unicode(value)[0], unicode(value)[-1]) == (u'(', u')'):
-                    value_item.setText(unicode(value)[1:-1])
+                if (vitables.utils.toUnicode(value)[0], \
+                    vitables.utils.toUnicode(value)[-1]) == (u'(', u')'):
+                    value_item.setText(vitables.utils.toUnicode(value)[1:-1])
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
             if (hasattr(value, u'shape') and value.shape != ())or\
