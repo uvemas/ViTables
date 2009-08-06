@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 06, 2009 **
+Fixed some small problems in the new build system.
+
 ** August 05, 2009 **
 Last 2 commits backed out + Dima's patches merged + backed out commits restored
 

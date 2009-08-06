@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -93,6 +92,8 @@ class DataSheet(QMdiSubWindow):
 
         self.connect(self, SIGNAL("aboutToActivate()"), 
                      self.syncTreeView)
+
+
     def closeEvent(self, event):
         """Close the window cleanly with the close button of the title bar."""
 
@@ -100,6 +101,7 @@ class DataSheet(QMdiSubWindow):
         self.leaf.has_view = False
         self.vtapp.slotUpdateActions()
         QMdiSubWindow.closeEvent(self, event)
+
 
     def syncTreeView(self):
         """When the view becomes active select its leaf in the tree view.
@@ -109,4 +111,3 @@ class DataSheet(QMdiSubWindow):
         for index in index_list:
             if index == self.pindex:
                 self.vtapp.dbs_tree_view.setCurrentIndex(index)
-

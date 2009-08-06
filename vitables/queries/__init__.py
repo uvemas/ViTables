@@ -1,3 +1,4 @@
+
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
 #
@@ -16,4 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["queryDlg", "queriesManager"]
+__all__ = ["queryDlg", "queriesManager", "queryUI"]

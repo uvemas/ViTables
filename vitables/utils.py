@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -42,9 +41,11 @@ from PyQt4.QtGui import *
 import vitables.vtWidgets.renameDlg as renameDlg
 from vitables.vtSite import *
 
+
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
 DEFAULT_LOCALE = locale.getdefaultlocale()[1]
+
 
 def toUnicode(thing):
     """Convert a byte string into a unicode string using the default locale.
@@ -81,10 +82,10 @@ def getVTApp():
 
     return vtapp
 
-
 #
 # Icons related functions
 #
+
 def createIcons(large_icons, small_icons, icons_dict):
     """
     Create icons for different components of the GUI.
@@ -118,6 +119,8 @@ def createIcons(large_icons, small_icons, icons_dict):
 
     # Application icon
     icons_dict['vitables_wm'] = QIcon(os.path.join(ICONDIR,'vitables_wm.png'))
+
+
 def getIcons():
     """Return the icons dictionary to be used by the main window."""
 
@@ -176,10 +179,10 @@ def getHBIcons():
 
     return HB_ICONS_DICT
 
-
 #
 # QAction related functions
 #
+
 def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
                  checkable=False):
     """Create an action that will be added to a menu.
@@ -212,6 +215,8 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
     if slot is not None:
         parent.connect(action, SIGNAL("triggered()"), slot)
     return action
+
+
 def addActions(target, actions, actions_dict):
     """Add a list of actions to a menu or a toolbar.
 
@@ -232,6 +237,7 @@ def addActions(target, actions, actions_dict):
             target.addMenu(action)
         else:
             target.addAction(actions_dict[action])
+
 
 def formatArrayContent(content):
     """
@@ -304,11 +310,10 @@ def formatExceptionInfo(limit=1):
 
     print '\n%s\n' % traceback.format_exc(limit)
 
-
-
 #
 # Path related functions
 #
+
 def getHomeDir():
     """
     Get the user's home directory.
@@ -395,6 +400,7 @@ def customLineEdit(parent):
     palette.setColor(QPalette.Base, bg_color)
     return ledit
 
+
 def getLicense():
     """The ViTables license in Rich Text format."""
 
@@ -405,5 +411,3 @@ def getLicense():
     input_file.close()
 
     return license_text
-
-

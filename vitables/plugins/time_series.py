@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -184,7 +183,6 @@ class TSFormatter(object):
         return date.datetime.strftime('%a %b %d %H:%M:%S %Y')
 
 
-
 class ArrayTSModel(QAbstractTableModel):
     """
     A model for array datasets containing time series.
@@ -277,4 +275,3 @@ class TableTSModel(QAbstractTableModel):
             return QVariant(int(Qt.AlignLeft|Qt.AlignTop))
         else:
             return QVariant()
-

@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -87,7 +86,6 @@ class HelpBrowser(QObject) :
     * basic bookmarks management
     """
 
-
     def __init__(self, vtapp) :
         """
         Initializes the browser.
@@ -118,6 +116,7 @@ class HelpBrowser(QObject) :
         # done (it avoids displaying an ugly empty widget)
         self.slotDisplaySrc('index.html')
         self.gui.show()
+
 
     def __tr(self, source, comment=None):
         """Translate method."""
@@ -155,6 +154,7 @@ class HelpBrowser(QObject) :
             SIGNAL('aboutToShow()'), 
             self.slotRecentSubmenuAboutToShow)
 
+
     def slotDisplaySrc(self, src=None):
         """
         Displays a document in the `HelpBrowser` window.
@@ -173,7 +173,6 @@ class HelpBrowser(QObject) :
         basename = os.path.basename(unicode(src))
         url = QUrl(os.path.join(DOCDIR, basename))
         self.gui.text_browser.setSource(url)
-
 
     #########################################################
     #
@@ -259,8 +258,6 @@ class HelpBrowser(QObject) :
         for browser in self.vtapp.doc_browsers[:] :
             browser.slotCloseWindow()
 
-
-
     #########################################################
     #
     # 					View menu related slots
@@ -275,7 +272,6 @@ class HelpBrowser(QObject) :
     def slotZoomOut(self) :
         """Increases the font size of the displayed source."""
         self.gui.text_browser.zoomOut(2)
-
 
     #########################################################
     #
@@ -305,7 +301,6 @@ class HelpBrowser(QObject) :
     def slotUpdateBackward(self, available) :
         """Enables/disables the Go --> Backward menu item."""
         self.gui.actions['goBackward'].setEnabled(available)
-
 
     #########################################################
     #
@@ -352,6 +347,7 @@ class HelpBrowser(QObject) :
         bmark = self.bookmarks[bmark_id - 1]
         self.slotDisplaySrc(bmark) # SIGNAL sourceChanged() emited
 
+
     def slotAddBookmark(self) :
         """
         Add the current page to the bookmarks menu.
@@ -385,7 +381,6 @@ class HelpBrowser(QObject) :
     def slotClearBookmarks(self) :
         """Clear all bookmarks."""
         self.bookmarks.clear()
-
 
     #########################################################
     #

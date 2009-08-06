@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -96,6 +95,8 @@ class Logger(QTextEdit):
         # Connect signals to slots
         self.connect(self, SIGNAL("customContextMenuRequested(QPoint)"),
             self.createCustomContextMenu)
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate(_context, source, comment))
@@ -131,6 +132,7 @@ class Logger(QTextEdit):
         self.moveCursor(QTextCursor.EndOfLine)
         self.setTextColor(current_color)
 
+
     def createCustomContextMenu(self, pos):
         """
         Popup the contextual logger menu.
@@ -160,6 +162,8 @@ class Logger(QTextEdit):
             self.updateCopyNodeAction)
 
         edit_menu.popup(self.mapToGlobal(pos))
+
+
     def updateEditMenu(self):
         """Update items availability when the menu is about to be shown."""
 
@@ -189,6 +193,7 @@ class Logger(QTextEdit):
         """
         self.emit(SIGNAL('disableCopyNodeAction()'), ())
 
+
     def updateCopyNodeAction(self):
         """
         Update the status of the Copy node action.
@@ -197,6 +202,7 @@ class Logger(QTextEdit):
         focus or its contextual menu is hiden.
         """
         self.emit(SIGNAL('updateCopyNodeAction()'), ())
+
 
     def focusInEvent(self, event):
         """Specialised handler for focus events.

@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -129,6 +128,7 @@ class DBsTreeModel(QAbstractItemModel):
         self.connect(self, 
                 SIGNAL("rowsAboutToBeRemoved(QModelIndex, int, int)"), 
                 self.closeViews)
+
 
     def __tr(self, source, comment=None):
         """Translate method."""
@@ -268,6 +268,7 @@ class DBsTreeModel(QAbstractItemModel):
                 self.removeMappedDB(filepath)
                 break
 
+
     def createDBDoc(self, filepath, is_tmp_db=False):
         """
         Create a new, empty database (DBDoc instance).
@@ -300,6 +301,8 @@ class DBsTreeModel(QAbstractItemModel):
         finally:
             qApp.restoreOverrideCursor()
             return db_doc
+
+
     def __createTempDB(self):
         """
         Create a temporary database where filtered tables will be stored.
@@ -316,6 +319,7 @@ class DBsTreeModel(QAbstractItemModel):
         self.tmp_filepath = unicode(QDir.fromNativeSeparators(filepath))
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         return db_doc
+
 
     def deleteNode(self, index):
         """Delete a node.
@@ -337,6 +341,8 @@ class DBsTreeModel(QAbstractItemModel):
             self.getDBDoc(node.filepath).deleteNode(node.nodepath)
         finally:
             qApp.restoreOverrideCursor()
+
+
     def copyNode(self, index):
         """Mark a node from the tree of databases view as copied.
 
@@ -351,6 +357,8 @@ class DBsTreeModel(QAbstractItemModel):
                                      'initial_nodepath': node.nodepath}
         finally:
             qApp.restoreOverrideCursor()
+
+
     def cutNode(self, index):
         """Cut a tables.Node.
 
@@ -374,6 +382,8 @@ class DBsTreeModel(QAbstractItemModel):
             self.getDBDoc(node.filepath).cutNode(node.nodepath)
         finally:
             qApp.restoreOverrideCursor()
+
+
     def pasteNode(self, index, childname, overwrite=False):
         """Paste a tables.Node.
 
@@ -414,6 +424,8 @@ class DBsTreeModel(QAbstractItemModel):
             self.emit(SIGNAL('nodeAdded'), index)
         finally:
             qApp.restoreOverrideCursor()
+
+
     def createGroup(self, index, childname, overwrite=False):
         """Create a tables.Group under the given parent.
 
@@ -441,6 +453,8 @@ class DBsTreeModel(QAbstractItemModel):
             self.emit(SIGNAL('nodeAdded'), index)
         finally:
             qApp.restoreOverrideCursor()
+
+
     def renameNode(self, index, new_name, overwrite=False):
         """Rename a node.
 
@@ -491,6 +505,8 @@ class DBsTreeModel(QAbstractItemModel):
                             child_node.nodepath), Qt.StatusTipRole)
         finally:
             qApp.restoreOverrideCursor()
+
+
     def walkTreeView(self, index):
         """Iterates over a subtree of the tree of databases view.
 
@@ -569,6 +585,8 @@ class DBsTreeModel(QAbstractItemModel):
         finally:
             qApp.restoreOverrideCursor()
             return nodename
+
+
     def overwriteNode(self, parent_node, parent_index, nodename):
         """Delete from the tree of databases view a node being overwritten.
 
@@ -613,6 +631,7 @@ class DBsTreeModel(QAbstractItemModel):
             child_leaf = leafNode.LeafNode(node, name)
             self.addNode(node, child_leaf, index=index)
 
+
     def flags(self, index):
         """Returns the item flags for the given index.
 
@@ -648,6 +667,7 @@ class DBsTreeModel(QAbstractItemModel):
 
         return flags
 
+
     def data(self, index, role):
         """Returns the data stored under the given role for the item
         referred to by the index.
@@ -677,6 +697,7 @@ class DBsTreeModel(QAbstractItemModel):
             return QVariant(node.node_kind)
         else:
             return QVariant()
+
 
     def setData(self, index, value, role=Qt.EditRole):
         """Sets the role data for the item at index to value.
@@ -723,6 +744,7 @@ class DBsTreeModel(QAbstractItemModel):
             return True
         return False
 
+
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
         with the specified orientation.
@@ -734,6 +756,7 @@ class DBsTreeModel(QAbstractItemModel):
                 'Header of the only column of the tree of databases view'))
 
         return QVariant()
+
 
     def columnCount(self, parent):
         """The number of columns for the children of the given index.
@@ -835,6 +858,7 @@ class DBsTreeModel(QAbstractItemModel):
         assert row != -1
         return self.createIndex(row, 0, parent)
 
+
     def addNode(self, parent, child, row=0, index=QModelIndex()):
         """Adds a child node to a given parent.
 
@@ -851,6 +875,7 @@ class DBsTreeModel(QAbstractItemModel):
         self.endInsertRows()
         self.emit(SIGNAL("layoutChanged()"))
         return True
+
 
     def removeRows(self, position, count=1, parent=QModelIndex()):
         """Removes `count` rows before the given row.
@@ -873,6 +898,7 @@ class DBsTreeModel(QAbstractItemModel):
         self.endRemoveRows()
         self.emit(SIGNAL("layoutChanged()"))
         return True
+
 
     def closeViews(self, parent, start, end):
         """When a leaf with a view is about to be removed then close the view.
@@ -902,6 +928,7 @@ class DBsTreeModel(QAbstractItemModel):
         """Setup drag and drop behavior of the model."""
         return Qt.CopyAction | Qt.MoveAction
 
+
     def mimeTypes(self):
         """Returns a list of MIME types that can be used to describe a
         list of model indexes.
@@ -910,6 +937,7 @@ class DBsTreeModel(QAbstractItemModel):
         types = QStringList()
         types << "application/x-dbstreemodeldatalist" << "text/uri-list"
         return types
+
 
     def mimeData(self, indexes):
         """Returns an object that contains serialized items of data
@@ -939,6 +967,7 @@ class DBsTreeModel(QAbstractItemModel):
 
         mime_data.setData("application/x-dbstreemodeldatalist", encoded_data)
         return mime_data
+
 
     def dropMimeData(self, data, action, row, column, parent):
         """Handles the data supplied by a drag and drop operation that
@@ -1026,7 +1055,6 @@ class DBsTreeModel(QAbstractItemModel):
             # self.emit(SIGNAL('nodeAdded'), parent)
 
         return True
-
 
 if __name__ == '__main__':
     import sys

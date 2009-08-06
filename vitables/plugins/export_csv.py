@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -39,9 +38,11 @@ from PyQt4.QtGui import *
 
 import vitables.utils
 
-
 class ExportToCSV(object):
     """Provides CSV export capabilities for arrays.
+
+    Some minor flaws: vlarrays with content other than ascii text cannot
+    be exported.
     """
 
     def __init__(self):
@@ -120,10 +121,6 @@ class ExportToCSV(object):
             numpy.savetxt(filename, leaf.read(), fmt='%s', delimiter=',')
         except:
             vitables.utils.formatExceptionInfo()
-
-
-    #Some minor flaws: vlarrays with content other than ascii text cannot be exported
-
 
 
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2009 Dmitrijs Ledkovs. All rights reserved
 #
@@ -21,5 +21,6 @@
 import os.path
 from PyQt4.uic import loadUiType
 
-Ui_QueryDialog=loadUiType(os.path.join(os.path.dirname(__file__),'query_dlg.ui'))[0]
+Ui_QueryDialog = \
+    loadUiType(os.path.join(os.path.dirname(__file__),'query_dlg.ui'))[0]
 

@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -44,8 +43,6 @@ __docformat__ = 'restructuredtext'
 import os.path
 
 import vitables.utils
-
-
 
 class NodeInfo(object):
     """Collects information about a given node.
@@ -118,7 +115,6 @@ class NodeInfo(object):
         self.user_attrs = \
             dict((n, getattr(self.asi, n, None)) for n in userattrs_names)
 
-
     # Properties for File instances
 
     def _format(self):
@@ -153,7 +149,6 @@ class NodeInfo(object):
         return size
 
     size = property(fget=_size)
-
 
     # Properties for Group instances
 
@@ -250,7 +245,6 @@ class NodeInfo(object):
             return None
 
     filters = property(fget=_filters)
-
 
     # Properties for Table instances
 

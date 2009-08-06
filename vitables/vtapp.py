@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
-
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
 #
@@ -19,7 +18,6 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
-
 
 """Here is defined the VTApp class."""
 
@@ -963,7 +961,6 @@ class VTApp(QMainWindow):
         # Main window close button clicked
         self.slotFileExit()
 
-
     # Updating appearance means:
     # 
     #     * changing the toolbar buttons look when their tied QActions are
@@ -1336,6 +1333,7 @@ class VTApp(QMainWindow):
             del file_selector
         return unicode(filepath)
 
+
     def checkFileExtension(self, filepath):
         """
         Check the filename extension of a given file.
@@ -1697,13 +1695,10 @@ class VTApp(QMainWindow):
         # pixmap2 = QPixmap.fromImage(alpha_image)
         # pixmap2.save('/tmp/con_alfa.png')
         # subwindow.widget().viewport().setStyleSheet("background-image: url(/tmp/con_alfa.png);")
-
     # #    waste_array = QByteArray()
     # #    stream = QDataStream(waste_array, QIODevice.WriteOnly)
     # #    for index in range(0, pixmap_size):
     # #        stream.writeUInt32(128)
-
-
 
 
     def slotNodeClose(self, current=None):
@@ -2210,6 +2205,8 @@ class VTApp(QMainWindow):
         """
 
         mgr_dlg = pluginsDlg.PluginsDlg()
+
+
     def slotSettingsPreferences(self):
         """
         Launch the Preferences dialog.

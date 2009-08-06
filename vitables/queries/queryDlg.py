@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -60,7 +59,6 @@ from PyQt4.QtGui import *
 import vitables.utils
 from vitables.queries import queryUI
 
-
 class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
     """
     A dialog for filter creation .
@@ -81,6 +79,7 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
     are used to enter operators, functions and field names. Textboxes
     are used to enter the range of the query.
     """
+
     def __init__(self, info, ft_names, counter, initial_query, table):
         """
         Ctor.
@@ -183,6 +182,7 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
         self.name_le.emit(text_changed, self.name_le.text())
+
 
     def __tr(self, source, comment=None):
         """Translate method."""
@@ -407,5 +407,3 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
 
         # Exit
         self.accept()
-
-

@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -138,6 +137,7 @@ class LeafView(QTableView):
                             dtype=numpy.int64)
         self.tricky_vscrollbar.setValue(value)
 
+
     def eventFilter(self, widget, event):
         """Event handler that customises the LeafView behavior for some events.
 
@@ -153,6 +153,8 @@ class LeafView(QTableView):
                                             self.model.numcols - 1)
             self.dataChanged(top_left, bottom_right)
         return QTableView.eventFilter(self, widget, event)
+
+
     def navigateWithMouse(self, int_action):
         """Navigate the table with the mouse.
 
@@ -191,6 +193,7 @@ class LeafView(QTableView):
         elif action == QAbstractSlider.SliderMove:
             self.dragSlider()
 
+
     def addStep(self):
         """Move towards the last section line by line or page by page.
         """
@@ -217,6 +220,7 @@ class LeafView(QTableView):
         # reference
         self.syncView()
 
+
     def subStep(self):
         """Move towards the first section line by line or page by page.
         """
@@ -239,6 +243,7 @@ class LeafView(QTableView):
         # with the displayed data using the first visible cell as
         # reference
         self.syncView()
+
 
     def dragSlider(self):
         """Move the slider by dragging it or wheeling the mouse.
@@ -281,6 +286,8 @@ class LeafView(QTableView):
         self.model.loadData(start, table_size)
         self.vheader.headerDataChanged(Qt.Vertical, 0, 
                                         table_size - 1)
+
+
     def keyPressEvent(self, event):
         """Handle basic cursor movement for key events.
 
@@ -305,6 +312,8 @@ class LeafView(QTableView):
                 QTableView.keyPressEvent(self, event)
         else:
             QTableView.keyPressEvent(self, event)
+
+
     def homeKeyPressEvent(self):
         """Specialised handler for the Home key press event.
         """
@@ -324,6 +333,7 @@ class LeafView(QTableView):
         # Eventually synchronize the position of the visible scrollbar
         # the displayed data
         self.tricky_vscrollbar.setValue(0)
+
 
     def endKeyPressEvent(self):
         """Specialised handler for the End key press event.
@@ -346,6 +356,7 @@ class LeafView(QTableView):
         # Eventually synchronize the position of the visible scrollbar
         # the displayed data
         self.tricky_vscrollbar.setValue(self.max_value)
+
 
     def upKeyPressEvent(self, event):
         """Specialised handler for the cursor up key press event.
@@ -388,6 +399,7 @@ class LeafView(QTableView):
         # reference
         self.syncView()
 
+
     def pageUpKeyPressEvent(self, event):
         """Specialised handler for the PageUp key press event.
 
@@ -427,6 +439,7 @@ class LeafView(QTableView):
         # with the displayed data using the first visible cell as
         # reference
         self.syncView()
+
 
     def downKeyPressEvent(self, event):
         """Specialised handler for the cursor down key press event.
@@ -469,6 +482,7 @@ class LeafView(QTableView):
         # reference
         self.syncView()
 
+
     def pageDownKeyPressEvent(self, event):
         """Specialised handler for the PageDown key press event.
 
@@ -508,6 +522,7 @@ class LeafView(QTableView):
         # reference
         self.syncView()
 
+
     def wheelEvent(self, event):
         """Send the wheel events received by the viewport to the visible
         vertical scrollbar.
@@ -517,6 +532,7 @@ class LeafView(QTableView):
             QCoreApplication.sendEvent(self.tricky_vscrollbar, event)
         else:
             QTableView.wheelEvent(self, event)
+
     # For large datasets the number of rows of the dataset is greater than
     # the number of rows of the table used for displaying data. It means
     # that if a table cell is activated (made selected by clicking, double
@@ -531,7 +547,6 @@ class LeafView(QTableView):
     # cell *fake current cell*. This would be a bug. The following code
     # avoids it.
 
-
     def trackValidCurrentCell(self, current, previous):
         """Track the valid current cell.
 
@@ -542,6 +557,7 @@ class LeafView(QTableView):
         """
         self.current_cell = (self.rbuffer.start + current.row() + 1, 
                             current.column())
+
 
     def repaintCurrentCell(self):
         """Repaint the current cell if needed.
@@ -565,6 +581,7 @@ class LeafView(QTableView):
             # The cell is a fake current cell
             self.selection_model.clearSelection()
 
+
     def loadValidCurrentCell(self, row):
         """Load the buffer in which the valid current cell lives.
 
@@ -578,6 +595,8 @@ class LeafView(QTableView):
             self.model.loadData(current_section - row - 1, table_size)
             self.vheader.headerDataChanged(Qt.Vertical, 0, 
                                             table_size - 1)
+
+
     def zoomCell(self, index):
         """Display the inner dimensions of a cell.
 
@@ -599,5 +618,3 @@ class LeafView(QTableView):
 
         zoomCell.ZoomCell(data, title, self.data_sheet.vtapp.workspace, 
                           self.data_sheet.leaf)
-
-

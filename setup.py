@@ -97,7 +97,7 @@ def has_docbook(build):
 
 class Build(build):
     sub_commands = build.sub_commands[:]
-    #sub_commands.insert(0,('build_doc', has_docbook))
+    sub_commands.insert(0,('build_doc', has_docbook))
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:
@@ -165,16 +165,16 @@ setup(name = 'ViTables', # The name of the distribution
     'Programming Language :: Python'],
     packages = ['vitables', 'vitables.docBrowser',
     'vitables.h5db', 'vitables.nodeProperties', 'vitables.queries', 
-    'vitables.preferences', 'vitables.pluginsManager', 'vitables.plugins', 
+    'vitables.preferences', 'vitables.pluginsManager', 
+    'vitables.plugins', 'vitables.plugins.plotter', 
     'vitables.vtTables', 'vitables.vtWidgets'],
     scripts = ['scripts/vitables'],
     package_data = {
-          'vitables':['icons/*.png','icons/*.ico','icons/*/*.png'],
           'vitables.nodeProperties':['*.ui'],
           'vitables.preferences':['*.ui'],
           'vitables.queries':['*.ui'],
           'vitables.pluginsManager':['*.ui'],
-          'vitables':['htmldocs/*.*','htmldocs/*/*.*']
+          'vitables':['icons/*.*','icons/*/*.*','htmldocs/*.*','htmldocs/*/*.*']
           },
     cmdclass = {
           'build': Build,

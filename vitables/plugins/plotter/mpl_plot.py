@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -48,7 +47,6 @@ from PyQt4.QtGui import *
 import vitables.utils
 
 
-
 class Data2DPlotter(QMainWindow):
     """Embed matplotlib (mpl) plot in ViTables.
     """
@@ -76,11 +74,11 @@ class Data2DPlotter(QMainWindow):
 
         # Flag to indicate if data have been loaded
         self.data_loaded = None
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate(_context, source, comment))
-
-
 
 
     def addEntry(self):

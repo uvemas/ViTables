@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -127,6 +126,7 @@ class LeafModel(QAbstractTableModel):
         # Populate the model with the first chunk of data
         self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)
 
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate(_context, source, comment))
@@ -156,6 +156,7 @@ class LeafModel(QAbstractTableModel):
         # The section label for vertical header
         return QVariant(unicode(self.rbuffer.start + section + 1))
 
+
     def data(self, index, role=Qt.DisplayRole):
         """Returns the data stored under the given role for the item
         referred to by the index.
@@ -177,6 +178,7 @@ class LeafModel(QAbstractTableModel):
         else:
             return QVariant()
 
+
     def columnCount(self, index=QModelIndex()):
         """The number of columns of the table.
 
@@ -184,12 +186,14 @@ class LeafModel(QAbstractTableModel):
         """
         return self.numcols
 
+
     def rowCount(self, index=QModelIndex()):
         """The number of rows of the table.
 
         :Parameter index: the index of the node being inspected.
         """
         return self.numrows
+
 
     def loadData(self, start, chunk_size):
         """Load the model with fresh data from the buffer.
@@ -203,4 +207,3 @@ class LeafModel(QAbstractTableModel):
         self.rbuffer.readBuffer(start, chunk_size)
         self.emit(SIGNAL("headerDataChanged(int, int, int)"), 
                     Qt.Vertical, 0, self.numrows - 1)
-

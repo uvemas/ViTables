@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -48,7 +47,6 @@ from PyQt4.QtCore import *
 
 import vitables.utils
 
-
 class QueriesManager(QThread):
     """This is the class in charge of threading the execution of queries.
 
@@ -76,6 +74,7 @@ class QueriesManager(QThread):
     then the queries would take more time to finish but the rest of the application
     would not be affected (i.e. would not freeze).
     """
+
     def __init__(self, tmp_h5file, parent=None):
         """Setup the queries manager.
 
@@ -127,7 +126,6 @@ class QueriesManager(QThread):
         del self.in_progress[tableID]
 
 
-
     def isTracked(self, tableID):
         """Find out if a table is being queried.
 
@@ -138,6 +136,8 @@ class QueriesManager(QThread):
             return True
         else:
             return False
+
+
     def query(self, tableID, table, query_description):
         """Start a new query.
 
@@ -250,5 +250,3 @@ class QueriesManager(QThread):
         # Unlock the table for future queries
         self.untrackTable(self.tableID)
         self.emit(SIGNAL("queryFinished()"), )
-
-

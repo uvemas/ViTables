@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -169,6 +168,8 @@ class ZoomCell(QMdiSubWindow):
         QObject.connect(self.grid,
             SIGNAL('cellDoubleClicked(int, int)'), 
             self.slotZoomView)
+
+
     def hasShape(self):
         """Find out if the zoomed cell has a shape attribute."""
 
@@ -270,6 +271,7 @@ class ZoomCell(QMdiSubWindow):
             item = QTableWidgetItem(text)
             self.grid.setItem(0, column, item)
 
+
     def zoomArray(self):
         """Fill the zoom view with the content of the clicked cell."""
 
@@ -296,6 +298,8 @@ class ZoomCell(QMdiSubWindow):
                     text = self.formatContent(content)
                     item = QTableWidgetItem(text)
                     self.grid.setItem(row, column, item)
+
+
     def slotZoomView(self, row, col):
         """Makes the content of the clicked cell fully visible.
 
@@ -332,6 +336,3 @@ class ZoomCell(QMdiSubWindow):
         else:
             caption = '%s: (%s, %s)' % (self.title, row + 1, col + 1)
         ZoomCell(cell, caption, self.workspace, self.leaf)
-
-
-

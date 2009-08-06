@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
-
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
 #
@@ -61,6 +60,7 @@ class VTSplash(QSplashScreen):
 
         QSplashScreen.__init__(self, png)
 
+
     def drawContents(self, painter):
         """Draw the contents of the splash screen using a given painter.
 
@@ -75,6 +75,8 @@ class VTSplash(QSplashScreen):
         font.setBold(True)
         painter.setFont(font)
         painter.drawText(10, 213, self.msg)
+
+
     def drawMessage(self, msg):
         """
         Draws the message text onto the splash screen.

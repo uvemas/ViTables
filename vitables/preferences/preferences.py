@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -189,6 +188,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             preferences['Look/currentStyle'])
         self.styles_cb.setCurrentIndex(index)
 
+
     def slotButtonClicked(self, button):
         """Manages dialog button cliksin the Preferences dialog.
 
@@ -204,6 +204,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             self.reject()
         else:
             self.slotOKButton()
+
 
     def slotResetButton(self):
         """
@@ -226,6 +227,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
         for key, value in self.new_prefs.items():
             self.new_prefs[key] = QVariant(value)
         self.accept()
+
 
     def slotSetStartupDir(self, cb_on):
         """
@@ -276,6 +278,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             self.new_prefs['Logger/Font'] = new_font
             self.sample_te.setFont(new_font)
 
+
     def slotSetLoggerForeground(self):
         """Set the logger foreground color."""
 
@@ -287,6 +290,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             self.sample_te.selectAll()
             self.sample_te.setTextColor(color)
             self.sample_te.moveCursor(QTextCursor.End)
+
 
     def slotSetLoggerBackground(self):
         """Set the logger background color."""
@@ -300,6 +304,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             stylesheet.replace(background, color.name())
             self.sample_te.setStyleSheet(stylesheet)
 
+
     def slotSetWorkspaceBackground(self):
         """Set the workspace background color."""
 
@@ -312,6 +317,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             stylesheet.replace(background, color.name())
             self.workspace_label.setStyleSheet(stylesheet)
 
+
     def slotSetStyle(self, style_name):
         """
         Set the application style.
@@ -319,4 +325,3 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
         :Parameter style_name: the style to be applied
         """
         self.new_prefs['Look/currentStyle'] = unicode(style_name)
-

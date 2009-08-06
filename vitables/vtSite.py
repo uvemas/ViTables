@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -30,14 +29,17 @@ Misc variables:
 
 * __docformat__
 * INSTALLDIR
-
+* ICONDIR
+* DOCDIR
+* PLUGINSDIR
 """
 
-import os.path
-
 __docformat__ = 'restructuredtext'
+
+import os.path
 
 INSTALLDIR = os.path.dirname(__file__)
 ICONDIR = os.path.join(INSTALLDIR, "icons")
 DOCDIR = os.path.join(INSTALLDIR, "htmldocs")
+PLUGINSDIR = os.path.join(INSTALLDIR, "plugins")
 

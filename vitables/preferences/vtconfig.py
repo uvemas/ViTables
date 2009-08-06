@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -121,10 +120,10 @@ from PyQt4.QtGui import *
 from vitables.preferences import configException
 import vitables.utils
 
+
 def getVersion():
     """The application version."""
     return __version__
-
 
 
 class Config(QSettings):
@@ -203,6 +202,8 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
+
     def loggerText(self):
         """
         Returns the logger text color.
@@ -215,6 +216,8 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
+
     def loggerFont(self):
         """
         Returns the logger font.
@@ -227,6 +230,8 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
+
     def workspaceBackground(self):
         """
         Returns the workspace background color.
@@ -239,6 +244,8 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
+
     def readStyle(self):
         """Returns the current application style."""
 
@@ -259,6 +266,7 @@ class Config(QSettings):
         else:
             return entry
 
+
     def windowPosition(self):
         """
         Returns the main window geometry setting.
@@ -271,6 +279,7 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
 
     def windowLayout(self):
         """
@@ -288,6 +297,7 @@ class Config(QSettings):
         else:
             return default_value
 
+
     def hsplitterPosition(self):
         """
         Returns the horizontal splitter geometry setting.
@@ -300,6 +310,7 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
 
     def vsplitterPosition(self):
         """
@@ -314,6 +325,7 @@ class Config(QSettings):
         else:
             return default_value
 
+
     def startupLastSession(self):
         """
         Returns the restore last session setting.
@@ -326,6 +338,7 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
 
     def startupWorkingDir(self):
         """
@@ -340,6 +353,7 @@ class Config(QSettings):
         else:
             return default_value
 
+
     def lastWorkingDir(self):
         """
         Returns the last working directory setting.
@@ -352,6 +366,7 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
 
     def recentFiles(self):
         """
@@ -366,6 +381,7 @@ class Config(QSettings):
         else:
             return default_value
 
+
     def sessionFiles(self):
         """
         Returns the list of files and nodes opened when the last session quit.
@@ -379,6 +395,7 @@ class Config(QSettings):
         else:
             return default_value
 
+
     def helpHistory(self):
         """
         Returns the navigation history of the HelpBrowser.
@@ -391,6 +408,7 @@ class Config(QSettings):
             return setting_value
         else:
             return default_value
+
 
     def helpBookmarks(self):
         """

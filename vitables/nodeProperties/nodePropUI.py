@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2009 Dmitrijs Ledkovs. All rights reserved
 #
@@ -23,4 +23,3 @@ from PyQt4.uic import loadUiType
 
 Ui_NodePropDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'prop_dlg.ui'))[0]
-

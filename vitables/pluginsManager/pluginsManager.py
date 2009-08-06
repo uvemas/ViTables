@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -57,6 +56,7 @@ import imp
 import inspect
 
 import vitables.plugins
+from vitables.vtSite import PLUGINSDIR
 
 class PluginsMgr(object):
     """Plugins manager class.
@@ -82,9 +82,8 @@ class PluginsMgr(object):
 
         # Ensure that plugins distributed along with ViTables are
         # always available
-        from vitables.plugins import __path__ as vt_plugins
-        if vt_plugins[0] not in self.plugins_paths:
-            self.plugins_paths.append(vt_plugins[0])
+        if PLUGINSDIR not in self.plugins_paths:
+            self.plugins_paths.append(PLUGINSDIR)
 
         # Make sure that other plugins (if any) are available
         for path in self.plugins_paths:
@@ -143,7 +142,6 @@ class PluginsMgr(object):
 
         self.disabled_plugins = [plugin for plugin in self.all_plugins \
             if plugin not in self.enabled_plugins]
-
 
 
     def loadPlugin(self, plugin):

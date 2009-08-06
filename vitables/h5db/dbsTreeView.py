@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -144,6 +143,7 @@ class DBsTreeView(QTreeView):
         else:
             self.activateNode(current)
 
+
     def updateCollapsedGroup(self, index):
         """After collapsing a group update its icon.
 
@@ -155,6 +155,7 @@ class DBsTreeView(QTreeView):
         if node.node_kind == 'group':
             model.setData(index, QVariant(node.closed_folder),
                 Qt.DecorationRole)
+
 
     def updateExpandedGroup(self, index):
         """After a group expansion update the icon and the displayed children.
@@ -176,6 +177,7 @@ class DBsTreeView(QTreeView):
             model.setData(index, QVariant(node.open_folder),
                 Qt.DecorationRole)
         self.update(index)
+
 
     def activateNode(self, index):
         """Expands/collapses an item.
@@ -199,7 +201,6 @@ class DBsTreeView(QTreeView):
                 self.expand(index)
         elif not node.has_view:
             self.vtapp.slotNodeOpen(index)
-
 
 
     def createCustomContextMenu(self, pos):
@@ -243,6 +244,8 @@ class DBsTreeView(QTreeView):
                 self.vtapp.workspace.setActiveSubWindow(window)
 
         QTreeView.currentChanged(self, current, previous)
+
+
     def dropEvent(self, event):
         """
         Event handler for `QDropEvent` events.
@@ -263,6 +266,8 @@ class DBsTreeView(QTreeView):
                 event.accept()
         else:
             QTreeView.dropEvent(self, event)
+
+
     def dragEnterEvent(self, event):
         """
         Event handler for `QDragEnterEvent` events.
@@ -278,6 +283,8 @@ class DBsTreeView(QTreeView):
             event.acceptProposedAction()
         else:
             QTreeView.dragEnterEvent(self, event)
+
+
     def dragMoveEvent(self, event):
         """
         Event handler for `QDragMoveEvent` events.

@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -155,7 +154,6 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
             self.leafGB(info, table=True)
 
 
-
     def groupGB(self, info, title):
         """Make the groupbox of the General page for File/Group instances."""
 
@@ -198,6 +196,7 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
             type_item.setEditable(False)
             self.children_model.appendRow([name_item, type_item])
         self.bottomgb_layout.addWidget(table, 1, 0, 1, 2)
+
 
     def leafGB(self, info, table=False):
         """Make the groupbox of the General page for Leaf nodes."""
@@ -286,6 +285,8 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
                 self.fields_model.appendRow([pathname_item, type_item, 
                                             shape_item])
             self.bottomgb_layout.addWidget(table, 4, 0, 1, 2)
+
+
     def makeSysAttrsPage(self, info):
         """Make the System attributes page of the Properties dialog."""
 
@@ -364,6 +365,7 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
         # The cell contents displayer
         self.connect(self.sys_table, SIGNAL('clicked(QModelIndex)'), 
                                 self.slotDisplayCellContent)
+
 
     def makeUserAttrsPage(self, info):
         """Make the User attributes page of the Properties dialog."""
@@ -484,7 +486,6 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
             self.ucc_display.clear()
             self.ucc_display.setText(model_item.text())
 
-
     # SLOT methods for user attributes
 
     def slotAddAttr(self):
@@ -587,10 +588,6 @@ class NodePropDlg(QDialog, nodePropUI.Ui_NodePropDialog):
             return True
 
         return False
-
-
-
-
 
 
     def accept(self):

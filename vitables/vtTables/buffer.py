@@ -1,9 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
 
-
-########################################################################
-#
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
 #
@@ -21,11 +18,6 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
-#
-#       $Source$
-#       $Id: buffer.py 1082 2008-10-31 12:24:08Z vmas $
-#
-########################################################################
 
 """
 Here is defined the Buffer class.
@@ -60,6 +52,7 @@ import tables
 
 import vitables.utils
 
+
 # Restrict the available flavors to 'numpy' so that reading a leaf
 # always return a numpy array instead of an object of the kind indicated
 # by the leaf flavor. For VLArrays the read data is returned as a list whose
@@ -67,6 +60,7 @@ import vitables.utils
 tables.restrict_flavors(keep=['numpy'])
 warnings.filterwarnings('ignore', category=tables.FlavorWarning)
 warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
+
 
 class Buffer:
     """
@@ -191,6 +185,8 @@ class Buffer:
             start = stop - self.chunk_size
 
         return start, stop
+
+
     def isDataSourceReadable(self):
         """Find out if the dataset can be read or not.
 
@@ -248,6 +244,7 @@ class Buffer:
             # Update the buffer contents and its start position
             self.chunk = data
             self.start = start
+
 
     def scalarCell(self, row, col):
         """
@@ -329,4 +326,3 @@ class Buffer:
         except IndexError:
             print 'IndexError! buffer start: %s row, column: %s, %s' % \
                 (self.start, row, col)
-

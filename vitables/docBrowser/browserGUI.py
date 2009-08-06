@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -53,7 +52,6 @@ import vitables.utils
 class HelpBrowserGUI(QMainWindow) :
     """Very simple documentation browser."""
 
-
     def __init__(self, browser, parent=None) :
         """
         Initializes the browser.
@@ -87,6 +85,8 @@ class HelpBrowserGUI(QMainWindow) :
         self.setupHistoryCombo()
         self.statusBar().showMessage(self.__tr('Ready...', 
                                     'Status bar startup message'))
+
+
     def __tr(self, source, comment=None):
         """Translate method."""
         return unicode(qApp.translate(_context, source, comment))
@@ -210,6 +210,8 @@ class HelpBrowserGUI(QMainWindow) :
                 self.__tr('Clear the content of the history combobox', 
                     ''))
         return actions
+
+
     def initPopups(self) :
         """
         GUI components are: menu bar, tool bar and status bar.
@@ -286,6 +288,7 @@ class HelpBrowserGUI(QMainWindow) :
         history_toolbar.addWidget(go_selector)
         self.combo_history = QComboBox(history_toolbar)
         history_toolbar.addWidget(self.combo_history)
+
 
     def setupHistoryCombo(self):
         """

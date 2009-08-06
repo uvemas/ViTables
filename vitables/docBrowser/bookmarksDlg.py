@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -63,7 +62,6 @@ class BookmarksDlg(QDialog):
     buttons with ``Delete``, ``OK`` and ``Cancel`` buttons. ``Delete``
     removes checked items from the bookmarks list. 
     """
-
 
     def __init__(self, blist, hbgui):
         """

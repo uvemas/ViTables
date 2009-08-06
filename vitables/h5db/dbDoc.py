@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
@@ -203,7 +202,6 @@ class DBDoc(QObject):
         """:Returns: the recursive list of full nodepaths for the file"""
         return [node._v_pathname for node in self.h5file.walkNodes('/')]
 
-
     # 
     # Editing databases
     # 
@@ -261,8 +259,6 @@ class DBDoc(QObject):
         self.hidden_group = '/' + group_name
         self.h5file.createGroup('/', group_name, 'Hide cut nodes')
         self.h5file.flush()
-
-
 
 
     def cutNode(self, nodepath):
@@ -369,5 +365,3 @@ class DBDoc(QObject):
             self.h5file.flush()
         except:
             vitables.utils.formatExceptionInfo()
-
-
