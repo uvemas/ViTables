@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 07, 2009 **
+Makefile files and other unneeded stuff have been removed.
+
 ** August 06, 2009 **
 The plugins framework has been made more robust.
 
