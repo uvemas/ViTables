@@ -408,7 +408,7 @@ def customLineEdit(parent):
 def getLicense():
     """The ViTables license in Rich Text format."""
 
-    input_file = QFile(":/LICENSE.html")
+    input_file = QFile(os.path.join(DOCDIR, 'LICENSE.html'))
     input_file.open(QIODevice.ReadOnly)
     stream = QTextStream(input_file)
     license_text = stream.readAll()

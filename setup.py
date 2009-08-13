@@ -34,6 +34,7 @@ from distutils.command.clean import clean
 from distutils.dist import Distribution
 from distutils.spawn import find_executable, spawn
 from distutils.dir_util import copy_tree
+from distutils.file_util import copy_file
 
 class DocbookDistribution(Distribution):
     def __init__(self, attrs=None):
@@ -41,6 +42,9 @@ class DocbookDistribution(Distribution):
         Distribution.__init__(self, attrs)
 
 class BuildDocbook(Command):
+    """BuildDocbook documentation and copy HTML data files.
+    """
+
     description = "Build Docbook documentation"
 
     user_options = [('xsltproc-path=', None, "Path to the XSLT processor"),
@@ -63,7 +67,7 @@ class BuildDocbook(Command):
         if self.fop_path is None:
             self.fop_path = find_executable("fop")
             if self.fop_path is None:
-                raise SystemExit, "Unable to find 'fop', needed to generate Docbook HTML documentation."
+                raise SystemExit, "Unable to find 'fop', needed to generate Docbook documentation in PDF format."
 
         if self.xsl_style is None:
             self.xsl_style = "http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl"
@@ -76,6 +80,7 @@ class BuildDocbook(Command):
         return 'build_doc'
 
     def run(self):
+
         for input_file in self.distribution.docbooks:
             self.announce("Building Docbook documentation from %s." % input_file)
 
@@ -90,6 +95,7 @@ class BuildDocbook(Command):
                 spawn([self.xsltproc_path, "--nonet", "-o", input_file_name+".fo", self.fop_style, input_file])
                 spawn([self.fop_path, "-q", input_file_name+".fo", input_file_name+".pdf"])
                 copy_tree(os.path.join(os.path.dirname(input_file),"images"),os.path.join(output_dir,"images"))
+                copy_file('LICENSE.html', output_dir)
 
 def has_docbook(build):
     return (build.distribution.docbooks is not None and

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 13, 2009 **
+Fixed a bug introduced when the use of Qt resources was dropped.
+
 ** August 07, 2009 **
 Makefile files and other unneeded stuff have been removed.
 
