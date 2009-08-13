@@ -355,7 +355,7 @@ class VTApp(QMainWindow):
 
         actions['queryNew'] = vitables.utils.createAction(self, 
             self.__tr('&Query...', 'Query -> New...'), None, 
-            self.slotQueryNew, self.icons_dictionary['new_filter'], 
+            self.slotQueryNew, self.icons_dictionary['filter'], 
             self.__tr('Create a new filter for the selected table', 
                 'Status bar text for the Query -> New... action'))
 
@@ -376,7 +376,7 @@ class VTApp(QMainWindow):
         actions['settingsPreferences'] = vitables.utils.createAction(self, 
             self.__tr('&Preferences...', 'Settings -> Preferences'), None, 
             self.slotSettingsPreferences, 
-            self.icons_dictionary['appearance'], 
+            self.icons_dictionary['configure'], 
             self.__tr('Configure ViTables', 
                 'Status bar text for the Settings -> Preferences action'))
 
@@ -434,7 +434,7 @@ class VTApp(QMainWindow):
                     'Status bar text for the Help -> Users Guide action'))
 
         actions['helpAbout'] = vitables.utils.createAction(self, 
-            self.__tr('&About', 'Help -> About'), None, 
+            self.__tr('&About ViTables', 'Help -> About'), None, 
             self.slotHelpAbout, None, 
             self.__tr('Display information about ViTables',
                     'Status bar text for the Help -> About action'))
@@ -2283,6 +2283,14 @@ class VTApp(QMainWindow):
             copyright notice of the individual packages.
             </qt>""",
             'Text of the About ViTables dialog')  % vtconfig.getVersion()
+        thanks_text = self.__tr(
+            """<qt>
+            Dmitrijs Ledkovs for contributing the new and greatly enhanced
+            build system and for making Debian packages.<p>
+            Everaldo for Crystal Project icons.<p>
+            All the people who reported bugs and made suggestions.
+            </qt>""",
+            'Text of the About ViTables dialog (Thanks to page)')
         license_text = vitables.utils.getLicense()
 
         # Construct the dialog
@@ -2299,29 +2307,36 @@ class VTApp(QMainWindow):
             SLOT("accept()"))
 
         # Make About page
-        about_page = QWidget()
-        about_page.setLayout(QVBoxLayout())
-        about_edit = QTextEdit(about_page)
-        about_edit.setReadOnly(1)
-        about_edit.setAcceptRichText(True)
-        about_edit.setText(about_text)
-        about_page.layout().addWidget(about_edit)
-        tab_widget.addTab(about_page, self.__tr('&About...',
-            'Title of the first tab of the About dialog'))
+        content = [about_text, thanks_text, license_text]
+        tabs = [self.__tr('&About',
+            'Title of the first tab of the About dialog'), 
+            self.__tr('&Thanks To',
+            'Title of the second tab of the About dialog'), 
+            self.__tr('&License',
+            'Title of the third tab of the About dialog')]
 
-        # Make License page
-        license_page = QWidget()
-        license_page.setLayout(QVBoxLayout())
-        license_edit = QTextEdit(license_page)
-        license_edit.setReadOnly(1)
-        license_edit.setAcceptRichText(True)
-        license_edit.setText(license_text)
-        license_page.layout().addWidget(license_edit)
-        tab_widget.addTab(license_page, self.__tr('&License',
-            'Title of the second tab of the About dialog'))
+        for index in range(0, 3):
+            widget = self.makePage(content[index])
+            tab_widget.addTab(widget, tabs[index])
+
 
         # Show the dialog
         about_dlg.exec_()
+    def makePage(self, content):
+        """Create a page for the About ViTables dialog.
+
+        :Parameter content: the text displayed on the page
+        """
+
+        widget = QWidget()
+        widget.setLayout(QVBoxLayout())
+        text_edit = QTextEdit(widget)
+        text_edit.setReadOnly(1)
+        text_edit.setAcceptRichText(True)
+        text_edit.setText(content)
+        widget.layout().addWidget(text_edit)
+
+        return widget
 
 
     def slotHelpAboutQt(self):

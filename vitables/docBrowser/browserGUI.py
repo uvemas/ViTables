@@ -142,21 +142,21 @@ class HelpBrowserGUI(QMainWindow) :
         actions['goHome'] = vitables.utils.createAction(self.text_browser, 
                 self.__tr('&Home', 'Go --> Home'), 
                 QKeySequence.UnknownKey, SLOT('home()'), 
-                self.icons['gohome'], 
+                self.icons['2leftarrow'], 
                 self.__tr('Go to the first visited page', 
                     'Status bar text for the  Go --> Home action'))
 
         actions['goBackward'] = vitables.utils.createAction(self.text_browser, 
                 self.__tr('&Backward', ' Go --> Backward'), 
                 QKeySequence.Back, SLOT('backward()'), 
-                self.icons['player_back'], 
+                self.icons['1leftarrow'], 
                 self.__tr('Go to previous page', 
                     'Status bar text for the  Go --> Backward action'))
 
         actions['goForward'] = vitables.utils.createAction(self.text_browser, 
                 self.__tr('&Forward', ' Go --> Forward'), 
                 QKeySequence.Forward, SLOT('forward()'), 
-                self.icons['player_play'], 
+                self.icons['1rightarrow'], 
                 self.__tr('Go to next page', 
                     'Status bar text for the  Go --> Forward action'))
 
@@ -183,7 +183,7 @@ class HelpBrowserGUI(QMainWindow) :
                     'Status bar text for Bookmarks --> Edit bookmarks action'))
 
         actions['bookmarksClear'] = vitables.utils.createAction(self, 
-                self.__tr('&Clear All', 'Bookmarks --> Add bookmark'), 
+                self.__tr('&Clear All', 'Bookmarks --> Clear bookmark'), 
                 QKeySequence('CTRL+Alt+C'), 
                 self.browser.slotClearBookmarks, None, 
                 self.__tr('Clear all existing bookmarks', 

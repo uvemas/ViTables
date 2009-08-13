@@ -117,7 +117,7 @@ class ZoomCell(QMdiSubWindow):
         # Configure the titlebar
         self.setWindowTitle(self.title)
         icons_dictionary = vitables.utils.getIcons()
-        self.setWindowIcon(icons_dictionary['zoom'])
+        self.setWindowIcon(icons_dictionary['viewmag'])
 
         # Decide how the cell content will be formatted. Content can be:
         # - a numpy array

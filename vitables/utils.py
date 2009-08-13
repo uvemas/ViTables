@@ -131,10 +131,11 @@ def getIcons():
     if not ICONS_DICT:
         large_icons = sets.Set([
             # Icons for toolbars
-            'fileclose', 'filenew', 'fileopen', 'fileopen_popup', 
+            'fileclose', 'filenew', 'fileopen', 
             'filesaveas', 'exit', 
-            'editcopy', 'editcut', 'editdelete','editpaste', 'usersguide', 
-            'new_filter', 'delete_filters', 
+            'folder_new', 'editcopy', 'editcut', 'editdelete','editpaste', 
+            'usersguide', 
+            'filter', 'delete_filters', 
             # Icons for tree pane items
             'file_ro', 'file_rw', 'dbfilters', 'folder', 'folder_open'])
 
@@ -145,14 +146,13 @@ def getIcons():
             'folder_new', 
             'new_filter', 'delete_filters',
             'configure', 
-            'appearance', 
             'usersguide', 
             # Icons for tree pane items
             'unimplemented', 
             'array', 'carray', 'earray', 'object', 
             'vlarray','table', 'vlstring', 
             # Icons for node views
-            'zoom', 
+            'viewmag', 
             # Icons for buttons
             'cancel', 'ok'])
 
@@ -167,14 +167,14 @@ def getHBIcons():
     if not HB_ICONS_DICT:
         large_icons = sets.Set([
         # Icons for toolbar
-        'gohome', 'player_back', 'player_play', 'reload_page',
+        '2leftarrow', '1leftarrow', '1rightarrow', 'reload_page',
         'bookmark', 'bookmark_add', 'viewmag+', 'viewmag-', 'history_clear'])
 
         small_icons = sets.Set([
         # Icons for menu items
         'fileopen', 'exit',
         'viewmag+', 'viewmag-',
-        'gohome', 'player_back', 'player_play', 'reload_page',
+        '2leftarrow', '1leftarrow', '1rightarrow', 'reload_page',
         'bookmark', 'bookmark_add',
         # Icons for buttons
         'ok', 'cancel', 'remove'])
