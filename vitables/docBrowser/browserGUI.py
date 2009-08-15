@@ -33,6 +33,7 @@ Methods:
 * setupActions(self)
 * initPopups(self) 
 * setupHistoryCombo(self)
+* connectSignals(self)
 * closeEvent(self, event) 
 
 Misc variables:
@@ -82,6 +83,7 @@ class HelpBrowserGUI(QMainWindow) :
         # The popup menus
         self.actions = self.setupActions()
         self.initPopups()
+        self.connectSignals()
         self.setupHistoryCombo()
         self.statusBar().showMessage(self.__tr('Ready...', 
                                     'Status bar startup message'))
@@ -288,6 +290,38 @@ class HelpBrowserGUI(QMainWindow) :
         history_toolbar.addWidget(go_selector)
         self.combo_history = QComboBox(history_toolbar)
         history_toolbar.addWidget(self.combo_history)
+
+
+    def connectSignals(self):
+        """
+        Connect signals to slots.
+
+        Signals coming from GUI are connected to slots in the docs 
+        browser controller (`HelpBrowser`).
+        """
+
+        self.connect(self.combo_history, 
+            SIGNAL('activated(QString)'), self.browser.slotDisplaySrc)
+
+        # This is the most subtle connection. It encompasses source
+        # changes coming from anywhere, including slots (home, backward
+        # and forward), menus (Go and Bookmarks), clicked links and
+        # programatic changes (setSource calls).
+        self.connect(self.text_browser, 
+            SIGNAL('sourceChanged(QUrl)'), 
+            self.browser.updateHistory)
+
+        self.connect(self.text_browser, 
+            SIGNAL('backwardAvailable(bool)'), 
+            self.browser.slotUpdateBackward)
+
+        self.connect(self.text_browser, 
+            SIGNAL('forwardAvailable(bool)'), 
+            self.browser.slotUpdateForward)
+
+        self.connect(self.bookmarks_menu, 
+            SIGNAL('aboutToShow()'), 
+            self.browser.slotRecentSubmenuAboutToShow)
 
 
     def setupHistoryCombo(self):

@@ -157,12 +157,10 @@ class BookmarksDlg(QDialog):
         updated and displays that bookmark.
         """
 
-        # The HelpBrowser instance tied to this dialog
-        help_browser = self.parent().browser
         # Get the bookmark UID
         row = self.model.itemFromIndex(index).row()
-        src = help_browser.bookmarks[row]
-        help_browser.slotDisplaySrc(src)
+        src = self.blist[row]
+        self.parent().browser.slotDisplaySrc(src)
 
 
     def slotCheckDeleteButton(self, item):
@@ -215,7 +213,7 @@ class BookmarksDlg(QDialog):
         """Delete all selected bookmarks."""
 
         parent_item = self.model.invisibleRootItem()
-        # Iterate over the QTreeWidget looking for checked items
+        # Iterate over the QTreeView looking for checked items
         deleted_rows = []
         row = 0
         item = parent_item.child(row)

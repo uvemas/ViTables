@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** August 15, 2009 **
+The docBrowser package has been reworked a little bit.
+
 Splash screen has been updated.
 
 ** August 13, 2009 **

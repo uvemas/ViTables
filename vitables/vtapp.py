@@ -2256,7 +2256,7 @@ class VTApp(QMainWindow):
         Help --> UsersGuide
         """
 
-        browser = helpBrowser.HelpBrowser(self)
+        browser = helpBrowser.HelpBrowser()
         self.doc_browsers.append(browser)
 
 
