@@ -39,7 +39,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.vtWidgets.renameDlg as renameDlg
-from vitables.vtSite import *
+from vitables.vtSite import ICONDIR, DOCDIR
 
 
 ICONS_DICT = {}

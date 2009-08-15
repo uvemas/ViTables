@@ -7,4 +7,5 @@ recursive-include macosxapp *
 include scripts/vitables
 recursive-include vitables/* *.ui
 recursive-include vitables/icons *.* */*.*
+exclude vitables/icons/vitables_logo.svg
 exclude setup.cfg 

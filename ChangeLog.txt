@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 15, 2009 **
+Splash screen has been updated.
+
 ** August 13, 2009 **
 Icons have been updated. About ViTables dialog enhanced with a Thanks To page.
 

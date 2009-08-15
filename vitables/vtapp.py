@@ -39,7 +39,7 @@ from PyQt4.QtGui import *
 import vitables.utils
 import vitables.logger as logger
 import vitables.vtsplash
-from vitables.vtSite import *
+from vitables.vtSite import ICONDIR
 
 from  vitables.preferences import vtconfig
 from  vitables.preferences import preferences
