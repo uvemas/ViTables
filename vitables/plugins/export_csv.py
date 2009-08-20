@@ -55,7 +55,7 @@ class ExportToCSV(object):
         if self.vtapp is None:
             return
 
-        self.addEntry()
+        self.upgradeDatasetMenu()
 
 
     def __tr(self, source, comment=None):
@@ -63,7 +63,7 @@ class ExportToCSV(object):
         return unicode(qApp.translate(_context, source, comment))
 
 
-    def addEntry(self):
+    def upgradeDatasetMenu(self):
         """Add the Export to CSV... entry to the Dataset menu.
         """
 
@@ -77,6 +77,7 @@ class ExportToCSV(object):
         QObject.connect(action, SIGNAL("triggered()"), self.export)
 
         # Add the action to the Dataset menu
+        menu.addSeparator()
         menu.addAction(action)
 
 

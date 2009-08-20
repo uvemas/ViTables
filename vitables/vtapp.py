@@ -162,8 +162,8 @@ class VTApp(QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+        #sys.stdout = self.logger
+        #sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -1668,13 +1668,13 @@ class VTApp(QMainWindow):
         # Announcing is potentially helpful for plugins in charge of
         # datasets customisations (for instance, additional formatting)
         leaf_model = leafModel.LeafModel(leaf_buffer)
-        self.emit(SIGNAL("leaf_model_created"), leaf_model)
         leaf_view = leafView.LeafView(leaf_model)
 
         # Add the view to the MDI area
         subwindow = dataSheet.DataSheet(dbs_tree_leaf, leaf_view, pindex, self)
         self.workspace.addSubWindow(subwindow)
         subwindow.show()
+        self.emit(SIGNAL("leaf_model_created"), subwindow)
 
         # pixmap = QPixmap.grabWidget(subwindow)
         # noalpha_image = pixmap.toImage()

@@ -290,16 +290,11 @@ def formatStringContent(content):
 
 def formatTimeContent(content):
     """
-    Nicely format the contents of a table widget cell.
+    Nicely format the contents of a table widget cell using UTC times.
 
-    Used when:
-
-    - the content atom is TimeAtom
-    - content belongs to a time serie created via scikits.timeseries module
-      and stored in the _dates column of a TimeSeriesTable table
+    Used when the content atom is TimeAtom.
     """
-
-    return time.ctime(content)
+    return time.asctime(time.gmtime(content))
 
 
 def formatExceptionInfo(limit=1):

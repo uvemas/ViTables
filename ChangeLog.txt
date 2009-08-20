@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 20, 2009 **
+A couple of modules have been sanitised (bad variable names changed).
+
 ** August 15, 2009 **
 The docBrowser package has been reworked a little bit.
 

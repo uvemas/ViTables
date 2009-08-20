@@ -82,9 +82,9 @@ class BookmarksDlg(QDialog):
         # Add a tree view
         self.tree = QTreeView(self)
         self.tree.setItemsExpandable(False)
-        self.model = QStandardItemModel()
-        self.tree.setModel(self.model)
-        self.model.setHorizontalHeaderLabels([
+        self.tmodel = QStandardItemModel()
+        self.tree.setModel(self.tmodel)
+        self.tmodel.setHorizontalHeaderLabels([
             self.__tr('Bookmark', 
             'First column header of the bookmarks table'), 
             self.__tr('URL', 
@@ -109,7 +109,7 @@ class BookmarksDlg(QDialog):
         self.show()
 
         # Finally we connect signals to slots
-        self.connect(self.model, 
+        self.connect(self.tmodel, 
             SIGNAL('itemChanged(QStandardItem *)'), 
             self.slotCheckDeleteButton)
         self.connect(self.tree, 
@@ -130,8 +130,8 @@ class BookmarksDlg(QDialog):
     def fillBookmarksTable(self):
         """Add entries to the bookmarks table."""
 
-        self.model.setColumnCount(2)
-        parent_item = self.model.invisibleRootItem()
+        self.tmodel.setColumnCount(2)
+        parent_item = self.tmodel.invisibleRootItem()
         # Each item of the tree (bookmark) is extracted from the bookmarks list
         for entry in self.blist :
             # extracts the short name. Examples:
@@ -144,7 +144,7 @@ class BookmarksDlg(QDialog):
             item1 = QStandardItem(entry)
             item1.setEditable(False)
             parent_item.appendRow([item, item1])
-        self.tree.setExpanded(self.model.indexFromItem(parent_item), True)
+        self.tree.setExpanded(self.tmodel.indexFromItem(parent_item), True)
         self.tree.repaint()
         self.repaint()
 
@@ -158,7 +158,7 @@ class BookmarksDlg(QDialog):
         """
 
         # Get the bookmark UID
-        row = self.model.itemFromIndex(index).row()
+        row = self.tmodel.itemFromIndex(index).row()
         src = self.blist[row]
         self.parent().browser.slotDisplaySrc(src)
 
@@ -172,7 +172,7 @@ class BookmarksDlg(QDialog):
         clicked the ``Delete`` button state is updated.
         """
 
-        parent_item = self.model.invisibleRootItem()
+        parent_item = self.tmodel.invisibleRootItem()
         # Iterate over the QTreeWidget looking for checked items
         enabled = 0
         row = 0
@@ -212,7 +212,7 @@ class BookmarksDlg(QDialog):
     def deleteBookmarks(self) :
         """Delete all selected bookmarks."""
 
-        parent_item = self.model.invisibleRootItem()
+        parent_item = self.tmodel.invisibleRootItem()
         # Iterate over the QTreeView looking for checked items
         deleted_rows = []
         row = 0
@@ -227,7 +227,7 @@ class BookmarksDlg(QDialog):
         # remaining items
         deleted_rows.reverse()
         for row in deleted_rows:
-            self.model.takeRow(row)
+            self.tmodel.takeRow(row)
             del self.blist[row]
 
         # After deletion we udpate the dialog
