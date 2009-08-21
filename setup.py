@@ -193,7 +193,6 @@ setup(name = 'ViTables', # The name of the distribution
     ('examples/misc', glob.glob('examples/misc/*.h5')),
     ('examples/scripts', glob.glob('examples/scripts/*.py')),
     ('examples/tables', glob.glob('examples/tables/*.h5')),
-    ('examples/tests', glob.glob('examples/tests/*.h5')),
     ('examples/timeseries', glob.glob('examples/timeseries/*.h5')),
     ('doc', ['doc/usersguide.xml']),
     ('doc', ['doc/usersguide.pdf']),

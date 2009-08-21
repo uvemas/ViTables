@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
 #
@@ -17,61 +19,67 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""This program creates a potentially big table for tests purposes.
+"""Table with time fields."""
 
-The program is based on the tutorial programs included in the PyTables
-User's Guide.
-
-Modified to use buffers so that filling times are bettered by one order of
-magnitude. F. Altet 2006-02-27
-"""
-
+import os
 import time
-from numpy import arange
-import tables
+import numpy
 
-t0 = time.time()
+import tables
 
 # Describe a particle record
 class Particle(tables.IsDescription):
-    """Description of a table record."""
-    lati        = tables.IntCol(pos=0)
-    longi       = tables.IntCol(pos=1)
-    temperature = tables.FloatCol(pos=2)
-    pressure    = tables.FloatCol(pos=3)
+    """This class defines a table record.
+    """
 
-# Open a file in "w"rite mode
-fileh = tables.openFile("large_table.h5", mode = "w")
+    lati        = tables.IntCol(pos=0)
+#    longi       = IntCol(pos=1)
+    Time        = tables.Time64Col(pos=2)
+    pressure    = tables.FloatCol(pos=3)
+    ID          = tables.StringCol(itemsize=10, pos=4)
+    Int16       = tables.UIntCol(itemsize=4, pos=5)
+    Int64       = tables.IntCol(itemsize=8, pos=6)
+    Bool        = tables.BoolCol(pos=7)
+
+output_dir = '../timeseries'
+try:
+    os.mkdir(output_dir)
+except OSError:
+    pass
+
+# Open a new empty HDF5 file
+hdf5_name = "table_ts.h5"
+filepath_hdf5 = os.path.join(output_dir, hdf5_name)
+h5file = tables.openFile(filepath_hdf5, mode="w",
+title='Example Table with time series')
 
 # Get the HDF5 root group
-root = fileh.root
-# Create a group
-group = fileh.createGroup(root, "Particles")
-
-# Now, create and fill the tables in Particles group
+root = h5file.root
+group = h5file.createGroup(root, "Particles")
 filters = tables.Filters(complevel=1, complib='lzo', shuffle=1)
-nrows = 10**7
-table = fileh.createTable("/Particles", "TParticle", Particle, 
-    "Sample set of particles ", filters, expectedrows = nrows)
+nrows = 6000
+table = h5file.createTable("/Particles", "TParticle", Particle,
+                          "Sample set of particles ", filters,
+                          expectedrows = nrows)
 
 # Number of rows in buffer
-nrowsbuf = 10000
+nrowsbuf = 1000
 # Fill the table with 10**N particles
-for i in xrange(0, nrows, nrowsbuf):
-    if i + nrowsbuf > nrows:
-        nrapp = nrows - i
+for i in numpy.arange(0, nrows, nrowsbuf, dtype=numpy.int64):
+    if i+nrowsbuf > nrows:
+        nrapp = nrows-i
     else:
         nrapp = nrowsbuf
     # First, assign the values to the Particle record
-    lati = arange(i, i + nrapp)
-    longi = 10 - lati
-    temperature = lati + 0.5
-    pressure = 10.5 - lati
+    Int64 = numpy.arange(i, i+nrapp)
+    Time = Int64 + time.time()
+    lati = Int64
+    pressure = lati - 10.4
+    ID = (i + Int64).astype('S10')
+    Int16 = lati - 50
+    Bool = lati % 3 > 1
     # This injects the Record values
-    table.append([lati, longi, temperature, pressure])
+    table.append([lati, Time, pressure, ID, Int16, Int64, Bool])
 
 # Flush the table buffers and close the file
-fileh.close()
-
-tsec = round((time.time() - t0), 3)
-print 'Last of the run: %s s' % (tsec)
+h5file.close()
