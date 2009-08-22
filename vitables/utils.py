@@ -288,15 +288,6 @@ def formatStringContent(content):
     return content
 
 
-def formatTimeContent(content):
-    """
-    Nicely format the contents of a table widget cell using UTC times.
-
-    Used when the content atom is TimeAtom.
-    """
-    return time.asctime(time.gmtime(content))
-
-
 def formatExceptionInfo(limit=1):
     """
     Format conveniently the catched exceptions.

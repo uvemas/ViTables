@@ -39,7 +39,7 @@ filepath_hdf5 = os.path.join(output_dir, hdf5_name)
 h5file = tables.openFile(filepath_hdf5, mode="w",
 title='Example CArray with time fields')
 
-# Save it on the HDF5 file
+# Create a CArray and fill it
 root = h5file.root
 shape = (300, 2)
 atom = tables.Time32Atom()
@@ -52,4 +52,17 @@ for index in range(0, 600, 2):
     seconds = now - seconds_by_day * index 
     hdfarray[index/2, 0] = seconds
     hdfarray[299-index/2, 1] = seconds
+
+# Create other CArray and fill it
+shape = (300,)
+atom = tables.Time32Atom(shape=(2,))
+filters = tables.Filters(complevel=5, complib='zlib')
+hdfarray = h5file.createCArray(root, 'test_carray_2', atom, shape, 
+    "Signed short array")
+now = time.time()
+seconds_by_day = 1*24*60*60
+for index in range(0, 600, 2):
+    seconds = now - seconds_by_day * index 
+    hdfarray[index/2] = [seconds, seconds]
+
 h5file.close()
