@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** August 22, 2009 **
+The plugins framework has been debugged and its usability has been improved.
+
 The time_series plugin has been debugged and refactored.
 
 ** August 21, 2009 **

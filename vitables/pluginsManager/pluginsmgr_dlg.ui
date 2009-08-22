@@ -39,6 +39,9 @@
          <property name="toolTip">
           <string>The list of paths where plugins can be found</string>
          </property>
+         <property name="whatsThis">
+          <string>This is the list of paths where plugins will be searched at start time. Click the New button for adding a path. For deleting a path, select it and click the Remove button.</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -166,6 +169,9 @@
          <property name="toolTip">
           <string>The list of disabled plugins</string>
          </property>
+         <property name="whatsThis">
+          <string>This is the list of disabled plugins. You can disable a currently enabled plugin by selecting it in the list of enabled plugins and moving it here using the left arrow button. Beware that items added this way will have a disabled look (will be displayed in gray) meaning that they will remain enabled until you quit the current session.</string>
+         </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
@@ -198,6 +204,9 @@
         <widget class="QTreeWidget" name="enabled_tree">
          <property name="toolTip">
           <string>The list of enabled plugins</string>
+         </property>
+         <property name="whatsThis">
+          <string>This is the list of enabled plugins. You can enable a currently disabled plugin by selecting it in the list of disabled plugins and moving it here using the right arrow button. Beware that items added this way will have a disabled look (will be displayed in gray) meaning that they will not be enabled until the next session.</string>
          </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
@@ -235,7 +244,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>

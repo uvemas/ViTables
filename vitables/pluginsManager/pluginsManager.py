@@ -117,9 +117,53 @@ class PluginsMgr(object):
 
         pkg_plugins = []
         for loader, name, ispkg in pkgutil.iter_modules([folder]):
-            if not ispkg:
+            if not ispkg and self.isPlugin(folder, name):
                 pkg_plugins.append('%s#@#%s' % (folder, name))
         return pkg_plugins
+
+
+    def isPlugin(self, folder, name):
+        """Check if a given module is a plugin.
+
+        :Parameters:
+            - folder: the folder where the module being tested lives
+            - name: the filename of the module being tested
+        """
+
+        # Import the module
+        try:
+            finding_failed = True
+            file_obj, filepath, desc = imp.find_module(name, [folder])
+            finding_failed = False
+            module = imp.load_module(name, file_obj, filepath, desc)
+        except ImportError:
+            return False
+        finally:
+            if not finding_failed:
+                file_obj.close()
+
+        # Check if module is a plugin
+        try:
+            class_name = getattr(module, 'plugin_class')
+            return class_name
+        except AttributeError:
+            return False
+        finally:
+            path = '%s.py' % os.path.join(folder, name)
+            modname = inspect.getmodulename(path)
+
+            #######################################################
+            #
+            # WARNING!!! DO NOT DELETE MODULES AFTER CHECKING
+            #
+            # Deletion has unwanted side effects. For instance,
+            # deleting the time_series module results in deleting
+            # the tables module!!!
+            #
+            #######################################################
+
+            # del sys.modules[modname]
+            # del module
 
 
     def updatePluginsInfo(self):
@@ -134,7 +178,7 @@ class PluginsMgr(object):
         self.all_plugins = []
         for folder in self.plugins_paths:
             for loader, name, ispkg in pkgutil.iter_modules([folder]):
-                if not ispkg:
+                if not ispkg and self.isPlugin(folder, name):
                     self.all_plugins.append('%s#@#%s' % (folder, name))
                 else:
                     pkg_plugins = self.scanFolder(os.path.join(folder, name))
@@ -178,8 +222,8 @@ class PluginsMgr(object):
         #        # Register plugin
         #        self.registered_plugins[class_name] = instance
 
-        class_name = getattr(module, 'plugin_class', None)
-        if class_name:
+        try:
+            class_name = getattr(module, 'plugin_class')
             cls = getattr(module, class_name)
             instance = cls()
 
@@ -187,3 +231,5 @@ class PluginsMgr(object):
             # In some cases keeping a reference to instance is a must
             # (for example, the time_series plugin)
             self.loaded_plugins[plugin] = instance
+        except AttributteError:
+                print """\nError: module %s is not a plugin.""" % name

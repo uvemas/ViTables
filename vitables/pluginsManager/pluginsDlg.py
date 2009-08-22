@@ -88,6 +88,8 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
             self.slotAccept)
         self.connect(self.buttons_box, SIGNAL('rejected()'),
             self.slotCancel)
+        self.connect(self.buttons_box, SIGNAL('helpRequested()'),
+            QWhatsThis.enterWhatsThisMode)
         self.connect(self.new_button, SIGNAL('clicked()'), 
             self.slotAddPath)
         self.connect(self.remove_button, SIGNAL('clicked()'),
@@ -120,6 +122,14 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
         ListWidget but in a TreeWidget with the plugin path stored in a
         hidden column.
 
+        Sometimes added items are displayed disabled:
+
+            - enabled plugins that cannot be loaded at start time
+            - plugins enabled by user during a session (they will not be
+              loaded immediately but in the next session)
+            - plugins disabled by user during a session will remain
+              loaded until the session closes
+
         :Parameters:
 
         - item: the plugin UID being added
@@ -135,11 +145,15 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
         tree_item.setText(0, name)
         tree_item.setText(1, folder)
         tree.addTopLevelItem(tree_item)
-        # Enabled plugins are not guaranteed to be loaded
-        # Plugins that are enabled but not loaded are disabled
-        # in the list of enabled plugins
+        # If a plugin in the list of enabled plugins is not loaded it
+        # will appear disabled in the enabled plugins list. In the same
+        # spirit, if a plugin in the list of disabled plugins is still
+        # loaded it will appear disabled in the list of disabled plugins
         if tree == self.enabled_tree and \
             item not in self.manager.loaded_plugins.keys():
+            tree_item.setDisabled(True)
+        if tree == self.disabled_tree and \
+            item in self.manager.loaded_plugins.keys():
             tree_item.setDisabled(True)
 
 
