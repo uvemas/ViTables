@@ -349,7 +349,7 @@ class VTApp(QMainWindow):
 
         actions['nodeDelete'] = vitables.utils.createAction(self, 
             self.__tr('&Delete', 'Node -> Delete'), QKeySequence.Delete, 
-            self.slotNodeDelete, self.icons_dictionary['editdelete'], 
+            self.slotNodeDelete, self.icons_dictionary['edit_remove'], 
             self.__tr('Delete the selected node', 
                 'Status bar text for the Node -> Copy action'))
 
@@ -429,13 +429,14 @@ class VTApp(QMainWindow):
             self.__tr("&User's Guide", 'Help -> Users Guide'), 
             QKeySequence.HelpContents, 
             self.slotHelpDocBrowser, 
-            self.icons_dictionary['usersguide'], 
-            self.__tr('Open a HelpBrowser window',
+            self.icons_dictionary['help'], 
+            self.__tr("Open the ViTables User's Guide",
                     'Status bar text for the Help -> Users Guide action'))
 
         actions['helpAbout'] = vitables.utils.createAction(self, 
             self.__tr('&About ViTables', 'Help -> About'), None, 
-            self.slotHelpAbout, None, 
+            self.slotHelpAbout, 
+            self.icons_dictionary['vitables_wm'], 
             self.__tr('Display information about ViTables',
                     'Status bar text for the Help -> About action'))
 
@@ -501,7 +502,7 @@ class VTApp(QMainWindow):
         actions = ['helpUsersGuide']
         vitables.utils.addActions(self.help_toolbar, actions, self.gui_actions)
         whatis = QWhatsThis.createAction(self.help_toolbar)
-        whatis.setStatusTip(self.__tr('Context help',
+        whatis.setStatusTip(self.__tr('Contextual help',
                     'Status bar text for the Help -> Whats This action'))
         self.help_toolbar.addAction(whatis)
 

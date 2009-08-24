@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** August 24, 2009 **
+Some icons have been updated.
+
 The zoomCell module has been debugged and refactored.
 
 ** August 22, 2009 **

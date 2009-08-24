@@ -133,8 +133,8 @@ def getIcons():
             # Icons for toolbars
             'fileclose', 'filenew', 'fileopen', 
             'filesaveas', 'exit', 
-            'folder_new', 'editcopy', 'editcut', 'editdelete','editpaste', 
-            'usersguide', 
+            'folder_new', 'editcopy', 'editcut', 'edit_remove','editpaste', 
+            'help', 
             'filter', 'delete_filters', 
             # Icons for tree pane items
             'file_ro', 'file_rw', 'dbfilters', 'folder', 'folder_open'])
@@ -142,11 +142,11 @@ def getIcons():
         small_icons = sets.Set([
             # Icons for menu items
             'fileclose', 'filenew', 'fileopen', 'filesaveas', 'exit', 
-            'editcut', 'editcopy','editdelete','editpaste', 'info', 
+            'editcut', 'editcopy','edit_remove','editpaste', 'info', 
             'folder_new', 
             'new_filter', 'delete_filters',
             'configure', 
-            'usersguide', 
+            'help', 
             # Icons for tree pane items
             'unimplemented', 
             'array', 'carray', 'earray', 'object', 
