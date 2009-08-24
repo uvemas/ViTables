@@ -172,11 +172,7 @@ class ZoomCell(QMdiSubWindow):
 
     def hasShape(self):
         """Find out if the zoomed cell has a shape attribute."""
-
-        if hasattr(self.data, 'shape'):
-            return True
-        else:
-            return False
+        return hasattr(self.data, 'shape')
 
 
     def getGridDimensions(self):
@@ -190,12 +186,12 @@ class ZoomCell(QMdiSubWindow):
             # The cell contains a numpy object
             shape = self.data.shape
             dtype = self.data.dtype
-            if dtype.fields is not None:
+            if dtype.fields is None:
+                # Arrays with nested fields come here
+                return self.getArrayDimensions(shape)
+            else:
                 # Table nested fields come here
                 return self.getNestedFieldDimensions()
-            else:
-                # Any other case come here
-                return self.getArrayDimensions(shape)
         else:
             # The cell contains a Python object
             return self.getPyObjectDimensions()
@@ -248,14 +244,21 @@ class ZoomCell(QMdiSubWindow):
         """
         Get the dimensions of the grid where the cell will be zoomed.
 
-        The zoomed cell contains a nested field and will be displayed
-        in a table with only one row and one column per (top - 1)
-        level field. Note that fields have `shape`=().
+        The zoomed cell contains a nested field (a field made of inner
+        fields, than can be nested or not) and will be displayed in a
+        table with only one row and one column per (top - 1) level field.
+
+        The dtype.descr attribute describes the inner fields. A field
+        description is a tuple with one of the following formats:
+
+        - (field_name, format)  field is not nested, shape=()
+        - (field_name, format, shape)   field is not nested, shape!=()
+        - (field_name, descr)   field is nested
 
         :Returns: a tuple (rows, columns)
         """
 
-        self.field_names = [name for (name, format) in self.data.dtype.descr]
+        self.field_names = [item[0] for item in self.data.dtype.descr]
         ncols = len(self.field_names)
         nrows = 1
 

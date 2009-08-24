@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 24, 2009 **
+The zoomCell module has been debugged and refactored.
+
 ** August 22, 2009 **
 The plugins framework has been debugged and its usability has been improved.
 
