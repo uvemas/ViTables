@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** September 15, 2009 **
+Fixed some minor bugs.
+
 Prepare things for the next release.
 
 ** August 24, 2009 **

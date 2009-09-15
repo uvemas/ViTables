@@ -231,5 +231,5 @@ class PluginsMgr(object):
             # In some cases keeping a reference to instance is a must
             # (for example, the time_series plugin)
             self.loaded_plugins[plugin] = instance
-        except AttributteError:
-                print """\nError: module %s is not a plugin.""" % name
+        except AttributeError:
+            print """\nError: module %s is not a plugin.""" % name

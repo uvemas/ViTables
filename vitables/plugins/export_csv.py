@@ -24,7 +24,7 @@
 
 __docformat__ = 'restructuredtext'
 _context = 'ExportToCSV'
-__version__ = '0.1'
+__version__ = '0.2'
 plugin_class = 'ExportToCSV'
 
 import os
@@ -55,7 +55,12 @@ class ExportToCSV(object):
         if self.vtapp is None:
             return
 
+        self.actions = {}
         self.upgradeDatasetMenu()
+
+        # Connect signals to slots
+        QObject.connect(self.vtapp.dataset_menu, SIGNAL('aboutToShow()'), 
+            self.slotUpdateDatasetMenu)
 
 
     def __tr(self, source, comment=None):
@@ -70,25 +75,39 @@ class ExportToCSV(object):
         menu = self.vtapp.dataset_menu
 
         # Create the action
-        action = QAction(menu)
-        action.setText(self.__tr("E&xport to CSV...", "Save dataset as CSV"))
-        action.setStatusTip(self.__tr("Save the dataset as a plain text with CSV format", 
-            "Status bar text for the Dataset -> Export to CSV... action"))
-        QObject.connect(action, SIGNAL("triggered()"), self.export)
+        self.export_action = vitables.utils.createAction(menu, 
+            self.__tr("E&xport to CSV...", "Save dataset as CSV"), 
+            QKeySequence.UnknownKey, self.slotExport, 
+            None, 
+            self.__tr("Save the dataset as a plain text with CSV format", 
+                "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
         menu.addSeparator()
-        menu.addAction(action)
+        menu.addAction(self.export_action)
 
 
-    def export(self):
+
+
+    def slotUpdateDatasetMenu(self):
+        """Update the Dataset menu when a new LeafView becomes current.
+        """
+
+        enabled = True
+        view = self.vtapp.workspace.activeSubWindow()
+        if view is None:
+            enabled = False
+
+        self.export_action.setEnabled(enabled)
+
+
+    def slotExport(self):
         """Export a given dataset to CSV format.
         """
 
-        current = self.vtapp.dbs_tree_view.currentIndex()
-        # Locate the Leaf instance tied to the selected node
-        dbs_tree_leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current)
-        leaf = dbs_tree_leaf.node # A PyTables node
+        # The PyTables node tied to the current view
+        view = self.vtapp.workspace.activeSubWindow()
+        leaf = view.leaf.node
 
         # Get a filename for the file where dataset will be stored
         dfilter = self.__tr("""All Files (*)""", 
