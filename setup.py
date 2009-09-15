@@ -172,7 +172,7 @@ setup(name = 'ViTables', # The name of the distribution
     packages = ['vitables', 'vitables.docBrowser',
     'vitables.h5db', 'vitables.nodeProperties', 'vitables.queries', 
     'vitables.preferences', 'vitables.pluginsManager', 
-    'vitables.plugins', 'vitables.plugins.plotter', 
+    'vitables.plugins', 
     'vitables.vtTables', 'vitables.vtWidgets'],
     scripts = ['scripts/vitables'],
     package_data = {

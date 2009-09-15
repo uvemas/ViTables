@@ -1,30 +1,38 @@
-========================
-Announcing ViTables 2.0
-========================
+=========================
+Announcing ViTables 2.1b
+=========================
 
-I'm happy to present ViTables 2.0, the latest release of this viewer for
+I'm happy to present ViTables 2.1b, the latest release of this viewer for
 PyTables/HDF5 files.
 
-As it happens with the entire PyTables family, the main strength of ViTables is
-its ability to manage really large datasets in a fast and comfortable manner.
-For example, with ViTables you can open a table with one thousand million rows
-in a few tenths of second, with very low memory requirements. Also important is
-the fact that it is designed to be a multiplatform application, i.e. it runs
-flawlessly in Unix (and hence, GNU/Linux), Mac OS X and Windows. The fact that
-it runs on top of PyTables ensures its speed and memory efficiency.
+As it happens with the entire PyTables family, the main strength of ViTables
+is its ability to manage really large datasets in a fast and comfortable
+manner. For example, with ViTables you can open a table with one thousand
+million rows in a few tenths of second, with very low memory requirements.
+Also important is the fact that it is designed to be a multiplatform
+application, i.e., it runs flawlessly in Unix (and hence, GNU/Linux), Mac OS
+X and Windows. The fact that it runs on top of PyTables ensures its speed and
+memory efficiency.
 
-In this release you will find some bug fixes and usability enhancements, but
-the most important change is that ViTables has been finally migrated to use the
-Qt4 library. As a consequence ViTables has been largely refactored and even
-rewritten. It is now more compact (a couple of thousand lines have been dropped),
-more stable and looks nicer. Changes are important enough to deserve a new major
-version.
+This version is labeled a beta version because it contains some new and
+relatively untested features. However ViTables' core should be quite reliable.
+
+In this release you will find some bug fixes and usability enhancements. New 
+features include:
+
+- queries are executed in a separate thread so the application will not be
+  frozen if a large table is queried
+- a plugins framework has been added
+- human friendly format of times and dates for PyTables native Time fields
+  and also for time series created via scikits.timeseries package
+- datasets can be exported to CSV format
 
 Platforms
 ---------
 At the moment, ViTables has been fully tested only on GNU/Linux and Windows
 platforms, but as it is made on top of Python, PyQt and PyTables, its
-portability should be really good and it should work just fine in other Unices.
+portability should be really good and it should work just fine in other
+Unices.
 
 How to get it
 -------------

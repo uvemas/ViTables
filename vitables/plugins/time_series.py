@@ -65,10 +65,12 @@ class TSFormatter(object):
         :Parameter subwindow: the DataSheet instance being inspected
         """
 
+        # Look for formattable time fields in the dataset
         ts_kind = self.findTS(datasheet)
         if ts_kind is None:
             return
 
+        # Get the positions of the time fields
         leaf = datasheet.leaf.node
         time_cols = self.tsPositions(ts_kind, leaf)
         if time_cols == []:

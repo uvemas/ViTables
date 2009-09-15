@@ -105,8 +105,8 @@ class LeafNode(object):
             self.node_kind = u'array'
             self.icon = icons['array']
         elif isinstance(self.node, tables.UnImplemented):
-            self.node_kind = u'unimplemented'
-            self.icon = icons[u'unimplemented']
+            self.node_kind = u'image-missing'
+            self.icon = icons[u'image-missing']
 
 
     def row(self):

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 15, 2009 **
+Prepare things for the next release.
+
 ** August 24, 2009 **
 Some icons have been updated.
 

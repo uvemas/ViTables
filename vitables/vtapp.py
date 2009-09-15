@@ -162,8 +162,8 @@ class VTApp(QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        #sys.stdout = self.logger
-        #sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -253,25 +253,25 @@ class VTApp(QMainWindow):
         actions = {}
         actions['fileNew'] = vitables.utils.createAction(self, 
             self.__tr('&New', 'File -> New'), QKeySequence.New, 
-            self.slotFileNew, self.icons_dictionary['filenew'], 
+            self.slotFileNew, self.icons_dictionary['document-new'], 
             self.__tr('Create a new file', 
                 'Status bar text for the File -> New action'))
 
         actions['fileOpen'] = vitables.utils.createAction(self, 
             self.__tr('&Open...', 'File -> Open'), QKeySequence.Open, 
-            self.slotFileOpen, self.icons_dictionary['fileopen'], 
+            self.slotFileOpen, self.icons_dictionary['document-open'], 
             self.__tr('Open an existing file',
                 'Status bar text for the File -> Open action'))
 
         actions['fileOpenRO'] = vitables.utils.createAction(self, 
             self.__tr('Read-only open...', 'File -> Open'), None, 
-            self.slotFileOpenRO, self.icons_dictionary['fileopen'], 
+            self.slotFileOpenRO, self.icons_dictionary['document-open'], 
             self.__tr('Open an existing file in read-only mode',
                 'Status bar text for the File -> Open action'))
 
         actions['fileClose'] = vitables.utils.createAction(self, 
             self.__tr('&Close', 'File -> Close'), QKeySequence.Close, 
-            self.slotFileClose, self.icons_dictionary['fileclose'], 
+            self.slotFileClose, self.icons_dictionary['document-close'], 
             self.__tr('Close the selected file',
                 'Status bar text for the File -> Close action'))
 
@@ -284,13 +284,13 @@ class VTApp(QMainWindow):
         actions['fileSaveAs'] = vitables.utils.createAction(self, 
             self.__tr('&Save as...', 'File -> Save As'), 
             QKeySequence('CTRL+SHIFT+S'), 
-            self.slotFileSaveAs, self.icons_dictionary['filesaveas'], 
+            self.slotFileSaveAs, self.icons_dictionary['document-save-as'], 
             self.__tr('Save a renamed copy of the selected file',
                 'Status bar text for the File -> Save As action'))
 
         actions['fileExit'] = vitables.utils.createAction(self, 
             self.__tr('E&xit', 'File -> Exit'), QKeySequence('CTRL+Q'), 
-            self.slotFileExit, self.icons_dictionary['exit'], 
+            self.slotFileExit, self.icons_dictionary['application-exit'], 
             self.__tr('Quit ViTables',
                 'Status bar text for the File -> Exit action'))
 
@@ -311,51 +311,51 @@ class VTApp(QMainWindow):
         actions['nodeProperties'] = vitables.utils.createAction(self, 
             self.__tr('Prop&erties...', 'Node -> Properties'), 
             QKeySequence('CTRL+I'), 
-            self.slotNodeProperties, self.icons_dictionary['info'], 
+            self.slotNodeProperties, self.icons_dictionary['help-about'], 
             self.__tr('Show the properties dialog for the selected node', 
                 'Status bar text for the Node -> Properties action'))
 
         actions['nodeNew'] = vitables.utils.createAction(self, 
             self.__tr('&New group...', 'Node -> New group'), 
             QKeySequence('CTRL+SHIFT+N'), 
-            self.slotNodeNewGroup, self.icons_dictionary['folder_new'], 
+            self.slotNodeNewGroup, self.icons_dictionary['folder-new'], 
             self.__tr('Create a new group under the selected node', 
                 'Status bar text for the Node -> New group action'))
 
         actions['nodeRename'] = vitables.utils.createAction(self, 
             self.__tr('&Rename...', 'Node -> Rename'), 
             QKeySequence('CTRL+R'), 
-            self.slotNodeRename, None, 
+            self.slotNodeRename, self.icons_dictionary['edit-rename'], 
             self.__tr('Rename the selected node', 
                 'Status bar text for the Node -> Rename action'))
 
         actions['nodeCut'] = vitables.utils.createAction(self, 
             self.__tr('Cu&t', 'Node -> Cut'), QKeySequence('CTRL+X'), 
-            self.slotNodeCut, self.icons_dictionary['editcut'], 
+            self.slotNodeCut, self.icons_dictionary['edit-cut'], 
             self.__tr('Cut the selected node', 
                 'Status bar text for the Node -> Cut action'))
 
         actions['nodeCopy'] = vitables.utils.createAction(self, 
             self.__tr('&Copy', 'Node -> Copy'), QKeySequence.Copy, 
-            self.slotNodeCopy, self.icons_dictionary['editcopy'], 
+            self.slotNodeCopy, self.icons_dictionary['edit-copy'], 
             self.__tr('Copy the selected node', 
                 'Status bar text for the Node -> Copy action'))
 
         actions['nodePaste'] = vitables.utils.createAction(self, 
             self.__tr('&Paste', 'Node -> Paste'), QKeySequence.Paste, 
-            self.slotNodePaste, self.icons_dictionary['editpaste'], 
+            self.slotNodePaste, self.icons_dictionary['edit-paste'], 
             self.__tr('Paste the last copied/cut node', 
                 'Status bar text for the Node -> Copy action'))
 
         actions['nodeDelete'] = vitables.utils.createAction(self, 
             self.__tr('&Delete', 'Node -> Delete'), QKeySequence.Delete, 
-            self.slotNodeDelete, self.icons_dictionary['edit_remove'], 
+            self.slotNodeDelete, self.icons_dictionary['edit-delete'], 
             self.__tr('Delete the selected node', 
                 'Status bar text for the Node -> Copy action'))
 
         actions['queryNew'] = vitables.utils.createAction(self, 
             self.__tr('&Query...', 'Query -> New...'), None, 
-            self.slotQueryNew, self.icons_dictionary['filter'], 
+            self.slotQueryNew, self.icons_dictionary['view-filter'], 
             self.__tr('Create a new filter for the selected table', 
                 'Status bar text for the Query -> New... action'))
 
@@ -429,7 +429,7 @@ class VTApp(QMainWindow):
             self.__tr("&User's Guide", 'Help -> Users Guide'), 
             QKeySequence.HelpContents, 
             self.slotHelpDocBrowser, 
-            self.icons_dictionary['help'], 
+            self.icons_dictionary['help-contents'], 
             self.__tr("Open the ViTables User's Guide",
                     'Status bar text for the Help -> Users Guide action'))
 
@@ -525,6 +525,8 @@ class VTApp(QMainWindow):
         self.open_recent_submenu = QMenu(self.__tr('Open R&ecent Files',
             'File -> Open Recent Files'))
         self.open_recent_submenu.setSeparatorsCollapsible(False)
+        self.open_recent_submenu.setIcon(\
+            self.icons_dictionary['document-open-recent'])
         file_actions = ['fileNew', 'fileOpen', 'fileOpenRO', 
             self.open_recent_submenu, None, 'fileClose', 'fileCloseAll', None, 
             'fileSaveAs', None, 'fileExit']

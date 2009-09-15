@@ -87,7 +87,7 @@ class GroupNode(object):
         self.as_record = u'%s->%s' % (self.filepath, self.nodepath)
         icons = vitables.utils.getIcons()
         self.closed_folder = icons[u'folder']
-        self.open_folder = icons[u'folder_open']
+        self.open_folder = icons[u'document-open-folder']
         self.icon = icons[u'folder']
 
 

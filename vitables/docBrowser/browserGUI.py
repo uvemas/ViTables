@@ -109,7 +109,7 @@ class HelpBrowserGUI(QMainWindow) :
         actions['openFile'] = vitables.utils.createAction(self, 
                 self.__tr('&Open File', 'File --> Open File'), 
                 QKeySequence.Open, self.browser.slotOpenFile, 
-                self.icons['fileopen'], 
+                self.icons['document-open'], 
                 self.__tr('Open file', 
                     'Status bar text for the File --> Open File action'))
 
@@ -123,49 +123,49 @@ class HelpBrowserGUI(QMainWindow) :
         actions['exitBrowser'] = vitables.utils.createAction(self, 
                 self.__tr('E&xit', 'File --> Exit'), 
                 QKeySequence('CTRL+Q'), self.browser.slotExitBrowser, 
-                self.icons['exit'], 
+                self.icons['application-exit'], 
                 self.__tr('Close Help Browser', 
                     'Status bar text for the File --> Exit action'))
 
         actions['zoomIn'] = vitables.utils.createAction(self, 
                 self.__tr('Zoom &in', 'View --> Zoom in'), 
                 QKeySequence.ZoomIn, self.browser.slotZoomIn, 
-                self.icons['viewmag+'], 
+                self.icons['zoom-in'], 
                 self.__tr('Increases the font size', 
                     'Status bar text for the View --> Zoom in action'))
 
         actions['zoomOut'] = vitables.utils.createAction(self, 
                 self.__tr('Zoom &out', 'View --> Zoom out'), 
                 QKeySequence.ZoomOut, self.browser.slotZoomOut, 
-                self.icons['viewmag-'], 
+                self.icons['zoom-out'], 
                 self.__tr('Decreases the font size', 
                     'Status bar text for the View --> Zoom out action'))
 
         actions['goHome'] = vitables.utils.createAction(self.text_browser, 
                 self.__tr('&Home', 'Go --> Home'), 
                 QKeySequence.UnknownKey, SLOT('home()'), 
-                self.icons['2leftarrow'], 
+                self.icons['go-first-view'], 
                 self.__tr('Go to the first visited page', 
                     'Status bar text for the  Go --> Home action'))
 
         actions['goBackward'] = vitables.utils.createAction(self.text_browser, 
                 self.__tr('&Backward', ' Go --> Backward'), 
                 QKeySequence.Back, SLOT('backward()'), 
-                self.icons['1leftarrow'], 
+                self.icons['go-previous-view'], 
                 self.__tr('Go to previous page', 
                     'Status bar text for the  Go --> Backward action'))
 
         actions['goForward'] = vitables.utils.createAction(self.text_browser, 
                 self.__tr('&Forward', ' Go --> Forward'), 
                 QKeySequence.Forward, SLOT('forward()'), 
-                self.icons['1rightarrow'], 
+                self.icons['go-next-view'], 
                 self.__tr('Go to next page', 
                     'Status bar text for the  Go --> Forward action'))
 
         actions['goReload'] = vitables.utils.createAction(self.text_browser, 
                 self.__tr('&Reload', 'Go --> Reload'), 
                 QKeySequence.Refresh, SLOT('reload()'), 
-                self.icons['reload_page'], 
+                self.icons['view-refresh'], 
                 self.__tr('Reload the current page', 
                     'Status bar text for the  Go --> Reload action'))
 
@@ -180,7 +180,7 @@ class HelpBrowserGUI(QMainWindow) :
                 self.__tr('&Edit bookmarks...', 
                           'Bookmarks --> Edit bookmarks'), 
                 QKeySequence('CTRL+Alt+E'), 
-                self.browser.slotEditBookmarks, self.icons['bookmark'], 
+                self.browser.slotEditBookmarks, self.icons['bookmarks'], 
                 self.__tr('Edit bookmarks', 
                     'Status bar text for Bookmarks --> Edit bookmarks action'))
 
@@ -208,7 +208,7 @@ class HelpBrowserGUI(QMainWindow) :
         actions['clearSession'] = vitables.utils.createAction(self, 
                 self.__tr('Clear history', ''), 
                 QKeySequence.UnknownKey, self.browser.slotClearHistory, 
-                self.icons['history_clear'], 
+                self.icons['edit-clear-history'], 
                 self.__tr('Clear the content of the history combobox', 
                     ''))
         return actions

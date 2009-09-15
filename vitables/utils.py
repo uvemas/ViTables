@@ -131,30 +131,32 @@ def getIcons():
     if not ICONS_DICT:
         large_icons = sets.Set([
             # Icons for toolbars
-            'fileclose', 'filenew', 'fileopen', 
-            'filesaveas', 'exit', 
-            'folder_new', 'editcopy', 'editcut', 'edit_remove','editpaste', 
-            'help', 
-            'filter', 'delete_filters', 
+            'document-close', 'document-new', 'document-open', 
+            'document-save-as', 'application-exit', 'folder-new', 
+            'edit-copy', 'edit-cut', 'edit-delete','edit-paste', 
+            'help-contents', 
+            'view-filter', 'delete_filters', 
             # Icons for tree pane items
-            'file_ro', 'file_rw', 'dbfilters', 'folder', 'folder_open'])
+            'file_ro', 'file_rw', 'dbfilters', 'folder', 'document-open-folder'])
 
         small_icons = sets.Set([
             # Icons for menu items
-            'fileclose', 'filenew', 'fileopen', 'filesaveas', 'exit', 
-            'editcut', 'editcopy','edit_remove','editpaste', 'info', 
-            'folder_new', 
-            'new_filter', 'delete_filters',
+            'document-close', 'document-new', 'document-open', 
+            'document-save-as', 'document-open-recent', 'application-exit', 
+            'edit-cut', 'edit-copy','edit-delete','edit-paste', 
+            'edit-rename', 
+            'folder-new', 
+            'view-filter', 'delete_filters',
             'configure', 
-            'help', 
+            'help-about', 'help-contents', 
             # Icons for tree pane items
-            'unimplemented', 
+            'image-missing', 
             'array', 'carray', 'earray', 'object', 
             'vlarray','table', 'vlstring', 
             # Icons for node views
-            'viewmag', 
+            'zoom-in', 
             # Icons for buttons
-            'cancel', 'ok'])
+            'dialog-cancel', 'dialog-ok'])
 
         createIcons(large_icons, small_icons, ICONS_DICT)
 
@@ -167,17 +169,17 @@ def getHBIcons():
     if not HB_ICONS_DICT:
         large_icons = sets.Set([
         # Icons for toolbar
-        '2leftarrow', '1leftarrow', '1rightarrow', 'reload_page',
-        'bookmark', 'bookmark_add', 'viewmag+', 'viewmag-', 'history_clear'])
+        'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
+        'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out', 'edit-clear-history'])
 
         small_icons = sets.Set([
         # Icons for menu items
-        'fileopen', 'exit',
-        'viewmag+', 'viewmag-',
-        '2leftarrow', '1leftarrow', '1rightarrow', 'reload_page',
-        'bookmark', 'bookmark_add',
+        'document-open', 'application-exit',
+        'zoom-in', 'zoom-out',
+        'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
+        'bookmarks', 'bookmark_add',
         # Icons for buttons
-        'ok', 'cancel', 'remove'])
+        'dialog-ok', 'dialog-cancel', 'list-remove'])
 
         createIcons(large_icons, small_icons, HB_ICONS_DICT)
 

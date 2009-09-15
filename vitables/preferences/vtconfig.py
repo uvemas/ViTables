@@ -109,7 +109,7 @@ b)  using `setPath` method once before we read/write settings, so
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '2.0'
+__version__ = '2.1b'
 
 import os
 import sys
