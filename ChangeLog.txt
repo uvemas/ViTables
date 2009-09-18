@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 18, 2009 **
+Windows installer upgraded for the next release.
+
 ** September 15, 2009 **
 Fixed some minor bugs.
 

@@ -55,10 +55,11 @@ class ConfigFileIOException(Exception):
         # If key looks like /path/to/property=value a write exception is
         # raised. If not a read exception is raised
         if '=' in key:
+            setting = key.split('=')[0]
             self.error_message = self.__tr(\
                 """\nConfiguration error: the application setting """\
                 """%s cannot be saved.""",
-                'A logger error message')  % key
+                'A logger error message')  % setting
         else:
             self.error_message = self.__tr(\
                 """\nConfiguration warning: the application setting """\

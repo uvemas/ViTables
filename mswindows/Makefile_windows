@@ -8,53 +8,62 @@ VERSION=$(shell type ..\VERSION)
 PYTHONVERSION=25
 DOTPYTHONVERSION=2.5
 
-LICENSEFILE=..\LICENSE.txt
+ROOT=..
+LICENSEFILE=$(ROOT)\LICENSE.txt
 LICENSEFILENAME=LICENSE.txt
-
+WINDOWS32=C:\\Windows\\system32
 
 # The NSIS intstaller script
 VTNSIS=vitables-py$(DOTPYTHONVERSION).nsi
 
-# Required paths
-REPO_VITABLES=..
-MISDOCS="C:\Documents and Settings\vmas\Mis documentos"
-WINDOWS32=C:\\Windows\\system32
-VENDORID=$(MISDOCS)\VendorID-1.0.0
+# ViTables executable. sib.py understands forward slashes
+PYTHON=C:/Python$(PYTHONVERSION)/python
+SIB="C:/Documents and Settings/vmas/Mis documentos/VendorID-1.0.0/sib"
+ICONS="$(ROOT)/vitables/icons"
 
-.PHONY: vitables.exe vtdoc
+# Documentation. Docbook understands forward slashes
+GUIDE_SRC="$(ROOT)/doc/usersguide.xml"
+HTML_OPTIONS=--nonet --stringparam base.dir $(ROOT)/doc/htmldocs/
+HTML_STYLE=C:/docbook-xsl-1.75.2/html/chunk.xsl
+FO_OPTIONS=--nonet -o $(ROOT)/doc/usersguide.fo
+FO_STYLE=C:/docbook-xsl-1.75.2/fo/docbook.xsl
+OUTDIR=$(ROOT)\doc\htmldocs
 
 clean:
+	del $(ROOT)\vitables.py
+	rmdir /q /s $(OUTDIR)
+	del $(ROOT)\doc\usersguide.pdf
 	del $(VTNSIS)
 	del ViTables*.win32-py$(DOTPYTHONVERSION).exe
-	del vitables.exe
-	del LICENSE.html
-	$(MAKE) -f Makefile_windows -C ..\doc $@
-	del ..\vitables\qrc_resources.py
-	del ..\vitables\qrc_resources.pyc
 
 vitables.exe:
-	copy $(REPO_VITABLES)\scripts\vitables $(VENDORID)\sib\vitables.py
-	C:\Python$(PYTHONVERSION)\python $(VENDORID)\sib\sib.py -u -M -i $(REPO_VITABLES)\icons\vitables.ico -d $(VENDORID)\sib\build_vitables $(VENDORID)\sib\vitables.py
-	$(MAKE) -C $(VENDORID)\sib\build_vitables
-	copy $(VENDORID)\sib\build_vitables\vitables.exe .
-	del /q /s $(VENDORID)\sib\build_vitables
-	del $(VENDORID)\sib\vitables.py
-	rmdir $(VENDORID)\sib\build_vitables
+	copy $(ROOT)\scripts\vitables .\vitables.py
+	$(PYTHON) $(SIB)/sib.py -M -u -i $(ICONS)/vitables.ico ./vitables.py
+	$(MAKE) -C build_vitables
+	copy build_vitables\vitables.exe .
+	del /q /s build_vitables
+	del .\vitables.py
+	rmdir build_vitables
 
 vtdoc:
-	$(MAKE) -f Makefile_windows -C ..\doc all
+	xsltproc $(HTML_OPTIONS) $(HTML_STYLE) $(GUIDE_SRC)
+	mkdir $(OUTDIR)\images
+	copy $(ROOT)\doc\images\* $(OUTDIR)\images
+	copy $(ROOT)\LICENSE.html $(OUTDIR)
+	xsltproc $(FO_OPTIONS) $(FO_STYLE) $(GUIDE_SRC)
+	fop -q $(ROOT)/doc/usersguide.fo $(ROOT)/doc/usersguide.pdf
+	del $(ROOT)\doc\usersguide.fo
 
-resources: vtdoc
-	$(MAKE) -f Makefile -C .. $@
-
-installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vitables.exe vtdoc resources
+installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vitables.exe vtdoc
 	copy ..\LICENSE.html LICENSE.html
 	type vitables.nsi.in | sed -e "s/@VERSION@/$(VERSION)/g" \
 	-e "s/@PYTHONVERSION@/$(PYTHONVERSION)/g" \
 	-e "s/@DOTPYTHONVERSION@/$(DOTPYTHONVERSION)/g" \
-	-e "s/@REPO_VITABLES@/$(REPO_VITABLES)/g" \
+	-e "s/@ROOT@/$(ROOT)/g" \
 	-e "s/@WINDOWS32@/$(WINDOWS32)/g" \
 	-e "s/@LICENSE@/$(LICENSE)/g" \
 	-e "s/@LICENSEFILENAME@/$(LICENSEFILENAME)/g" \
 	> $(VTNSIS)
 	makensis $(VTNSIS)
+	del LICENSE.html
+	del vitables.exe

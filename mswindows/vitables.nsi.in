@@ -23,11 +23,11 @@ SetCompressor /SOLID lzma
 Name "ViTables @VERSION@"
 
 # The file where the installer will be saved
-OutFile "ViTables-@VERSION@-@LICENSE@.win32-py@DOTPYTHONVERSION@.exe"
+OutFile "ViTables-@VERSION@.win32-py@DOTPYTHONVERSION@.exe"
 
 # The installer icons as used by MUI (see NSIS FAQ)
-!define MUI_ICON "@REPO_VITABLES@\icons\vtinstaller.ico"
-!define MUI_UNICON "@REPO_VITABLES@\icons\vtinstaller.ico"
+!define MUI_ICON "@ROOT@\vitables\icons\vtinstaller.ico"
+!define MUI_UNICON "@ROOT@\vitables\icons\vtinstaller.ico"
 
 # Use the new XP style
 XPStyle on
@@ -58,7 +58,7 @@ Function .onInit
 	ExecWait "pythonw -c $\"import sys; (sys.version_info[0:3] > (2, 5)) or 0/0$\"" $R0
 	${If} $R0 == "1"
 	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that Python 2.5 is not \
-	  installed. Aborting the ViTables installation process.$R0 $R1 $R2"
+	  installed. Aborting the ViTables installation process."
 	  Abort
 	${EndIf}
 
@@ -90,8 +90,10 @@ Function preInstallDir
 FunctionEnd
 
 Function prePythonDir
-  # Default Python interpreter
-  StrCpy $PYTHONDIR "C:\Python@PYTHONVERSION@"
+  # The registry key where python install path is stored
+  ReadRegStr $PYTHONDIR HKLM "SOFTWARE\Python\PythonCore\@DOTPYTHONVERSION@\InstallPath" ""
+  ClearErrors
+
 FunctionEnd
 
 Function postPythonDir
@@ -111,7 +113,7 @@ FunctionEnd
 !insertmacro MUI_PAGE_WELCOME
 
 # License page
-!insertmacro MUI_PAGE_LICENSE @REPO_VITABLES@\@LICENSEFILENAME@
+!insertmacro MUI_PAGE_LICENSE @ROOT@\@LICENSEFILENAME@
 
 # Components selection page
 #!insertmacro MUI_PAGE_COMPONENTS
@@ -156,39 +158,35 @@ Section "ViTables @VERSION@" VT
 
   # Copy the ViTables sources in the Python site-packages directory
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables
-  File /r @REPO_VITABLES@\vitables\*.py
+  File /r /x plotter @ROOT@\vitables\*.py
+  File /r /x plotter @ROOT@\vitables\*.ui
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\icons
+  File /r @ROOT@\vitables\icons\*
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\htmldocs
+  File /r @ROOT@\doc\htmldocs\*
 
   # The text files: TODO.txt, INSTALL.txt and stuff like that
   SetOutPath $INSTDIR
-  File /x testingHOWTO.txt /x packagingHOWTO.txt /x LICENSE-* @REPO_VITABLES@\*.txt
-  File @REPO_VITABLES@\@LICENSEFILENAME@
-  Rename @LICENSEFILENAME@ LICENSE.txt
-  File LICENSE.html
+  File @ROOT@\*.txt
+  File ..\LICENSE.html
 
   # The documentation directory
   SetOutPath $INSTDIR\doc\html
-  File /r @REPO_VITABLES@\doc\html\*
+  File /r @ROOT@\doc\htmldocs\*
   SetOutPath $INSTDIR\doc
-  File @REPO_VITABLES@\doc\usersguide.pdf
+  File @ROOT@\doc\usersguide.pdf
 
   # The examples directory
   SetOutPath $INSTDIR\examples
-  File /r @REPO_VITABLES@\examples\*.*
+  File /r @ROOT@\examples\*.*
 
   # The translations directory
   SetOutPath $INSTDIR\translations
-  File @REPO_VITABLES@\translations\*.txt
-  File @REPO_VITABLES@\translations\*.qm
+  File @ROOT@\translations\*.txt
+  File @ROOT@\translations\*.qm
 
   # Create the uninstaller and put it in the aplication directory
   WriteUninstaller "$INSTDIR\Uninstall.exe"
-
-  # Save the installation directory in the module vitables.vtSite.py
-  SetOutPath $PYTHONDIR\Lib\site-packages\vitables
-  FileOpen $1 "vtSite.py" w
-  FileWrite $1 INSTALLDIR="$PYTHONDIR\\Lib\\site-packages\\vitables"
-  FileWrite $1 "$\r$\n"
-  FileClose $1
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 
@@ -208,13 +206,14 @@ Section "ViTables @VERSION@" VT
   WriteRegStr HKLM $VITABLES_SUBKEY "PYTHONDIR" $PYTHONDIR
 
   # Remove the existing file association (if any) for the .h5 extension
+  # TODO we should backup the key and restore it once vitables has been uninstalled
   DeleteRegKey HKCR ".h5"
   # Map the .h5 extension to ViTables
   StrCpy $HDF5FILE_SUBKEY "ViTables\@VERSION@\HDF5File"
   WriteRegStr HKCR ".h5" "" $HDF5FILE_SUBKEY
   # Default settings for the .h5 extension 
   WriteRegStr HKCR $HDF5FILE_SUBKEY "" "HDF5 file"
-  WriteRegStr HKCR $HDF5FILE_SUBKEY\DefaultIcon "" "$INSTDIR\icons\vitables_file.ico"
+  WriteRegStr HKCR $HDF5FILE_SUBKEY\DefaultIcon "" "$PYTHONDIR\Lib\site-packages\vitables\icons\vitables_file.ico"
   WriteRegStr HKCR $HDF5FILE_SUBKEY\shell "" ""
   StrCpy $HDF5SHELL_SUBKEY "$HDF5FILE_SUBKEY\shell"
   WriteRegStr HKCR $HDF5SHELL_SUBKEY\open "" "Open with ViTables"
@@ -294,6 +293,9 @@ Section "Un.Vitables uninstall" UVT
 
   # Delete the ViTables key from the registry
   DeleteRegKey HKLM $VITABLES_SUBKEY
+
+  # Delete the ViTables configuration from the registry
+  DeleteRegKey HKCU $VITABLES_KEY
 
   # File association
   ReadRegStr $1 HKCR ".h5" ""

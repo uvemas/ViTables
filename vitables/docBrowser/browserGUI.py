@@ -49,6 +49,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.utils
+from vitables.vtSite import DOCDIR
 
 class HelpBrowserGUI(QMainWindow) :
     """Very simple documentation browser."""
@@ -75,6 +76,7 @@ class HelpBrowserGUI(QMainWindow) :
 
         # The browser widget
         self.text_browser = QTextBrowser()
+        self.text_browser.setSearchPaths(QStringList(DOCDIR))
         self.setCentralWidget(self.text_browser)
         self.text_browser.setAcceptRichText(True)
         self.text_browser.setOpenExternalLinks(True)
@@ -289,6 +291,7 @@ class HelpBrowserGUI(QMainWindow) :
                 history_toolbar)
         history_toolbar.addWidget(go_selector)
         self.combo_history = QComboBox(history_toolbar)
+        self.combo_history.setSizeAdjustPolicy(QComboBox.AdjustToContents)
         history_toolbar.addWidget(self.combo_history)
 
 

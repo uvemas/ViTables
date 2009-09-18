@@ -110,7 +110,7 @@ class HelpBrowser(QObject) :
 
         # The GUI setup is slow so it is not shown until the setup is
         # done (it avoids displaying an ugly empty widget)
-        self.slotDisplaySrc(os.path.join(DOCDIR, 'index.html'))
+        self.slotDisplaySrc('index.html')
         self.gui.show()
 
 
@@ -137,6 +137,7 @@ class HelpBrowser(QObject) :
             action = self.gui.sender()
             src = action.data().toString()
 
+        src = QDir(src).dirName()
         src = QDir().fromNativeSeparators(src) # src can be a QString
         url = QUrl(src)
         self.gui.text_browser.setSource(url)
@@ -158,7 +159,7 @@ class HelpBrowser(QObject) :
         the opened windows, what is needed when we quit the browser.
         """
 
-        browser = HelpBrowser(self.vtapp)
+        browser = HelpBrowser()
         self.vtapp.doc_browsers.append(browser)
 
 
@@ -172,12 +173,16 @@ class HelpBrowser(QObject) :
         """
 
         file_dlg = QFileDialog(self.gui)
-        file_dlg.setFilters(QStringList(self.__tr(
-            """HTML files (*.html *.htm);;"""
-            """Any file (*.*)""", 'File filter for the Open File dialog')))
+        filters = QStringList()
+        filters << self.__tr(
+            "HTML files (*.html *.htm)", 'File filter for the Open File dialog')
+        filters << self.__tr(
+            "Any file (*.*)", 'File filter for the Open File dialog')
+        file_dlg.setNameFilters(filters)
         file_dlg.setWindowTitle(self.__tr('Select a file for opening', 
             'A dialog caption'))
         file_dlg.setDirectory(self.working_dir)
+        file_dlg.setFileMode(QFileDialog.ExistingFile)
         try:
 
             # OK clicked. Working directory is updated
@@ -303,7 +308,7 @@ class HelpBrowser(QObject) :
         Bookmarks --> Add bookmark
         """
 
-        src = self.gui.text_browser.source().toString(QUrl.RemoveScheme)
+        src = self.gui.text_browser.source().toString()
         src = QDir().fromNativeSeparators(src)
         src = unicode(src).replace('///', '/')
         if self.bookmarks.count(src) :
@@ -365,7 +370,7 @@ class HelpBrowser(QObject) :
         :Parameter src: the path being added to the combo
         """
 
-        url = src.toString(QUrl.RemoveScheme)
+        url = src.toString()
         url = QDir().fromNativeSeparators(url)
         url = unicode(url).replace('///', '/')
         if not self.history.count(url):
@@ -407,6 +412,7 @@ class HelpBrowser(QObject) :
             QMessageBox.NoButton, self.gui)
         # Show the message
         about.show()
+
 
     def slotAboutQt(self) :
         """

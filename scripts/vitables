@@ -81,6 +81,7 @@ def main(args):
     # domains to identify themselves
     app.setOrganizationDomain('vitables.org')
     app.setApplicationName('ViTables')
+    app.setApplicationVersion(vtconfig.__version__)
     config = vtconfig.Config()
 
     # Localize the application using the system locale

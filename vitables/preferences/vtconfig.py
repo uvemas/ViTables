@@ -140,17 +140,18 @@ class Config(QSettings):
         """
         Setup the application configurator.
 
-        Set the following paths to the proper values:
-
-        - translations directory
-        - icons directory
-        - documentation directory
-        - configuration directory
+        On Windows systems settings will be stored in the registry
+        under the HKCU\Software\ViTables\__version__ key
+        Mac OS X saves settings in a properties list stored in a
+        standard location, either on a global or user basis (see
+        docstring.for more information)
         """
 
         # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback
-        QSettings.__init__(self, 'ViTables')
+        # Setting the NativeFormat paths on MacOSX has no effect
+        QSettings.__init__(self, qApp.applicationName(), 
+            qApp.applicationVersion())
         self.setFallbacksEnabled(False)
 
         # The default style depends on the platform
@@ -166,22 +167,10 @@ class Config(QSettings):
             self.default_style = 'Motif'
 
         # The settings search path
-        if sys.platform.startswith('win'):
-            # On windows systems settings will be stored in the registry
-            # under the Carabos key
-            pyversion = 'Python%s%s' % (sys.version_info[0], 
-                sys.version_info[1])
-            self.base_key = 'ViTables/%s/%s' % (__version__, pyversion)
-        elif sys.platform.startswith('darwin'):
-            # Mac OS X saves settings in a properties list stored in a
-            # standard location, either on a global or user basis (see
-            # docstring.for more information)
-            # Setting the NativeFormat paths on MacOSX has no effect
-            self.base_key = 'ViTables'
-        else:
+        if (not sys.platform.startswith('win')) and \
+        (not sys.platform.startswith('darwin')):
             # On Unix systems settings will be stored in a plain text
             # file (see the module docstring for name conventions)
-            self.base_key = 'ViTables'
             config_directory = os.path.join(unicode(QDir.homePath()),
                 '.vitables')
             if not os.path.isdir(config_directory):
