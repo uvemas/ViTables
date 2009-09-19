@@ -85,18 +85,7 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
         self.sample_te.setText(text)
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
-        # The following map between qt.QStyles and style names applies:
-        # 'QWindowsStyle': 'Windows',
-        # 'QMotifStyle': 'Motif',
-        # 'QCDEStyle': 'CDE'
-        # 'QPlastiqueStyle': 'Plastique'
-        # 'QCleanlooksStyle': 'Cleanlooks'
-        # 'qt.QMacStyle': 'Macintosh',
-        # 'QWindowsXPStyle': 'WindowsXP',
-        # WindowsXP and Macintosh (Aqua) styles are only implemented in
-        # the PyQt for these platforms
-        styles = ['default', 'Windows', 'Motif',  'CDE', 'Plastique',
-            'Cleanlooks']
+        styles = QStyleFactory.keys()
         self.styles_cb.insertItems(0, styles)
 
         #

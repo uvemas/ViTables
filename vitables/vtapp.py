@@ -714,8 +714,7 @@ class VTApp(QMainWindow):
             elif key == 'Look/currentStyle':
                 # Default style is provided by the underlying window manager
                 self.current_style = unicode(value.toString())
-                if self.current_style != 'default':
-                    qApp.setStyle(self.current_style)
+                qApp.setStyle(self.current_style)
             elif key == 'Geometry/Position':
                 # Default position is provided by the underlying window manager
                 if value.isValid():

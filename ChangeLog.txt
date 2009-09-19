@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 19, 2009 **
+Applied several minor simplifications to styles management code.
+
 ** September 18, 2009 **
 Windows installer upgraded for the next release.
 

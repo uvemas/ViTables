@@ -240,7 +240,8 @@ class Config(QSettings):
 
         # The property key and its default value
         key = 'Look/currentStyle'
-        default_value = QVariant('default')
+        styles = QStyleFactory.keys()
+        default_value = QVariant(styles[0])
 
         # Read the entry from the configuration file/registry
         entry = self.value(key)
@@ -248,9 +249,7 @@ class Config(QSettings):
         # Check the entry format and value
         if not entry.canConvert(QVariant.String):
             return default_value
-        elif unicode(entry.toString()) not in ['default', 'Windows', 'Motif', 
-                                        'MotifPlus', 'Platinum', 'SGI', 
-                                        'CDE']:
+        elif not styles.contains(entry.toString()):
             return default_value
         else:
             return entry
