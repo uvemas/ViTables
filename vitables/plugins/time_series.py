@@ -289,7 +289,6 @@ class TableTSModel(QAbstractTableModel):
         try:
             return date.datetime.strftime('%a %b %d %H:%M:%S %Y')
         except ValueError:
-            print '++++ %s %s %s' % (self.freq, value, date)
             return value
 
 

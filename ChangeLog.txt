@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 20, 2009 **
+Fixed a compatibility problem XP/Vista in the Windows installer.
+
 ** September 19, 2009 **
 Applied several minor simplifications to styles management code.
 

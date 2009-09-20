@@ -78,6 +78,8 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
         QDialog.__init__(self, qApp.activeWindow())
         self.setupUi(self)
 
+        self.vtapp = vtapp
+
         # Set the sample text in the Logger groupbox
         text = """<p>En un lugar de La Mancha,<br>""" \
         """de cuyo nombre no quiero acordarme,<br>""" \
@@ -95,8 +97,6 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
 
         # Radio button names are not usable, we need the numerical IDs
         self.button2id = {u'home': 1, u'last': 2}
-
-        self.vtapp = vtapp
 
         # The current preferences of the application
         self.initial_prefs = {}

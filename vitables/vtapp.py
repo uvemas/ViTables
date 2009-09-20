@@ -712,8 +712,8 @@ class VTApp(QMainWindow):
             elif key == 'Workspace/Background':
                 self.workspace.setBackground(QBrush(value))
             elif key == 'Look/currentStyle':
-                # Default style is provided by the underlying window manager
                 self.current_style = unicode(value.toString())
+                # Default style is provided by the underlying window manager
                 qApp.setStyle(self.current_style)
             elif key == 'Geometry/Position':
                 # Default position is provided by the underlying window manager

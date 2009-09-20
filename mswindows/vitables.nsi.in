@@ -1,5 +1,5 @@
-#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008 Vicent Mas. All rights reserved
+#       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008-2009 Vicent Mas. All rights reserved
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 # This script is intended to generate a binary installer for sources imported
@@ -24,6 +24,9 @@ Name "ViTables @VERSION@"
 
 # The file where the installer will be saved
 OutFile "ViTables-@VERSION@.win32-py@DOTPYTHONVERSION@.exe"
+
+# To ensure that shortcuts are removed from the Start Menu on Windows Vista
+RequestExecutionLevel admin
 
 # The installer icons as used by MUI (see NSIS FAQ)
 !define MUI_ICON "@ROOT@\vitables\icons\vtinstaller.ico"
@@ -109,23 +112,23 @@ FunctionEnd
 # Pages
 # --------------------------------
 
-# Welcome page
+# Page: Welcome
 !insertmacro MUI_PAGE_WELCOME
 
-# License page
+# Page: License
 !insertmacro MUI_PAGE_LICENSE @ROOT@\@LICENSEFILENAME@
 
-# Components selection page
+# Page: Components selection
 #!insertmacro MUI_PAGE_COMPONENTS
 
-# Installation directory page for ViTables data files
+# Page: Installation directory for ViTables data files
 !define MUI_PAGE_CUSTOMFUNCTION_PRE preInstallDir
 !define MUI_DIRECTORYPAGE_TEXT_TOP "Setup will install ViTables @VERSION@ data \
 files in the following folder. To install in a different folder, click \
 Browse and select another folder. Click Next to Continue."
 !insertmacro MUI_PAGE_DIRECTORY
 
-# Installation directory page for ViTables modules and scripts
+# Page: Installation directory for ViTables modules and scripts
 !define MUI_PAGE_CUSTOMFUNCTION_PRE prePythonDir
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE postPythonDir
 !define MUI_PAGE_HEADER_TEXT "Choose the Python-@DOTPYTHONVERSION@ interpreter"
@@ -138,15 +141,16 @@ Browse and select another folder. Click Next to Continue."
 !insertmacro MUI_PAGE_DIRECTORY
 
 
-# Start Menu Folder Page Configuration
+# Page: Start Menu Folder Configuration
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY $VITABLES_SUBKEY
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
 
-# Install selected components page
+# Page: Install selected components
 !insertmacro MUI_PAGE_INSTFILES
 
+# ------------------------------------------
 # The stuff to install a.k.a. Sections
 # ------------------------------------------
 
@@ -239,7 +243,7 @@ fast opening and navigation of arbitrarely large PyTables files."
 # Pages
 # --------------------------------
 
-# Welcome page
+# Page: Welcome
 !insertmacro MUI_UNPAGE_CONFIRM
 
 # Uninstall page: execute uninstall sections
@@ -305,9 +309,7 @@ Section "Un.Vitables uninstall" UVT
     DeleteRegKey HKCR "ViTables"
   ${EndIf}
 
-
 SectionEnd
-
 
 # --------------------------------
 # Functions
@@ -319,5 +321,3 @@ Function un.onInit
 	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
 	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
 FunctionEnd
-
-

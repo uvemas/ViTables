@@ -154,19 +154,18 @@ class Config(QSettings):
             qApp.applicationVersion())
         self.setFallbacksEnabled(False)
 
-        # The default style depends on the platform
-        if sys.platform.startswith('win'):
-            # if VER_PLATFORM_WIN32_NT (i.e WindowsNT/2000/XP)
-            if sys.getwindowsversion()[3] == 2:
-                self.default_style = 'WindowsXP'
-            else:
-                self.default_style = 'Windows'
-        elif sys.platform.startswith('darwin'):
-            self.default_style = 'Macintosh (Aqua)'
-        else:
-            self.default_style = 'Motif'
+        # The application default style depends on the platform
+        styles = QStyleFactory.keys()
+        self.default_style = styles[0]
+        vtapp = vitables.utils.getVTApp()
+        if not (vtapp is None):
+            style_name = vtapp.style().objectName()
+            for item in styles:
+                if item.toLower() == style_name:
+                    self.default_style = item
+                    break
 
-        # The settings search path
+        # The settings search path on Unix systems
         if (not sys.platform.startswith('win')) and \
         (not sys.platform.startswith('darwin')):
             # On Unix systems settings will be stored in a plain text
@@ -240,13 +239,13 @@ class Config(QSettings):
 
         # The property key and its default value
         key = 'Look/currentStyle'
-        styles = QStyleFactory.keys()
-        default_value = QVariant(styles[0])
+        default_value = QVariant(self.default_style)
 
         # Read the entry from the configuration file/registry
         entry = self.value(key)
 
         # Check the entry format and value
+        styles = QStyleFactory.keys()
         if not entry.canConvert(QVariant.String):
             return default_value
         elif not styles.contains(entry.toString()):
