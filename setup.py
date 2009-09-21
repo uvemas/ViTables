@@ -70,10 +70,10 @@ class BuildDocbook(Command):
                 raise SystemExit, "Unable to find 'fop', needed to generate Docbook documentation in PDF format."
 
         if self.xsl_style is None:
-            self.xsl_style = "http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl"
+            self.xsl_style = "./doc/custom_layer/html/custom_html.xsl"
 
         if self.fop_style is None:
-            self.fop_style = "http://docbook.sourceforge.net/release/xsl/current/fo/docbook.xsl"
+            self.fop_style = "./doc/custom_layer/fo/custom_fo.xsl"
 
 
     def get_command_name(self):

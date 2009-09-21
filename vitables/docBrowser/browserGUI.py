@@ -79,7 +79,6 @@ class HelpBrowserGUI(QMainWindow) :
         self.text_browser.setSearchPaths(QStringList(DOCDIR))
         self.setCentralWidget(self.text_browser)
         self.text_browser.setAcceptRichText(True)
-        self.text_browser.setOpenExternalLinks(True)
         self.text_browser.setReadOnly(1)
 
         # The popup menus

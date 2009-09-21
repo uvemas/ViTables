@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 21, 2009 **
+The User's Guide has been updated (and its custom layer has been recovered).
+
 ** September 20, 2009 **
 Fixed a compatibility problem XP/Vista in the Windows installer.
 

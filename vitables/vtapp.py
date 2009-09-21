@@ -2289,7 +2289,7 @@ class VTApp(QMainWindow):
             """<qt>
             Dmitrijs Ledkovs for contributing the new and greatly enhanced
             build system and for making Debian packages.<p>
-            Everaldo for Crystal Project icons.<p>
+            Oxygen team for a wonderful icons set.<p>
             All the people who reported bugs and made suggestions.
             </qt>""",
             'Text of the About ViTables dialog (Thanks to page)')

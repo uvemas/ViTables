@@ -5,10 +5,21 @@
 
 <!-- This customisation layer adds support for the FOP implementation of PDF bookmarks as defined in the latest XSLT draft. It also ensures that the symbol geq is properly rendered in the final PDF document. -->
 
-    <xsl:import href="tldp-print.xsl"/>
+    <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/fo/docbook.xsl"/>
     <xsl:import href="bookmarks_fop.xsl"/>
     <xsl:include href="graphical_titlepage.xsl"/>
-    <xsl:include href="../common/custom_common.xsl"/>
+    <xsl:include href="../custom_common.xsl"/>
+
+
+    <!-- Number all sections in the style of 'CH.S1.S2 Section Title' where
+     CH is the chapter number,  S1 is the section number and S2 is the
+     sub-section number.  The lables are not limited to any particular
+     depth and can go as far as there are sections. -->
+    <xsl:param name="section.autolabel" select="1"></xsl:param>
+    <xsl:param name="section.label.includes.component.label" select="0"></xsl:param>
+
+    <!-- Create bookmarks in .PDF files -->
+    <xsl:param name="fop.extensions" select="1"/>
 
     <!-- Render correctly the greater equal symbol -->
     <xsl:template	match="symbol[@role='geq']"><fo:inline font-family="Symbol">&#x2265;</fo:inline></xsl:template>
@@ -59,6 +70,9 @@
     </xsl:attribute-set>
 
     <!-- VERBATIM ENVIRONMENTS -->
+    <!-- Shade Verbatim Sections such as programlisting and screen -->
+    <xsl:param name="shade.verbatim" select="1"/>
+
     <!-- * make font size smaller than default
          * wrap long lines
          * do not hyphenate (there seems to be a bug) -->

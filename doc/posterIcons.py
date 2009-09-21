@@ -26,12 +26,12 @@ import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-iconsDir = '/home/vmas/ViTables/hg_branches/vitables_default/icons/'
+iconsDir = '/home/vmas/ViTables/hg_branches/vitables_tip/vitables/icons/'
 big_icons = [('file_rw', 'The root node (read-write)'),
     ('file_ro', 'The root node (read-only)'),
     ('dbfilters', 'The root node of the Query Results file'),
     ('folder', 'A collapsed group '), 
-    ('folder_open', 'An expanded group ')]
+    ('document-open-folder', 'An expanded group ')]
 small_icons = [('table', 'A table (heterogeneus dataset) '),
     ('array', 'A regular array (homogeneus dataset) '),
     ('earray', 'An enlargeable array'),
@@ -39,7 +39,7 @@ small_icons = [('table', 'A table (heterogeneus dataset) '),
     ('vlarray', 'A variable length array'),
     ('vlstring', 'An array of VLStrings'),
     ('object', 'A serialized objects dataset'),
-    ('unimplemented', 'An unsupported dataset')]
+    ('image-missing', 'An unsupported dataset')]
 
 class Poster(QMainWindow) :
     def __init__(self, *args) :
