@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** September 22, 2009 **
+Last improvements in the documentation style applied to Windows platforms.
+
 Fixed an annoyance in the creation of PDF documentation.
 
 ** September 21, 2009 **

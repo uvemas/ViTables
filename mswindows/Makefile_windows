@@ -24,9 +24,9 @@ ICONS="$(ROOT)/vitables/icons"
 # Documentation. Docbook understands forward slashes
 GUIDE_SRC="$(ROOT)/doc/usersguide.xml"
 HTML_OPTIONS=--nonet --stringparam base.dir $(ROOT)/doc/htmldocs/
-HTML_STYLE=C:/docbook-xsl-1.75.2/html/chunk.xsl
+HTML_STYLE=$(ROOT)/doc/custom_layer/html/custom_html.xsl
 FO_OPTIONS=--nonet -o $(ROOT)/doc/usersguide.fo
-FO_STYLE=C:/docbook-xsl-1.75.2/fo/docbook.xsl
+FO_STYLE=$(ROOT)/doc/custom_layer/fo/custom_fo.xsl
 OUTDIR=$(ROOT)\doc\htmldocs
 
 clean:
