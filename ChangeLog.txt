@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 22, 2009 **
+Fixed an annoyance in the creation of PDF documentation.
+
 ** September 21, 2009 **
 The User's Guide has been updated (and its custom layer has been recovered).
 

@@ -2,11 +2,13 @@ include *.txt VERSION LICENSE.html
 recursive-include unixapp vitables.desktop vitables.svg
 recursive-include doc Makefile usersguide.xml fop_conf.xml
 recursive-include doc/images *.png *.svg
+recursive-include doc/custom_layer *
 recursive-include examples *.h5 scripts/*.py
 recursive-include macosxapp *
 include scripts/vitables
 recursive-include vitables/* *.ui
 recursive-include vitables/icons *.* */*.*
+exclude doc/images/title_page_plain.svg
 exclude vitables/icons/vitables_logo.svg
 exclude examples/timeseries/test_series.csv
 exclude setup.cfg 

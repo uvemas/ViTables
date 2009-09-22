@@ -8,7 +8,7 @@
   <mediaobject>
     <imageobject>
       <imagedata valign="middle" align="center" scale="120"
-        fileref="images/title_page_plain.svg" format="SVG"/>
+        fileref="images/title_page_plain.png" format="PNG"/>
     </imageobject>
   </mediaobject>
   <title><application>ViTables 2.1</application> User's Guide</title>
