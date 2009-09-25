@@ -1001,19 +1001,15 @@ class DBsTreeModel(QAbstractItemModel):
             # Convert the binary array into a string with suitable format
             uris_string = QUrl.fromEncoded(encoded_data).toString()
             # Split the string using the apropriate separators
-            uris_list = re.split(u'(\r\n)|\r|\n\0', unicode(uris_string))
-            # Get rid of the separators
-            uris = [uris_list[i] for i in range(0, len(uris_list) - 1, 2)]
+            uris_list = re.split(u'\r\n|\r|\n', unicode(uris_string))
             # Transform every element of the sequence into a path and open it
-            for item in uris[:]:
+            for item in uris_list:
                 uri = QUrl(item)
                 path = unicode(uri.path())
-                index = uris.index(item)
                 if sys.platform.startswith('win'):
                     path = path[1:]
-                uris.pop(index)
-                uris.insert(index, path)
-                self.vtapp.slotFileOpen(path)
+                if os.path.isfile(path):
+                    self.vtapp.slotFileOpen(path)
             return True
 
         parent_node = self.nodeFromIndex(parent)

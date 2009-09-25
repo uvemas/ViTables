@@ -61,13 +61,9 @@ class BuildDocbook(Command):
     def finalize_options(self):
         if self.xsltproc_path is None:
             self.xsltproc_path = find_executable("xsltproc")
-            if self.xsltproc_path is None:
-                raise SystemExit, "Unable to find 'xsltproc', needed to generate Docbook documentation."
 
         if self.fop_path is None:
             self.fop_path = find_executable("fop")
-            if self.fop_path is None:
-                raise SystemExit, "Unable to find 'fop', needed to generate Docbook documentation in PDF format."
 
         if self.xsl_style is None:
             self.xsl_style = "./doc/custom_layer/html/custom_html.xsl"
@@ -80,6 +76,33 @@ class BuildDocbook(Command):
         return 'build_doc'
 
     def run(self):
+
+        """ Execute the build_doc command.
+
+        The HTML and PDF docs are included in the tarball. So even if fop or
+        xsltproc are not installed the user will be able to install ViTables
+        in the usual way::
+
+            # python setup.py install
+
+        because the build_doc command will not abort. In a tarball installation
+        the docs will never be generated, just copied to the apropriate folder.
+
+        If user is installing a debian/ubuntu package (which will not include
+        the docs, I think), in order to ensure that she will always end up with
+        the docs being installed, the package should depend on the xsltproc and
+        fop packages.
+        """
+
+        if self.xsltproc_path is None:
+                print """Unable to find 'xsltproc', needed to generate """\
+                    """Docbook documentation."""
+                return
+
+        if self.fop_path is None:
+                print """Unable to find 'fop', needed to generate Docbook"""\
+                    """documentation in PDF format."""
+                return
 
         for input_file in self.distribution.docbooks:
             self.announce("Building Docbook documentation from %s." % input_file)
@@ -96,6 +119,9 @@ class BuildDocbook(Command):
                 spawn([self.fop_path, "-q", input_file_name+".fo", input_file_name+".pdf"])
                 copy_tree(os.path.join(os.path.dirname(input_file),"images"),os.path.join(output_dir,"images"))
                 copy_file('LICENSE.html', output_dir)
+                copy_file("./doc/custom_layer/html/usersguide_style.css", 
+                    output_dir)
+
 
 def has_docbook(build):
     return (build.distribution.docbooks is not None and

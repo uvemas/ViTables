@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 25, 2009 **
+Fixed a minor bug in the code for opening files via drag and drop.
+
 ** September 22, 2009 **
 Last improvements in the documentation style applied to Windows platforms.
 

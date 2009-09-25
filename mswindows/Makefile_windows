@@ -28,6 +28,7 @@ HTML_STYLE=$(ROOT)/doc/custom_layer/html/custom_html.xsl
 FO_OPTIONS=--nonet -o $(ROOT)/doc/usersguide.fo
 FO_STYLE=$(ROOT)/doc/custom_layer/fo/custom_fo.xsl
 OUTDIR=$(ROOT)\doc\htmldocs
+CSS=$(ROOT)\doc\custom_layer\html\usersguide_style.css
 
 clean:
 	del $(ROOT)\vitables.py
@@ -49,6 +50,7 @@ vtdoc:
 	xsltproc $(HTML_OPTIONS) $(HTML_STYLE) $(GUIDE_SRC)
 	mkdir $(OUTDIR)\images
 	copy $(ROOT)\doc\images\* $(OUTDIR)\images
+	copy $(CSS) $(OUTDIR)
 	copy $(ROOT)\LICENSE.html $(OUTDIR)
 	xsltproc $(FO_OPTIONS) $(FO_STYLE) $(GUIDE_SRC)
 	fop -q $(ROOT)/doc/usersguide.fo $(ROOT)/doc/usersguide.pdf
