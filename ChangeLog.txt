@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 08, 2009 **
+The path of the config. file on Unix systems now adheres to the Qt standards.
+
 ** September 25, 2009 **
 Fixed a minor bug in the code for opening files via drag and drop.
 

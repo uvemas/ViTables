@@ -147,11 +147,19 @@ class Config(QSettings):
         docstring.for more information)
         """
 
+        organization = qApp.organizationName()
+        product = qApp.applicationName()
+        version = qApp.applicationVersion()
+        if (not sys.platform.startswith('win')) and \
+        (not sys.platform.startswith('darwin')):
+            QSettings.__init__(self, organization, 
+                product.append('-').append(version))
+        else:
+            QSettings.__init__(self, product, version)
+
         # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback
         # Setting the NativeFormat paths on MacOSX has no effect
-        QSettings.__init__(self, qApp.applicationName(), 
-            qApp.applicationVersion())
         self.setFallbacksEnabled(False)
 
         # The application default style depends on the platform
@@ -165,17 +173,6 @@ class Config(QSettings):
                     self.default_style = item
                     break
 
-        # The settings search path on Unix systems
-        if (not sys.platform.startswith('win')) and \
-        (not sys.platform.startswith('darwin')):
-            # On Unix systems settings will be stored in a plain text
-            # file (see the module docstring for name conventions)
-            config_directory = os.path.join(unicode(QDir.homePath()),
-                '.vitables')
-            if not os.path.isdir(config_directory):
-                os.mkdir(config_directory)
-            self.setPath(QSettings.NativeFormat,
-                QSettings.UserScope, config_directory)
 
 
     def loggerPaper(self):

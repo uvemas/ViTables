@@ -76,6 +76,7 @@ def main(args):
     # name, since Mac OS X applications conventionally use Internet
     # domains to identify themselves
     app.setOrganizationDomain('vitables.org')
+    app.setOrganizationName('ViTables')
     app.setApplicationName('ViTables')
     app.setApplicationVersion(vtconfig.getVersion())
     config = vtconfig.Config()
