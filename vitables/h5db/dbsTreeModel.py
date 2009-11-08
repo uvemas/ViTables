@@ -822,9 +822,11 @@ class DBsTreeModel(QAbstractItemModel):
         - `parent`: the index of the node's parent
         """
 
-        group = self.nodeFromIndex(parent)
-        node = group.childAtRow(row)
-        return self.createIndex(row, column, node)
+        if self.hasIndex(row, column, parent):
+            group = self.nodeFromIndex(parent)
+            node = group.childAtRow(row)
+            return self.createIndex(row, column, node)
+        return QModelIndex()
 
 
     def nodeFromIndex(self, index):
