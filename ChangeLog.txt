@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 10, 2009 **
+Fixed a bug in the Preferences dialog.
+
 ** November 08, 2009 **
 Fixed a bug in the tree of databases that was not apparent in PyQt <=4.4.4.
 

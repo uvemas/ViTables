@@ -94,10 +94,6 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
         # Dialog customistation ends here
         #
 
-
-        # Radio button names are not usable, we need the numerical IDs
-        self.button2id = {u'home': 1, u'last': 2}
-
         # The current preferences of the application
         self.initial_prefs = {}
         style_sheet = vtapp.logger.styleSheet()
@@ -156,9 +152,10 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
             a dictionary with current configuration settings
         """
 
-        self.last_dir_cb.setChecked(False)
         if preferences['Startup/startupWorkingDir'] == u'last':
             self.last_dir_cb.setChecked(True)
+        else:
+            self.last_dir_cb.setChecked(False)
 
         self.restore_cb.setChecked(\
             preferences['Startup/restoreLastSession'])
@@ -236,9 +233,9 @@ class Preferences(QDialog, settingsUI.Ui_SettingsDialog):
         """
 
         if cb_on:
-            self.new_prefs['Startup/startupWorkingDir'] = 'last'
+            self.new_prefs['Startup/startupWorkingDir'] = u'last'
         else:
-            self.new_prefs['Startup/startupWorkingDir'] = 'home'
+            self.new_prefs['Startup/startupWorkingDir'] = u'home'
 
 
     def slotSetStartupSession(self, cb_on):
