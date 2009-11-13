@@ -354,13 +354,13 @@ class VTApp(QMainWindow):
 
         actions['queryNew'] = vitables.utils.createAction(self, 
             self.__tr('&Query...', 'Query -> New...'), None, 
-            self.slotQueryNew, self.icons_dictionary['view-filter'], 
+            self.queries_mgr.newQuery, self.icons_dictionary['view-filter'], 
             self.__tr('Create a new filter for the selected table', 
                 'Status bar text for the Query -> New... action'))
 
         actions['queryDeleteAll'] = vitables.utils.createAction(self, 
             self.__tr('Delete &All', 'Query -> Delete All'), None, 
-            self.slotQueryDeleteAll, 
+            self.queries_mgr.deleteAllQueries, 
             self.icons_dictionary['delete_filters'], 
             self.__tr('Remove all filters', 
                 'Status bar text for the Query -> Delete All action'))
@@ -1229,8 +1229,8 @@ class VTApp(QMainWindow):
         """
 
         for window in self.workspace.subWindowList():
-            wnodepath = window.leaf.nodepath
-            wfilepath = window.leaf.filepath
+            wnodepath = window.dbt_leaf.nodepath
+            wfilepath = window.dbt_leaf.filepath
             if not wfilepath == filepath:
                 continue
             if wnodepath[0:len(nodepath)] == nodepath:
@@ -1673,6 +1673,7 @@ class VTApp(QMainWindow):
         leaf_view = leafView.LeafView(leaf_model)
 
         # Add the view to the MDI area
+        self.dbs_tree_view.setCurrentIndex(index)  # This is a MUST
         subwindow = dataSheet.DataSheet(leaf_view)
         subwindow.show()
         self.emit(SIGNAL("leaf_model_created"), subwindow)
@@ -1985,198 +1986,6 @@ class VTApp(QMainWindow):
         node = self.dbs_tree_model.nodeFromIndex(current)
         info = nodeInfo.NodeInfo(node)
         nodePropDlg.NodePropDlg(info)
-
-
-    def getQueryInfo(self, table):
-        """Retrieves useful info about the query.
-
-        :Parameter table: the tables.Table instance being queried.
-        """
-
-        # Information about table
-        info = {}
-        info[u'nrows'] = table.nrows
-        info[u'src_filepath'] = unicode(table._v_file.filename)
-        info[u'src_path'] = table._v_pathname
-        info[u'name'] = table._v_name
-        # Fields info: top level fields names, flat fields shapes and types
-        info[u'col_names'] = sets.Set(table.colnames)
-        info[u'col_shapes'] = \
-            dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
-        info[u'col_types'] = table.coltypes
-        # Fields that can be queried
-        info[u'condvars'] = {}
-        info[u'valid_fields'] = []
-
-        if info[u'nrows'] <= 0:
-            print self.__tr("""Caveat: table %s is empty. Nothing to query.""",
-                'Warning message for users') % info[u'name']
-            return None
-
-        # The searchable fields and condition variables
-        # First discard nested fields
-        valid_fields = \
-        info[u'col_names'].intersection(info[u'col_shapes'].keys())
-
-        # Then discard fields that aren't scalar and those that are complex
-        for name in valid_fields.copy():
-            if (info[u'col_shapes'][name] != ()) or \
-            info[u'col_types'][name].count(u'complex'):
-                valid_fields.remove(name)
-
-        # Among the remaining fields, those whose names contain blanks
-        # cannot be used in conditions unless they are mapped to
-        # variables with valid names
-        index = 0
-        for name in valid_fields.copy():
-            if name.count(' '):
-                while (u'col%s' % index) in valid_fields:
-                    index = index + 1
-                info[u'condvars'][u'col%s' % index] = \
-                    table.cols._f_col(name)
-                valid_fields.remove(name)
-                valid_fields.add(u'col%s (%s)' % (index, name))
-                index = index + 1
-        info[u'valid_fields'] = valid_fields
-
-        # If table has not columns suitable to be filtered does nothing
-        if not info[u'valid_fields']:
-            print self.__tr("""\nError: table %s has no """
-            """columns suitable to be queried. All columns are nested, """
-            """multidimensional or have a Complex data type.""",
-            'An error when trying to query a table') % info['name']
-            return None
-        elif len(info[u'valid_fields']) != len(info[u'col_names']):
-        # Log a message if non selectable fields exist
-            print self.__tr("""\nWarning: some table columns contain """
-               """nested, multidimensional or Complex data. They """
-               """cannot be queried so are not included in the Column"""
-               """ selector of the query dialog.""",
-               'An informational note for users')
-
-        # Setup the initial condition
-        last_query = self.queries_mgr.last_query
-        if (last_query[0], last_query[1]) == \
-        (info[u'src_filepath'], info[u'src_path']):
-            initial_condition = last_query[2]
-        else:
-            initial_condition = ''
-
-        # GET THE QUERY COMPONENTS
-        # Update the suggested name sufix to ensure that it is not in use
-        self.queries_mgr.counter = self.queries_mgr.counter + 1
-        # Get a complete query description from user input: condition to
-        # be applied, involved range of rows, name of the
-        # filtered table and name of the column of returned indices
-        query = queryDlg.QueryDlg(info, self.queries_mgr.ft_names, 
-            self.queries_mgr.counter, initial_condition, table)
-        try:
-            query.exec_()
-            # Cancel clicked -> restore the counter value
-            if query.result() == QDialog.Rejected:
-                self.queries_mgr.counter = self.queries_mgr.counter - 1
-        finally:
-            query_description = dict(query.query_info)
-            del query
-
-        if not query_description[u'condition']:
-            return None
-
-        # SET THE TITLE OF THE RESULT TABLE
-        title = query_description[u'condition']
-        for name in info[u'valid_fields']:
-            # Valid fields can have the format 'fieldname' or 
-            # 'varname (name with blanks)' so a single blank shouldn't
-            # be used as separator
-            components = name.split(u' (')
-            if len(components) > 1:
-                fieldname = u'(%s' % components[-1]
-                title = title.replace(components[0], fieldname)
-        query_description[u'title'] = title
-
-        return query_description
-
-
-    def slotQueryNew(self):
-        """
-        Add a new filtered table item to the query results tree.
-
-        The creation process has 2 steps:
-
-        - create the filtered table in the temporary database
-        - add the filtered table to the Query results tree in the tree pane
-
-        Finally the filtered table is opened.
-        """
-
-        # The updateQueryActions method ensures that the current node is
-        # tied to a tables.Table instance so we can query it without
-        # further checking
-        current = self.dbs_tree_view.currentIndex()
-        node = self.dbs_tree_model.nodeFromIndex(current)
-
-        if self.queries_mgr.isTracked(node.as_record):
-            print self.__tr("A query is already in progress for this table!", 
-                'Console message from slotQueryNew method')
-            return
-
-        table = \
-            self.dbs_tree_model.getDBDoc(node.filepath).getNode(node.nodepath)
-
-        query_description = self.getQueryInfo(table)
-        if query_description is None:
-            return
-
-        self.queries_mgr.trackTable(node.as_record)
-        self.queries_mgr.query(node.as_record, table, 
-            query_description)
-
-
-    def addQueryResult(self):
-        """Update the GUI once the query has finished.
-
-        Add the result of the query to the tree of databases view.
-        """
-
-        # Update temporary database view i.e. call lazyAddChildren
-        model_rows = self.dbs_tree_model.rowCount(QModelIndex())
-        tmp_index = self.dbs_tree_model.index(model_rows - 1, 0, 
-            QModelIndex())
-        self.dbs_tree_model.lazyAddChildren(tmp_index)
-        # The new filtered table is inserted in first position under
-        # the Query results node
-        index = self.dbs_tree_model.index(0, 0, tmp_index)
-        self.slotNodeOpen(index)
-
-
-    def slotQueryDeleteAll(self):
-        """Delete all nodes from the query results tree."""
-
-        del_dlg = QMessageBox.question(self,
-            self.__tr('Deleting all queries',
-            'Caption of the QueryDeleteAll dialog'),
-            self.__tr("""\n\nYou are about to delete all nodes """
-                """under Query results\n\n""", 'Ask for confirmation'),
-            QMessageBox.Yes|QMessageBox.Default,
-            QMessageBox.No|QMessageBox.Escape)
-
-        # OK returns Accept, Cancel returns Reject
-        if del_dlg == QMessageBox.No:
-            return
-
-        # Remove every filtered table from the tree of databases model/view
-        model_rows = self.dbs_tree_model.rowCount(QModelIndex())
-        tmp_index = self.dbs_tree_model.index(model_rows - 1, 0, 
-            QModelIndex())
-        rows_range = range(0, self.dbs_tree_model.rowCount(tmp_index))
-        rows_range.reverse()
-        for row in rows_range:
-            index = self.dbs_tree_model.index(row, 0, tmp_index)
-            self.slotNodeDelete(index, force=True)
-
-        # Reset the queries manager
-        self.queries_mgr.counter = 0
-        self.queries_mgr.ft_names = []
 
 
     def slotPluginsConfigure(self):
