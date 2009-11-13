@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** November 13, 2009 **
+leafView.py module has been refactored.
+
 Plugins have been updated.
 
 Querying functionality has been moved from vtapp.py to queriesManager.py.
