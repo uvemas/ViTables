@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** November 13, 2009 **
+Support for queries has been updated.
+
 dataSheet.py module has been refactored. 
 
 leafView.py module has been refactored.
@@ -12,6 +14,7 @@ Querying functionality has been moved from vtapp.py to queriesManager.py.
 dataSheet.py module has been refactored. Circular references have been removed.
 
 Fixed a bug in the Preferences dialog.
+
 ** November 10, 2009 **
 Fixed a bug in the Preferences dialog.
 

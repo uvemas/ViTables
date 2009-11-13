@@ -115,7 +115,9 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
             u'-', u'*', u'/', u'**', u'%']
         self.operators_cb.insertItems(0, QStringList(operators))
         functions = [u'where', u'sin', u'cos', u'tan', u'arcsin', u'arccos', 
-            u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', u'sqrt', 
+            u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', 
+            u'arcsinh', u'arccosh', u'arctanh', u'log', u'log10', u'log1p', 
+            u'exp', u'expm1', u'sqrt', 
             u'real', u'imag', u'complex']
         self.functions_cb.insertItems(0, QStringList(functions))
         sorted_fields = [field for field in info[u'valid_fields']]
@@ -241,20 +243,28 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         :Parameter text: is the text of the combobox current item
         """
 
-        name2call = {u'where': u'where(B, N, N)',
-            u'sin': u'sin(F|C)',
-            u'cos': u'cos(F|C)',
-            u'tan': u'tan(F|C)',
-            u'arcsin': u'arcsin(F|C)',
-            u'arccos': u'arccos(F|C)',
-            u'arctan': u'arctan(F|C)',
-            u'arctan2': u'arctan2(F, F)',
-            u'sinh': u'sinh(F|C)',
-            u'cosh': u'cosh(F|C)',
-            u'tanh': u'tanh(F|C)',
-            u'sqrt': u'sqrt(F|C)',
-            u'real': u'real(C)',
-            u'imag': u'imag(C)',
+        name2call = {u'where': u'where(B, N, N)', 
+            u'sin': u'sin(F|C)', 
+            u'cos': u'cos(F|C)', 
+            u'tan': u'tan(F|C)', 
+            u'arcsin': u'arcsin(F|C)', 
+            u'arccos': u'arccos(F|C)', 
+            u'arctan': u'arctan(F|C)', 
+            u'arctan2': u'arctan2(F, F)', 
+            u'sinh': u'sinh(F|C)', 
+            u'cosh': u'cosh(F|C)', 
+            u'tanh': u'tanh(F|C)', 
+            u'arcsinh': u'arcsinh(F|C)', 
+            u'arccosh': u'arccosh(F|C)', 
+            u'arctanh': u'arctanh(F|C)', 
+            u'log': u'log(F|C)', 
+            u'log10': u'log10(F|C)', 
+            u'log1p': u'log1p(F|C)', 
+            u'exp': u'exp(F|C)', 
+            u'expm1': u'expm1(F|C)', 
+            u'sqrt': u'sqrt(F|C)', 
+            u'real': u'real(C)', 
+            u'imag': u'imag(C)', 
             u'complex': u'complex(F, F)'
             }
         self.query_le.insert(name2call[unicode(text)])

@@ -93,7 +93,7 @@ class QueriesManager(QObject):
 
         QObject.__init__(self, parent)
 
-        self.mutex = QMutex()
+    #    self.mutex = QMutex()
         self.tmp_h5file = tmp_h5file
         # Description of the last query made
         self.last_query = [None, None, None]
@@ -294,19 +294,15 @@ class QueriesManager(QObject):
         self.last_query = [query_description[u'src_filepath'], 
             query_description[u'src_path'], query_description[u'condition']]
 
-        # Find out the subwindow tied to the selected node and disable it
-    #    for subwindow in self.vtapp.workspace.subWindowList():
-    #        if subwindow.leaf == node:
-    #            subwindow.setEnabled(False)
-
         # Run the query in a secondary thread
         self.trackTable(tableID, 
             Query(tableID, table, query_description, parent=self))
 
-        self.connect(self.in_progress[tableID], SIGNAL("finished()"), 
-            self.in_progress[tableID], SLOT("deleteLater()"))
+    #    self.connect(self.in_progress[tableID], SIGNAL("finished()"), 
+    #        self.in_progress[tableID], SLOT("deleteLater()"))
 
-        self.in_progress[tableID].start()
+    #    self.in_progress[tableID].start()
+        self.in_progress[tableID].run()
 
 
     def deleteAllQueries(self):
@@ -361,7 +357,7 @@ class QueriesManager(QObject):
         self.untrackTable(tableID)
 
 
-class Query(QThread):
+class Query(QObject):
     """Class implementing a tables.Table query.
 
     Queries are sequentially executed in a secondary thread so the GUI will
@@ -390,11 +386,11 @@ class Query(QThread):
         - `parent`: the queries manager
         """
 
-        QThread.__init__(self, parent)
+        QObject.__init__(self, parent)
 
         self.connect(self, SIGNAL("queryFinished"), parent.addQueryResult)
         self.qmgr = parent
-        self.mutex = parent.mutex
+    #    self.mutex = parent.mutex
         self.tableID = tableID
         self.table = table
         self.query_description = qdescr
@@ -422,7 +418,7 @@ class Query(QThread):
         Query a table and add a the result to the temporary database.
         """
 
-        locker = QMutexLocker(self.mutex)
+    #    locker = QMutexLocker(self.mutex)
         table = self.table
         tmp_h5file = self.qmgr.tmp_h5file
 
@@ -441,6 +437,7 @@ class Query(QThread):
             (start, stop, step) = (None, None, None)
 
         try:
+            qApp.setOverrideCursor(Qt.WaitCursor)
             src_dict = table.description._v_colObjects
             # Query the source table and build the result table
             if indices_field_name:
@@ -502,3 +499,4 @@ class Query(QThread):
         else:
             tmp_h5file.flush()
             self.emit(SIGNAL("queryFinished"), self.tableID)
+            qApp.restoreOverrideCursor()
