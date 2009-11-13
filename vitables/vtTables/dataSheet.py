@@ -48,33 +48,38 @@ from PyQt4.QtGui import *
 import vitables.utils
 import vitables.nodeProperties.nodeInfo as nodeInfo
 import vitables.vtWidgets.zoomCell as zoomCell
+import vitables.vtTables.leafModel as leafModel
+import vitables.vtTables.leafView as leafView
+import vitables.vtTables.buffer as readBuffer
 
 class DataSheet(QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
     """
 
-    def __init__(self, view, parent=None):
+    def __init__(self, index, parent=None):
         """Display a given dataset in the MDI area.
 
         :Parameters:
 
-            - `view`: the displayed LeafView instance
+            - `index`: the index of the displayed *tree* model item
             - `parent`: the parent of the widget
         """
 
         # The main application window
         self.vtapp = vitables.utils.getVTApp()
 
-        QMdiSubWindow.__init__(self, self.vtapp.workspace)
-        self.setWidget(view)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-
         # The LeafNode instance whose dataset is being displayed
-        dbt_view = self.vtapp.dbs_tree_view
         dbt_model = self.vtapp.dbs_tree_model
-        index = dbt_view.currentIndex()
         dbt_leaf = dbt_model.nodeFromIndex(index)
+        leaf = dbt_leaf.node
+        rbuffer = readBuffer.Buffer(leaf)
+        leaf_model = leafModel.LeafModel(rbuffer)
+        leaf_view = leafView.LeafView(leaf_model)
+
+        QMdiSubWindow.__init__(self, self.vtapp.workspace)
+        self.setWidget(leaf_view)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         # Customise the title bar
         if not isinstance(dbt_leaf.node.title, unicode):
@@ -91,11 +96,10 @@ class DataSheet(QMdiSubWindow):
 
         self.dbt_leaf = dbt_leaf
         self.pindex = QPersistentModelIndex(index)
-        self.rbuffer = view.rbuffer
 
         self.connect(self, SIGNAL("aboutToActivate()"), 
                      self.syncTreeView)
-        self.connect(view, SIGNAL("doubleClicked(QModelIndex)"), 
+        self.connect(leaf_view, SIGNAL("doubleClicked(QModelIndex)"), 
             self.zoomCell)
 
 
@@ -107,7 +111,6 @@ class DataSheet(QMdiSubWindow):
         self.vtapp.slotUpdateActions()
     #    self.setParent(None)
     #    self.vtapp = None
-    #    self.rbuffer = None
     #    self.pindex = None
     #    self.dbt_leaf = None
     #    event.accept()
@@ -127,21 +130,23 @@ class DataSheet(QMdiSubWindow):
     def zoomCell(self, index):
         """Display the inner dimensions of a cell.
 
-        :Parameter index: the model index of the cell being zoomed
+        :Parameter index: the *leaf* model index of the cell being zoomed
         """
 
         row = index.row()
         column = index.column()
-        data = self.rbuffer.getCell(self.rbuffer.start + row, column)
+        tmodel = index.model()
+        data = tmodel.rbuffer.getCell(tmodel.rbuffer.start + row, column)
 
         # The title of the zoomed view
         node = self.dbt_leaf
         info = nodeInfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
-            title = '%s: %s[%s]' % (node.name, col, self.rbuffer.start + row + 1)
+            title = '%s: %s[%s]' % (node.name, col, 
+                tmodel.rbuffer.start + row + 1)
         else:
-            title = '%s: (%s,%s)' % (node.name, self.rbuffer.start + row + 1, 
+            title = '%s: (%s,%s)' % (node.name, tmodel.rbuffer.start + row + 1, 
                 column + 1)
 
         zoomCell.ZoomCell(data, title, self.vtapp.workspace, 

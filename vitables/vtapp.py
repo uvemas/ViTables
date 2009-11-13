@@ -48,7 +48,6 @@ import vitables.h5db.dbsTreeModel as dbsTreeModel
 import vitables.h5db.dbsTreeView as dbsTreeView
 
 import vitables.queries.queriesManager as qmgr
-import vitables.queries.queryDlg as queryDlg
 
 import vitables.vtWidgets.inputNodeName as inputNodeName
 import vitables.vtWidgets.renameDlg as renameDlg
@@ -58,8 +57,6 @@ from vitables.nodeProperties import nodePropDlg
 from vitables.docBrowser import helpBrowser
 
 import vitables.vtTables.buffer as rbuffer
-import vitables.vtTables.leafModel as leafModel
-import vitables.vtTables.leafView as leafView
 import vitables.vtTables.dataSheet as dataSheet
 
 import vitables.pluginsManager.pluginsManager as pluginsMgr
@@ -1669,12 +1666,7 @@ class VTApp(QMainWindow):
         # Create a view and announce it.
         # Announcing is potentially helpful for plugins in charge of
         # datasets customisations (for instance, additional formatting)
-        leaf_model = leafModel.LeafModel(leaf_buffer)
-        leaf_view = leafView.LeafView(leaf_model)
-
-        # Add the view to the MDI area
-        self.dbs_tree_view.setCurrentIndex(index)  # This is a MUST
-        subwindow = dataSheet.DataSheet(leaf_view)
+        subwindow = dataSheet.DataSheet(index)
         subwindow.show()
         self.emit(SIGNAL("leaf_model_created"), subwindow)
 

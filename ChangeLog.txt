@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** November 13, 2009 **
+dataSheet.py module has been refactored. 
+
 leafView.py module has been refactored.
 
 Plugins have been updated.
