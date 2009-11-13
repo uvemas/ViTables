@@ -107,7 +107,7 @@ class ExportToCSV(object):
 
         # The PyTables node tied to the current view
         view = self.vtapp.workspace.activeSubWindow()
-        leaf = view.leaf.node
+        leaf = view.dbt_leaf.node
 
         # Get a filename for the file where dataset will be stored
         dfilter = self.__tr("""All Files (*)""", 

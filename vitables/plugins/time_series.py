@@ -71,12 +71,12 @@ class TSFormatter(object):
             return
 
         # Get the positions of the time fields
-        leaf = datasheet.leaf.node
+        leaf = datasheet.dbt_leaf.node
         time_cols = self.tsPositions(ts_kind, leaf)
         if time_cols == []:
             return
 
-        model = datasheet.widget().tmodel
+        model = datasheet.widget().model()
         if time_cols == [-1]:
             # Dataset is an array of time series
             new_model= ArrayTSModel(model)
@@ -113,7 +113,7 @@ class TSFormatter(object):
         :Return `ts_kind`: a flag indicating the kind of time series found
         """
 
-        leaf = datasheet.leaf.node
+        leaf = datasheet.dbt_leaf.node
         time_types = ['time32', 'time64']
         if isinstance(leaf, tables.Table):
             attrs = leaf._v_attrs
@@ -127,7 +127,7 @@ class TSFormatter(object):
         elif leaf.atom.type in time_types and \
             len(leaf.shape) < 3 and \
             leaf.atom.shape == () and \
-            datasheet.leaf.node_kind != u'vlarray': 
+            datasheet.dbt_leaf.node_kind != u'vlarray': 
             return 'pytables_ts'
         else:
             return None
