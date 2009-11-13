@@ -144,6 +144,13 @@ class VTApp(QMainWindow):
             'WhatsThis help for the workspace')
             )
 
+        # The tree of databases model/view
+        self.dbs_tree_model = dbsTreeModel.DBsTreeModel(self)
+        self.dbs_tree_view.setModel(self.dbs_tree_model)
+        # The queries manager
+        self.queries_mgr = \
+                    qmgr.QueriesManager(self.dbs_tree_model.tmp_dbdoc.h5file)
+
         # The signal mapper used to keep the the Windows menu updated
         self.window_mapper = QSignalMapper(self)
         self.connect(self.window_mapper, SIGNAL("mapped(QWidget*)"), 
@@ -162,8 +169,8 @@ class VTApp(QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+        #sys.stdout = self.logger
+        #sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -174,14 +181,6 @@ class VTApp(QMainWindow):
         print self.__tr('''ViTables %s\nCopyright (c) 2008-2009 Vicent Mas.'''
             '''\nAll rights reserved.''' % vtconfig.getVersion(),
             'Application startup message')
-
-        # The tree of databases model/view
-        self.dbs_tree_model = dbsTreeModel.DBsTreeModel(self)
-        self.dbs_tree_view.setModel(self.dbs_tree_model)
-        # The QThread where table queries are managed
-        self.queries_mgr = \
-                    qmgr.QueriesManager(self.dbs_tree_model.tmp_dbdoc.h5file)
-        self.connect(self.queries_mgr, SIGNAL("queryFinished()"), self.addQueryResult)
 
         # The list of most recently open DBs
         self.number_of_recent_files = 10
@@ -842,8 +841,8 @@ class VTApp(QMainWindow):
                 mode = u'a'
             item_path = mode + u'#@#' + path
             for view in node_views:
-                if view.leaf.filepath == path:
-                    item_path = item_path + u'#@#' + view.leaf.nodepath
+                if view.dbt_leaf.filepath == path:
+                    item_path = item_path + u'#@#' + view.dbt_leaf.nodepath
             session_files_nodes.append(item_path)
 
         # Format the list in a handy way to store it on disk
@@ -913,7 +912,9 @@ class VTApp(QMainWindow):
                 leaf_name = nodepath.split('/')[-1]
                 leaf = group.findChild(leaf_name)
                 row = leaf.row()
-                self.slotNodeOpen(self.dbs_tree_model.index(row, 0, index))
+                leaf_index = self.dbs_tree_model.index(row, 0, index)
+                self.dbs_tree_view.setCurrentIndex(leaf_index)
+                self.slotNodeOpen(leaf_index)
 
 
     def processCommandLineArgs(self, mode='', h5files=None, dblist=''):
@@ -1584,7 +1585,7 @@ class VTApp(QMainWindow):
 
         # If some leaf of this database has an open view then close it
         for window in self.workspace.subWindowList():
-            if window.leaf.filepath == filepath:
+            if window.dbt_leaf.filepath == filepath:
                 window.close()
 
         # The tree model closes the file and delete its root item
@@ -1642,12 +1643,8 @@ class VTApp(QMainWindow):
             index = self.dbs_tree_view.currentIndex()
         else:
             index = current
-        pindex = QPersistentModelIndex(index)
         dbs_tree_leaf = self.dbs_tree_model.nodeFromIndex(index)
         leaf = dbs_tree_leaf.node # A PyTables node
-
-        # The buffer tied to this node in order to optimize the read access
-        leaf_buffer = rbuffer.Buffer(leaf)
 
         # tables.UnImplemented datasets cannot be read so are not opened
         if isinstance(leaf, tables.UnImplemented):
@@ -1662,45 +1659,23 @@ class VTApp(QMainWindow):
                 'Text of the Unimplemented node dialog'))
             return
 
+        # The buffer tied to this node in order to optimize the read access
+        leaf_buffer = rbuffer.Buffer(leaf)
+
         # Leaves that cannot be read are not opened
         if not leaf_buffer.isDataSourceReadable():
             return
 
-        # Create a model, announce it and create a view for the leaf
+        # Create a view and announce it.
         # Announcing is potentially helpful for plugins in charge of
         # datasets customisations (for instance, additional formatting)
         leaf_model = leafModel.LeafModel(leaf_buffer)
         leaf_view = leafView.LeafView(leaf_model)
 
         # Add the view to the MDI area
-        subwindow = dataSheet.DataSheet(dbs_tree_leaf, leaf_view, pindex, self)
-        self.workspace.addSubWindow(subwindow)
+        subwindow = dataSheet.DataSheet(leaf_view)
         subwindow.show()
         self.emit(SIGNAL("leaf_model_created"), subwindow)
-
-        # pixmap = QPixmap.grabWidget(subwindow)
-        # noalpha_image = pixmap.toImage()
-        # noalpha_image.save('/tmp/sin_alfa.png')
-        # alpha_image = noalpha_image.convertToFormat(QImage.Format_ARGB32)
-        # # Create a dummy image with the desired alpha channel
-        # #alpha_image = QImage(noalpha_image.size(), QImage.Format_ARGB32)
-        # #color = QColor(0, 0, 0, 127).rgba()
-        # #ctable = alpha_image.colorTable()
-        # #ctable.append(color)
-        # #alpha_image.setColorTable(ctable)
-        # for row in range(0, alpha_image.height()):
-            # for column in range(0, alpha_image.width()):
-                # rgb = alpha_image.pixel(column, row)
-                # color = QColor(rgb)
-                # color.setAlpha(127)
-                # alpha_image.setPixel(column, row, color.rgba())
-        # pixmap2 = QPixmap.fromImage(alpha_image)
-        # pixmap2.save('/tmp/con_alfa.png')
-        # subwindow.widget().viewport().setStyleSheet("background-image: url(/tmp/con_alfa.png);")
-    # #    waste_array = QByteArray()
-    # #    stream = QDataStream(waste_array, QIODevice.WriteOnly)
-    # #    for index in range(0, pixmap_size):
-    # #        stream.writeUInt32(128)
 
 
     def slotNodeClose(self, current=None):
@@ -1718,13 +1693,15 @@ class VTApp(QMainWindow):
         :Parameter current: the tree view item to be closed
         """
 
-        index = self.dbs_tree_view.currentIndex()
-        dbs_tree_leaf = self.dbs_tree_model.nodeFromIndex(index)
-
+        current = self.dbs_tree_view.currentIndex()
+        pcurrent = QPersistentModelIndex(current)
         # Find out the subwindow tied to the selected node and close it
-        for subwindow in self.workspace.subWindowList():
-            if subwindow.leaf == dbs_tree_leaf:
-                subwindow.close()
+        for data_sheet in self.workspace.subWindowList():
+            if pcurrent == data_sheet.pindex:
+                data_sheet.close()
+                break
+
+
 
 
     def slotNodeNewGroup(self):

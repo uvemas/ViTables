@@ -46,8 +46,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import vitables.vtTables.scrollBar as scrollBar
-import vitables.nodeProperties.nodeInfo as nodeInfo
-import vitables.vtWidgets.zoomCell as zoomCell
 
 class LeafView(QTableView):
     """
@@ -109,7 +107,6 @@ class LeafView(QTableView):
         self.data_sheet = None
 
         # Connect SIGNALS to slots
-        self.connect(self, SIGNAL("doubleClicked(QModelIndex)"), self.zoomCell)
         if self.rbuffer.leaf_numrows > self.tmodel.numrows:
             self.connect(self.tricky_vscrollbar, 
                         SIGNAL("actionTriggered(int)"), self.navigateWithMouse)
@@ -595,26 +592,3 @@ class LeafView(QTableView):
             self.tmodel.loadData(current_section - row - 1, table_size)
             self.vheader.headerDataChanged(Qt.Vertical, 0, 
                                             table_size - 1)
-
-
-    def zoomCell(self, index):
-        """Display the inner dimensions of a cell.
-
-        :Parameter index: the model index of the cell being zoomed
-        """
-
-        row = index.row()
-        column = index.column()
-        data = self.rbuffer.getCell(self.rbuffer.start + row, column)
-
-        # The title of the zoomed view
-        node = self.data_sheet.leaf
-        info = nodeInfo.NodeInfo(node)
-        if node.node_kind == 'table':
-            col = info.columns_names[column]
-            title = '%s: %s[%s]' % (node.name, col, self.rbuffer.start + row + 1)
-        else:
-            title = '%s: (%s,%s)' % (node.name, self.rbuffer.start + row + 1, column + 1)
-
-        zoomCell.ZoomCell(data, title, self.data_sheet.vtapp.workspace, 
-                          self.data_sheet.leaf)

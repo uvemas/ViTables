@@ -918,8 +918,8 @@ class DBsTreeModel(QAbstractItemModel):
             nodepaths.append(node.nodepath)
         filepath = node.filepath
         for window in self.vtapp.workspace.subWindowList():
-            if window.leaf.filepath == filepath:
-                wpath = window.leaf.nodepath
+            if window.dbt_leaf.filepath == filepath:
+                wpath = window.dbt_leaf.nodepath
                 for path in nodepaths:
                     if re.match(path, wpath):
                         window.close()

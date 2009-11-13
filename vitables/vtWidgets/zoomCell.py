@@ -109,7 +109,7 @@ class ZoomCell(QMdiSubWindow):
         # Windows menu content is automatically updated
         QMdiSubWindow.__init__(self, workspace)
         self.pindex = None
-        self.leaf = leaf
+        self.dbt_leaf = leaf
         self.setAttribute(Qt.WA_DeleteOnClose)
         # The internal widget
         self.grid = QTableWidget()
@@ -338,4 +338,4 @@ class ZoomCell(QMdiSubWindow):
                 self.field_names[col], row + 1)
         else:
             caption = '%s: (%s, %s)' % (self.title, row + 1, col + 1)
-        ZoomCell(cell, caption, self.workspace, self.leaf)
+        ZoomCell(cell, caption, self.workspace, self.dbt_leaf)

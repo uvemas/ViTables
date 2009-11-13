@@ -45,61 +45,72 @@ __docformat__ = 'restructuredtext'
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import vitables.utils
+import vitables.nodeProperties.nodeInfo as nodeInfo
+import vitables.vtWidgets.zoomCell as zoomCell
+
 class DataSheet(QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
     """
 
-    def __init__(self, leaf, view, pindex, parent=None):
+    def __init__(self, view, parent=None):
         """Display a given dataset in the MDI area.
 
         :Parameters:
 
-            - `leaf`: the LeafNode instance whose dataset is being displayed
             - `view`: the displayed LeafView instance
-            - `pindex`: a persistent model index
             - `parent`: the parent of the widget
         """
 
-        QMdiSubWindow.__init__(self, parent)
-        view.data_sheet = self
+        # The main application window
+        self.vtapp = vitables.utils.getVTApp()
+
+        QMdiSubWindow.__init__(self, self.vtapp.workspace)
         self.setWidget(view)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        # The main application window
-        self.vtapp = parent
-
-        # The persistent index of the tree of databases node whose
-        # dataset is being displayed here
-        self.pindex = pindex
-
-        # Take advantage of the MDI area capabilities for locating the nodes
-        # currently displayed (see for instance VTApp.slotFileClose)
-        self.leaf = leaf
+        # The LeafNode instance whose dataset is being displayed
+        dbt_view = self.vtapp.dbs_tree_view
+        dbt_model = self.vtapp.dbs_tree_model
+        index = dbt_view.currentIndex()
+        dbt_leaf = dbt_model.nodeFromIndex(index)
 
         # Customise the title bar
-        if not isinstance(leaf.node.title, unicode):
-            title = unicode(leaf.node.title, 'utf_8')
+        if not isinstance(dbt_leaf.node.title, unicode):
+            title = unicode(dbt_leaf.node.title, 'utf_8')
         else:
-            title = leaf.node.title
-        wtitle = u"%s\t%s" % (leaf.name, title)
+            title = dbt_leaf.node.title
+        wtitle = u"%s\t%s" % (dbt_leaf.name, title)
         self.setWindowTitle(wtitle)
-        self.setWindowIcon(leaf.icon)
+        self.setWindowIcon(dbt_leaf.icon)
 
         # Eventually update the Node menu actions
-        leaf.has_view = True
+        dbt_leaf.has_view = True
         self.vtapp.slotUpdateActions()
+
+        self.dbt_leaf = dbt_leaf
+        self.pindex = QPersistentModelIndex(index)
+        self.rbuffer = view.rbuffer
 
         self.connect(self, SIGNAL("aboutToActivate()"), 
                      self.syncTreeView)
+        self.connect(view, SIGNAL("doubleClicked(QModelIndex)"), 
+            self.zoomCell)
 
 
     def closeEvent(self, event):
         """Close the window cleanly with the close button of the title bar."""
 
         # Ensure that Node menu actions are properly updated
-        self.leaf.has_view = False
+        self.dbt_leaf.has_view = False
         self.vtapp.slotUpdateActions()
+    #    self.setParent(None)
+    #    self.vtapp = None
+    #    self.rbuffer = None
+    #    self.pindex = None
+    #    self.dbt_leaf = None
+    #    event.accept()
         QMdiSubWindow.closeEvent(self, event)
 
 
@@ -107,7 +118,31 @@ class DataSheet(QMdiSubWindow):
         """When the view becomes active select its leaf in the tree view.
         """
 
-        index_list = self.vtapp.dbs_tree_model.persistentIndexList()
-        for index in index_list:
-            if index == self.pindex:
-                self.vtapp.dbs_tree_view.setCurrentIndex(index)
+        # Locate the tree view leaf tied to this data sheet. Persistent
+        # indices are used to get direct access to the leaf so we don't
+        # have to walk the tree
+        self.vtapp.dbs_tree_view.setCurrentIndex(QModelIndex(self.pindex))
+
+
+    def zoomCell(self, index):
+        """Display the inner dimensions of a cell.
+
+        :Parameter index: the model index of the cell being zoomed
+        """
+
+        row = index.row()
+        column = index.column()
+        data = self.rbuffer.getCell(self.rbuffer.start + row, column)
+
+        # The title of the zoomed view
+        node = self.dbt_leaf
+        info = nodeInfo.NodeInfo(node)
+        if node.node_kind == 'table':
+            col = info.columns_names[column]
+            title = '%s: %s[%s]' % (node.name, col, self.rbuffer.start + row + 1)
+        else:
+            title = '%s: (%s,%s)' % (node.name, self.rbuffer.start + row + 1, 
+                column + 1)
+
+        zoomCell.ZoomCell(data, title, self.vtapp.workspace, 
+                          self.dbt_leaf)
