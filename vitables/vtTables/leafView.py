@@ -64,7 +64,9 @@ class LeafView(QTableView):
         """
 
         QTableView.__init__(self, parent)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setModel(tmodel)
+        self.tmodel = tmodel  # This is a MUST
         self.leaf_numrows = tmodel.rbuffer.leaf_numrows
         self.selection_model = self.selectionModel()
         self.current_cell = (None, None)

@@ -55,6 +55,7 @@ _context = 'DBsTreeView'
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import vitables.utils
 from vitables.h5db.nodeItemDelegate import NodeItemDelegate
 
 class DBsTreeView(QTreeView):
@@ -66,17 +67,21 @@ class DBsTreeView(QTreeView):
     node of the tree contains the object tree of a database.
     """
 
-    def __init__(self, vtapp, parent=None):
+    def __init__(self, model, parent=None):
         """Create the view.
 
         :Parameters:
 
-            - `vtapp`: the application main window
+            - `model`: the model for this view
             - `parent`: the parent widget.
         """
 
         QTreeView.__init__(self, parent)
-        self.vtapp = vtapp
+        self.vtapp = vitables.utils.getVTApp()
+
+        # The model
+        self.setModel(model)
+        self.dbt_model = model
 
         # The custom delegate used for editing items
         self.setItemDelegate(NodeItemDelegate(self))

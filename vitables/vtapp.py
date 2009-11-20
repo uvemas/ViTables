@@ -119,12 +119,12 @@ class VTApp(QMainWindow):
         central_layout.addWidget(self.vsplitter)
         self.setCentralWidget(central_widget)
 
-        # The vertical splitter divides the screen into 2 regions
+        # Divide the top region of the window into 2 regions and put there
+        # the tree of databases and the workspace
         self.hsplitter = QSplitter(self.vsplitter)
-        self.logger = logger.Logger(self.vsplitter)
-
-        # The top region of the screen is divided by a splitter
-        self.dbs_tree_view = dbsTreeView.DBsTreeView(self, self.hsplitter)
+        self.dbs_tree_model = dbsTreeModel.DBsTreeModel(self)
+        self.dbs_tree_view = dbsTreeView.DBsTreeView(self.dbs_tree_model, 
+            self.hsplitter)
         self.workspace = QMdiArea(self.hsplitter)
         sb_as_needed = Qt.ScrollBarAsNeeded
         self.workspace.setHorizontalScrollBarPolicy(sb_as_needed)
@@ -141,9 +141,9 @@ class VTApp(QMainWindow):
             'WhatsThis help for the workspace')
             )
 
-        # The tree of databases model/view
-        self.dbs_tree_model = dbsTreeModel.DBsTreeModel(self)
-        self.dbs_tree_view.setModel(self.dbs_tree_model)
+        # Put the logging console in the bottom region of the window
+        self.logger = logger.Logger(self.vsplitter)
+
         # The queries manager
         self.queries_mgr = \
                     qmgr.QueriesManager(self.dbs_tree_model.tmp_dbdoc.h5file)
@@ -166,8 +166,8 @@ class VTApp(QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+        #sys.stdout = self.logger
+        #sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(self.__tr('Configuration setup...',
@@ -1637,8 +1637,10 @@ class VTApp(QMainWindow):
         """
 
         if current is None:
+            # Open the node currently selected in the tree of databases
             index = self.dbs_tree_view.currentIndex()
         else:
+            # When restoring the previous session explicit indexes are passed
             index = current
         dbs_tree_leaf = self.dbs_tree_model.nodeFromIndex(index)
         leaf = dbs_tree_leaf.node # A PyTables node
