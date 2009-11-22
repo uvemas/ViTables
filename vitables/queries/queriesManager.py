@@ -43,16 +43,14 @@ _context = 'QueriesManager'
 
 import sets
 
-import tables
-import numpy
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
-import queryDlg
+import vitables.queries.queryDlg as queryDlg
+import vitables.queries.query as query
 
-class QueriesManager(QObject):
+
+class QueriesManager(QtCore.QObject):
     """This is the class in charge of threading the execution of queries.
 
     PyTables doesn't support threaded queries. So when several queries are
@@ -69,7 +67,7 @@ class QueriesManager(QObject):
     being queried in a data structure (a dictionary at present).
     """
 
-    def __init__(self, tmp_h5file, parent=None):
+    def __init__(self, parent=None):
         """Setup the queries manager.
 
         The manager is in charge of:
@@ -87,22 +85,16 @@ class QueriesManager(QObject):
         stored. By default it has the format "Filtered_TableUID" where UID
         is an integer automatically generated. User can customise the query
         name in the New Query dialog.
-
-        :Parameter tmp_h5file: the file where the query results are stored
         """
 
-        QObject.__init__(self, parent)
+        QtCore.QObject.__init__(self, parent)
 
-    #    self.mutex = QMutex()
-        self.tmp_h5file = tmp_h5file
         # Description of the last query made
         self.last_query = [None, None, None]
         # UID for automatically generating query names
         self.counter = 0
         # The list of query names currently in use
         self.ft_names = []
-        # A mapping of tables being currently queried
-        self.in_progress = {}
 
         self.vtapp = vitables.utils.getVTApp()
         self.dbt_view = self.vtapp.dbs_tree_view
@@ -111,38 +103,7 @@ class QueriesManager(QObject):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
-
-
-    def trackTable(self, tableID, thread=None):
-        """Add a new entry to the queries track system.
-
-        :Parameters:
-
-        - `tableID`: the UID of the table being queried
-        - `thread`: the QThread where the query will execute
-        """
-        self.in_progress[tableID] = thread
-
-
-    def untrackTable(self, tableID):
-        """Remove an entry from the queries track system.
-
-        :Parameter tableID: the ID of the table being released
-        """
-        del self.in_progress[tableID]
-
-
-    def isTracked(self, tableID):
-        """Find out if a table is being queried.
-
-        :Parameter tableID: the ID of the table being checked
-        """
-
-        if self.in_progress.has_key(tableID):
-            return True
-        else:
-            return False
+        return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
     def getTableInfo(self, table):
@@ -213,6 +174,44 @@ class QueriesManager(QObject):
         return info
 
 
+    def newQuery(self):
+        """Proces the query requests launched by users.
+        """
+
+        # The VTApp.updateQueryActions method ensures that the current node is
+        # tied to a tables.Table instance so we can query it without
+        # further checking
+        current = self.dbt_view.currentIndex()
+        node = self.dbt_model.nodeFromIndex(current)
+        table_uid = node.as_record
+        table = node.node
+
+        table_info = self.getTableInfo(table)
+        if table_info is None:
+            return
+
+        # Update the suggested name sufix
+        self.counter = self.counter + 1
+        query_description = self.getQueryInfo(table_info, table)
+        if query_description is None:
+            self.counter = self.counter - 1
+            return
+
+        # Update the list of names in use for filtered tables
+        self.ft_names.append(query_description[u'ft_name'])
+        self.last_query = [query_description[u'src_filepath'], 
+            query_description[u'src_path'], query_description[u'condition']]
+
+        # Run the query
+        tmp_h5file = self.dbt_model.tmp_dbdoc.h5file
+        new_query = query.Query(tmp_h5file, table_uid, table, 
+            query_description)
+        self.connect(new_query, QtCore.SIGNAL("completed"), 
+            self.addQueryResult)
+        QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+        new_query.run()
+
+
     def getQueryInfo(self, info, table):
         """Retrieves useful info about the query.
 
@@ -235,13 +234,14 @@ class QueriesManager(QObject):
         # Get a complete query description from user input: condition to
         # be applied, involved range of rows, name of the
         # filtered table and name of the column of returned indices
-        query = queryDlg.QueryDlg(info, self.ft_names, 
+        query_dlg = queryDlg.QueryDlg(info, self.ft_names, 
             self.counter, initial_condition, table)
         try:
-            query.exec_()
+            query_dlg.exec_()
         finally:
-            query_description = dict(query.query_info)
-            del query
+            query_description = dict(query_dlg.query_info)
+            del query_dlg
+            QtGui.qApp.processEvents()
 
         if not query_description[u'condition']:
             return None
@@ -261,69 +261,25 @@ class QueriesManager(QObject):
         return query_description
 
 
-    def newQuery(self):
-        """Proces the query requests launched by users.
-        """
-
-        # The VTApp.updateQueryActions method ensures that the current node is
-        # tied to a tables.Table instance so we can query it without
-        # further checking
-        current = self.dbt_view.currentIndex()
-        node = self.dbt_model.nodeFromIndex(current)
-        tableID = node.as_record
-        table = node.node
-
-        if self.isTracked(tableID):
-            print self.__tr("A query is already in progress for this table!", 
-                'Console message from slotQueryNew method')
-            return
-
-        table_info = self.getTableInfo(table)
-        if table_info is None:
-            return
-
-        # Update the suggested name sufix
-        self.counter = self.counter + 1
-        query_description = self.getQueryInfo(table_info, table)
-        if query_description is None:
-            self.counter = self.counter - 1
-            return
-
-        # Update the list of names in use for filtered tables
-        self.ft_names.append(query_description[u'ft_name'])
-        self.last_query = [query_description[u'src_filepath'], 
-            query_description[u'src_path'], query_description[u'condition']]
-
-        # Run the query in a secondary thread
-        self.trackTable(tableID, 
-            Query(tableID, table, query_description, parent=self))
-
-    #    self.connect(self.in_progress[tableID], SIGNAL("finished()"), 
-    #        self.in_progress[tableID], SLOT("deleteLater()"))
-
-    #    self.in_progress[tableID].start()
-        self.in_progress[tableID].run()
-
-
     def deleteAllQueries(self):
         """Delete all nodes from the query results tree."""
 
-        del_dlg = QMessageBox.question(self.vtapp,
+        del_dlg = QtGui.QMessageBox.question(self.vtapp,
             self.__tr('Deleting all queries',
             'Caption of the QueryDeleteAll dialog'),
             self.__tr("""\n\nYou are about to delete all nodes """
                 """under Query results\n\n""", 'Ask for confirmation'),
-            QMessageBox.Yes|QMessageBox.Default,
-            QMessageBox.No|QMessageBox.Escape)
+            QtCore.QMessageBox.Yes|QtCore.QMessageBox.Default,
+            QtCore.QMessageBox.No|QtCore.QMessageBox.Escape)
 
         # OK returns Accept, Cancel returns Reject
-        if del_dlg == QMessageBox.No:
+        if del_dlg == QtGui.QMessageBox.No:
             return
 
         # Remove every filtered table from the tree of databases model/view
-        model_rows = self.dbt_model.rowCount(QModelIndex())
+        model_rows = self.dbt_model.rowCount(QtCore.QModelIndex())
         tmp_index = self.dbt_model.index(model_rows - 1, 0, 
-            QModelIndex())
+            QtCore.QModelIndex())
         rows_range = range(0, self.dbt_model.rowCount(tmp_index))
         rows_range.reverse()
         for row in rows_range:
@@ -335,168 +291,28 @@ class QueriesManager(QObject):
         self.ft_names = []
 
 
-    def addQueryResult(self, tableID):
+    def addQueryResult(self, completed, table_uid):
         """Update the GUI once the query has finished.
 
         Add the result of the query to the tree of databases view and open
         the new filtered table.
 
-        :Parameter tableID: the UID of the table just queried
+        :Parameter table_uid: the UID of the table just queried
         """
 
+        QtGui.qApp.restoreOverrideCursor()
+        if not completed:
+            print self.__tr('Query on table %s failed!' % table_uid, 
+                'Warning log message about a failed query')
+            return
+
         # Update temporary database view i.e. call lazyAddChildren
-        model_rows = self.dbt_model.rowCount(QModelIndex())
+        model_rows = self.dbt_model.rowCount(QtCore.QModelIndex())
         tmp_index = self.dbt_model.index(model_rows - 1, 0, 
-            QModelIndex())
+            QtCore.QModelIndex())
         self.dbt_model.lazyAddChildren(tmp_index)
+
         # The new filtered table is inserted in first position under
         # the Query results node and opened
         index = self.dbt_model.index(0, 0, tmp_index)
         self.vtapp.slotNodeOpen(index)
-
-        self.untrackTable(tableID)
-
-
-class Query(QObject):
-    """Class implementing a tables.Table query.
-
-    Queries are sequentially executed in a secondary thread so the GUI will
-    not freeze up while the query (a potentially long-running operation) is
-    taking place.
-
-    The thread is implemented in a clever way that doesn't interfer with the
-    lazy population of the tree of databases view: the query results table is
-    stored under a hidden group of the temporary database until the query
-    finishes. Then it is moved to the root node and becomes visible to the
-    world. This way, while the query results table is partially filled it
-    is not seen by the lazy population algorithm so it is not added to the
-    tree of databases view and neither the user nor ViTables will try to read
-    it. So no problems can occur trying to read a partially filled table.
-    """
-
-
-    def __init__(self, tableID, table, qdescr, parent=None):
-        """Initialises the thread.
-
-        :Parameters:
-
-        - `tableID`: UID of the tables.Table instance being queried
-        - `table`: tables.Table instance being queried
-        - `qdescr`: dictionary description of the query
-        - `parent`: the queries manager
-        """
-
-        QObject.__init__(self, parent)
-
-        self.connect(self, SIGNAL("queryFinished"), parent.addQueryResult)
-        self.qmgr = parent
-    #    self.mutex = parent.mutex
-        self.tableID = tableID
-        self.table = table
-        self.query_description = qdescr
-
-
-
-    def flushTable(self, ftable):
-        """Flush the filtered table and setup some user attributes.
-
-        :Parameters:
-
-        - `ftable`: the filtered table being flushed
-        """
-
-        ftable.flush()
-        # Set some user attributes that define this filtered table
-        asi = ftable.attrs
-        asi.query_path = self.query_description[u'src_filepath']
-        asi.query_table = self.query_description[u'src_path']
-        asi.query_condition = self.query_description[u'title']
-
-
-    def run(self):
-        """
-        Query a table and add a the result to the temporary database.
-        """
-
-    #    locker = QMutexLocker(self.mutex)
-        table = self.table
-        tmp_h5file = self.qmgr.tmp_h5file
-
-        # Define shorthands
-        (start, stop, step) = self.query_description[u'rows_range']
-        name = self.query_description[u'ft_name']
-        title = self.query_description[u'title']
-        condition = self.query_description[u'condition']
-        condvars = self.query_description[u'condvars']
-        indices_field_name = self.query_description[u'indices_field_name']
-
-        # If no slice is passed the best choice is to set the start, stop,
-        # step arguments to None. It is due to the implementation of
-        # readWhere
-        if (start, stop, step) == (0, table.nrows, 1):
-            (start, stop, step) = (None, None, None)
-
-        try:
-            qApp.setOverrideCursor(Qt.WaitCursor)
-            src_dict = table.description._v_colObjects
-            # Query the source table and build the result table
-            if indices_field_name:
-                # Create the destination table: its first column
-                # will contain the indices of the rows selected in
-                # the source table so a new description dictionary
-                # is needed. Int64 values are necessary to keep full
-                # 64-bit indices
-                ft_dict = {indices_field_name.encode('utf_8'): \
-                    tables.Int64Col(pos=-1)}
-                ft_dict.update(src_dict)
-                f_table = tmp_h5file.createTable(u'/_p_query_results', name, 
-                    ft_dict, title)
-
-                # Get the array of rows that fullfill the condition
-                coordinates = table.getWhereList(condition, condvars, 
-                    start=start, stop=stop, step=step)
-                selection = table.readCoordinates(coordinates)
-
-                # Fill the destination table
-                if selection.shape != (0, ):
-                    dtype = f_table.read().dtype
-                    # A one row array with the proper dtype will be used
-                    # to fill the table
-                    row_buffer = \
-                    numpy.array([(coordinates[0], ) + \
-                        tuple(selection[0])], dtype=dtype)
-                    f_table.append(row_buffer)
-                    selection_index = 0
-                    for row_index in coordinates[1:]:
-                        selection_index = selection_index + 1
-                        # Set the first field with the row index
-                        row_buffer[0][0] = row_index
-                        # The rest of fields are set using the query result
-                        for field_index in range(0, len(dtype) - 1):
-                            row_buffer[0][field_index+1] = \
-                                selection[selection_index][field_index]
-                        f_table.append(row_buffer)
-
-                # Move table to its final destination
-                self.flushTable(f_table)
-                tmp_h5file.moveNode(u'/_p_query_results/' + name, u'/',
-                    newname=name, overwrite=True)
-            else:
-                # Create the destination table
-                f_table = tmp_h5file.createTable(u'/_p_query_results', name, 
-                    src_dict, title)
-                # Get the array of rows that fullfill the condition
-                selection = table.readWhere(condition, condvars, 
-                    start=start, stop=stop, step=step)
-                # Fill the destination table
-                f_table.append(selection)
-                # Move table to its final destination    
-                self.flushTable(f_table)
-                tmp_h5file.moveNode(u'/_p_query_results/' + name, u'/',
-                    newname=name, overwrite=True)
-        except:
-            vitables.utils.formatExceptionInfo()
-        else:
-            tmp_h5file.flush()
-            self.emit(SIGNAL("queryFinished"), self.tableID)
-            qApp.restoreOverrideCursor()

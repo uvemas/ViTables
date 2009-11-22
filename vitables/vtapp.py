@@ -145,8 +145,7 @@ class VTApp(QMainWindow):
         self.logger = logger.Logger(self.vsplitter)
 
         # The queries manager
-        self.queries_mgr = \
-                    qmgr.QueriesManager(self.dbs_tree_model.tmp_dbdoc.h5file)
+        self.queries_mgr = qmgr.QueriesManager()
 
         # The signal mapper used to keep the the Windows menu updated
         self.window_mapper = QSignalMapper(self)

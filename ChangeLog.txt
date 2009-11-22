@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 22, 2009 **
+Memory footprint greatly reduced.
+
 ** November 20, 2009 **
 Fixed a bug in the datasheet.py module apparent with pyqt < 4.6.
 

@@ -53,13 +53,12 @@ _context = 'QueryDlg'
 
 import numpy
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 from vitables.queries import queryUI
 
-class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
+class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
     """
     A dialog for filter creation .
 
@@ -96,7 +95,7 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         #
         # Create the dialog and customise the content of some widgets
         #
-        QDialog.__init__(self, qApp.activeWindow())
+        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
         self.setupUi(self)
 
         self.setWindowTitle(self.__tr('New query on table: %s',
@@ -113,25 +112,25 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         # Fill the combos
         operators = [u'&', u'|', u'~', u'<', u'<=', u'==', u'!=', u'>', u'>=', u'+',
             u'-', u'*', u'/', u'**', u'%']
-        self.operators_cb.insertItems(0, QStringList(operators))
+        self.operators_cb.insertItems(0, QtCore.QStringList(operators))
         functions = [u'where', u'sin', u'cos', u'tan', u'arcsin', u'arccos', 
             u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', 
             u'arcsinh', u'arccosh', u'arctanh', u'log', u'log10', u'log1p', 
             u'exp', u'expm1', u'sqrt', 
             u'real', u'imag', u'complex']
-        self.functions_cb.insertItems(0, QStringList(functions))
+        self.functions_cb.insertItems(0, QtCore.QStringList(functions))
         sorted_fields = [field for field in info[u'valid_fields']]
         sorted_fields.sort()
-        self.columns_cb.insertItems(0, QStringList(sorted_fields))
+        self.columns_cb.insertItems(0, QtCore.QStringList(sorted_fields))
         self.rstop.setText(u'%s' % info[u'nrows'])
 
-        whatsthis_button = self.button_box.button(QDialogButtonBox.Help)
+        whatsthis_button = self.button_box.button(QtGui.QDialogButtonBox.Help)
         whatsthis_button.setText("&What's this")
 
         #
         # Setup a validator for Range selectors section
         #
-        validator = QRegExpValidator(QRegExp("\\d*"), self)
+        validator = QtGui.QRegExpValidator(QtCore.QRegExp("\\d*"), self)
         self.rstart.setValidator(validator)
         self.rstop.setValidator(validator)
         self.rstep.setValidator(validator)
@@ -163,10 +162,10 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         #
         # Connect signals to slots
         #
-        activated = SIGNAL('activated(const QString &)')
-        text_changed = SIGNAL('textChanged(const QString &)')
+        activated = QtCore.SIGNAL('activated(const QString &)')
+        text_changed = QtCore.SIGNAL('textChanged(const QString &)')
         self.connect(self.name_le, text_changed, self.slotUpdateOKState)
-        self.connect(self.indices_checkbox, SIGNAL('toggled(bool)'),
+        self.connect(self.indices_checkbox, QtCore.SIGNAL('toggled(bool)'),
             self.slotEnableIndicesColumn)
         self.connect(self.indices_column, text_changed, self.slotUpdateOKState)
         self.connect(self.query_le, text_changed, self.slotUpdateOKState)
@@ -175,12 +174,12 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
         self.connect(self.columns_cb, activated, self.slotInsertField)
         self.connect(self.operators_cb, activated, self.slotInsertOperator)
         self.connect(self.functions_cb, activated, self.slotInsertFunction)
-        self.connect(self.button_box, SIGNAL('helpRequested()'),
-            QWhatsThis.enterWhatsThisMode)
-        self.connect(self.button_box, SIGNAL('accepted()'), 
+        self.connect(self.button_box, QtCore.SIGNAL('helpRequested()'),
+            QtGui.QWhatsThis.enterWhatsThisMode)
+        self.connect(self.button_box, QtCore.SIGNAL('accepted()'), 
             self.slotAccept)
-        self.connect(self.button_box, SIGNAL('rejected()'),
-            SLOT('reject()'))
+        self.connect(self.button_box, QtCore.SIGNAL('rejected()'),
+            QtCore.SLOT('reject()'))
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
         self.name_le.emit(text_changed, self.name_le.text())
@@ -188,7 +187,7 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
+        return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
     def slotEnableIndicesColumn(self, cb_on):
@@ -352,7 +351,7 @@ class QueryDlg(QDialog, queryUI.Ui_QueryDialog):
                                 'A logger info message')
 
         # Enable/disable the OK button
-        ok_button = self.button_box.button(QDialogButtonBox.Ok)
+        ok_button = self.button_box.button(QtGui.QDialogButtonBox.Ok)
         if status_ok:
             ok_button.setEnabled(1)
         else:

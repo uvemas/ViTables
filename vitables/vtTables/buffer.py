@@ -62,7 +62,7 @@ warnings.filterwarnings('ignore', category=tables.FlavorWarning)
 warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
 
 
-class Buffer:
+class Buffer(object):
     """
     Buffer used to access the real data contained in PyTables datasets.
 
@@ -125,6 +125,12 @@ class Buffer:
         else:
             # Array elements will be read like a[row]
             self.getCell = self.vectorCell
+
+
+    def __del__(self):
+        """Release resources before being destroyed.
+        """
+        self.chunk = []
 
 
     def leafNumberOfRows(self):

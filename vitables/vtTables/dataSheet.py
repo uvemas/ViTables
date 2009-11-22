@@ -71,8 +71,8 @@ class DataSheet(QMdiSubWindow):
 
         # The LeafNode instance whose dataset is being displayed
         dbt_model = self.vtapp.dbs_tree_model
-        dbt_leaf = dbt_model.nodeFromIndex(index)
-        leaf = dbt_leaf.node
+        self.dbt_leaf = dbt_model.nodeFromIndex(index)
+        leaf = self.dbt_leaf.node
         rbuffer = readBuffer.Buffer(leaf)
         leaf_model = leafModel.LeafModel(rbuffer)
         leaf_view = leafView.LeafView(leaf_model)
@@ -82,19 +82,18 @@ class DataSheet(QMdiSubWindow):
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         # Customise the title bar
-        if not isinstance(dbt_leaf.node.title, unicode):
-            title = unicode(dbt_leaf.node.title, 'utf_8')
+        if not isinstance(leaf.title, unicode):
+            title = unicode(leaf.title, 'utf_8')
         else:
-            title = dbt_leaf.node.title
-        wtitle = u"%s\t%s" % (dbt_leaf.name, title)
+            title = leaf.title
+        wtitle = u"%s\t%s" % (self.dbt_leaf.name, title)
         self.setWindowTitle(wtitle)
-        self.setWindowIcon(dbt_leaf.icon)
+        self.setWindowIcon(self.dbt_leaf.icon)
 
         # Eventually update the Node menu actions
-        dbt_leaf.has_view = True
+        self.dbt_leaf.has_view = True
         self.vtapp.slotUpdateActions()
 
-        self.dbt_leaf = dbt_leaf
         self.pindex = QPersistentModelIndex(index)
 
         self.connect(self, SIGNAL("aboutToActivate()"), 
@@ -109,11 +108,13 @@ class DataSheet(QMdiSubWindow):
         # Ensure that Node menu actions are properly updated
         self.dbt_leaf.has_view = False
         self.vtapp.slotUpdateActions()
-    #    self.setParent(None)
-    #    self.vtapp = None
-    #    self.pindex = None
-    #    self.dbt_leaf = None
-    #    event.accept()
+
+        # Clean up things
+        del self.dbt_leaf
+        del self.pindex
+
+        # Propagate the event. In the process, self.widget().closeEvent
+        # will be called 
         QMdiSubWindow.closeEvent(self, event)
 
 

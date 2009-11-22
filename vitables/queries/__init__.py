@@ -17,4 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["queryDlg", "queriesManager", "queryUI"]
+__all__ = ["query", "queryDlg", "queriesManager", "queryUI"]

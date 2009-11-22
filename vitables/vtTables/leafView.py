@@ -59,8 +59,8 @@ class LeafView(QTableView):
 
         :Parameters:
 
-            - `tmodel`: the model to be tied to this view
-            - `parent`: the parent of the model
+            - `tmodel`: the leaf model to be tied to this view
+            - `parent`: the parent of this widget
         """
 
         QTableView.__init__(self, parent)
@@ -76,7 +76,7 @@ class LeafView(QTableView):
         self.vscrollbar = self.verticalScrollBar()
 
         # For potentially huge datasets use a customised scrollbar
-        if tmodel.rbuffer.leaf_numrows > tmodel.numrows:
+        if self.leaf_numrows > tmodel.numrows:
             self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
             self.tricky_vscrollbar = scrollBar.ScrollBar(self.vscrollbar)
             self.max_value = self.tricky_vscrollbar.maximum()
@@ -104,7 +104,7 @@ class LeafView(QTableView):
         self.setTextElideMode(Qt.ElideRight)
 
         # Connect SIGNALS to slots
-        if tmodel.rbuffer.leaf_numrows > tmodel.numrows:
+        if self.leaf_numrows > tmodel.numrows:
             self.connect(self.tricky_vscrollbar, 
                         SIGNAL("actionTriggered(int)"), self.navigateWithMouse)
             self.connect(self.selection_model, 
