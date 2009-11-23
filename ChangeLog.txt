@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** November 23, 2009 **
+Layout of csv plugin changed to allow future additions; modules, icons,...
+
 Plugin export_csv.py enhanced: better code, reduced memory footprint.
 
 ** November 22, 2009 **

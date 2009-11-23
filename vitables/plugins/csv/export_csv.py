@@ -34,6 +34,7 @@ import numpy
 from PyQt4 import QtCore, QtGui
 
 import vitables.utils
+from vitables.vtSite import PLUGINSDIR
 
 class ExportToCSV(object):
     """Provides CSV export capabilities for arrays.
@@ -70,11 +71,15 @@ class ExportToCSV(object):
 
         menu = self.vtapp.dataset_menu
 
-        # Create the action
+        icon = QtGui.QIcon()
+        pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
+            'csv/icons/document-export.png'))
+        icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
+
         self.export_action = vitables.utils.createAction(menu, 
             self.__tr("E&xport to CSV...", "Save dataset as CSV"), 
             QtGui.QKeySequence.UnknownKey, self.export, 
-            None, 
+            icon, 
             self.__tr("Save the dataset as a plain text with CSV format", 
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
