@@ -24,17 +24,14 @@
 
 __docformat__ = 'restructuredtext'
 _context = 'ExportToCSV'
-__version__ = '0.2'
+__version__ = '0.3'
 plugin_class = 'ExportToCSV'
 
 import os
 
-import tables
-
 import numpy
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 
@@ -51,24 +48,23 @@ class ExportToCSV(object):
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
-
         if self.vtapp is None:
             return
 
-        self.actions = {}
-        self.upgradeDatasetMenu()
+        self.addEntry()
 
         # Connect signals to slots
-        QObject.connect(self.vtapp.dataset_menu, SIGNAL('aboutToShow()'), 
-            self.slotUpdateDatasetMenu)
+        QtCore.QObject.connect(self.vtapp.dataset_menu, 
+            QtCore.SIGNAL('aboutToShow()'), 
+            self.updateDatasetMenu)
 
 
     def __tr(self, source, comment=None):
         """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
+        return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
-    def upgradeDatasetMenu(self):
+    def addEntry(self):
         """Add the Export to CSV... entry to the Dataset menu.
         """
 
@@ -77,7 +73,7 @@ class ExportToCSV(object):
         # Create the action
         self.export_action = vitables.utils.createAction(menu, 
             self.__tr("E&xport to CSV...", "Save dataset as CSV"), 
-            QKeySequence.UnknownKey, self.slotExport, 
+            QtGui.QKeySequence.UnknownKey, self.export, 
             None, 
             self.__tr("Save the dataset as a plain text with CSV format", 
                 "Status bar text for the Dataset -> Export to CSV... action"))
@@ -89,25 +85,32 @@ class ExportToCSV(object):
 
 
 
-    def slotUpdateDatasetMenu(self):
-        """Update the Dataset menu when a new LeafView becomes current.
+    def updateDatasetMenu(self):
+        """Update the export QAction when the user pulls down the Dataset menu.
+
+        This method is a slot. See class ctor for details.
         """
 
         enabled = True
-        view = self.vtapp.workspace.activeSubWindow()
-        if view is None:
-            enabled = False
+        current = self.vtapp.dbs_tree_view.currentIndex()
+        if current:
+            leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current)
+            if leaf.node_kind in (u'group', u'root group'):
+                enabled = False
 
         self.export_action.setEnabled(enabled)
 
 
-    def slotExport(self):
+    def export(self):
         """Export a given dataset to CSV format.
+
+        This method is a slot connected to the `export` QAction. See the
+        addEntry method for details.
         """
 
-        # The PyTables node tied to the current view
-        view = self.vtapp.workspace.activeSubWindow()
-        leaf = view.dbt_leaf.node
+        # The PyTables node tied to the current leaf of the databases tree
+        current = self.vtapp.dbs_tree_view.currentIndex()
+        leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current).node
 
         # Get a filename for the file where dataset will be stored
         dfilter = self.__tr("""All Files (*)""", 
@@ -115,7 +118,9 @@ class ExportToCSV(object):
         filename = self.vtapp.getFilepath(\
             self.__tr('Exporting dataset to CSV format', 
             'Caption of the Export to CSV dialog'),
-            QFileDialog.AcceptSave, QFileDialog.AnyFile, dfilter=dfilter, 
+            QtGui.QFileDialog.AcceptSave, 
+            QtGui.QFileDialog.AnyFile, 
+            dfilter=dfilter, 
             label='Export')
 
         if not filename:
@@ -131,16 +136,34 @@ class ExportToCSV(object):
             return
         if os.path.isdir(filename):
             print self.__tr(
-                """\nWarning: """
-                """export failed because destination container is a directory.""",
+                """\nWarning: export failed """
+                """because destination container is a directory.""",
                 'A file creation error')
             return
 
         # Everything seems OK so export the dataset
         try:
-            numpy.savetxt(filename, leaf.read(), fmt='%s', delimiter=',')
+            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            out_handler = open(filename, 'w')
+            chunk_size = 10000
+            stop = leaf.nrows
+            div = numpy.divide(stop, chunk_size)
+            for i in numpy.arange(0, div+1):
+                QtGui.qApp.processEvents()
+                cstart = chunk_size*i
+                if cstart > stop:
+                    cstart = stop
+                cstop = cstart + chunk_size
+                if cstop > stop:
+                    cstop = stop
+                numpy.savetxt(out_handler, 
+                    leaf.read(start=cstart, stop=cstop), 
+                    fmt='%s', delimiter=',')
         except:
             vitables.utils.formatExceptionInfo()
+        finally:
+            out_handler.close()
+            QtGui.qApp.restoreOverrideCursor()
 
 
 
