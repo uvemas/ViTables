@@ -52,6 +52,7 @@ class ExportToCSV(object):
         if self.vtapp is None:
             return
 
+        # Add an entry under the Dataset menu
         self.addEntry()
 
         # Connect signals to slots
@@ -118,28 +119,31 @@ class ExportToCSV(object):
         leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current).node
 
         # Get a filename for the file where dataset will be stored
-        dfilter = self.__tr("""All Files (*)""", 
-            'Filter for the Export to CSV dialog')
-        filename = self.vtapp.getFilepath(\
+        filepath, working_dir = vitables.utils.getFilepath(\
             self.__tr('Exporting dataset to CSV format', 
-            'Caption of the Export to CSV dialog'),
+                'Caption of the Export to CSV dialog'),
             QtGui.QFileDialog.AcceptSave, 
             QtGui.QFileDialog.AnyFile, 
-            dfilter=dfilter, 
+            dfilter=self.__tr("""All Files (*)""", 
+                'Filter for the Export to CSV dialog'), 
             label='Export')
 
-        if not filename:
+        if not filepath:
             # The user has canceled the dialog
             return
 
+        # Update the history of the file selector widget
+        self.vtapp.updateFSHistory(working_dir)
+
         # Check the returned path
-        if os.path.exists(filename):
+        if os.path.exists(filepath):
             print self.__tr(
                 """\nWarning: """
                 """export failed because destination file already exists.""",
                 'A file creation error')
             return
-        if os.path.isdir(filename):
+
+        if os.path.isdir(filepath):
             print self.__tr(
                 """\nWarning: export failed """
                 """because destination container is a directory.""",
@@ -149,7 +153,7 @@ class ExportToCSV(object):
         # Everything seems OK so export the dataset
         try:
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
-            out_handler = open(filename, 'w')
+            out_handler = open(filepath, 'w')
             chunk_size = 10000
             stop = leaf.nrows
             div = numpy.divide(stop, chunk_size)

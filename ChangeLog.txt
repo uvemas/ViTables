@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** November 24, 2009 **
+Import capabilities added to the CSV plugin.
+
 vtapp.py module changed to make easier interaction with plugins.
 
 ** November 23, 2009 **
