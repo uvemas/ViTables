@@ -30,7 +30,6 @@ import sys
 import os
 import traceback
 import sets
-import time
 import locale
 
 import numpy
@@ -86,6 +85,50 @@ def getVTApp():
 
     return vtapp
 
+
+def getFilepath(caption, accept_mode, file_mode, filepath='', 
+    dfilter='', label=''):
+    """Raise a file selector dialog and get a filepath.
+
+    :Parameters:
+
+    - `caption`: the dialog caption
+    - `accept_mode`: the dialog accept mode
+    - `file_mode`: the dialog file mode
+    - `filepath`: the filepath initially selected
+    - `dfilter`: the display filter for the dialog
+    - `label`: the label of the Accept button
+    """
+
+    vtapp = getVTApp()
+    working_dir = None
+    file_selector = QFileDialog(vtapp, caption, '', dfilter)
+    # Misc. setup
+    file_selector.setDirectory(vtapp.last_working_directory)
+    file_selector.setAcceptMode(accept_mode)
+    if label != '':
+        file_selector.setLabelText(QFileDialog.Accept, label)
+    if accept_mode == QFileDialog.AcceptSave:
+        file_selector.setConfirmOverwrite(False)
+    file_selector.setFileMode(file_mode)
+    file_selector.setHistory(vtapp.file_selector_history)
+    if filepath:
+        file_selector.selectFile(filepath)
+
+    # Execute the dialog
+    try:
+        if file_selector.exec_():  # OK clicked
+            filepath = file_selector.selectedFiles()[0]
+            # Make sure filepath contains no backslashes
+            filepath = QDir.fromNativeSeparators(filepath)
+            # Update the working directory
+            working_dir = file_selector.directory().canonicalPath()
+        else:  # Cancel clicked
+            filepath = QString('')
+    finally:
+        del file_selector
+    return unicode(filepath), working_dir
+
 #
 # Icons related functions
 #
@@ -110,11 +153,13 @@ def createIcons(large_icons, small_icons, icons_dict):
     for name in all_icons:
         icon = QIcon()
         if name in large_icons:
-            pixmap = QPixmap(os.path.join(ICONDIR,'big_icons','%s.png') % name)
+            pixmap = \
+                QPixmap(os.path.join(ICONDIR, 'big_icons','%s.png') % name)
             pixmap.scaled(QSize(22, 22), Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
         if name in small_icons:
-            pixmap = QPixmap(os.path.join(ICONDIR,'small_icons','%s.png') % name)
+            pixmap = \
+                QPixmap(os.path.join(ICONDIR,'small_icons', '%s.png') % name)
             icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
         icons_dict[name] = icon
 
@@ -137,7 +182,8 @@ def getIcons():
             'help-contents', 
             'view-filter', 'delete_filters', 
             # Icons for tree pane items
-            'file_ro', 'file_rw', 'dbfilters', 'folder', 'document-open-folder'])
+            'file_ro', 'file_rw', 'dbfilters', 'folder', 
+            'document-open-folder'])
 
         small_icons = sets.Set([
             # Icons for menu items
@@ -170,7 +216,8 @@ def getHBIcons():
         large_icons = sets.Set([
         # Icons for toolbar
         'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
-        'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out', 'edit-clear-history'])
+        'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out', 
+        'edit-clear-history'])
 
         small_icons = sets.Set([
         # Icons for menu items

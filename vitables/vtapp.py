@@ -31,7 +31,6 @@ import sets
 import sys
 
 import tables
-import numpy
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -245,36 +244,43 @@ class VTApp(QMainWindow):
         """Provide actions to the menubar and the toolbars.
         """
 
+        # Setting action names makes it easier to acces this actions
+        # from plugins
         actions = {}
         actions['fileNew'] = vitables.utils.createAction(self, 
             self.__tr('&New', 'File -> New'), QKeySequence.New, 
             self.slotFileNew, self.icons_dictionary['document-new'], 
             self.__tr('Create a new file', 
                 'Status bar text for the File -> New action'))
+        actions['fileNew'].setObjectName('fileNew')
 
         actions['fileOpen'] = vitables.utils.createAction(self, 
             self.__tr('&Open...', 'File -> Open'), QKeySequence.Open, 
             self.slotFileOpen, self.icons_dictionary['document-open'], 
             self.__tr('Open an existing file',
                 'Status bar text for the File -> Open action'))
+        actions['fileOpen'].setObjectName('fileOpen')
 
         actions['fileOpenRO'] = vitables.utils.createAction(self, 
             self.__tr('Read-only open...', 'File -> Open'), None, 
             self.slotFileOpenRO, self.icons_dictionary['document-open'], 
             self.__tr('Open an existing file in read-only mode',
                 'Status bar text for the File -> Open action'))
+        actions['fileOpenRO'].setObjectName('fileOpenRO')
 
         actions['fileClose'] = vitables.utils.createAction(self, 
             self.__tr('&Close', 'File -> Close'), QKeySequence.Close, 
             self.slotFileClose, self.icons_dictionary['document-close'], 
             self.__tr('Close the selected file',
                 'Status bar text for the File -> Close action'))
+        actions['fileClose'].setObjectName('fileClose')
 
         actions['fileCloseAll'] = vitables.utils.createAction(self, 
             self.__tr('Close &All', 'File -> Close All'), None, 
             self.slotFileCloseAll, None, 
             self.__tr('Close all files',
                 'Status bar text for the File -> Close All action'))
+        actions['fileCloseAll'].setObjectName('fileCloseAll')
 
         actions['fileSaveAs'] = vitables.utils.createAction(self, 
             self.__tr('&Save as...', 'File -> Save As'), 
@@ -282,12 +288,14 @@ class VTApp(QMainWindow):
             self.slotFileSaveAs, self.icons_dictionary['document-save-as'], 
             self.__tr('Save a renamed copy of the selected file',
                 'Status bar text for the File -> Save As action'))
+        actions['fileSaveAs'].setObjectName('fileSaveAs')
 
         actions['fileExit'] = vitables.utils.createAction(self, 
             self.__tr('E&xit', 'File -> Exit'), QKeySequence('CTRL+Q'), 
             self.slotFileExit, self.icons_dictionary['application-exit'], 
             self.__tr('Quit ViTables',
                 'Status bar text for the File -> Exit action'))
+        actions['fileExit'].setObjectName('fileExit')
 
         actions['nodeOpen'] = vitables.utils.createAction(self, 
             self.__tr('&Open view', 'Node -> Open View'), 
@@ -295,6 +303,7 @@ class VTApp(QMainWindow):
             self.slotNodeOpen, None, 
             self.__tr('Display the contents of the selected node', 
                 'Status bar text for the Node -> Open View action'))
+        actions['nodeOpen'].setObjectName('nodeOpen')
 
         actions['nodeClose'] = vitables.utils.createAction(self, 
             self.__tr('C&lose view', 'Node -> Close View'), 
@@ -302,6 +311,7 @@ class VTApp(QMainWindow):
             self.slotNodeClose, None, 
             self.__tr('Close the view of the selected node', 
                 'Status bar text for the Node -> Close View action'))
+        actions['nodeClose'].setObjectName('nodeClose')
 
         actions['nodeProperties'] = vitables.utils.createAction(self, 
             self.__tr('Prop&erties...', 'Node -> Properties'), 
@@ -309,6 +319,7 @@ class VTApp(QMainWindow):
             self.slotNodeProperties, self.icons_dictionary['help-about'], 
             self.__tr('Show the properties dialog for the selected node', 
                 'Status bar text for the Node -> Properties action'))
+        actions['nodeProperties'].setObjectName('nodeProperties')
 
         actions['nodeNew'] = vitables.utils.createAction(self, 
             self.__tr('&New group...', 'Node -> New group'), 
@@ -316,6 +327,7 @@ class VTApp(QMainWindow):
             self.slotNodeNewGroup, self.icons_dictionary['folder-new'], 
             self.__tr('Create a new group under the selected node', 
                 'Status bar text for the Node -> New group action'))
+        actions['nodeNew'].setObjectName('nodeNew')
 
         actions['nodeRename'] = vitables.utils.createAction(self, 
             self.__tr('&Rename...', 'Node -> Rename'), 
@@ -323,36 +335,42 @@ class VTApp(QMainWindow):
             self.slotNodeRename, self.icons_dictionary['edit-rename'], 
             self.__tr('Rename the selected node', 
                 'Status bar text for the Node -> Rename action'))
+        actions['nodeRename'].setObjectName('nodeRename')
 
         actions['nodeCut'] = vitables.utils.createAction(self, 
             self.__tr('Cu&t', 'Node -> Cut'), QKeySequence('CTRL+X'), 
             self.slotNodeCut, self.icons_dictionary['edit-cut'], 
             self.__tr('Cut the selected node', 
                 'Status bar text for the Node -> Cut action'))
+        actions['nodeCut'].setObjectName('nodeCut')
 
         actions['nodeCopy'] = vitables.utils.createAction(self, 
             self.__tr('&Copy', 'Node -> Copy'), QKeySequence.Copy, 
             self.slotNodeCopy, self.icons_dictionary['edit-copy'], 
             self.__tr('Copy the selected node', 
                 'Status bar text for the Node -> Copy action'))
+        actions['nodeCopy'].setObjectName('nodeCopy')
 
         actions['nodePaste'] = vitables.utils.createAction(self, 
             self.__tr('&Paste', 'Node -> Paste'), QKeySequence.Paste, 
             self.slotNodePaste, self.icons_dictionary['edit-paste'], 
             self.__tr('Paste the last copied/cut node', 
                 'Status bar text for the Node -> Copy action'))
+        actions['nodePaste'].setObjectName('nodePaste')
 
         actions['nodeDelete'] = vitables.utils.createAction(self, 
             self.__tr('&Delete', 'Node -> Delete'), QKeySequence.Delete, 
             self.slotNodeDelete, self.icons_dictionary['edit-delete'], 
             self.__tr('Delete the selected node', 
                 'Status bar text for the Node -> Copy action'))
+        actions['nodeDelete'].setObjectName('nodeDelete')
 
         actions['queryNew'] = vitables.utils.createAction(self, 
             self.__tr('&Query...', 'Query -> New...'), None, 
             self.queries_mgr.newQuery, self.icons_dictionary['view-filter'], 
             self.__tr('Create a new filter for the selected table', 
                 'Status bar text for the Query -> New... action'))
+        actions['queryNew'].setObjectName('queryNew')
 
         actions['queryDeleteAll'] = vitables.utils.createAction(self, 
             self.__tr('Delete &All', 'Query -> Delete All'), None, 
@@ -360,6 +378,7 @@ class VTApp(QMainWindow):
             self.icons_dictionary['delete_filters'], 
             self.__tr('Remove all filters', 
                 'Status bar text for the Query -> Delete All action'))
+        actions['queryDeleteAll'].setObjectName('queryDeleteAll')
 
         actions['pluginsConfigure'] = vitables.utils.createAction(self, 
             self.__tr('&Configure...', 'Plugins -> Configure'), None, 
@@ -367,6 +386,7 @@ class VTApp(QMainWindow):
             self.icons_dictionary['configure'], 
             self.__tr('Configure plugins', 
                 'Status bar text for the Plugins -> Configure action'))
+        actions['pluginsConfigure'].setObjectName('pluginsConfigure')
 
         actions['settingsPreferences'] = vitables.utils.createAction(self, 
             self.__tr('&Preferences...', 'Settings -> Preferences'), None, 
@@ -374,42 +394,49 @@ class VTApp(QMainWindow):
             self.icons_dictionary['configure'], 
             self.__tr('Configure ViTables', 
                 'Status bar text for the Settings -> Preferences action'))
+        actions['settingsPreferences'].setObjectName('settingsPreferences')
 
         actions['windowCascade'] = vitables.utils.createAction(self, 
             self.__tr('&Cascade', 'Windows -> Cascade'), None, 
             self.workspace.cascadeSubWindows, None, 
             self.__tr('Arranges open windows in a cascade pattern', 
                 'Status bar text for the Windows -> Cascade action'))
+        actions['windowCascade'].setObjectName('windowCascade')
 
         actions['windowTile'] = vitables.utils.createAction(self, 
             self.__tr('&Tile', 'Windows -> Tile'), None, 
             self.workspace.tileSubWindows, None, 
             self.__tr('Arranges open windows in a tile pattern', 
                 'Status bar text for the Windows -> Tile action'))
+        actions['windowTile'].setObjectName('windowTile')
 
         actions['windowRestoreAll'] = vitables.utils.createAction(self, 
             self.__tr('&Restore All', 'Windows -> Restore All'), None, 
             self.slotWindowsRestoreAll, None, 
             self.__tr('Restore all minimized windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
+        actions['windowRestoreAll'].setObjectName('windowRestoreAll')
 
         actions['windowMinimizeAll'] = vitables.utils.createAction(self, 
             self.__tr('&Minimize All', 'Windows -> Minimize All'), None, 
             self.slotWindowsMinimizeAll, None, 
             self.__tr('Minimize all windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
+        actions['windowMinimizeAll'].setObjectName('windowMinimizeAll')
 
         actions['windowClose'] = vitables.utils.createAction(self, 
             self.__tr('C&lose', 'Windows -> Close'), None, 
             self.slotWindowsClose, None, 
             self.__tr('Close the active view', 
                 'Status bar text for the Windows -> Close action'))
+        actions['windowClose'].setObjectName('windowClose')
 
         actions['windowCloseAll'] = vitables.utils.createAction(self, 
             self.__tr('Close &All', 'Windows -> Close All'), None, 
             self.slotWindowsCloseAll, None, 
             self.__tr('Close all views', 
                 'Status bar text for the Windows -> Close All action'))
+        actions['windowCloseAll'].setObjectName('windowCloseAll')
 
         actions['windowsActionGroup'] = QActionGroup(self)
 
@@ -419,6 +446,7 @@ class VTApp(QMainWindow):
             None, 
             self.__tr('Change the workspace view mode', 
                 'Status bar text for the MDI -> Tabbed action'))
+        actions['mdiTabbed'].setObjectName('mdiTabbed')
 
         actions['helpUsersGuide'] = vitables.utils.createAction(self, 
             self.__tr("&User's Guide", 'Help -> Users Guide'), 
@@ -427,6 +455,7 @@ class VTApp(QMainWindow):
             self.icons_dictionary['help-contents'], 
             self.__tr("Open the ViTables User's Guide",
                     'Status bar text for the Help -> Users Guide action'))
+        actions['helpUsersGuide'].setObjectName('helpUsersGuide')
 
         actions['helpAbout'] = vitables.utils.createAction(self, 
             self.__tr('&About ViTables', 'Help -> About'), None, 
@@ -434,18 +463,21 @@ class VTApp(QMainWindow):
             self.icons_dictionary['vitables_wm'], 
             self.__tr('Display information about ViTables',
                     'Status bar text for the Help -> About action'))
+        actions['helpAbout'].setObjectName('helpAbout')
 
         actions['helpAboutQt'] = vitables.utils.createAction(self, 
             self.__tr('About &Qt', 'Help -> About Qt'), None, 
             self.slotHelpAboutQt, None, 
             self.__tr('Display information about the Qt library',
                     'Status bar text for the Help -> About Qt action'))
+        actions['helpAboutQt'].setObjectName('helpAboutQt')
 
         actions['helpVersions'] = vitables.utils.createAction(self, 
             self.__tr('Show &Versions', 'Help -> Show Versions'), None, 
             self.slotHelpVersions, None, 
             self.__tr('Show the versions of the libraries used by ViTables',
                     'Status bar text for the Help -> Show Versions action'))
+        actions['helpVersions'].setObjectName('helpVersions')
 
         return actions
 
@@ -515,7 +547,7 @@ class VTApp(QMainWindow):
         """
 
         # Create the File menu and add actions/submenus/separators to it
-        file_menu = self.menuBar().addMenu(self.__tr("&File", 
+        self.file_menu = self.menuBar().addMenu(self.__tr("&File", 
             'The File menu entry'))
         self.open_recent_submenu = QMenu(self.__tr('Open R&ecent Files',
             'File -> Open Recent Files'))
@@ -525,7 +557,8 @@ class VTApp(QMainWindow):
         file_actions = ['fileNew', 'fileOpen', 'fileOpenRO', 
             self.open_recent_submenu, None, 'fileClose', 'fileCloseAll', None, 
             'fileSaveAs', None, 'fileExit']
-        vitables.utils.addActions(file_menu, file_actions, self.gui_actions)
+        vitables.utils.addActions(self.file_menu, file_actions, 
+            self.gui_actions)
 
         file_open_button = self.file_toolbar.widgetForAction(
             self.gui_actions['fileOpen'])
@@ -1260,6 +1293,20 @@ class VTApp(QMainWindow):
             return QMainWindow.eventFilter(self, widget, event)
 
 
+    def updateFSHistory(self, working_dir):
+        """Update the navigation history of the file selector widget.
+
+        :Parameter `working_dir`: the last visited directory
+        """
+
+        if self.is_first_opening:
+            self.setupFirstOpening()
+
+        self.last_working_directory = working_dir
+        if not self.file_selector_history.contains(working_dir):
+            self.file_selector_history.append(working_dir)
+
+
     def setupFirstOpening(self):
         """Setup the behavior of the very first called Open File dialog.
 
@@ -1278,59 +1325,6 @@ class VTApp(QMainWindow):
         self.is_first_opening = False
         if self.startup_working_directory != u'last':
             self.last_working_directory = os.getcwdu()
-
-
-    def getFilepath(self, caption, accept_mode, file_mode, filepath='', 
-        dfilter='', label=''):
-        """Raise a file selector dialog and get a filepath.
-
-        :Parameters:
-
-        - `caption`: the dialog caption
-        - `accept_mode`: the dialog accept mode
-        - `file_mode`: the dialog file mode
-        - `filepath`: the filepath initially selected
-        - `dfilter`: the display filter for the dialog
-        - `label`: the label of the Accept button
-        """
-
-        if self.is_first_opening:
-            self.setupFirstOpening()
-
-        if dfilter == '':
-            dfilter = self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
-                """All Files (*)""", 'Filter for the Open New dialog')
-        file_selector = QFileDialog(self, caption, '', dfilter)
-        # Misc. setup
-        file_selector.setDirectory(self.last_working_directory)
-        file_selector.setAcceptMode(accept_mode)
-        if label != '':
-            file_selector.setLabelText(QFileDialog.Accept, label)
-        if accept_mode == QFileDialog.AcceptSave:
-            file_selector.setConfirmOverwrite(False)
-        file_selector.setFileMode(file_mode)
-        file_selector.setHistory(self.file_selector_history)
-        if filepath:
-            file_selector.selectFile(filepath)
-
-        # Execute the dialog
-        try:
-            if file_selector.exec_():  # OK clicked
-                filepath = file_selector.selectedFiles()[0]
-                # Make sure filepath contains no backslashes
-                filepath = QDir.fromNativeSeparators(filepath)
-                # Update the working directory
-                working_dir = file_selector.directory().canonicalPath()
-                self.last_working_directory = unicode(working_dir)
-                # Update the history
-                if not file_selector.history().contains(working_dir):
-                    self.file_selector_history.append(\
-                                                self.last_working_directory)
-            else:  # Cancel clicked
-                filepath = QString('')
-        finally:
-            del file_selector
-        return unicode(filepath)
 
 
     def checkFileExtension(self, filepath):
@@ -1355,14 +1349,21 @@ class VTApp(QMainWindow):
     def slotFileNew(self):
         """Create a new file."""
 
-        filepath = self.getFilepath(
+        filepath, working_dir = vitables.utils.getFilepath(
             self.__tr('Creating a new file...', 
                       'Caption of the File New... dialog'), 
-            QFileDialog.AcceptOpen, QFileDialog.AnyFile)
+            QFileDialog.AcceptOpen, 
+            QFileDialog.AnyFile, 
+            dfilter=self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
+                """All Files (*)""", 'Filter for the Open New dialog'), 
+            label=self.__tr('Create', 'Accept button text for QFileDialog'))
 
         if not filepath:
             # The user has canceled the dialog
             return
+
+        # Update the history of the file selector widget
+        self.updateFSHistory(working_dir)
 
         # Check the file extension
         filepath = self.checkFileExtension(filepath)
@@ -1399,13 +1400,20 @@ class VTApp(QMainWindow):
             self.dbs_tree_model.nodeFromIndex(current_index).filepath
 
         # The trier filepath
-        trier_filepath = self.getFilepath(
+        trier_filepath, working_dir = vitables.utils.getFilepath(
             self.__tr('Copying a file...', 
                       'Caption of the File Save as... dialog'), 
-            QFileDialog.AcceptSave, QFileDialog.AnyFile, 
-            initial_filepath)
+            QFileDialog.AcceptSave, 
+            QFileDialog.AnyFile, 
+            initial_filepath, 
+            dfilter = self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
+                """All Files (*)""", 'Filter for the Open New dialog'))
+
         if not trier_filepath:  # The user has canceled the dialog
             return
+
+        # Update the history of the file selector widget
+        self.updateFSHistory(working_dir)
 
         trier_filepath = self.checkFileExtension(trier_filepath)
 
@@ -1542,13 +1550,22 @@ class VTApp(QMainWindow):
         """
 
         if not filepath:
-            filepath = self.getFilepath(self.__tr('Select a file for opening', 
-                                        'Caption of the File Open... dialog'), 
-                                        QFileDialog.AcceptOpen, 
-                                        QFileDialog.ExistingFile)
+            filepath, working_dir = vitables.utils.getFilepath(\
+                self.__tr('Select a file for opening', 
+                'Caption of the File Open... dialog'), 
+                QFileDialog.AcceptOpen, 
+                QFileDialog.ExistingFile, 
+                dfilter = self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
+                    """All Files (*)""", 'Filter for the Open New dialog'))
+
+
             if not filepath:
                 # The user has canceled the dialog
                 return
+
+            # Update the history of the file selector widget
+            self.updateFSHistory(working_dir)
+
         else:
             # Make sure the path contains no backslashes
             filepath = unicode(QDir.fromNativeSeparators(filepath))
