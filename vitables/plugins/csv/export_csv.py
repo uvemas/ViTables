@@ -118,15 +118,18 @@ class ExportToCSV(object):
         current = self.vtapp.dbs_tree_view.currentIndex()
         leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current).node
 
-        # Get a filename for the file where dataset will be stored
+        # Get the filepath of the file where dataset will be stored
+        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave, 
+            'file_mode': QtGui.QFileDialog.AnyFile, 
+            'history': self.vtapp.file_selector_history, 
+            'label': self.__tr('Export', 'Accept button text for QFileDialog')}
         filepath, working_dir = vitables.utils.getFilepath(\
+            self.vtapp, 
             self.__tr('Exporting dataset to CSV format', 
                 'Caption of the Export to CSV dialog'),
-            QtGui.QFileDialog.AcceptSave, 
-            QtGui.QFileDialog.AnyFile, 
             dfilter=self.__tr("""All Files (*)""", 
                 'Filter for the Export to CSV dialog'), 
-            label='Export')
+            settings=fs_args)
 
         if not filepath:
             # The user has canceled the dialog

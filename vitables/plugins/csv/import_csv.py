@@ -142,14 +142,17 @@ class ImportCSV(object):
         """
 
         # Get CSV filepath
+        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen, 
+            'file_mode': QtGui.QFileDialog.ExistingFile, 
+            'history': self.vtapp.file_selector_history, 
+            'label': self.__tr('Import', 'Accept button text for QFileDialog')}
         filepath, working_dir = vitables.utils.getFilepath(\
+            self.vtapp, 
             self.__tr('Importing CSV file into %s',
                 'Caption of the Import from CSV dialog') % leaf_kind, 
-            QtGui.QFileDialog.AcceptOpen, 
-            QtGui.QFileDialog.ExistingFile, 
             dfilter=self.__tr("""CSV Files (*.csv);;"""
                 """All Files (*)""", 'Filter for the Import from CSV dialog'), 
-            label=self.__tr('Import', 'Accept button text for QFileDialog'))
+            settings=fs_args)
 
         if not filepath:
             # The user has canceled the dialog

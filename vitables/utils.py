@@ -34,8 +34,7 @@ import locale
 
 import numpy
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.vtWidgets.renameDlg as renameDlg
 from vitables.vtSite import ICONDIR, DOCDIR
@@ -78,7 +77,7 @@ def getVTApp():
     """
 
     vtapp = None
-    for widget in qApp.topLevelWidgets():
+    for widget in QtGui.qApp.topLevelWidgets():
         if widget.objectName() == u'VTApp':
             vtapp = widget
             break
@@ -86,32 +85,31 @@ def getVTApp():
     return vtapp
 
 
-def getFilepath(caption, accept_mode, file_mode, filepath='', 
-    dfilter='', label=''):
+def getFilepath(parent, caption, dfilter, filepath='', settings=None):
     """Raise a file selector dialog and get a filepath.
 
     :Parameters:
 
+    - `parent`: the parent widget
     - `caption`: the dialog caption
-    - `accept_mode`: the dialog accept mode
-    - `file_mode`: the dialog file mode
+    - `dfilter`: filters used to display files and folders
     - `filepath`: the filepath initially selected
-    - `dfilter`: the display filter for the dialog
-    - `label`: the label of the Accept button
+    - `settings`: dictionary with keys `label` (Accept button text), 
+        `history` (file selector history) , `accept_mode` and `file_mode`
     """
 
-    vtapp = getVTApp()
     working_dir = None
-    file_selector = QFileDialog(vtapp, caption, '', dfilter)
+    file_selector = QtGui.QFileDialog(parent, caption, '', dfilter)
     # Misc. setup
-    file_selector.setDirectory(vtapp.last_working_directory)
-    file_selector.setAcceptMode(accept_mode)
-    if label != '':
-        file_selector.setLabelText(QFileDialog.Accept, label)
-    if accept_mode == QFileDialog.AcceptSave:
+    file_selector.setDirectory(settings['history'][-1])
+    if settings['label'] != '':
+        file_selector.setLabelText(QtGui.QFileDialog.Accept, 
+            settings['label'])
+    file_selector.setAcceptMode(settings['accept_mode'])
+    if settings['accept_mode'] == QtGui.QFileDialog.AcceptSave:
         file_selector.setConfirmOverwrite(False)
-    file_selector.setFileMode(file_mode)
-    file_selector.setHistory(vtapp.file_selector_history)
+    file_selector.setFileMode(settings['file_mode'])
+    file_selector.setHistory(settings['history'])
     if filepath:
         file_selector.selectFile(filepath)
 
@@ -120,14 +118,14 @@ def getFilepath(caption, accept_mode, file_mode, filepath='',
         if file_selector.exec_():  # OK clicked
             filepath = file_selector.selectedFiles()[0]
             # Make sure filepath contains no backslashes
-            filepath = QDir.fromNativeSeparators(filepath)
+            filepath = QtCore.QDir.fromNativeSeparators(filepath)
             # Update the working directory
             working_dir = file_selector.directory().canonicalPath()
         else:  # Cancel clicked
-            filepath = QString('')
+            filepath = working_dir = QtCore.QString('')
     finally:
         del file_selector
-    return unicode(filepath), working_dir
+    return unicode(filepath), unicode(working_dir)
 
 #
 # Icons related functions
@@ -151,23 +149,24 @@ def createIcons(large_icons, small_icons, icons_dict):
     all_icons = large_icons.union(small_icons)
 
     for name in all_icons:
-        icon = QIcon()
+        icon = QtGui.QIcon()
         if name in large_icons:
-            pixmap = \
-                QPixmap(os.path.join(ICONDIR, 'big_icons','%s.png') % name)
-            pixmap.scaled(QSize(22, 22), Qt.KeepAspectRatio)
-            icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
+            pixmap = QtGui.QPixmap(\
+                os.path.join(ICONDIR, 'big_icons','%s.png') % name)
+            pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
+            icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
-            pixmap = \
-                QPixmap(os.path.join(ICONDIR,'small_icons', '%s.png') % name)
-            icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
+            pixmap = QtGui.QPixmap(\
+                os.path.join(ICONDIR,'small_icons', '%s.png') % name)
+            icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 
     # Add an empty iconSet for the Default button of some dialogs
-    icons_dict[''] = QIcon()
+    icons_dict[''] = QtGui.QIcon()
 
     # Application icon
-    icons_dict['vitables_wm'] = QIcon(os.path.join(ICONDIR,'vitables_wm.png'))
+    icons_dict['vitables_wm'] = QtGui.QIcon(\
+        os.path.join(ICONDIR,'vitables_wm.png'))
 
 
 def getIcons():
@@ -248,13 +247,13 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
     - `parent`: the action parent
     - `text`: the action text
     - `shortcut`: the action shortcut
-    -`slot`: the slot where the triggered SIGNAL will be connected
+    - `slot`: the slot where the triggered SIGNAL will be connected
     - `icon`: the action icon
     - `tip`: the action status tip
     - `checkable`: True if the action is checkable
     """
 
-    action = QAction(parent)
+    action = QtGui.QAction(parent)
     action.setText(text)
     if icon is not None:
         action.setIcon(icon)
@@ -266,7 +265,7 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
     if checkable:
         action.setCheckable(True)
     if slot is not None:
-        parent.connect(action, SIGNAL("triggered()"), slot)
+        parent.connect(action, QtCore.SIGNAL("triggered()"), slot)
     return action
 
 
@@ -286,7 +285,7 @@ def addActions(target, actions, actions_dict):
     for action in actions:
         if action is None:
             target.addSeparator()
-        elif isinstance(action, QMenu):
+        elif isinstance(action, QtGui.QMenu):
             target.addMenu(action)
         else:
             target.addAction(actions_dict[action])
@@ -366,7 +365,7 @@ def getHomeDir():
         home = forwardPath(home)
     else:
         home = os.getenv('HOME')
-    return QString(home)
+    return QtCore.QString(home)
 
 
 def forwardPath(path):
@@ -431,21 +430,21 @@ def customLineEdit(parent):
     :Parameter parent: the parent widge of the QLineEdit
     """
 
-    ledit = QLineEdit(parent)
+    ledit = QtGui.QLineEdit(parent)
     ledit.setFrame(False)
     ledit.setReadOnly(True)
     palette = ledit.palette()
-    bg_color = palette.color(QPalette.Window)
-    palette.setColor(QPalette.Base, bg_color)
+    bg_color = palette.color(QtGui.QPalette.Window)
+    palette.setColor(QtGui.QPalette.Base, bg_color)
     return ledit
 
 
 def getLicense():
     """The ViTables license in Rich Text format."""
 
-    input_file = QFile(os.path.join(DOCDIR, 'LICENSE.html'))
-    input_file.open(QIODevice.ReadOnly)
-    stream = QTextStream(input_file)
+    input_file = QtCore.QFile(os.path.join(DOCDIR, 'LICENSE.html'))
+    input_file.open(QtCore.QIODevice.ReadOnly)
+    stream = QtCore.QTextStream(input_file)
     license_text = stream.readAll()
     input_file.close()
 

@@ -181,8 +181,13 @@ class VTApp(QMainWindow):
         self.number_of_recent_files = 10
         while self.recent_files.count() > self.number_of_recent_files:
             self.recent_files.takeLast()
-        # The File Browser History
+
+        # The File Selector History
         self.file_selector_history = QStringList()
+        if self.startup_working_directory != u'last':
+            self.last_working_directory = os.getcwdu()
+        self.file_selector_history.append(self.last_working_directory)
+
         # List of HelpBrowser instances in memory
         self.doc_browsers = []
 
@@ -1299,32 +1304,12 @@ class VTApp(QMainWindow):
         :Parameter `working_dir`: the last visited directory
         """
 
-        if self.is_first_opening:
-            self.setupFirstOpening()
-
         self.last_working_directory = working_dir
         if not self.file_selector_history.contains(working_dir):
             self.file_selector_history.append(working_dir)
-
-
-    def setupFirstOpening(self):
-        """Setup the behavior of the very first called Open File dialog.
-
-        This method is called just once. When the user opens a file *for
-        the very first time* if the `startup_working_directory` flag is
-        set to `last` then the current directory of the file selector
-        dialog (CDFSD) will be the last directory accessed in the
-        previous ViTables session. If not then ViTables follows the
-        standard behavior: if it has been started from a console session
-        then the CDFSD will be the current working directory of the
-        session, if it has been started in any other way (a.k.a menu,
-        desktop icon or run-command applet) the CDFSD will be the users
-        home.
-        """
-
-        self.is_first_opening = False
-        if self.startup_working_directory != u'last':
-            self.last_working_directory = os.getcwdu()
+        else:
+            self.file_selector_history.removeAll(working_dir)
+            self.file_selector_history.append(working_dir)
 
 
     def checkFileExtension(self, filepath):
@@ -1349,14 +1334,18 @@ class VTApp(QMainWindow):
     def slotFileNew(self):
         """Create a new file."""
 
+        # Launch the file selector
+        fs_args = {'accept_mode': QFileDialog.AcceptOpen, 
+            'file_mode': QFileDialog.AnyFile, 
+            'history': self.file_selector_history, 
+            'label': self.__tr('Create', 'Accept button text for QFileDialog')}
         filepath, working_dir = vitables.utils.getFilepath(
+            self, 
             self.__tr('Creating a new file...', 
-                      'Caption of the File New... dialog'), 
-            QFileDialog.AcceptOpen, 
-            QFileDialog.AnyFile, 
+                'Caption of the File New... dialog'), 
             dfilter=self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
                 """All Files (*)""", 'Filter for the Open New dialog'), 
-            label=self.__tr('Create', 'Accept button text for QFileDialog'))
+            settings=fs_args)
 
         if not filepath:
             # The user has canceled the dialog
@@ -1399,15 +1388,19 @@ class VTApp(QMainWindow):
         initial_filepath = \
             self.dbs_tree_model.nodeFromIndex(current_index).filepath
 
-        # The trier filepath
+        # Launch the file selector
+        fs_args = {'accept_mode': QFileDialog.AcceptSave, 
+            'file_mode': QFileDialog.AnyFile, 
+            'history': self.file_selector_history, 
+            'label': self.__tr('Create', 'Accept button text for QFileDialog')}
         trier_filepath, working_dir = vitables.utils.getFilepath(
+            self, 
             self.__tr('Copying a file...', 
                       'Caption of the File Save as... dialog'), 
-            QFileDialog.AcceptSave, 
-            QFileDialog.AnyFile, 
-            initial_filepath, 
             dfilter = self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
-                """All Files (*)""", 'Filter for the Open New dialog'))
+                """All Files (*)""", 'Filter for the Save As... dialog'), 
+            filepath=initial_filepath, 
+            settings=fs_args)
 
         if not trier_filepath:  # The user has canceled the dialog
             return
@@ -1550,14 +1543,18 @@ class VTApp(QMainWindow):
         """
 
         if not filepath:
+            # Launch the file selector
+            fs_args = {'accept_mode': QFileDialog.AcceptOpen, 
+                'file_mode': QFileDialog.ExistingFile, 
+                'history': self.file_selector_history, 
+                'label': self.__tr('Open', 'Accept text for QFileDialog')}
             filepath, working_dir = vitables.utils.getFilepath(\
+                self, 
                 self.__tr('Select a file for opening', 
                 'Caption of the File Open... dialog'), 
-                QFileDialog.AcceptOpen, 
-                QFileDialog.ExistingFile, 
                 dfilter = self.__tr("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
-                    """All Files (*)""", 'Filter for the Open New dialog'))
-
+                    """All Files (*)""", 'Filter for the Open New dialog'), 
+                settings=fs_args)
 
             if not filepath:
                 # The user has canceled the dialog
@@ -1569,7 +1566,6 @@ class VTApp(QMainWindow):
         else:
             # Make sure the path contains no backslashes
             filepath = unicode(QDir.fromNativeSeparators(filepath))
-
 
         # Open the database and select it in the tree view
         self.dbs_tree_model.openDBDoc(filepath, mode, position)
