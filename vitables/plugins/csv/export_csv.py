@@ -107,18 +107,11 @@ class ExportToCSV(object):
         self.export_action.setEnabled(enabled)
 
 
-    def export(self):
-        """Export a given dataset to CSV format.
-
-        This method is a slot connected to the `export` QAction. See the
-        addEntry method for details.
+    def destFilepath(self):
+        """Get the filepath of the file where dataset will be stored.
         """
 
-        # The PyTables node tied to the current leaf of the databases tree
-        current = self.vtapp.dbs_tree_view.currentIndex()
-        leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current).node
-
-        # Get the filepath of the file where dataset will be stored
+        # Get CSV filepath
         fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave, 
             'file_mode': QtGui.QFileDialog.AnyFile, 
             'history': self.vtapp.file_selector_history, 
@@ -153,7 +146,25 @@ class ExportToCSV(object):
                 'A file creation error')
             return
 
-        # Everything seems OK so export the dataset
+        return filepath
+
+
+    def export(self):
+        """Export a given dataset to CSV format.
+
+        This method is a slot connected to the `export` QAction. See the
+        addEntry method for details.
+        """
+
+        # Get the filepath of the file where dataset will be stored
+        filepath = self.destFilepath()
+        if filepath is None:
+            return
+
+        # The PyTables node tied to the current leaf of the databases tree
+        current = self.vtapp.dbs_tree_view.currentIndex()
+        leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current).node
+
         try:
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             out_handler = open(filepath, 'w')

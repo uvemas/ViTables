@@ -31,6 +31,7 @@ __version__ = '0.3'
 plugin_class = 'ImportCSV'
 
 import os
+import tempfile
 
 import tables
 import numpy
@@ -40,6 +41,216 @@ from PyQt4 import QtCore, QtGui
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
+
+
+def arrayInfo(input_handler, kind):
+    """Return the useful information about the array being created.
+
+    :Parameters:
+    - `input_handler`: the file handler of the inspected file
+    - `kind`: the kind of array being created
+    """
+
+    # Inspect the CSV file reading its first line
+    # The dtypes are determined by the contents of each column
+    # Multidimensional columns will have string datatype
+    temp_file = tempfile.TemporaryFile()
+    line = input_handler.readline()
+    temp_file.writelines(line)
+    temp_file.seek(0)
+    data = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
+    temp_file.close()
+
+    # Our counting algorithm is faster than looping over lines with
+    # fh.readline and incrementing a counter at every step
+    lines = 0
+    itemsize = 0
+    buf_size = 1024 * 1024
+    read_fh = input_handler.read
+    input_handler.seek(0)
+
+    if data.dtype.name.startswith('string'):
+        # Count lines and find out the biggest itemsize
+        buf = read_fh(buf_size)
+        while buf:
+            temp_file = tempfile.TemporaryFile()
+            temp_file.writelines(buf)
+            temp_file.seek(0)
+            idata = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
+            itemsize = max(itemsize, idata.dtype.itemsize)
+            temp_file.close()
+            del idata
+            lines += buf.count('\n')
+            buf = read_fh(buf_size)
+    else:
+        # Count lines
+        buf = read_fh(buf_size)
+        while buf:
+            lines += buf.count('\n')
+            buf = read_fh(buf_size)
+
+    if itemsize:
+        atom = tables.StringAtom(itemsize)
+    else:
+        atom = tables.Atom.from_dtype(data.dtype)
+
+    # Get the data shape
+    if lines == 1:
+        # Corner case: the file only has one row
+        if kind == 'CArray':
+            array_shape = data.shape
+        elif kind == 'EArray':
+            array_shape = (0, )
+        lines = data.shape[0]
+    elif data.shape == ():
+        # Corner case: the file has just one column
+        if kind == 'CArray':
+            array_shape = (lines, )
+        elif kind == 'EArray':
+            array_shape = (0, )
+    else:
+        # General case: the file is a MxN array
+        if kind == 'CArray':
+            array_shape = (lines, data.shape[0])
+        elif kind == 'EArray':
+            array_shape = (0, data.shape[0])
+
+    del data
+    input_handler.seek(0)
+    return lines, atom, array_shape
+
+
+def tableInfo(input_handler):
+    """Return the useful information about the table being created.
+
+    :Parameters:
+    - `input_handler`: the file handler of the inspected file
+    """
+
+    # Inspect the CSV file reading its first line
+    # The dtypes are determined by the contents of each column
+    # Multidimensional columns will have string datatype
+    temp_file = tempfile.TemporaryFile()
+    line = input_handler.readline()
+    temp_file.writelines(line)
+    temp_file.seek(0)
+    data = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
+    temp_file.close()
+
+    if data.dtype.fields is None:
+        # data is a homogeneous array
+        return homogeneousTableInfo(input_handler, data)
+    else:
+        # data is a heterogeneous dataset
+        return heterogeneousTableInfo(input_handler, data)
+
+
+def homogeneousTableInfo(input_handler, data):
+    """Return the useful information about the table being created.
+
+    The `data` array is homegenous, i.e. all fields have the same dtype.
+
+    :Parameters:
+    - `input_handler`: the file handler of the inspected CSV file
+    - `data`: a numpy array which contains the first line of the CSV file
+    """
+
+    # Our counting algorithm is faster than looping over lines with
+    # fh.readline and incrementing a counter at every step
+    lines = 0
+    buf_size = 1024 * 1024
+    read_fh = input_handler.read
+    input_handler.seek(0)
+
+    # Count lines and, if dtype is a string, find out the biggest itemsize
+    buf = read_fh(buf_size)
+    if data.dtype.name.startswith('string'):
+        itemsize = 0
+        while buf:
+            temp_file = tempfile.TemporaryFile()
+            temp_file.writelines(buf)
+            temp_file.seek(0)
+            idata = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
+            itemsize = max(itemsize, idata.dtype.itemsize)
+            del idata
+            temp_file.close()
+            lines += buf.count('\n')
+            buf = read_fh(buf_size)
+    else:
+        while buf:
+            lines += buf.count('\n')
+            buf = read_fh(buf_size)
+
+    if data.shape:
+        # CSV file has more than one field
+        data_fields = range(0, data.shape[0])
+    else:
+        # CSV file has just one field
+        data_fields = [0]
+
+    if data.dtype.name.startswith('string'):
+        descr = dict([('f%s' % field, tables.StringCol(itemsize)) \
+            for field in data_fields])
+    else:
+        descr = dict([('f%s' % field, tables.Col.from_dtype(data.dtype)) \
+            for field in data_fields])
+
+    del data
+    return (lines, descr)
+
+
+def heterogeneousTableInfo(input_handler, data):
+    """Return the useful information about the table being created.
+
+    The `data` array is heterogenous, i.e. not all fields have the same
+    dtype.
+
+    :Parameters:
+    - `input_handler`: the file handler of the inspected CSV file
+    - `data`: a numpy array which contains the first line of the CSV file
+    """
+
+    # Our counting algorithm is faster than looping over lines with
+    # fh.readline and incrementing a counter at every step
+    lines = 0
+    buf_size = 1024 * 1024
+    read_fh = input_handler.read
+    input_handler.seek(0)
+
+    # Stuff used for finding out itemsizes of string fields
+    itemsizes = {}
+    for field in range(0, len(data.dtype)):
+        if data.dtype[field].name.startswith('string'):
+            itemsizes[field] = 0
+
+    # Count lines and, if a dtype is a string, find out its biggest itemsize
+    buf = read_fh(buf_size)
+    if itemsizes:
+        while buf:
+            temp_file = tempfile.TemporaryFile()
+            temp_file.writelines(buf)
+            for field in itemsizes.keys():
+                temp_file.seek(0)
+                idata = numpy.genfromtxt(temp_file, delimiter=',', 
+                    usecols=(field,), dtype=None)
+                itemsizes[field] = \
+                    max(itemsizes[field], idata.dtype.itemsize)
+                del idata
+            temp_file.close()
+            lines += buf.count('\n')
+            buf = read_fh(buf_size)
+    else:
+        while buf:
+            lines += buf.count('\n')
+            buf = read_fh(buf_size)
+
+    descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in 
+        data.dtype.fields.items()])
+    for field in itemsizes:
+        descr['f%s' % field] = tables.StringCol(itemsizes[field])
+
+    del data
+    return (lines, descr)
 class ImportCSV(object):
     """Provides CSV import capabilities for tables and arrays.
 
@@ -83,26 +294,44 @@ class ImportCSV(object):
         self.import_submenu.setIcon(icon)
 
         # Create the actions
-        self.import_table_action = vitables.utils.createAction(\
+        actions = {}
+        actions['import_table'] = vitables.utils.createAction(\
             self.import_submenu, 
             self.__tr("Import T&able...", \
                 "Import table from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importTable,
             None,
-            self.__tr("Import table from plain CSV file", 
+            self.__tr("Import Table from plain CSV file", 
             "Status bar text for the File -> Import CSV... -> Import Table"))
 
-        self.import_array_action = vitables.utils.createAction(\
+        actions['import_array'] = vitables.utils.createAction(\
             self.import_submenu, 
             self.__tr("Import A&rray...", "Import array from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importArray,
             None,
-            self.__tr("Import array from plain CSV file",
+            self.__tr("Import Array from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import Array"))
 
-        # Add the action to the Import submenu
-        self.import_submenu.addAction(self.import_table_action)
-        self.import_submenu.addAction(self.import_array_action)
+        actions['import_carray'] = vitables.utils.createAction(\
+            self.import_submenu, 
+            self.__tr("Import C&Array...", "Import carray from CSV file"),
+            QtGui.QKeySequence.UnknownKey, self.importCArray,
+            None,
+            self.__tr("Import CArray from plain CSV file",
+            "Status bar text for the File -> Import CSV... -> Import CArray"))
+
+        actions['import_earray'] = vitables.utils.createAction(\
+            self.import_submenu, 
+            self.__tr("Import E&Array...", "Import earray from CSV file"),
+            QtGui.QKeySequence.UnknownKey, self.importEArray,
+            None,
+            self.__tr("Import EArray from plain CSV file",
+            "Status bar text for the File -> Import CSV... -> Import EArray"))
+
+        # Add actions to the Import submenu
+        keys = ('import_table', 'import_array', 'import_carray', 
+            'import_earray')
+        vitables.utils.addActions(self.import_submenu, keys, actions)
 
         # Add submenu to file menu before the Close File action
         for item in self.vtapp.file_menu.actions():
@@ -181,6 +410,105 @@ class ImportCSV(object):
 
 
 
+    def importDataset(self, kind):
+        """Import a plain CSV file into a tables.Array object.
+
+        :Parameter `kind`: the kind of array to be created (EArray, CArray)
+        """
+
+        filepath, dbdoc = self.getSourceDest(kind)
+        if dbdoc is None:
+            return
+
+        # Import the CSV content
+        try:
+            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            chunk_size = 10000
+            input_handler = open(filepath, 'r+')
+            if kind == 'Table':
+                (stop, descr) = tableInfo(input_handler)
+            else:
+                (stop, atom, array_shape) = \
+                    arrayInfo(input_handler, kind)
+
+            # Create the dataset
+            io_filters = tables.Filters(complevel=9, complib='lzo')
+            dataset_name = "imported_%s" % kind
+            atitle = 'Source CSV file %s' % \
+                os.path.basename(filepath)
+            if kind == 'CArray':
+                dataset = dbdoc.h5file.createCArray('/', dataset_name, atom, 
+                    array_shape, title=atitle, filters=io_filters)
+            elif kind == 'EArray':
+                dataset = dbdoc.h5file.createEArray('/', dataset_name, atom, 
+                    array_shape, title=atitle, filters=io_filters, 
+                    expectedrows=stop)
+            elif kind == 'Table':
+                dataset = dbdoc.h5file.createTable(\
+                    '/', dataset_name, descr, title=atitle)
+
+            # Fill the dataset in a memory effcient way
+            input_handler.seek(0)
+            div = numpy.divide(stop, chunk_size)
+            for i in numpy.arange(0, div+1):
+                QtGui.qApp.processEvents()
+                cstart = chunk_size*i
+                if cstart > stop:
+                    cstart = stop
+                cstop = cstart + chunk_size
+                if cstop > stop:
+                    cstop = stop
+                # Fill a intermediate buffer of small size in order to 
+                # save memory when csv file is very large
+                temp_file = tempfile.TemporaryFile()
+                for i in range(cstart, cstop - cstart):
+                    line = input_handler.readline()
+                    temp_file.writelines(line)
+                temp_file.seek(0)
+                data = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
+                temp_file.close()
+
+                # Append data to the dataset
+                if kind == 'CArray':
+                    dataset[cstart:cstop] = data
+                elif kind == 'EArray':
+                    dataset.append(data)
+                elif kind == 'Table':
+                    dataset.append(data)
+                dataset.flush()
+                del data
+            dbdoc.h5file.flush()
+        except:
+            vitables.utils.formatExceptionInfo()
+        finally:
+            QtGui.qApp.restoreOverrideCursor()
+            input_handler.close()
+
+
+    def importCArray(self):
+        """Import a plain CSV file into a tables.CArray object.
+
+        This is a slot method. See `addEntry` method for details.
+        """
+        self.importDataset('CArray')
+
+
+    def importEArray(self):
+        """Import a plain CSV file into a tables.EArray object.
+
+        This is a slot method. See `addEntry` method for details.
+        """
+        self.importDataset('EArray')
+
+
+    def importTable(self):
+        """Import a plain CSV file into a tables.Table object.
+
+        This is a slot method. See `addEntry` method for details.
+        """
+        self.importDataset('Table')
+
+
     def importArray(self):
         """Import a plain CSV file into a tables.Array object.
 
@@ -198,7 +526,9 @@ class ImportCSV(object):
             # The dtypes are determined by the contents of each column
             # Multidimensional columns will have string datatype
             data = numpy.genfromtxt(filepath, delimiter=',', dtype=None)
-            array_name = "imported_array"
+
+            # Create the array
+            array_name = "imported_Array"
             title = 'Imported from CSV file %s' % \
                 os.path.basename(filepath)
             dbdoc.h5file.createArray(\
@@ -209,44 +539,3 @@ class ImportCSV(object):
         finally:
             del data
             QtGui.qApp.restoreOverrideCursor()
-
-
-    def importTable(self):
-        """Import a plain CSV file into a tables.Table object.
-
-        This is a slot method. See `addEntry` method for details.
-        """
-
-        leaf_kind = 'Table'
-        filepath, dbdoc = self.getSourceDest(leaf_kind)
-        if dbdoc is None:
-            return
-
-        # Import the CSV content
-        try:
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
-            data = numpy.genfromtxt(filepath, delimiter=',', names=None, 
-                dtype=None)
-            if data.dtype.fields is None:
-                # Data is a homogeneous dataset
-                descr = dict([('f%s' % f, tables.Col.from_dtype(data.dtype)) \
-                    for f in range(0, data.shape[1])])
-            else:
-                # Data is a heterogeneous dataset
-                descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in 
-                    data.dtype.fields.items()])
-            table_name = "imported_table"
-            title = 'Imported from CSV file %s' % \
-                os.path.basename(filepath)
-            table = dbdoc.h5file.createTable(\
-                '/', table_name, descr, title=title)
-            #Fill table with data
-            table.append(data)
-            table.flush()
-            dbdoc.h5file.flush()
-        except:
-            vitables.utils.formatExceptionInfo()
-        finally:
-            del data
-            QtGui.qApp.restoreOverrideCursor()
-
