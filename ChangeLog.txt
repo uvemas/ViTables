@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 30, 2009 **
+The import_csv.py plugin has been debugged, refactored and enhanced.
+
 ** November 28, 2009 **
 New version of import_csv.py plugin added to repository.
 
