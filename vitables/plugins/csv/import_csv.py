@@ -55,7 +55,7 @@ Other aspects to take into account:
 
 __docformat__ = 'restructuredtext'
 _context = 'ImportCSV'
-__version__ = '0.5'
+__version__ = '0.6'
 plugin_class = 'ImportCSV'
 
 import os
@@ -88,16 +88,20 @@ def getArray(buf):
     return data
 
 
-def tableInfo(input_handler):
+def tableInfo(input_handler, has_header):
     """Return the useful information about the Table being created.
 
     :Parameters:
-    - `input_handler`: the file handler of the inspected file
+    - `input_handler`: the file handler of the inspected file    
+    - `has_header`: whether or not the CSV table has a header
     """
 
     # Inspect the CSV file reading its first line
     # The dtypes are determined by the contents of each column
     # Multidimensional columns will have string datatype
+    if has_header:
+        # Skip the header line
+        input_handler.readline()
     data = getArray(input_handler.readline())
 
     # Estimate the number of rows of the file
@@ -107,15 +111,15 @@ def tableInfo(input_handler):
 
     if data.dtype.fields is None:
         # data is a homogeneous array
-        descr = homogeneousTableInfo(input_handler, data)
+        descr = homogeneousTableInfo(input_handler, data, has_header)
     else:
         # data is a heterogeneous dataset
-        descr = heterogeneousTableInfo(input_handler, data)
+        descr = heterogeneousTableInfo(input_handler, data, has_header)
 
     return (nrows, descr)
 
 
-def heterogeneousTableInfo(input_handler, data):
+def heterogeneousTableInfo(input_handler, data, has_header):
     """Return the useful information about the table being created.
 
     The `data` array is heterogenous, i.e. not all fields have the same
@@ -124,6 +128,7 @@ def heterogeneousTableInfo(input_handler, data):
     :Parameters:
     - `input_handler`: the file handler of the inspected CSV file
     - `data`: a numpy array which contains the first line of the CSV file
+    - `has_header`: whether or not the CSV table has a header
     """
 
     # Stuff used for finding out itemsizes of string fields
@@ -137,6 +142,9 @@ def heterogeneousTableInfo(input_handler, data):
         buf_size = 1024 * 1024
         read_fh = input_handler.readlines
         input_handler.seek(0)
+        if has_header:
+            # Skip the header line
+            input_handler.readline()
         buf = read_fh(buf_size)
         while buf:
             temp_file = tempfile.TemporaryFile()
@@ -160,7 +168,7 @@ def heterogeneousTableInfo(input_handler, data):
     return descr
 
 
-def homogeneousTableInfo(input_handler, data):
+def homogeneousTableInfo(input_handler, data, has_header):
     """Return the useful information about the table being created.
 
     The `data` array is homegenous, i.e. all fields have the same dtype.
@@ -168,6 +176,7 @@ def homogeneousTableInfo(input_handler, data):
     :Parameters:
     - `input_handler`: the file handler of the inspected CSV file
     - `data`: a numpy array which contains the first line of the CSV file
+    - `has_header`: whether or not the CSV table has a header
     """
 
     # If dtype is a string, find out the biggest itemsize
@@ -175,6 +184,9 @@ def homogeneousTableInfo(input_handler, data):
         buf_size = 1024 * 1024
         read_fh = input_handler.readlines
         input_handler.seek(0)
+        if has_header:
+            # Skip the header line
+            input_handler.readline()
         buf = read_fh(buf_size)
         itemsize = 0
         while buf:
@@ -241,6 +253,7 @@ def earrayInfo(input_handler):
             buf = read_fh(buf_size)
         atom = tables.StringAtom(itemsize)
     else:
+        # With compound dtypes this will raise a ValueError
         atom = tables.Atom.from_dtype(data.dtype)
 
     # Get the data shape
@@ -432,50 +445,88 @@ class ImportCSV(object):
         return valid
 
 
-    def getSourceDest(self, leaf_kind):
-        """Get the source CSV file and the destination PyTables file.
+    def createDestFile(self, filepath):
+        """Create the PyTables file where the CSV file will be imported.
 
-        :Parameter `leaf_kind`: the kind of container where data will be stored
+        :Parameter `filepath`: the PyTables file filepath
         """
 
-        # Get CSV filepath
-        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen, 
-            'file_mode': QtGui.QFileDialog.ExistingFile, 
-            'history': self.vtapp.file_selector_history, 
-            'label': self.__tr('Import', 'Accept button text for QFileDialog')}
-        filepath, working_dir = vitables.utils.getFilepath(\
-            self.vtapp, 
-            self.__tr('Importing CSV file into %s',
-                'Caption of the Import from CSV dialog') % leaf_kind, 
-            dfilter=self.__tr("""CSV Files (*.csv);;"""
-                """All Files (*)""", 'Filter for the Import from CSV dialog'), 
-            settings=fs_args)
 
-        if not filepath:
-            # The user has canceled the dialog
-            return None, None
-
-        # Update the history of the file selector widget
-        self.vtapp.updateFSHistory(working_dir)
-
-        # Create the destination file
+        dbdoc = None
         try:
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
             dest_filepath = os.path.join(dirname, '%s.h5' % root)
-            if not self.isValidFilepath(dest_filepath):
-                return None, None
-            dbdoc = self.dbt_model.createDBDoc(dest_filepath)
+            if self.isValidFilepath(dest_filepath):
+                dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
             print self.__tr(
                 """\nWarning: import failed """
                 """because destination file cannot be created.""",
                 'A file creation error')
             vitables.utils.formatExceptionInfo()
-            return  None, None
 
-        return filepath, dbdoc
+        return dbdoc
 
+
+    def getImportInfo(self, leaf_kind):
+        """Get the source CSV file and the destination PyTables file.
+
+        :Parameter `leaf_kind`: the kind of container where data will be stored
+        """
+
+        # Call the file selector (and, if needed, customise it)
+        file_selector = vitables.utils.getFileSelector(\
+            self.vtapp, 
+            self.__tr('Importing CSV file into %s',
+                'Caption of the Import from CSV dialog') % leaf_kind, 
+            dfilter=self.__tr("""CSV Files (*.csv);;"""
+                """All Files (*)""", 'Filter for the Import from CSV dialog'), 
+            settings={'accept_mode': QtGui.QFileDialog.AcceptOpen, 
+            'file_mode': QtGui.QFileDialog.ExistingFile, 
+            'history': self.vtapp.file_selector_history, 
+            'label': self.__tr('Import', 'Accept button text for QFileDialog')}
+            )
+
+        # Customise the file selector dialog for importing to CSV files
+        if leaf_kind == 'Table':
+            fs_layout = file_selector.layout()
+            header_label = QtGui.QLabel('Has header:', file_selector)
+            header_cb = QtGui.QCheckBox(file_selector)
+            fs_layout.addWidget(header_label, 4, 0)
+            fs_layout.addWidget(header_cb, 4, 1)
+
+        # Execute the dialog
+        try:
+            if file_selector.exec_():  # OK clicked
+                filepath = file_selector.selectedFiles()[0]
+                # Make sure filepath contains no backslashes
+                filepath = QtCore.QDir.fromNativeSeparators(filepath)
+                # Update the working directory
+                working_dir = file_selector.directory().canonicalPath()
+            else:  # Cancel clicked
+                filepath = working_dir = QtCore.QString('')
+        finally:
+            has_header = False
+            if leaf_kind == 'Table':
+                has_header = header_cb.isChecked()
+            del file_selector
+
+        # Process the returned values
+        filepath = unicode(filepath)
+        working_dir = unicode(working_dir)
+
+        if not filepath:
+            # The user has canceled the dialog
+            return None
+
+        # Update the history of the file selector widget
+        self.vtapp.updateFSHistory(working_dir)
+
+        if leaf_kind == 'Table':
+            return filepath, has_header
+        else:
+            return filepath
 
 
     def importTable(self):
@@ -485,18 +536,23 @@ class ImportCSV(object):
         """
 
         kind = 'Table'
-        filepath, dbdoc = self.getSourceDest(kind)
-        if dbdoc is None:
+        value = self.getImportInfo(kind)
+        if value is None:
             return
+        else:
+            filepath, has_header = value
 
         # Import the CSV content
         try:
             QtGui.qApp.processEvents()
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             input_handler = open(filepath, 'rU')
-            (nrows, descr) = tableInfo(input_handler)
+            (nrows, descr) = tableInfo(input_handler, has_header)
 
             # Create the dataset
+            dbdoc = self.createDestFile(filepath)
+            if dbdoc is None:
+                return
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = "imported_%s" % kind
             atitle = 'Source CSV file %s' % \
@@ -506,6 +562,9 @@ class ImportCSV(object):
 
             # Fill the dataset in a memory effcient way
             input_handler.seek(0)
+            if has_header:
+                # Skip the header line
+                input_handler.readline()
             chunk_size = 10000
             buf_size = chunk_size*dataset.rowsize
             read_fh = input_handler.readlines
@@ -532,8 +591,8 @@ class ImportCSV(object):
         """
 
         kind = 'EArray'
-        filepath, dbdoc = self.getSourceDest(kind)
-        if dbdoc is None:
+        filepath = self.getImportInfo(kind)
+        if filepath is None:
             return
 
         # Import the CSV content
@@ -545,6 +604,9 @@ class ImportCSV(object):
             (nrows, atom, array_shape) = earrayInfo(input_handler)
 
             # Create the dataset
+            dbdoc = self.createDestFile(filepath)
+            if dbdoc is None:
+                return
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = "imported_%s" % kind
             atitle = 'Source CSV file %s' % \
@@ -567,6 +629,10 @@ class ImportCSV(object):
                 del idata
                 buf = read_fh(buf_size)
             dbdoc.h5file.flush()
+        except ValueError:
+            print self.__tr("""\nError: please, make sure that you are """\
+                """importing a homogeneous dataset.""",
+                'CSV file not imported error')
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -581,8 +647,8 @@ class ImportCSV(object):
         """
 
         kind = 'CArray'
-        filepath, dbdoc = self.getSourceDest(kind)
-        if dbdoc is None:
+        filepath = self.getImportInfo(kind)
+        if filepath is None:
             return
 
         # Import the CSV content
@@ -594,6 +660,9 @@ class ImportCSV(object):
             (atom, array_shape) = carrayInfo(input_handler)
 
             # Create the dataset
+            dbdoc = self.createDestFile(filepath)
+            if dbdoc is None:
+                return
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = "imported_%s" % kind
             atitle = 'Source CSV file %s' % \
@@ -618,6 +687,10 @@ class ImportCSV(object):
                 start = stop
                 buf = read_fh(buf_size)
             dbdoc.h5file.flush()
+        except ValueError:
+            print self.__tr("""\nError: please, make sure that you are """\
+                """importing a homogeneous dataset.""",
+                'CSV file not imported error')
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -632,8 +705,8 @@ class ImportCSV(object):
         """
 
         kind = 'Array'
-        filepath, dbdoc = self.getSourceDest(kind)
-        if dbdoc is None:
+        filepath = self.getImportInfo(kind)
+        if filepath is None:
             return
 
         # Import the CSV content
@@ -645,13 +718,20 @@ class ImportCSV(object):
             data = numpy.genfromtxt(filepath, delimiter=',', dtype=None)
 
             # Create the array
+            dbdoc = self.createDestFile(filepath)
+            if dbdoc is None:
+                return
             array_name = "imported_%s" % kind
             title = 'Imported from CSV file %s' % \
                 os.path.basename(filepath)
             dbdoc.h5file.createArray('/', array_name, data, title=title)
             dbdoc.h5file.flush()
+        except TypeError:
+            print self.__tr("""\nError: please, make sure that you are """\
+                """importing a homogeneous dataset.""",
+                'CSV file not imported error')
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            del data
             QtGui.qApp.restoreOverrideCursor()
+            del data

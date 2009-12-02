@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 02, 2009 **
+Support for tables headers has been added to the import/export csv plugins.
+
 ** November 30, 2009 **
 The import_csv.py plugin has been debugged, refactored and enhanced.
 

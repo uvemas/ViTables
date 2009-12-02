@@ -20,15 +20,18 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """Plugin that provides export of arrays to files with CSV format.
+
+When exporting tables, a header with the field names can be inserted.
 """
 
 __docformat__ = 'restructuredtext'
 _context = 'ExportToCSV'
-__version__ = '0.3'
+__version__ = '0.4'
 plugin_class = 'ExportToCSV'
 
 import os
 
+import tables
 import numpy
 
 from PyQt4 import QtCore, QtGui
@@ -107,22 +110,55 @@ class ExportToCSV(object):
         self.export_action.setEnabled(enabled)
 
 
-    def destFilepath(self):
-        """Get the filepath of the file where dataset will be stored.
+    def getExportInfo(self, is_table):
+        """Get info about the file where dataset will be stored.
+
+        The retrieved info is the filepath and whether or not a header
+        must be added.
+
+        :Parameter `is_table`: is the exported dataset a tables.Table instance?
         """
 
-        # Get CSV filepath
-        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave, 
-            'file_mode': QtGui.QFileDialog.AnyFile, 
-            'history': self.vtapp.file_selector_history, 
-            'label': self.__tr('Export', 'Accept button text for QFileDialog')}
-        filepath, working_dir = vitables.utils.getFilepath(\
+        # Call the file selector (and, if needed, customise it)
+        file_selector = vitables.utils.getFileSelector(\
             self.vtapp, 
             self.__tr('Exporting dataset to CSV format', 
-                'Caption of the Export to CSV dialog'),
+                'Caption of the Export to CSV dialog'), 
             dfilter=self.__tr("""All Files (*)""", 
                 'Filter for the Export to CSV dialog'), 
-            settings=fs_args)
+            settings={'accept_mode': QtGui.QFileDialog.AcceptSave, 
+            'file_mode': QtGui.QFileDialog.AnyFile, 
+            'history': self.vtapp.file_selector_history, 
+            'label': self.__tr('Export', 'Accept button text for QFileDialog')
+            })
+
+        # Customise the file selector dialog for exporting to CSV files
+        if is_table:
+            fs_layout = file_selector.layout()
+            header_label = QtGui.QLabel('Add header:', file_selector)
+            header_cb = QtGui.QCheckBox(file_selector)
+            fs_layout.addWidget(header_label, 4, 0)
+            fs_layout.addWidget(header_cb, 4, 1)
+
+        # Execute the dialog
+        try:
+            if file_selector.exec_():  # OK clicked
+                filepath = file_selector.selectedFiles()[0]
+                # Make sure filepath contains no backslashes
+                filepath = QtCore.QDir.fromNativeSeparators(filepath)
+                # Update the working directory
+                working_dir = file_selector.directory().canonicalPath()
+            else:  # Cancel clicked
+                filepath = working_dir = QtCore.QString('')
+        finally:
+            add_header = False
+            if is_table:
+                add_header = header_cb.isChecked()
+            del file_selector
+
+        # Process the returned values
+        filepath = unicode(filepath)
+        working_dir = unicode(working_dir)
 
         if not filepath:
             # The user has canceled the dialog
@@ -146,7 +182,7 @@ class ExportToCSV(object):
                 'A file creation error')
             return
 
-        return filepath
+        return filepath, add_header
 
 
     def export(self):
@@ -156,18 +192,25 @@ class ExportToCSV(object):
         addEntry method for details.
         """
 
-        # Get the filepath of the file where dataset will be stored
-        filepath = self.destFilepath()
-        if filepath is None:
-            return
-
         # The PyTables node tied to the current leaf of the databases tree
         current = self.vtapp.dbs_tree_view.currentIndex()
         leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current).node
+        is_table = isinstance(leaf, tables.Table)
+
+        # Get the required info for exporting the dataset
+        export_info = self.getExportInfo(is_table)
+        if export_info is None:
+            return
+        else:
+            filepath, add_header = export_info
 
         try:
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             out_handler = open(filepath, 'w')
+            if add_header:
+                header = reduce(lambda x, y: '%s, %s' % (x, y), leaf.colnames)
+                # Ensure consistency with numpy.savetxt i.e. use \n line breaks
+                out_handler.write(header + '\n')
             chunk_size = 10000
             stop = leaf.nrows
             div = numpy.divide(stop, chunk_size)

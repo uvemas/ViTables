@@ -85,6 +85,36 @@ def getVTApp():
     return vtapp
 
 
+def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
+    """Raise a file selector dialog.
+
+    :Parameters:
+
+    - `parent`: the parent widget
+    - `caption`: the dialog caption
+    - `dfilter`: filters used to display files and folders
+    - `filepath`: the filepath initially selected
+    - `settings`: dictionary with keys `label` (Accept button text), 
+        `history` (file selector history) , `accept_mode` and `file_mode`
+    """
+
+    file_selector = QtGui.QFileDialog(parent, caption, '', dfilter)
+    # Misc. setup
+    file_selector.setDirectory(settings['history'][-1])
+    if settings['label'] != '':
+        file_selector.setLabelText(QtGui.QFileDialog.Accept, 
+            settings['label'])
+    file_selector.setAcceptMode(settings['accept_mode'])
+    if settings['accept_mode'] == QtGui.QFileDialog.AcceptSave:
+        file_selector.setConfirmOverwrite(False)
+    file_selector.setFileMode(settings['file_mode'])
+    file_selector.setHistory(settings['history'])
+    if filepath:
+        file_selector.selectFile(filepath)
+
+    return file_selector
+
+
 def getFilepath(parent, caption, dfilter, filepath='', settings=None):
     """Raise a file selector dialog and get a filepath.
 
@@ -99,19 +129,8 @@ def getFilepath(parent, caption, dfilter, filepath='', settings=None):
     """
 
     working_dir = None
-    file_selector = QtGui.QFileDialog(parent, caption, '', dfilter)
-    # Misc. setup
-    file_selector.setDirectory(settings['history'][-1])
-    if settings['label'] != '':
-        file_selector.setLabelText(QtGui.QFileDialog.Accept, 
-            settings['label'])
-    file_selector.setAcceptMode(settings['accept_mode'])
-    if settings['accept_mode'] == QtGui.QFileDialog.AcceptSave:
-        file_selector.setConfirmOverwrite(False)
-    file_selector.setFileMode(settings['file_mode'])
-    file_selector.setHistory(settings['history'])
-    if filepath:
-        file_selector.selectFile(filepath)
+    file_selector = \
+        getFileSelector(parent, caption, dfilter, filepath, settings)
 
     # Execute the dialog
     try:
