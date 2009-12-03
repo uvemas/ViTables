@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 03, 2009 **
+Autodetection of tables headers has been added to the import csv plugin.
+
 ** December 02, 2009 **
 Support for tables headers has been added to the import/export csv plugins.
 
