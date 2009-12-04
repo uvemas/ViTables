@@ -42,10 +42,9 @@ __docformat__ = 'restructuredtext'
 
 import time
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
-class VTSplash(QSplashScreen):
+class VTSplash(QtGui.QSplashScreen):
     """The application splash screen."""
 
     def __init__(self, png):
@@ -58,7 +57,7 @@ class VTSplash(QSplashScreen):
         :Parameter png: the pixmap image displayed as a splash screen.
         """
 
-        QSplashScreen.__init__(self, png)
+        QtGui.QSplashScreen.__init__(self, png)
 
 
     def drawContents(self, painter):
@@ -70,7 +69,7 @@ class VTSplash(QSplashScreen):
         :Parameter painter: the painter used to draw the splash screen
         """
 
-        painter.setPen(QColor(Qt.white))
+        painter.setPen(QtGui.QColor(QtCore.Qt.white))
         font = painter.font()
         font.setBold(True)
         painter.setFont(font)
@@ -84,27 +83,8 @@ class VTSplash(QSplashScreen):
         :Parameter msg: the message to be displayed
         """
 
-        qApp.processEvents()
+        QtGui.qApp.processEvents()
         self.msg = msg
         self.showMessage(self.msg)
         time.sleep(0.500)
         self.clearMessage()
-
-if __name__ == '__main__':
-    import sys
-    APP = QApplication(sys.argv)
-    LOGO = QPixmap(os.path.join(ICONDIR, "vitables_logo.png"))
-    SPLASH = VTSplash(LOGO)
-    SPLASH.show()
-    # Check that messages are not overwritten:
-    # write a message, wait a little bit, write another message
-    SPLASH.drawMessage('hola, que tal estas?')
-    qApp.processEvents()
-    time.sleep(3)
-    SPLASH.drawMessage('hasta luego, lucas!')
-#    qApp.processEvents()
-    TIMER = QTimer()
-    TIMER.connect(TIMER, SIGNAL('timeout()'), qApp.quit)
-    TIMER.setSingleShot(True)
-    TIMER.start(3000)
-    APP.exec_()

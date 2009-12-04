@@ -24,12 +24,11 @@ Here is defined the ScrollBar class.
 
 Classes:
 
-* VScrollBar(QScrollBar)
+* ScrollBar(QtGui.QScrollBar)
 
 Methods:
 
 * __init__(self, scrollbar)
-* __tr(self, source, comment=None)
 
 Functions:
 
@@ -40,12 +39,10 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'ScrollBar'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
-class ScrollBar(QScrollBar):
+class ScrollBar(QtGui.QScrollBar):
     """
     A specialised scrollbar for views of huge datasets.
 
@@ -68,12 +65,7 @@ class ScrollBar(QScrollBar):
 
         # Cheat the user hidding a scrollbar and displaying other one
         # that looks exactly the same
-        QScrollBar.__init__(self, scrollbar.parent())
+        QtGui.QScrollBar.__init__(self, scrollbar.parent())
         scrollbar.setVisible(False)
         scrollbar.parent().layout().addWidget(self)
-        self.setOrientation(Qt.Vertical)
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
+        self.setOrientation(QtCore.Qt.Vertical)

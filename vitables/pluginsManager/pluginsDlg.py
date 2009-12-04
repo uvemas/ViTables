@@ -29,13 +29,12 @@ _context = 'PluginsDlg'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 from vitables.pluginsManager import pluginsUI
 
-class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
+class PluginsDlg(QtGui.QDialog, pluginsUI.Ui_PluginsDialog):
     """
     A dialog for managing plugins.
 
@@ -55,7 +54,7 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
         #
         # Create the dialog and customise the content of some widgets
         #
-        QDialog.__init__(self, qApp.activeWindow())
+        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
         self.setupUi(self)
 
         self.disabled_tree.setColumnHidden(1, True)
@@ -84,19 +83,19 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
         self.disabled_tree.selectionModel().clearSelection()
 
         # Connect signals to slots
-        self.connect(self.buttons_box, SIGNAL('accepted()'), 
+        self.connect(self.buttons_box, QtCore.SIGNAL('accepted()'), 
             self.slotAccept)
-        self.connect(self.buttons_box, SIGNAL('rejected()'),
+        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
             self.slotCancel)
-        self.connect(self.buttons_box, SIGNAL('helpRequested()'),
-            QWhatsThis.enterWhatsThisMode)
-        self.connect(self.new_button, SIGNAL('clicked()'), 
+        self.connect(self.buttons_box, QtCore.SIGNAL('helpRequested()'),
+            QtGui.QWhatsThis.enterWhatsThisMode)
+        self.connect(self.new_button, QtCore.SIGNAL('clicked()'), 
             self.slotAddPath)
-        self.connect(self.remove_button, SIGNAL('clicked()'),
+        self.connect(self.remove_button, QtCore.SIGNAL('clicked()'),
             self.slotRemovePath)
-        self.connect(self.load_button, SIGNAL('clicked()'),
+        self.connect(self.load_button, QtCore.SIGNAL('clicked()'),
             self.slotEnablePlugin)
-        self.connect(self.unload_button, SIGNAL('clicked()'),
+        self.connect(self.unload_button, QtCore.SIGNAL('clicked()'),
             self.slotDisablePlugin)
         selection_changed = SIGNAL('itemSelectionChanged()')
         self.connect(self.disabled_tree, selection_changed, \
@@ -108,11 +107,6 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
 
         # Update the GUI
         self.slotUpdateButton('all')
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def addTreeItem(self, item, tree='enabled'):
@@ -198,7 +192,7 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
         """New button clicked.
         """
 
-        folder = QFileDialog.getExistingDirectory()
+        folder = QtGui.QFileDialog.getExistingDirectory()
         if not unicode(folder) in self.manager.plugins_paths:
             self.manager.plugins_paths.append(folder)
             self.paths_lw.addItem(folder)
@@ -282,8 +276,9 @@ class PluginsDlg(QDialog, pluginsUI.Ui_PluginsDialog):
         """
 
         if isinstance(self.manager.plugins_paths, list):
-            self.manager.plugins_paths = QStringList(self.manager.plugins_paths)
+            self.manager.plugins_paths = \
+                QtCore.QStringList(self.manager.plugins_paths)
 
         if isinstance(self.manager.enabled_plugins, list):
             self.manager.enabled_plugins = \
-                QStringList(self.manager.enabled_plugins)
+                QtCore.QStringList(self.manager.enabled_plugins)

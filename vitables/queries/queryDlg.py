@@ -58,6 +58,11 @@ from PyQt4 import QtCore, QtGui
 import vitables.utils
 from vitables.queries import queryUI
 
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
 class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
     """
     A dialog for filter creation .
@@ -98,7 +103,7 @@ class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
         QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
         self.setupUi(self)
 
-        self.setWindowTitle(self.__tr('New query on table: %s',
+        self.setWindowTitle(trs('New query on table: %s',
             'A dialog caption') % info[u'name'])
 
         self.name_le.setText('FilteredTable_%s' % counter)
@@ -110,8 +115,8 @@ class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
             self.query_le.setText(initial_query)
 
         # Fill the combos
-        operators = [u'&', u'|', u'~', u'<', u'<=', u'==', u'!=', u'>', u'>=', u'+',
-            u'-', u'*', u'/', u'**', u'%']
+        operators = [u'&', u'|', u'~', u'<', u'<=', u'==', u'!=', u'>', u'>=', 
+            u'+', u'-', u'*', u'/', u'**', u'%']
         self.operators_cb.insertItems(0, QtCore.QStringList(operators))
         functions = [u'where', u'sin', u'cos', u'tan', u'arcsin', u'arccos', 
             u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', 
@@ -183,11 +188,6 @@ class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
         self.name_le.emit(text_changed, self.name_le.text())
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
     def slotEnableIndicesColumn(self, cb_on):
@@ -299,7 +299,7 @@ class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
             status_ok = False
         elif ft_name in self.used_names:
             status_ok = False
-            print self.__tr("""The chosen name is already in use. Please,"""
+            print trs("""The chosen name is already in use. Please,"""
                 """ choose another one.""", 'A logger info message')
 
         # Check the indices column name
@@ -307,17 +307,17 @@ class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
         if self.indices_column.isEnabled():
             if indices_colname == '':
                 status_ok = False
-                print self.__tr("""Enter a name for the column of indices, """
+                print trs("""Enter a name for the column of indices, """
                     """please.""",
                     'A logger info message')
             elif indices_colname.count('/'):
                 status_ok = False
-                print self.__tr("""The chosen name for the column of indices"""
+                print trs("""The chosen name for the column of indices"""
                     """is not valid. It contains '/' characters""",
                     'A logger info message')
             elif indices_colname in self.col_names:
                 status_ok = False
-                print self.__tr("""The chosen name for the column of indices"""
+                print trs("""The chosen name for the column of indices"""
                     """ is already in use. Please, choose another one.""",
                     'A logger info message')
 
@@ -337,17 +337,17 @@ class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
             stop = numpy.array(stop_str).astype(numpy.int64)
             if stop > self.num_rows:
                 status_ok = False
-                print self.__tr("""The stop value is greater than the number"""
+                print trs("""The stop value is greater than the number"""
                                 """ of rows. Please, choose another one.""",
                                 'A logger info message')
             elif start > stop:
                 status_ok = False
-                print self.__tr("""The start value is greater than the """
+                print trs("""The start value is greater than the """
                                 """stop value. Please, choose another one.""",
                                 'A logger info message')
             elif start < 1:
                 status_ok = False
-                print self.__tr("""The start value must be greater than 0.""", 
+                print trs("""The start value must be greater than 0.""", 
                                 'A logger info message')
 
         # Enable/disable the OK button
@@ -366,22 +366,22 @@ class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
             self.source_table.willQueryUseIndexing(condition, self.condvars)
         except SyntaxError, error:
             syntax_ok = False
-            print self.__tr("""\nError: %s""",
+            print trs("""\nError: %s""",
                 'A logger info message') % error.__doc__
             vitables.utils.formatExceptionInfo()
         except NameError, error:
             syntax_ok = False
-            print self.__tr("""\nError: %s""",
+            print trs("""\nError: %s""",
                 'A logger info message') % error.__doc__
             vitables.utils.formatExceptionInfo()
         except ValueError, error:
             syntax_ok = False
-            print self.__tr("""\nError: %s""",
+            print trs("""\nError: %s""",
                 'A logger info message') % error.__doc__
             vitables.utils.formatExceptionInfo()
         except TypeError, error:
             syntax_ok = False
-            print self.__tr("""\nError: %s""",
+            print trs("""\nError: %s""",
                 'A logger info message') % error.__doc__
             vitables.utils.formatExceptionInfo()
         except:

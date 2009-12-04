@@ -208,7 +208,7 @@ class Buffer(object):
             self.data_source.read(start, stop)
         except tables.HDF5ExtError:
             readable = False
-            print  self.__tr("""\nError: problems reading records. """\
+            print  trs("""\nError: problems reading records. """\
                 """The dataset seems to be compressed with """\
                 """the %s library. Check that it is installed"""\
                 """ in your system, please.""" % \
@@ -241,7 +241,7 @@ class Buffer(object):
         try:
             data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
-            print  self.__tr("""\nError: problems reading records. """\
+            print  trs("""\nError: problems reading records. """\
                 """The dataset maybe corrupted.""",
                 'A dataset readability error')
         except:

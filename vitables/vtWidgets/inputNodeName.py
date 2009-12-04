@@ -43,10 +43,14 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'InputNodeName'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
-class InputNodeName(QDialog):
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+class InputNodeName(QtGui.QDialog):
     """
     Dialog for interactively entering a name for a given node.
 
@@ -68,8 +72,8 @@ class InputNodeName(QDialog):
         """
 
         # Makes the dialog and gives it a layout
-        QDialog.__init__(self, qApp.activeWindow())
-        QVBoxLayout(self)
+        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        QtGui.QVBoxLayout(self)
 
         # Sets dialog caption
         self.setWindowTitle(title)
@@ -77,37 +81,32 @@ class InputNodeName(QDialog):
         self.info = info
 
         # Main widgets
-        self.value_le = QLineEdit(self)
+        self.value_le = QtGui.QLineEdit(self)
 
-        self.edit_button = QPushButton(action, self)
+        self.edit_button = QtGui.QPushButton(action, self)
         self.cancel_button = \
-            QPushButton(self.__tr('Cancel', 'A button label'), self)
+            QtGui.QPushButton(trs('Cancel', 'A button label'), self)
 
-        self.buttons_box = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons_box = QtGui.QDialogButtonBox(QtCore.Qt.Horizontal, self)
         self.buttons_box.addButton(self.edit_button, 
-            QDialogButtonBox.AcceptRole)
+            QtGui.QDialogButtonBox.AcceptRole)
         self.buttons_box.addButton(self.cancel_button, 
-            QDialogButtonBox.RejectRole)
+            QtGui.QDialogButtonBox.RejectRole)
 
         # Connects SIGNALs to SLOTs
         self.connect(self.value_le, 
-            SIGNAL('textChanged(const QString)'),self.slotCheckName)
-        self.connect(self.buttons_box, SIGNAL('accepted()'),
+            QtCore.SIGNAL('textChanged(const QString)'),self.slotCheckName)
+        self.connect(self.buttons_box, QtCore.SIGNAL('accepted()'),
             self.slotAccept)
-        self.connect(self.buttons_box, SIGNAL('rejected()'),
-            SLOT('reject()'))
+        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
+            QtCore.SLOT('reject()'))
 
         self.addComponents()
         self.value_le.selectAll()
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(SIGNAL('textChanged(const QString)'), 
+        self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), 
             (self.value_le.text()))
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def addComponents(self):
@@ -123,18 +122,18 @@ class InputNodeName(QDialog):
         """
 
         # FIRST ROW -- An informative label
-        info = QLabel(self.info, self)
+        info = QtGui.QLabel(self.info, self)
         self.layout().addWidget(info)
 
         # SECOND ROW -- An input box
         # Blanks are not allowed. First character cannot be a digit
-        name_layout = QHBoxLayout()
+        name_layout = QtGui.QHBoxLayout()
         name_layout.setSpacing(5)
-        value_label = QLabel(self.__tr('Node name:', 'A text box label'),
+        value_label = QtGui.QLabel(trs('Node name:', 'A text box label'),
             self)
         name_layout.addWidget(value_label)
-        validator = QRegExpValidator(self)
-        pattern = QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
+        validator = QtGui.QRegExpValidator(self)
+        pattern = QtCore.QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
         validator.setRegExp(pattern)
         self.value_le.setValidator(validator)
         name_layout.addWidget(self.value_le)

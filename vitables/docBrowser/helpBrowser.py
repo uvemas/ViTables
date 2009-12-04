@@ -24,12 +24,11 @@ Here is defined the HelpBrowser class.
 
 Classes:
 
-* HelpBrowser(QObject) 
+* HelpBrowser(QtCore.QObject) 
 
 Methods:
 
 * __init__(self, vtapp) 
-* __tr(self, source, comment=None)
 * slotDisplaySrc(self, src=None)
 * slotNewBrowser(self)
 * slotOpenFile(self, filepath=None)
@@ -50,6 +49,10 @@ Methods:
 * slotAboutHelpBrowser(self)
 * slotAboutQt(self)
 
+Functions:
+
+* trs(source, comment=None)
+
 Misc variables:
 
 * __docformat__
@@ -59,17 +62,18 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'HelpBrowser'
 
-import os
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
-from vitables.vtSite import DOCDIR
 from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 
-class HelpBrowser(QObject) :
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+class HelpBrowser(QtCore.QObject) :
     """
     Very simple documentation browser.
 
@@ -94,7 +98,7 @@ class HelpBrowser(QObject) :
         :Parameter vtapp: an instance of `VTApp`
         """
 
-        QObject.__init__(self)
+        QtCore.QObject.__init__(self)
 
         self.vtapp = vitables.utils.getVTApp()
 
@@ -112,11 +116,6 @@ class HelpBrowser(QObject) :
         # done (it avoids displaying an ugly empty widget)
         self.slotDisplaySrc('index.html')
         self.gui.show()
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def slotDisplaySrc(self, src=None):
@@ -137,9 +136,9 @@ class HelpBrowser(QObject) :
             action = self.gui.sender()
             src = action.data().toString()
 
-        src = QDir(src).dirName()
-        src = QDir().fromNativeSeparators(src) # src can be a QString
-        url = QUrl(src)
+        src = QtCore.QDir(src).dirName()
+        src = QtCore.QDir().fromNativeSeparators(src) # src can be a QString
+        url = QtCore.QUrl(src)
         self.gui.text_browser.setSource(url)
 
     #########################################################
@@ -172,17 +171,18 @@ class HelpBrowser(QObject) :
         :Parameter filepath: the path of the file being open
         """
 
-        file_dlg = QFileDialog(self.gui)
-        filters = QStringList()
-        filters << self.__tr(
-            "HTML files (*.html *.htm)", 'File filter for the Open File dialog')
-        filters << self.__tr(
+        file_dlg = QtGui.QFileDialog(self.gui)
+        filters = QtCore.QStringList()
+        filters << trs(
+            "HTML files (*.html *.htm)", 
+            'File filter for the Open File dialog')
+        filters << trs(
             "Any file (*.*)", 'File filter for the Open File dialog')
         file_dlg.setNameFilters(filters)
-        file_dlg.setWindowTitle(self.__tr('Select a file for opening', 
+        file_dlg.setWindowTitle(trs('Select a file for opening', 
             'A dialog caption'))
         file_dlg.setDirectory(self.working_dir)
-        file_dlg.setFileMode(QFileDialog.ExistingFile)
+        file_dlg.setFileMode(QtGui.QFileDialog.ExistingFile)
         try:
 
             # OK clicked. Working directory is updated
@@ -286,17 +286,17 @@ class HelpBrowser(QObject) :
         # Clear the last bookmarks menu...
         menu_actions = self.gui.bookmarks_menu.actions()
         for action in menu_actions:
-            if action.text().count(QRegExp("^\d")):
+            if action.text().count(QtCore.QRegExp("^\d")):
                 self.gui.bookmarks_menu.removeAction(action)
         # and refresh it
         index = 0
         for item in self.bookmarks:
             index += 1
             filepath = unicode(item)
-            action = QAction('%s. %s' % (index, filepath), 
+            action = QtGui.QAction('%s. %s' % (index, filepath), 
                                                self.gui.bookmarks_menu)
-            action.setData(QVariant(item))
-            self.gui.connect(action, SIGNAL("triggered()"), 
+            action.setData(QtCore.QVariant(item))
+            self.gui.connect(action, QtCore.SIGNAL("triggered()"), 
                 self.slotDisplaySrc)
             self.gui.bookmarks_menu.addAction(action)
 
@@ -309,7 +309,7 @@ class HelpBrowser(QObject) :
         """
 
         src = self.gui.text_browser.source().toString()
-        src = QDir().fromNativeSeparators(src)
+        src = QtCore.QDir().fromNativeSeparators(src)
         src = unicode(src).replace('///', '/')
         if self.bookmarks.count(src) :
             # if the page is already bookmarked we do nothing
@@ -371,7 +371,7 @@ class HelpBrowser(QObject) :
         """
 
         url = src.toString()
-        url = QDir().fromNativeSeparators(url)
+        url = QtCore.QDir().fromNativeSeparators(url)
         url = unicode(url).replace('///', '/')
         if not self.history.count(url):
             self.history.append(url)
@@ -393,8 +393,8 @@ class HelpBrowser(QObject) :
         Help --> About HelpBrowser
         """
 
-        caption = self.__tr('About HelpBrowser', 'A dialog caption')
-        text = self.__tr(
+        caption = trs('About HelpBrowser', 'A dialog caption')
+        text = trs(
             """<qt>
             <h3>HelpBrowser</h3>
             HelpBrowser is a very simple tool for displaying local Qt
@@ -406,10 +406,10 @@ class HelpBrowser(QObject) :
             'About Help browser text')
 
         # Display a customized About dialog
-        about = QMessageBox(caption, text, 
-            QMessageBox.Information, 
-            QMessageBox.NoButton, QMessageBox.NoButton, 
-            QMessageBox.NoButton, self.gui)
+        about = QtGui.QMessageBox(caption, text, 
+            QtGui.QMessageBox.Information, 
+            QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton, 
+            QtGui.QMessageBox.NoButton, self.gui)
         # Show the message
         about.show()
 
@@ -421,5 +421,5 @@ class HelpBrowser(QObject) :
         Help --> About Qt
         """
 
-        caption = self.__tr('About Qt', 'A dialog caption')
-        QMessageBox.aboutQt(self.gui, caption)
+        caption = trs('About Qt', 'A dialog caption')
+        QtGui.QMessageBox.aboutQt(self.gui, caption)

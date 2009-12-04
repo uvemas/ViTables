@@ -29,12 +29,12 @@ Classes:
 Methods:
 
 * __init__(self, asi, title, user_table)
-* __tr(self, source, comment=None)
 * checkAttributes(self)
 * setAttributes(self)
 
 Functions:
 
+* trs(source, comment=None)
 * checkOverflow(dtype, str_value)
 * checkSyntax(value)
 * formatStrValue(dtype, str_value)
@@ -52,10 +52,15 @@ import sets
 
 import numpy
 
-from PyQt4.QtGui import *
+from PyQt4 import QtGui
 
 import vitables.utils
 
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
 
 def checkSyntax(value):
     """Check the syntax of a `Python` expression.
@@ -201,11 +206,6 @@ class AttrEditor(object):
             self.edited_attrs[rows] = (u'TITLE', title, u'string', False)
 
 
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
-
-
     def checkAttributes(self):
         """
         Check the user attributes table.
@@ -217,17 +217,17 @@ class AttrEditor(object):
         """
 
         # Error message for mismatching value/type pairs
-        dtype_error = self.__tr("""\nError: "%s" value """
+        dtype_error = trs("""\nError: "%s" value """
             """mismatches its data type.""",
             'User attributes table editing error')
 
         # Error message for out of range values
-        range_error = self.__tr("""\nError: "%s" value """
+        range_error = trs("""\nError: "%s" value """
             """is out of range.""",
             'User attributes table editing error')
 
         # Error message for syntax errors in Python attributes
-        syntax_error = self.__tr("""\nError: "%s" """
+        syntax_error = trs("""\nError: "%s" """
             """cannot be converted to a Python object.""",
             'User attributes table editing error')
 
@@ -240,7 +240,7 @@ class AttrEditor(object):
             # but empty Name cells are invalid
             if name == u'':
                 return (False, 
-                        self.__tr("\nError: empty field Name in the row %i", 
+                        trs("\nError: empty field Name in the row %i", 
                         'User attributes table editing error') % int(row + 1))
 
         # Check for repeated names
@@ -251,7 +251,7 @@ class AttrEditor(object):
                 names_list.append(name)
             else:
                 return (False, 
-                        self.__tr('\nError: attribute name "%s" is repeated.', 
+                        trs('\nError: attribute name "%s" is repeated.', 
                         'User attributes table editing error') % name)
 
         # Check for dtype, range and syntax correctness of scalar attributes

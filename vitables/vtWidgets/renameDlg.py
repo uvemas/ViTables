@@ -29,7 +29,7 @@ Classes:
 Methods:
 
 * __init__(self, name, pattern, info)
-* __tr(self, source, comment=None)
+* trs(source, comment=None)
 * addComponents(self)
 * slotCheckNewName(self, new_name)
 * chooseAction(self, button)
@@ -47,10 +47,14 @@ _context = 'RenameDlg'
 
 import re
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
-class RenameDlg(QDialog):
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+class RenameDlg(QtGui.QDialog):
     """
     Ask user for help when a name issue raises.
 
@@ -92,14 +96,14 @@ class RenameDlg(QDialog):
         """
 
         # Makes the dialog and gives it a layout
-        QDialog.__init__(self, qApp.activeWindow())
-        QVBoxLayout(self)
+        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        QtGui.QVBoxLayout(self)
 
         # Sets dialog caption
         self.setWindowTitle(info[0])
 
         self.troubled_name = name
-        self.pattern = QRegExp(pattern)
+        self.pattern = QtCore.QRegExp(pattern)
         self.cpattern = re.compile(pattern)
         self.info_text = info[1]
 
@@ -111,41 +115,38 @@ class RenameDlg(QDialog):
         self.action = {'overwrite': False, 'new_name': ''}
 
         # Main widgets
-        self.value_le = QLineEdit(self)
-        self.rename_button = QPushButton(self.__tr('Rename', 
+        self.value_le = QtGui.QLineEdit(self)
+        self.rename_button = QtGui.QPushButton(trs('Rename', 
                                                     'A button label'), self)
-        self.overwrite_button = QPushButton(self.__tr('Overwrite', 
+        self.overwrite_button = QtGui.QPushButton(trs('Overwrite', 
                                                     'A button label'), self)
-        self.cancel_button = QPushButton(self.__tr('Cancel',
+        self.cancel_button = QtGui.QPushButton(trs('Cancel',
                                                     'A button label'), self)
 
-        self.buttons_box = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons_box = QtGui.QDialogButtonBox(QtCore.Qt.Horizontal, self)
         self.buttons_box.addButton(self.rename_button, 
-            QDialogButtonBox.AcceptRole)
+            QtGui.QDialogButtonBox.AcceptRole)
         self.buttons_box.addButton(self.overwrite_button, 
-            QDialogButtonBox.AcceptRole)
+            QtGui.QDialogButtonBox.AcceptRole)
         self.buttons_box.addButton(self.cancel_button, 
-            QDialogButtonBox.RejectRole)
+            QtGui.QDialogButtonBox.RejectRole)
 
         # Connects SIGNALs to SLOTs
         self.connect(self.value_le, 
-            SIGNAL('textChanged(const QString)'),self.slotCheckNewName)
-        self.connect(self.buttons_box, SIGNAL('clicked(QAbstractButton *)'), 
+            QtCore.SIGNAL('textChanged(const QString)'), 
+            self.slotCheckNewName)
+        self.connect(self.buttons_box, 
+            QtCore.SIGNAL('clicked(QAbstractButton *)'), 
             self.chooseAction)
-        self.connect(self.buttons_box, SIGNAL('rejected()'),
-            SLOT('reject()'))
+        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
+            QtCore.SLOT('reject()'))
 
         self.addComponents()
         self.value_le.selectAll()
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(SIGNAL('textChanged(const QString)'), 
+        self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), 
             (self.value_le.text()))
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def addComponents(self):
@@ -161,17 +162,17 @@ class RenameDlg(QDialog):
         """
 
         # FIRST ROW -- An informative label
-        info = QLabel(self.info_text, self)
+        info = QtGui.QLabel(self.info_text, self)
         self.layout().addWidget(info)
 
         # SECOND ROW -- An input box
         # Blanks are not allowed. First character cannot be a digit
-        newname_layout = QHBoxLayout()
+        newname_layout = QtGui.QHBoxLayout()
         newname_layout.setSpacing(5)
-        value_label = QLabel(self.__tr('New name:', 'A text box label'),
+        value_label = QtGui.QLabel(trs('New name:', 'A text box label'),
             self)
         newname_layout.addWidget(value_label)
-        validator = QRegExpValidator(self)
+        validator = QtGui.QRegExpValidator(self)
         validator.setRegExp(self.pattern)
         self.value_le.setValidator(validator)
         self.value_le.setText(self.troubled_name)

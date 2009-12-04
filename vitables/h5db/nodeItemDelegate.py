@@ -44,12 +44,16 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'NodeItemDelegate'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 
-class NodeItemDelegate(QItemDelegate):
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+class NodeItemDelegate(QtGui.QItemDelegate):
     """
     A custom delegate for editing items of the tree of databases model.
 
@@ -63,14 +67,9 @@ class NodeItemDelegate(QItemDelegate):
         Creates the custom delegate.
         """
 
-        QItemDelegate.__init__(self, parent)
+        QtGui.QItemDelegate.__init__(self, parent)
         self.current_name = None
         self.vtapp = parent.vtapp
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def setEditorData(self, editor, index):
@@ -86,7 +85,7 @@ class NodeItemDelegate(QItemDelegate):
         - `index`: the index of the item being edited
         """
 
-        node_name = index.model().data(index, Qt.DisplayRole).toString()
+        node_name = index.model().data(index, QtCore.Qt.DisplayRole).toString()
         self.current_name = node_name
         editor.setText(node_name)
 
@@ -119,9 +118,9 @@ class NodeItemDelegate(QItemDelegate):
         # rename dialog via method argument and simplifies the code
         pattern = """(^%s$)|""" \
             """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""" % unicode(self.current_name)
-        info = [self.__tr('Renaming a node: name already in use', 
+        info = [trs('Renaming a node: name already in use', 
                 'A dialog caption'), 
-                self.__tr("""Source file: %s\nParent group: %s\n\nThere is """
+                trs("""Source file: %s\nParent group: %s\n\nThere is """
                           """already a node named '%s' in that parent """
                           """group.\n""", 
                           'A dialog label') % \
@@ -135,7 +134,7 @@ class NodeItemDelegate(QItemDelegate):
 
         # Update the underlying data structure
         model.renameNode(index, nodename, overwrite)
-        self.emit(SIGNAL('closeEditor(QWidget *)'), editor)
+        self.emit(QtCore.SIGNAL('closeEditor(QWidget *)'), editor)
 
         # Update the application status bar
         self.vtapp.updateStatusBar()

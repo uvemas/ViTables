@@ -23,12 +23,11 @@
 
 Classes:
 
-* Logger(QTextEdit)
+* Logger(QtGui.QTextEdit)
 
 Methods:
 
 * __init__(self, parent=None)
-* __tr(self, source, comment=None)
 * write(self, text)
 * createCustomContextMenu(self, pos)
 * updateEditMenu(self)
@@ -36,6 +35,10 @@ Methods:
 * enableCopyNodeAction(self)
 * focusInEvent(self, e)
 * focusOutEvent(self, e)
+
+Functions:
+
+* trs(source, comment=None)
 
 Misc variables:
 
@@ -46,10 +49,14 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'Logger'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
-class Logger(QTextEdit):
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+class Logger(QtGui.QTextEdit):
     """
     Logger that receives all informational application messages.
 
@@ -67,12 +74,12 @@ class Logger(QTextEdit):
         :Parameter parent: the parent widget of the Logger
         """
 
-        QTextEdit.__init__(self, parent)
+        QtGui.QTextEdit.__init__(self, parent)
         self.setAcceptRichText(True)
         self.setReadOnly(1)
         self.setMinimumHeight(50)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.setWhatsThis(self.__tr(
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setWhatsThis(trs(
             """<qt>
             <h3>The Logger</h3>
             This is the screen region where info about the currently
@@ -89,17 +96,13 @@ class Logger(QTextEdit):
         self.frame_style = {'shape': self.frameShape(),
             'shadow': self.frameShadow(),
             'lwidth': self.lineWidth(),
-            'foreground': self.palette().color(QPalette.Active, 
-                QPalette.WindowText)}
+            'foreground': self.palette().color(QtGui.QPalette.Active, 
+                QtGui.QPalette.WindowText)}
 
         # Connect signals to slots
-        self.connect(self, SIGNAL("customContextMenuRequested(QPoint)"),
+        self.connect(self, 
+            QtCore.SIGNAL("customContextMenuRequested(QPoint)"), 
             self.createCustomContextMenu)
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def write(self, text):
@@ -120,16 +123,16 @@ class Logger(QTextEdit):
         if text in ['\n', '\r\n']:
             return
         if text.startswith('\nError: '):
-            self.setTextColor(QColor('red'))
+            self.setTextColor(QtGui.QColor('red'))
         elif text.startswith('\nWarning: '):
-            self.setTextColor(QColor(243, 137, 8))
+            self.setTextColor(QtGui.QColor(243, 137, 8))
         self.append(text)
         # Warning! Append() doesn't change the cursor position
         # Because we want to reset the current color **at the end** of
         # the console in order to give the proper color to new messages
         # we must update the cursor position **before** the current
         # color is reset
-        self.moveCursor(QTextCursor.EndOfLine)
+        self.moveCursor(QtGui.QTextCursor.EndOfLine)
         self.setTextColor(current_color)
 
 
@@ -141,24 +144,24 @@ class Logger(QTextEdit):
         """
 
         # Make the menu
-        edit_menu = QMenu(self)
+        edit_menu = QtGui.QMenu(self)
         self.copy_action = edit_menu.addAction(
-            self.__tr("&Copy", 'Logger menu entry'),
-            self, SLOT('copy()'),
-            QKeySequence('CTRL+C'))
+            trs("&Copy", 'Logger menu entry'),
+            self, QtCore.SLOT('copy()'),
+            QtGui.QKeySequence('CTRL+C'))
         self.clear_action = edit_menu.addAction(
-            self.__tr("Cl&ear All", 'Logger menu entry'),
-            self, SLOT('clear()'))
+            trs("Cl&ear All", 'Logger menu entry'),
+            self, QtCore.SLOT('clear()'))
         edit_menu.addSeparator()
         self.select_action = edit_menu.addAction(
-            self.__tr("Select &All", 'Logger menu entry'),
-            self, SLOT('selectAll()'))
+            trs("Select &All", 'Logger menu entry'),
+            self, QtCore.SLOT('selectAll()'))
 
-        self.connect(edit_menu, SIGNAL('aboutToShow()'),
+        self.connect(edit_menu, QtCore.SIGNAL('aboutToShow()'),
             self.updateEditMenu)
-        self.connect(edit_menu, SIGNAL('aboutToShow()'),
+        self.connect(edit_menu, QtCore.SIGNAL('aboutToShow()'),
             self.disableCopyNodeAction)
-        self.connect(edit_menu, SIGNAL('aboutToHide()'),
+        self.connect(edit_menu, QtCore.SIGNAL('aboutToHide()'),
             self.updateCopyNodeAction)
 
         edit_menu.popup(self.mapToGlobal(pos))
@@ -191,7 +194,7 @@ class Logger(QTextEdit):
         This method is called whenever the logger gets keyboard
         focus or its contextual menu is shown.
         """
-        self.emit(SIGNAL('disableCopyNodeAction()'), ())
+        self.emit(QtCore.SIGNAL('disableCopyNodeAction()'), ())
 
 
     def updateCopyNodeAction(self):
@@ -201,7 +204,7 @@ class Logger(QTextEdit):
         This method is called whenever the logger losts keyboard
         focus or its contextual menu is hiden.
         """
-        self.emit(SIGNAL('updateCopyNodeAction()'), ())
+        self.emit(QtCore.SIGNAL('updateCopyNodeAction()'), ())
 
 
     def focusInEvent(self, event):
@@ -212,10 +215,11 @@ class Logger(QTextEdit):
 
         self.disableCopyNodeAction()
         self.setLineWidth(2)
-        self.setFrameStyle(QFrame.Panel|QFrame.Plain)
+        self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
         pal = self.palette()
-        pal.setColor(QPalette.Active, QPalette.WindowText, Qt.darkBlue)
-        QTextEdit.focusInEvent(self, event)
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
+            QtCore.Qt.darkBlue)
+        QtGui.QTextEdit.focusInEvent(self, event)
 
 
     def focusOutEvent(self, event):
@@ -233,13 +237,13 @@ class Logger(QTextEdit):
         self.setFrameShape(self.frame_style['shape'])
         self.setFrameShadow(self.frame_style['shadow'])
         pal = self.palette()
-        pal.setColor(QPalette.Active, QPalette.WindowText, 
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
             self.frame_style['foreground'])
-        QTextEdit.focusOutEvent(self, event)
+        QtGui.QTextEdit.focusOutEvent(self, event)
 
 if __name__ == '__main__':
     import sys
-    APP = QApplication(sys.argv)
+    APP = QtGui.QApplication(sys.argv)
     LOGGER = Logger()
     LOGGER.show()
     # Redirect standard output and standard error to the Logger instance

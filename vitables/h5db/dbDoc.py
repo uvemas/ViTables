@@ -29,7 +29,6 @@ Classes:
 Methods:
 
 * __init__(self, filepath, mode, tmp_dbdoc=None)
-* __tr(self, source, comment=None)
 * openH5File(self)
 * closeH5File(self)
 * getFileFormat(self)
@@ -46,6 +45,8 @@ Methods:
 
 Functions:
 
+* trs(source, comment=None)
+
 Misc variables:
 
 * __docformat__
@@ -59,12 +60,16 @@ import os
 import uuid
 
 import tables
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 
-class DBDoc(QObject):
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+class DBDoc(QtCore.QObject):
     """
     A database contained in an hdf5/PyTables file.
 
@@ -91,7 +96,7 @@ class DBDoc(QObject):
         - `is_tmp_dbdoc`: True if this object represents the temporary database
         """
 
-        QObject.__init__(self)
+        QtCore.QObject.__init__(self)
 
         # The opening mode
         self.mode = mode
@@ -110,13 +115,9 @@ class DBDoc(QObject):
         self.hidden_group = None
 
         if is_tmp_dbdoc:
-            self.h5file.createGroup(u'/', u'_p_query_results', u'Hide the result of queries')
+            self.h5file.createGroup(u'/', u'_p_query_results', 
+                u'Hide the result of queries')
             self.h5file.flush()
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def tieToTempDB(self, tmp_dbdoc):
@@ -135,18 +136,18 @@ class DBDoc(QObject):
         if self.mode != 'r' and os.path.isfile(self.filepath):
             if not os.access(self.filepath, os.W_OK):
                 self.mode = 'r'
-                print self.__tr("""\nWarning: file access in read-write mode"""
+                print trs("""\nWarning: file access in read-write mode"""
                     """ is denied. It will be opened in read-only mode.""",
                     'A logger error message')
 
         try:
             h5file = tables.openFile(self.filepath, self.mode)
         except IOError, inst:
-            print self.__tr("""\nError: %s.""",
+            print trs("""\nError: %s.""",
                 'A logger error message') % inst
         except:
             vitables.utils.formatExceptionInfo()
-            print self.__tr("""Please, if you think this is a bug, report """
+            print trs("""Please, if you think this is a bug, report """
                 """it to developers.""",
                 'A logger error message')
 
@@ -192,7 +193,7 @@ class DBDoc(QObject):
             node = self.h5file.getNode(where)
             return node
         except tables.exceptions.NoSuchNodeError:
-            print self.__tr("""\nError: cannot open node %s in file %s """,
+            print trs("""\nError: cannot open node %s in file %s """,
                 'Error message') % (where, self.filepath)
             vitables.utils.formatExceptionInfo()
             return None
@@ -211,9 +212,7 @@ class DBDoc(QObject):
         Copy the contents of this file to another one.
 
         :Parameter dst_filepath: the full path of the destination file
-        """
 
-        """
         Remarks
         -------
         Given two open files in a ViTables session, overwriting one of them
@@ -225,10 +224,11 @@ class DBDoc(QObject):
         If the overwriting is not done via ViTables but in an interactive
         session it fails, due (probably) to HDF5 memory protection.
         """
+
         try:
             self.h5file.copyFile(dst_filepath.encode('utf_8'), overwrite=True)
         except tables.exceptions.HDF5ExtError:
-            print self.__tr("""\nError: unable to save the file %s as """\
+            print trs("""\nError: unable to save the file %s as """\
                 """%s. Beware that only closed files can be safely """\
                 """overwritten via Save As...""",
                 'A logger error message') % (self.filepath, dst_filepath)

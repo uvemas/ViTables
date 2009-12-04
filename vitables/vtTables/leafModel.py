@@ -38,22 +38,14 @@ Misc variables:
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'LeafModel'
-
-import tempfile
-import os
-import sets
-import exceptions
-import time
 
 import tables
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore
 
 import vitables.utils
 
-class LeafModel(QAbstractTableModel):
+class LeafModel(QtCore.QAbstractTableModel):
     """
     The model for real data contained in leaves.
 
@@ -70,7 +62,7 @@ class LeafModel(QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        QAbstractTableModel.__init__(self, parent)
+        QtCore.QAbstractTableModel.__init__(self, parent)
 
         # The model data source (a PyTables/HDF5 leaf) and its access buffer
         self.data_source = rbuffer.data_source
@@ -127,37 +119,32 @@ class LeafModel(QAbstractTableModel):
         self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)
 
 
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
-
-
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
         with the specified orientation.
         """
 
         # The section alignment
-        if role == Qt.TextAlignmentRole:
-            if orientation == Qt.Horizontal:
-                return QVariant(\
-                    int(Qt.AlignLeft|Qt.AlignVCenter))
-            return QVariant(\
-                int(Qt.AlignRight|Qt.AlignVCenter))
-        if role != Qt.DisplayRole:
-            return QVariant()
+        if role == QtCore.Qt.TextAlignmentRole:
+            if orientation == QtCore.Qt.Horizontal:
+                return QtCore.QVariant(\
+                    int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter))
+            return QtCore.QVariant(\
+                int(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter))
+        if role != QtCore.Qt.DisplayRole:
+            return QtCore.QVariant()
         # The section label for horizontal header
-        if orientation == Qt.Horizontal:
+        if orientation == QtCore.Qt.Horizontal:
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
             if hasattr(self.data_source, 'description'):
-                return QVariant(self.data_source.colnames[section])
-            return QVariant(unicode(section + 1))
+                return QtCore.QVariant(self.data_source.colnames[section])
+            return QtCore.QVariant(unicode(section + 1))
         # The section label for vertical header
-        return QVariant(unicode(self.rbuffer.start + section + 1))
+        return QtCore.QVariant(unicode(self.rbuffer.start + section + 1))
 
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
         referred to by the index.
 
@@ -169,17 +156,18 @@ class LeafModel(QAbstractTableModel):
 
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
-            return QVariant()
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), index.column())
-        if role == Qt.DisplayRole:
-            return QVariant(self.formatContent(cell))
-        elif role == Qt.TextAlignmentRole:
-            return QVariant(int(Qt.AlignLeft|Qt.AlignTop))
+            return QtCore.QVariant()
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
+            index.column())
+        if role == QtCore.Qt.DisplayRole:
+            return QtCore.QVariant(self.formatContent(cell))
+        elif role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.QVariant(int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop))
         else:
-            return QVariant()
+            return QtCore.QVariant()
 
 
-    def columnCount(self, index=QModelIndex()):
+    def columnCount(self, index=QtCore.QModelIndex()):
         """The number of columns of the table.
 
         :Parameter index: the index of the node being inspected.
@@ -187,7 +175,7 @@ class LeafModel(QAbstractTableModel):
         return self.numcols
 
 
-    def rowCount(self, index=QModelIndex()):
+    def rowCount(self, index=QtCore.QModelIndex()):
         """The number of rows of the table.
 
         :Parameter index: the index of the node being inspected.
@@ -205,5 +193,5 @@ class LeafModel(QAbstractTableModel):
         """
 
         self.rbuffer.readBuffer(start, chunk_size)
-        self.emit(SIGNAL("headerDataChanged(int, int, int)"), 
-                    Qt.Vertical, 0, self.numrows - 1)
+        self.emit(QtCore.SIGNAL("headerDataChanged(int, int, int)"), 
+                    QtCore.Qt.Vertical, 0, self.numrows - 1)

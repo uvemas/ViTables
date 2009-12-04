@@ -50,6 +50,79 @@ import vitables.queries.queryDlg as queryDlg
 import vitables.queries.query as query
 
 
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
+def getTableInfo(table):
+    """Retrieves table info required for querying it.
+
+    :Parameter table: the tables.Table instance being queried.
+    """
+    info = {}
+    info[u'nrows'] = table.nrows
+    info[u'src_filepath'] = unicode(table._v_file.filename)
+    info[u'src_path'] = table._v_pathname
+    info[u'name'] = table._v_name
+    # Fields info: top level fields names, flat fields shapes and types
+    info[u'col_names'] = sets.Set(table.colnames)
+    info[u'col_shapes'] = \
+        dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
+    info[u'col_types'] = table.coltypes
+    # Fields that can be queried
+    info[u'condvars'] = {}
+    info[u'valid_fields'] = []
+
+    if info[u'nrows'] <= 0:
+        print trs("""Caveat: table %s is empty. Nothing to query.""",
+            'Warning message for users') % info[u'name']
+        return None
+
+    # The searchable fields and condition variables
+    # First discard nested fields
+    valid_fields = \
+    info[u'col_names'].intersection(info[u'col_shapes'].keys())
+
+    # Then discard fields that aren't scalar and those that are complex
+    for name in valid_fields.copy():
+        if (info[u'col_shapes'][name] != ()) or \
+        info[u'col_types'][name].count(u'complex'):
+            valid_fields.remove(name)
+
+    # Among the remaining fields, those whose names contain blanks
+    # cannot be used in conditions unless they are mapped to
+    # variables with valid names
+    index = 0
+    for name in valid_fields.copy():
+        if name.count(' '):
+            while (u'col%s' % index) in valid_fields:
+                index = index + 1
+            info[u'condvars'][u'col%s' % index] = \
+                table.cols._f_col(name)
+            valid_fields.remove(name)
+            valid_fields.add(u'col%s (%s)' % (index, name))
+            index = index + 1
+    info[u'valid_fields'] = valid_fields
+
+    # If table has not columns suitable to be filtered does nothing
+    if not info[u'valid_fields']:
+        print trs("""\nError: table %s has no """
+        """columns suitable to be queried. All columns are nested, """
+        """multidimensional or have a Complex data type.""",
+        'An error when trying to query a table') % info['name']
+        return None
+    elif len(info[u'valid_fields']) != len(info[u'col_names']):
+    # Log a message if non selectable fields exist
+        print trs("""\nWarning: some table columns contain """
+           """nested, multidimensional or Complex data. They """
+           """cannot be queried so are not included in the Column"""
+           """ selector of the query dialog.""",
+           'An informational note for users')
+
+    return info
 class QueriesManager(QtCore.QObject):
     """This is the class in charge of threading the execution of queries.
 
@@ -101,79 +174,6 @@ class QueriesManager(QtCore.QObject):
         self.dbt_model = self.vtapp.dbs_tree_model
 
 
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(QtGui.qApp.translate(_context, source, comment))
-
-
-    def getTableInfo(self, table):
-        """Retrieves table info required for querying it.
-
-        :Parameter table: the tables.Table instance being queried.
-        """
-        info = {}
-        info[u'nrows'] = table.nrows
-        info[u'src_filepath'] = unicode(table._v_file.filename)
-        info[u'src_path'] = table._v_pathname
-        info[u'name'] = table._v_name
-        # Fields info: top level fields names, flat fields shapes and types
-        info[u'col_names'] = sets.Set(table.colnames)
-        info[u'col_shapes'] = \
-            dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
-        info[u'col_types'] = table.coltypes
-        # Fields that can be queried
-        info[u'condvars'] = {}
-        info[u'valid_fields'] = []
-
-        if info[u'nrows'] <= 0:
-            print self.__tr("""Caveat: table %s is empty. Nothing to query.""",
-                'Warning message for users') % info[u'name']
-            return None
-
-        # The searchable fields and condition variables
-        # First discard nested fields
-        valid_fields = \
-        info[u'col_names'].intersection(info[u'col_shapes'].keys())
-
-        # Then discard fields that aren't scalar and those that are complex
-        for name in valid_fields.copy():
-            if (info[u'col_shapes'][name] != ()) or \
-            info[u'col_types'][name].count(u'complex'):
-                valid_fields.remove(name)
-
-        # Among the remaining fields, those whose names contain blanks
-        # cannot be used in conditions unless they are mapped to
-        # variables with valid names
-        index = 0
-        for name in valid_fields.copy():
-            if name.count(' '):
-                while (u'col%s' % index) in valid_fields:
-                    index = index + 1
-                info[u'condvars'][u'col%s' % index] = \
-                    table.cols._f_col(name)
-                valid_fields.remove(name)
-                valid_fields.add(u'col%s (%s)' % (index, name))
-                index = index + 1
-        info[u'valid_fields'] = valid_fields
-
-        # If table has not columns suitable to be filtered does nothing
-        if not info[u'valid_fields']:
-            print self.__tr("""\nError: table %s has no """
-            """columns suitable to be queried. All columns are nested, """
-            """multidimensional or have a Complex data type.""",
-            'An error when trying to query a table') % info['name']
-            return None
-        elif len(info[u'valid_fields']) != len(info[u'col_names']):
-        # Log a message if non selectable fields exist
-            print self.__tr("""\nWarning: some table columns contain """
-               """nested, multidimensional or Complex data. They """
-               """cannot be queried so are not included in the Column"""
-               """ selector of the query dialog.""",
-               'An informational note for users')
-
-        return info
-
-
     def newQuery(self):
         """Proces the query requests launched by users.
         """
@@ -186,7 +186,7 @@ class QueriesManager(QtCore.QObject):
         table_uid = node.as_record
         table = node.node
 
-        table_info = self.getTableInfo(table)
+        table_info = getTableInfo(table)
         if table_info is None:
             return
 
@@ -265,12 +265,12 @@ class QueriesManager(QtCore.QObject):
         """Delete all nodes from the query results tree."""
 
         del_dlg = QtGui.QMessageBox.question(self.vtapp,
-            self.__tr('Deleting all queries',
+            trs('Deleting all queries',
             'Caption of the QueryDeleteAll dialog'),
-            self.__tr("""\n\nYou are about to delete all nodes """
+            trs("""\n\nYou are about to delete all nodes """
                 """under Query results\n\n""", 'Ask for confirmation'),
-            QtCore.QMessageBox.Yes|QtCore.QMessageBox.Default,
-            QtCore.QMessageBox.No|QtCore.QMessageBox.Escape)
+            QtGui.QMessageBox.Yes|QtGui.QMessageBox.Default,
+            QtGui.QMessageBox.No|QtGui.QMessageBox.Escape)
 
         # OK returns Accept, Cancel returns Reject
         if del_dlg == QtGui.QMessageBox.No:
@@ -302,7 +302,7 @@ class QueriesManager(QtCore.QObject):
 
         QtGui.qApp.restoreOverrideCursor()
         if not completed:
-            print self.__tr('Query on table %s failed!' % table_uid, 
+            print trs('Query on table %s failed!' % table_uid, 
                 'Warning log message about a failed query')
             return
 

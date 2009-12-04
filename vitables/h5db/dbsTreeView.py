@@ -24,12 +24,11 @@ Here is defined the DBsTreeView class.
 
 Classes:
 
-* DBsTreeView(QTreeView)
+* DBsTreeView(QtGui.QTreeView)
 
 Methods:
 
 * __init__(self, vtapp, parent=None)
-* __tr(self, source, comment=None)
 * mouseDoubleClickEvent(self, event)
 * updateCollapsedGroup(self, index)
 * updateExpandedGroup(self, index)
@@ -42,6 +41,7 @@ Methods:
 
 Functions:
 
+* trs(source, comment=None)
 
 Misc variables:
 
@@ -52,13 +52,17 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'DBsTreeView'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 from vitables.h5db.nodeItemDelegate import NodeItemDelegate
 
-class DBsTreeView(QTreeView):
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
+class DBsTreeView(QtGui.QTreeView):
     """
     The tree of DBs view.
 
@@ -76,7 +80,7 @@ class DBsTreeView(QTreeView):
             - `parent`: the parent widget.
         """
 
-        QTreeView.__init__(self, parent)
+        QtGui.QTreeView.__init__(self, parent)
         self.vtapp = vitables.utils.getVTApp()
 
         # The model
@@ -91,20 +95,20 @@ class DBsTreeView(QTreeView):
         self.frame_style = {'shape': self.frameShape(),
             'shadow': self.frameShadow(),
             'lwidth': self.lineWidth(),
-            'foreground': self.palette().color(QPalette.Active, 
-                QPalette.WindowText)}
+            'foreground': self.palette().color(QtGui.QPalette.Active, 
+                QtGui.QPalette.WindowText)}
 
         # Setup drag and drop
-        self.setDragDropMode(QAbstractItemView.DragDrop)
+        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
 
         # Misc. setup
         self.setRootIsDecorated(True)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setWhatsThis(self.__tr(
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setWhatsThis(trs(
             """<qt>
             <h3>The Tree of databases</h3>
             For every open database this widget shows the object tree, 
@@ -113,19 +117,14 @@ class DBsTreeView(QTreeView):
             'WhatsThis help for the tree pane'))
 
         # Connect signals to slots
-        self.connect(self, SIGNAL("customContextMenuRequested(QPoint)"),
+        self.connect(self, QtCore.SIGNAL("customContextMenuRequested(QPoint)"),
             self.createCustomContextMenu)
-        self.connect(self, SIGNAL('activated(QModelIndex)'),
+        self.connect(self, QtCore.SIGNAL('activated(QModelIndex)'),
             self.activateNode)
-        self.connect(self, SIGNAL('expanded(QModelIndex)'),
+        self.connect(self, QtCore.SIGNAL('expanded(QModelIndex)'),
             self.updateExpandedGroup)
-        self.connect(self, SIGNAL('collapsed(QModelIndex)'),
+        self.connect(self, QtCore.SIGNAL('collapsed(QModelIndex)'),
             self.updateCollapsedGroup)
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
 
 
     def mouseDoubleClickEvent(self, event):
@@ -142,8 +141,8 @@ class DBsTreeView(QTreeView):
 
         modifier = event.modifiers()
         current = self.currentIndex()
-        if modifier == Qt.ShiftModifier:
-            if current.flags() & Qt.ItemIsEditable:
+        if modifier == QtCore.Qt.ShiftModifier:
+            if current.flags() & QtCore.Qt.ItemIsEditable:
                 self.edit(current)
         else:
             self.activateNode(current)
@@ -158,8 +157,8 @@ class DBsTreeView(QTreeView):
         model = self.model()
         node = model.nodeFromIndex(index)
         if node.node_kind == 'group':
-            model.setData(index, QVariant(node.closed_folder),
-                Qt.DecorationRole)
+            model.setData(index, QtCore.QVariant(node.closed_folder),
+                QtCore.Qt.DecorationRole)
 
 
     def updateExpandedGroup(self, index):
@@ -179,8 +178,8 @@ class DBsTreeView(QTreeView):
         if node_kind in ['group', 'root group']:
             model.lazyAddChildren(index)
         if node_kind == 'group':
-            model.setData(index, QVariant(node.open_folder),
-                Qt.DecorationRole)
+            model.setData(index, QtCore.QVariant(node.open_folder),
+                QtCore.Qt.DecorationRole)
         self.update(index)
 
 
@@ -243,12 +242,12 @@ class DBsTreeView(QTreeView):
         self.vtapp.updateStatusBar()
 
         # Activate the view (if any) of the selected node
-        pcurrent = QPersistentModelIndex(current)
+        pcurrent = QtCore.QPersistentModelIndex(current)
         for window in self.vtapp.workspace.subWindowList():
             if pcurrent == window.pindex:
                 self.vtapp.workspace.setActiveSubWindow(window)
 
-        QTreeView.currentChanged(self, current, previous)
+        QtGui.QTreeView.currentChanged(self, current, previous)
 
 
     def dropEvent(self, event):
@@ -265,12 +264,12 @@ class DBsTreeView(QTreeView):
         mime_data = event.mimeData()
         model = self.model()
         if mime_data.hasFormat('text/uri-list'):
-            if model.dropMimeData(mime_data, Qt.CopyAction, -1, -1, 
+            if model.dropMimeData(mime_data, QtCore.Qt.CopyAction, -1, -1, 
                 self.currentIndex()):
-                event.setDropAction(Qt.CopyAction)
+                event.setDropAction(QtCore.Qt.CopyAction)
                 event.accept()
         else:
-            QTreeView.dropEvent(self, event)
+            QtGui.QTreeView.dropEvent(self, event)
 
 
     def dragEnterEvent(self, event):
@@ -284,10 +283,10 @@ class DBsTreeView(QTreeView):
 
         mime_data = event.mimeData()
         if mime_data.hasFormat('text/uri-list'):
-            event.setDropAction(Qt.CopyAction)
+            event.setDropAction(QtCore.Qt.CopyAction)
             event.acceptProposedAction()
         else:
-            QTreeView.dragEnterEvent(self, event)
+            QtGui.QTreeView.dragEnterEvent(self, event)
 
 
     def dragMoveEvent(self, event):
@@ -303,10 +302,10 @@ class DBsTreeView(QTreeView):
 
         mime_data = event.mimeData()
         if mime_data.hasFormat('text/uri-list'):
-            event.setDropAction(Qt.CopyAction)
+            event.setDropAction(QtCore.Qt.CopyAction)
             event.acceptProposedAction()
         else:
-            return QTreeView.dragMoveEvent(self, event)
+            return QtGui.QTreeView.dragMoveEvent(self, event)
 
 
     def focusInEvent(self, event):
@@ -316,10 +315,11 @@ class DBsTreeView(QTreeView):
         """
 
         self.setLineWidth(2)
-        self.setFrameStyle(QFrame.Panel|QFrame.Plain)
+        self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
         pal = self.palette()
-        pal.setColor(QPalette.Active, QPalette.WindowText, Qt.darkBlue)
-        QTreeView.focusInEvent(self, event)
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
+            QtCore.Qt.darkBlue)
+        QtGui.QTreeView.focusInEvent(self, event)
 
 
     def focusOutEvent(self, event):
@@ -332,13 +332,13 @@ class DBsTreeView(QTreeView):
         self.setFrameShape(self.frame_style['shape'])
         self.setFrameShadow(self.frame_style['shadow'])
         pal = self.palette()
-        pal.setColor(QPalette.Active, QPalette.WindowText, 
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
             self.frame_style['foreground'])
-        QTreeView.focusOutEvent(self, event)
+        QtGui.QTreeView.focusOutEvent(self, event)
 
 if __name__ == '__main__':
     import sys
-    APP = QApplication(sys.argv)
+    APP = QtGui.QApplication(sys.argv)
     TREE = DBsTreeView()
     TREE.show()
     APP.exec_()

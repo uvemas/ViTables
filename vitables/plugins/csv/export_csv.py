@@ -39,6 +39,11 @@ from PyQt4 import QtCore, QtGui
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
 class ExportToCSV(object):
     """Provides CSV export capabilities for arrays.
 
@@ -64,11 +69,6 @@ class ExportToCSV(object):
             self.updateDatasetMenu)
 
 
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(QtGui.qApp.translate(_context, source, comment))
-
-
     def addEntry(self):
         """Add the Export to CSV... entry to the Dataset menu.
         """
@@ -81,10 +81,10 @@ class ExportToCSV(object):
         icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
         self.export_action = vitables.utils.createAction(menu, 
-            self.__tr("E&xport to CSV...", "Save dataset as CSV"), 
+            trs("E&xport to CSV...", "Save dataset as CSV"), 
             QtGui.QKeySequence.UnknownKey, self.export, 
             icon, 
-            self.__tr("Save the dataset as a plain text with CSV format", 
+            trs("Save the dataset as a plain text with CSV format", 
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
@@ -122,14 +122,14 @@ class ExportToCSV(object):
         # Call the file selector (and, if needed, customise it)
         file_selector = vitables.utils.getFileSelector(\
             self.vtapp, 
-            self.__tr('Exporting dataset to CSV format', 
+            trs('Exporting dataset to CSV format', 
                 'Caption of the Export to CSV dialog'), 
-            dfilter=self.__tr("""All Files (*)""", 
+            dfilter=trs("""All Files (*)""", 
                 'Filter for the Export to CSV dialog'), 
             settings={'accept_mode': QtGui.QFileDialog.AcceptSave, 
             'file_mode': QtGui.QFileDialog.AnyFile, 
             'history': self.vtapp.file_selector_history, 
-            'label': self.__tr('Export', 'Accept button text for QFileDialog')
+            'label': trs('Export', 'Accept button text for QFileDialog')
             })
 
         # Customise the file selector dialog for exporting to CSV files
@@ -169,14 +169,14 @@ class ExportToCSV(object):
 
         # Check the returned path
         if os.path.exists(filepath):
-            print self.__tr(
+            print trs(
                 """\nWarning: """
                 """export failed because destination file already exists.""",
                 'A file creation error')
             return
 
         if os.path.isdir(filepath):
-            print self.__tr(
+            print trs(
                 """\nWarning: export failed """
                 """because destination container is a directory.""",
                 'A file creation error')

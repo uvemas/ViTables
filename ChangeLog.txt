@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** December 04, 2009 **
+Removed wild imports and other minor annoyances common to most modules.
+
 The time series plugin has been refactored.
 
 pluginsManager module has been refactored to improve some bizarre behavior.

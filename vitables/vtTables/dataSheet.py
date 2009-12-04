@@ -42,8 +42,7 @@ Misc variables:
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 import vitables.nodeProperties.nodeInfo as nodeInfo
@@ -52,7 +51,7 @@ import vitables.vtTables.leafModel as leafModel
 import vitables.vtTables.leafView as leafView
 import vitables.vtTables.buffer as readBuffer
 
-class DataSheet(QMdiSubWindow):
+class DataSheet(QtGui.QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
     """
@@ -77,9 +76,9 @@ class DataSheet(QMdiSubWindow):
         leaf_model = leafModel.LeafModel(rbuffer)
         leaf_view = leafView.LeafView(leaf_model)
 
-        QMdiSubWindow.__init__(self, self.vtapp.workspace)
+        QtGui.QMdiSubWindow.__init__(self, self.vtapp.workspace)
         self.setWidget(leaf_view)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         # Customise the title bar
         if not isinstance(leaf.title, unicode):
@@ -94,11 +93,11 @@ class DataSheet(QMdiSubWindow):
         self.dbt_leaf.has_view = True
         self.vtapp.slotUpdateActions()
 
-        self.pindex = QPersistentModelIndex(index)
+        self.pindex = QtCore.QPersistentModelIndex(index)
 
-        self.connect(self, SIGNAL("aboutToActivate()"), 
+        self.connect(self, QtCore.SIGNAL("aboutToActivate()"), 
                      self.syncTreeView)
-        self.connect(leaf_view, SIGNAL("doubleClicked(QModelIndex)"), 
+        self.connect(leaf_view, QtCore.SIGNAL("doubleClicked(QModelIndex)"), 
             self.zoomCell)
 
 
@@ -115,7 +114,7 @@ class DataSheet(QMdiSubWindow):
 
         # Propagate the event. In the process, self.widget().closeEvent
         # will be called 
-        QMdiSubWindow.closeEvent(self, event)
+        QtGui.QMdiSubWindow.closeEvent(self, event)
 
 
     def syncTreeView(self):
@@ -125,7 +124,8 @@ class DataSheet(QMdiSubWindow):
         # Locate the tree view leaf tied to this data sheet. Persistent
         # indices are used to get direct access to the leaf so we don't
         # have to walk the tree
-        self.vtapp.dbs_tree_view.setCurrentIndex(QModelIndex(self.pindex))
+        self.vtapp.dbs_tree_view.setCurrentIndex(\
+            QtCore.QModelIndex(self.pindex))
 
 
     def zoomCell(self, index):
@@ -147,8 +147,8 @@ class DataSheet(QMdiSubWindow):
             title = '%s: %s[%s]' % (node.name, col, 
                 tmodel.rbuffer.start + row + 1)
         else:
-            title = '%s: (%s,%s)' % (node.name, tmodel.rbuffer.start + row + 1, 
-                column + 1)
+            title = '%s: (%s,%s)' % (node.name, 
+                tmodel.rbuffer.start + row + 1, column + 1)
 
         zoomCell.ZoomCell(data, title, self.vtapp.workspace, 
                           self.dbt_leaf)

@@ -24,7 +24,7 @@ Here is defined the Config class.
 
 Classes:
 
-* Config(QSettings)
+* Config(QtCore.QSettings)
 
 Methods:
 
@@ -111,11 +111,9 @@ b)  using `setPath` method once before we read/write settings, so
 __docformat__ = 'restructuredtext'
 __version__ = '2.1b'
 
-import os
 import sys
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 from vitables.preferences import configException
 import vitables.utils
@@ -126,7 +124,7 @@ def getVersion():
     return __version__
 
 
-class Config(QSettings):
+class Config(QtCore.QSettings):
     """
     Manages the application configuration dynamically.
 
@@ -147,15 +145,15 @@ class Config(QSettings):
         docstring.for more information)
         """
 
-        organization = qApp.organizationName()
-        product = qApp.applicationName()
-        version = qApp.applicationVersion()
+        organization = QtGui.qApp.organizationName()
+        product = QtGui.qApp.applicationName()
+        version = QtGui.qApp.applicationVersion()
         if (not sys.platform.startswith('win')) and \
         (not sys.platform.startswith('darwin')):
-            QSettings.__init__(self, organization, 
+            QtCore.QSettings.__init__(self, organization, 
                 product.append('-').append(version))
         else:
-            QSettings.__init__(self, product, version)
+            QtCore.QSettings.__init__(self, product, version)
 
         # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback
@@ -163,7 +161,7 @@ class Config(QSettings):
         self.setFallbacksEnabled(False)
 
         # The application default style depends on the platform
-        styles = QStyleFactory.keys()
+        styles = QtGui.QStyleFactory.keys()
         self.default_style = styles[0]
         vtapp = vitables.utils.getVTApp()
         if not (vtapp is None):
@@ -181,9 +179,9 @@ class Config(QSettings):
         """
 
         key = 'Logger/Paper'
-        default_value = QVariant(QColor("#ffffff"))
+        default_value = QtCore.QVariant(QtGui.QColor("#ffffff"))
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.Color):
+        if setting_value.canConvert(QtCore.QVariant.Color):
             return setting_value
         else:
             return default_value
@@ -195,9 +193,9 @@ class Config(QSettings):
         """
 
         key = 'Logger/Text'
-        default_value = QVariant(QColor("#000000"))
+        default_value = QtCore.QVariant(QtGui.QColor("#000000"))
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.Color):
+        if setting_value.canConvert(QtCore.QVariant.Color):
             return setting_value
         else:
             return default_value
@@ -209,9 +207,9 @@ class Config(QSettings):
         """
 
         key = 'Logger/Font'
-        default_value = QVariant(qApp.font())
+        default_value = QtCore.QVariant(QtGui.qApp.font())
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.Font):
+        if setting_value.canConvert(QtCore.QVariant.Font):
             return setting_value
         else:
             return default_value
@@ -223,9 +221,9 @@ class Config(QSettings):
         """
 
         key = 'Workspace/Background'
-        default_value = QVariant(QBrush(QColor("#ffffff")))
+        default_value = QtCore.QVariant(QtGui.QBrush(QtGui.QColor("#ffffff")))
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.Brush):
+        if setting_value.canConvert(QtCore.QVariant.Brush):
             return setting_value
         else:
             return default_value
@@ -236,14 +234,14 @@ class Config(QSettings):
 
         # The property key and its default value
         key = 'Look/currentStyle'
-        default_value = QVariant(self.default_style)
+        default_value = QtCore.QVariant(self.default_style)
 
         # Read the entry from the configuration file/registry
         entry = self.value(key)
 
         # Check the entry format and value
-        styles = QStyleFactory.keys()
-        if not entry.canConvert(QVariant.String):
+        styles = QtGui.QStyleFactory.keys()
+        if not entry.canConvert(QtCore.QVariant.String):
             return default_value
         elif not styles.contains(entry.toString()):
             return default_value
@@ -257,9 +255,9 @@ class Config(QSettings):
         """
 
         key = 'Geometry/Position'
-        default_value = QVariant()
+        default_value = QtCore.QVariant()
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.ByteArray):
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
             return setting_value
         else:
             return default_value
@@ -274,9 +272,9 @@ class Config(QSettings):
         """
 
         key = 'Geometry/Layout'
-        default_value = QVariant()
+        default_value = QtCore.QVariant()
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.ByteArray):
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
             return setting_value
         else:
             return default_value
@@ -288,9 +286,9 @@ class Config(QSettings):
         """
 
         key = 'Geometry/HSplitter'
-        default_value = QVariant()
+        default_value = QtCore.QVariant()
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.ByteArray):
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
             return setting_value
         else:
             return default_value
@@ -302,9 +300,9 @@ class Config(QSettings):
         """
 
         key = 'Geometry/VSplitter'
-        default_value = QVariant()
+        default_value = QtCore.QVariant()
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.ByteArray):
+        if setting_value.canConvert(QtCore.QVariant.ByteArray):
             return setting_value
         else:
             return default_value
@@ -316,23 +314,21 @@ class Config(QSettings):
         """
 
         key = 'Startup/restoreLastSession'
-        default_value = QVariant(False)
+        default_value = QtCore.QVariant(False)
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.Bool):
+        if setting_value.canConvert(QtCore.QVariant.Bool):
             return setting_value
         else:
             return default_value
-
-
     def startupWorkingDir(self):
         """
         Returns the startup working directory setting.
         """
 
         key = 'Startup/startupWorkingDir'
-        default_value = QVariant('home')
+        default_value = QtCore.QVariant('home')
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.String):
+        if setting_value.canConvert(QtCore.QVariant.String):
             return setting_value
         else:
             return default_value
@@ -344,9 +340,9 @@ class Config(QSettings):
         """
 
         key = 'Startup/lastWorkingDir'
-        default_value = QVariant(vitables.utils.getHomeDir())
+        default_value = QtCore.QVariant(vitables.utils.getHomeDir())
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.String):
+        if setting_value.canConvert(QtCore.QVariant.String):
             return setting_value
         else:
             return default_value
@@ -358,9 +354,9 @@ class Config(QSettings):
         """
 
         key = 'Recent/Files'
-        default_value = QVariant([])
+        default_value = QtCore.QVariant([])
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.StringList):
+        if setting_value.canConvert(QtCore.QVariant.StringList):
             return setting_value
         else:
             return default_value
@@ -372,9 +368,9 @@ class Config(QSettings):
         """
 
         key = 'Session/Files'
-        default_value = QVariant([])
+        default_value = QtCore.QVariant([])
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.StringList):
+        if setting_value.canConvert(QtCore.QVariant.StringList):
             return setting_value
         else:
             return default_value
@@ -386,9 +382,9 @@ class Config(QSettings):
         """
 
         key = 'HelpBrowser/History'
-        default_value = QVariant([])
+        default_value = QtCore.QVariant([])
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.StringList):
+        if setting_value.canConvert(QtCore.QVariant.StringList):
             return setting_value
         else:
             return default_value
@@ -400,9 +396,9 @@ class Config(QSettings):
         """
 
         key = 'HelpBrowser/Bookmarks'
-        default_value = QVariant([])
+        default_value = QtCore.QVariant([])
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.StringList):
+        if setting_value.canConvert(QtCore.QVariant.StringList):
             return setting_value
         else:
             return default_value
@@ -413,9 +409,9 @@ class Config(QSettings):
         """
 
         key = 'Plugins/Paths'
-        default_value = QVariant([])
+        default_value = QtCore.QVariant([])
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.StringList):
+        if setting_value.canConvert(QtCore.QVariant.StringList):
             return setting_value
         else:
             return default_value
@@ -426,9 +422,9 @@ class Config(QSettings):
         """
 
         key = 'Plugins/Enabled'
-        default_value = QVariant([])
+        default_value = QtCore.QVariant([])
         setting_value = self.value(key)
-        if setting_value.canConvert(QVariant.StringList):
+        if setting_value.canConvert(QtCore.QVariant.StringList):
             return setting_value
         else:
             return default_value
@@ -445,7 +441,7 @@ class Config(QSettings):
         """
 
         try:
-            self.setValue(key, QVariant(value))
+            self.setValue(key, QtCore.QVariant(value))
             if self.status():
                 raise configException.ConfigFileIOException, \
                     '%s=%s' % (key, value)

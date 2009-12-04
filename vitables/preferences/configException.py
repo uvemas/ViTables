@@ -40,8 +40,13 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'ConfigFileIOException'
 
-from PyQt4.QtGui import *
+from PyQt4 import QtGui
 
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
 class ConfigFileIOException(Exception):
     """Exception class for IO errors in the configuration file."""
 
@@ -56,17 +61,12 @@ class ConfigFileIOException(Exception):
         # raised. If not a read exception is raised
         if '=' in key:
             setting = key.split('=')[0]
-            self.error_message = self.__tr(\
+            self.error_message = trs(\
                 """\nConfiguration error: the application setting """\
                 """%s cannot be saved.""",
                 'A logger error message')  % setting
         else:
-            self.error_message = self.__tr(\
+            self.error_message = trs(\
                 """\nConfiguration warning: the application setting """\
                 """%s cannot be read. Its default value will be used.""",
                 'A logger error message')  % key
-
-
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(qApp.translate(_context, source, comment))
