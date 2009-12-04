@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 04, 2009 **
+Usability of csv_import plugin has been improved with better dialog texts.
+
 ** December 03, 2009 **
 Autodetection of tables headers has been added to the import csv plugin.
 

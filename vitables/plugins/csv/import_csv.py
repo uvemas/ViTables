@@ -55,7 +55,7 @@ Other aspects to take into account:
 
 __docformat__ = 'restructuredtext'
 _context = 'ImportCSV'
-__version__ = '0.7'
+__version__ = '0.8'
 plugin_class = 'ImportCSV'
 
 import os
@@ -69,6 +69,11 @@ from PyQt4 import QtCore, QtGui
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
 def getArray(buf):
@@ -202,7 +207,7 @@ def homogeneousTableInfo(input_handler, first_line, data):
         buf_size = 1024 * 1024
         read_fh = input_handler.readlines
         input_handler.seek(0)
-        if question == QtGui.QMessageBox.Yes:
+        if question == 'Header':
             # Skip the header
             has_header = True
             input_handler.readline()
@@ -255,15 +260,26 @@ def askForHelp(first_line):
     """
 
     qmbox = QtGui.QMessageBox()
-    qmbox.setWindowTitle('Table header detection')
-    qmbox.setText("""This table contains only text fields. """
-            """Is the first row a header?""")
+    qmbox.setWindowTitle(trs('Resolving first line role', 
+        'Message box title'))
+    qmbox.setText(trs("""Does the first line of the file contain """
+        """a table header or regular data?""", 'Message box text'))
     detail = reduce(lambda x, y: '%s, %s' % (x, y), first_line)
     qmbox.setDetailedText(detail)
-    qmbox.setStandardButtons(QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
+    header_button = qmbox.addButton(\
+        trs('Header', 'Button text'), QtGui.QMessageBox.YesRole)
+    qmbox.addButton(\
+        trs('Data', 'Button text'), QtGui.QMessageBox.NoRole)
+    qmbox.setIcon(QtGui.QMessageBox.Question)
     qmbox.setDefaultButton(QtGui.QMessageBox.NoButton)
-
-    return qmbox.exec_()
+#    for button in qmbox.findChildren(QtGui.QPushButton):
+#        if button.text() == 'Show Details...':
+#            button.setText('Show first line...')
+    qmbox.exec_()
+    if qmbox.clickedButton() == header_button:
+        return 'Header'
+    else:
+        return 'Data'
 
 
 def earrayInfo(input_handler):
@@ -380,6 +396,30 @@ def carrayInfo(input_handler):
     del data
     input_handler.seek(0)
     return atom, array_shape
+
+
+def isValidFilepath(filepath):
+    """Check the filepath of the destination file.
+
+    :Parameter `filepath`: the filepath where the imported dataset will live
+    """
+
+    valid = True
+    if os.path.exists(filepath):
+        print trs(
+            """\nWarning: """
+            """export failed because destination file already exists.""",
+            'A file creation error')
+        valid = False
+
+    elif os.path.isdir(filepath):
+        print trs(
+            """\nWarning: export failed """
+            """because destination container is a directory.""",
+            'A file creation error')
+        valid = False
+
+    return valid
 class ImportCSV(object):
     """Provides CSV import capabilities for tables and arrays.
 
@@ -403,11 +443,6 @@ class ImportCSV(object):
         self.addEntry()
 
 
-    def __tr(self, source, comment=None):
-        """Translate method."""
-        return unicode(QtGui.qApp.translate(_context, source, comment))
-
-
     def addEntry(self):
         """Add the Import CSV... entry to the File menu.
         """
@@ -418,7 +453,7 @@ class ImportCSV(object):
         icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
         self.import_submenu = \
-            QtGui.QMenu(self.__tr('I&mport from CSV...','File -> Import CSV'))
+            QtGui.QMenu(trs('I&mport from CSV...','File -> Import CSV'))
         self.import_submenu.setSeparatorsCollapsible(False)
         self.import_submenu.setIcon(icon)
 
@@ -426,35 +461,35 @@ class ImportCSV(object):
         actions = {}
         actions['import_table'] = vitables.utils.createAction(\
             self.import_submenu, 
-            self.__tr("Import T&able...", \
+            trs("Import T&able...", \
                 "Import table from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importTable,
             None,
-            self.__tr("Import Table from plain CSV file", 
+            trs("Import Table from plain CSV file", 
             "Status bar text for the File -> Import CSV... -> Import Table"))
 
         actions['import_array'] = vitables.utils.createAction(\
             self.import_submenu, 
-            self.__tr("Import A&rray...", "Import array from CSV file"),
+            trs("Import A&rray...", "Import array from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importArray,
             None,
-            self.__tr("Import Array from plain CSV file",
+            trs("Import Array from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import Array"))
 
         actions['import_carray'] = vitables.utils.createAction(\
             self.import_submenu, 
-            self.__tr("Import C&Array...", "Import carray from CSV file"),
+            trs("Import C&Array...", "Import carray from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importCArray,
             None,
-            self.__tr("Import CArray from plain CSV file",
+            trs("Import CArray from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import CArray"))
 
         actions['import_earray'] = vitables.utils.createAction(\
             self.import_submenu, 
-            self.__tr("Import E&Array...", "Import earray from CSV file"),
+            trs("Import E&Array...", "Import earray from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importEArray,
             None,
-            self.__tr("Import EArray from plain CSV file",
+            trs("Import EArray from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import EArray"))
 
         # Add actions to the Import submenu
@@ -469,30 +504,6 @@ class ImportCSV(object):
                 self.vtapp.file_menu.insertSeparator(item)
 
 
-    def isValidFilepath(self, filepath):
-        """Check the filepath of the destination file.
-
-        :Parameter `filepath`: the filepath where the imported dataset will live
-        """
-
-        valid = True
-        if os.path.exists(filepath):
-            print self.__tr(
-                """\nWarning: """
-                """export failed because destination file already exists.""",
-                'A file creation error')
-            valid = False
-
-        elif os.path.isdir(filepath):
-            print self.__tr(
-                """\nWarning: export failed """
-                """because destination container is a directory.""",
-                'A file creation error')
-            valid = False
-
-        return valid
-
-
     def createDestFile(self, filepath):
         """Create the PyTables file where the CSV file will be imported.
 
@@ -505,10 +516,10 @@ class ImportCSV(object):
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
             dest_filepath = os.path.join(dirname, '%s.h5' % root)
-            if self.isValidFilepath(dest_filepath):
+            if isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
-            print self.__tr(
+            print trs(
                 """\nWarning: import failed """
                 """because destination file cannot be created.""",
                 'A file creation error')
@@ -526,14 +537,14 @@ class ImportCSV(object):
         # Call the file selector (and, if needed, customise it)
         filepath, working_dir = vitables.utils.getFilepath(\
             self.vtapp, 
-            self.__tr('Importing CSV file into %s',
+            trs('Importing CSV file into %s',
                 'Caption of the Import from CSV dialog') % leaf_kind, 
-            dfilter=self.__tr("""CSV Files (*.csv);;"""
+            dfilter=trs("""CSV Files (*.csv);;"""
                 """All Files (*)""", 'Filter for the Import from CSV dialog'), 
             settings={'accept_mode': QtGui.QFileDialog.AcceptOpen, 
             'file_mode': QtGui.QFileDialog.ExistingFile, 
             'history': self.vtapp.file_selector_history, 
-            'label': self.__tr('Import', 'Accept button text for QFileDialog')}
+            'label': trs('Import', 'Accept button text for QFileDialog')}
             )
 
         if not filepath:
@@ -645,7 +656,7 @@ class ImportCSV(object):
                 buf = read_fh(buf_size)
             dbdoc.h5file.flush()
         except ValueError:
-            print self.__tr("""\nError: please, make sure that you are """\
+            print trs("""\nError: please, make sure that you are """\
                 """importing a homogeneous dataset.""",
                 'CSV file not imported error')
         except:
@@ -703,7 +714,7 @@ class ImportCSV(object):
                 buf = read_fh(buf_size)
             dbdoc.h5file.flush()
         except ValueError:
-            print self.__tr("""\nError: please, make sure that you are """\
+            print trs("""\nError: please, make sure that you are """\
                 """importing a homogeneous dataset.""",
                 'CSV file not imported error')
         except:
@@ -742,7 +753,7 @@ class ImportCSV(object):
             dbdoc.h5file.createArray('/', array_name, data, title=title)
             dbdoc.h5file.flush()
         except TypeError:
-            print self.__tr("""\nError: please, make sure that you are """\
+            print trs("""\nError: please, make sure that you are """\
                 """importing a homogeneous dataset.""",
                 'CSV file not imported error')
             self.dbt_model.closeDBDoc(dbdoc.filepath)
