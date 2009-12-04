@@ -26,7 +26,7 @@ series contained in PyTables tables generated via scikits.timeseries.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '0.6'
+__version__ = '0.7'
 plugin_class = 'TSFormatter'
 
 import time
@@ -38,10 +38,93 @@ try:
 except ImportError:
     ts = None
 
-from PyQt4.QtCore import *
+from PyQt4 import QtCore
 
 import vitables.utils
 
+
+
+def findTS(datasheet):
+    """Find out if the inspected leaf contains a time field.
+
+    **Existing time fields that cannot be formatted are skipped**:
+
+        - time series created via scikits.timeseries module are
+          ignored if that module is not available
+        - time fields that are displayed in a multidimensional cell 
+          are ignored
+
+    The last restriction includes the following cases:
+
+        - time fields that are part of a nested field
+        - time fields in VLArrays
+        - time fields in arrays with more than 2 dimensions
+        - time fields in arrays with atom shape other than ()
+
+    :Parameter `datasheet`: the DataSheet instance being inspected.
+    :Return `ts_kind`: a flag indicating the kind of time series found
+    """
+
+    leaf = datasheet.dbt_leaf.node
+    time_types = ['time32', 'time64']
+    if isinstance(leaf, tables.Table):
+        attrs = leaf._v_attrs
+        coltypes = leaf.coltypes
+        if hasattr(attrs, 'CLASS') and attrs.CLASS == 'TimeSeriesTable' \
+            and ts:
+            return 'scikits_ts'
+        for name in leaf.colnames:
+            if coltypes.has_key(name) and coltypes[name] in time_types: 
+                return 'pytables_ts'
+    elif leaf.atom.type in time_types and \
+        len(leaf.shape) < 3 and \
+        leaf.atom.shape == () and \
+        datasheet.dbt_leaf.node_kind != u'vlarray': 
+        return 'pytables_ts'
+    else:
+        return None
+
+
+def tsPositions(ts_kind, leaf):
+    """Return the position of the time field going to be formatted.
+
+    The following cases can occur:
+    - leaf is a TimeSeriesTable instance. It contains just one time field,
+      in a column labeled as _dates.
+    - leaf is a regular Table instance. Every column can contain a time
+      data type so we must inspect every column
+    - leaf is an Array instance. As it is a homogeneous data container if
+      a column contains a time data type then every column contains a time
+      data type. Specific positions are not required
+    """
+
+    positions = []
+    if (ts_kind == 'scikits_ts'):
+        positions.append(leaf.coldescrs['_dates']._v_pos)
+    elif ts_kind == 'pytables_ts':
+        if isinstance(leaf, tables.Table):
+            for name in leaf.colnames:
+                if leaf.coltypes[name] in ['time32', 'time64']:
+                    positions.append(leaf.coldescrs[name]._v_pos)
+        else:
+            positions = [-1]
+    return positions
+
+
+def tsFrequency(ts_kind, leaf):
+    """Return the frequency (if any) of the time series.
+
+    Only time series created via scikits.timeseries module have
+    this attribute.
+    """
+
+    ts_freq = None
+    if ts_kind == 'scikits_ts':
+        # The frequency of the time serie. Default is 6000 (daily)
+        special_attrs = getattr(leaf._v_attrs, 'special_attrs', 
+            {'freq': 6000})
+        ts_freq = special_attrs['freq']
+    return ts_freq
 class TSFormatter(object):
     """An inspector class intended for finding out if a Leaf instance contains
     a time series suitable to be formatted in a user friendly way.
@@ -55,8 +138,8 @@ class TSFormatter(object):
         """
 
         self.vtapp = vitables.utils.getVTApp()
-        QObject.connect(self.vtapp, SIGNAL("leaf_model_created"), 
-            self.customiseModel)
+        QtCore.QObject.connect(self.vtapp, 
+            QtCore.SIGNAL("leaf_model_created"), self.customiseModel)
 
 
     def customiseModel(self, datasheet):
@@ -66,116 +149,33 @@ class TSFormatter(object):
         """
 
         # Look for formattable time fields in the dataset
-        ts_kind = self.findTS(datasheet)
+        ts_kind = findTS(datasheet)
         if ts_kind is None:
             return
 
         # Get the positions of the time fields
         leaf = datasheet.dbt_leaf.node
-        time_cols = self.tsPositions(ts_kind, leaf)
+        time_cols = tsPositions(ts_kind, leaf)
         if time_cols == []:
             return
 
         model = datasheet.widget().model()
         if time_cols == [-1]:
             # Dataset is an array of time series
-            new_model= ArrayTSModel(model)
+            new_model = ArrayTSModel(model)
             model.formatTimeContent = new_model.formatTimeContent
             model.data = new_model.data
         else:
             # Dataset is table with 1 or more time series
-            freq = self.tsFrequency(ts_kind, leaf)
+            freq = tsFrequency(ts_kind, leaf)
             model.time_cols = time_cols
-            new_model= TableTSModel(model, freq, ts_kind)
+            new_model = TableTSModel(model, freq, ts_kind)
             model.formatTime = new_model.formatTime
             model.data = new_model.data
 
 
 
-    def findTS(self, datasheet):
-        """Find out if the inspected leaf contains a time field.
-
-        **Existing time fields that cannot be formatted are skipped**:
-
-            - time series created via scikits.timeseries module are
-              ignored if that module is not available
-            - time fields that are displayed in a multidimensional cell 
-              are ignored
-
-        The last restriction includes the following cases:
-
-            - time fields that are part of a nested field
-            - time fields in VLArrays
-            - time fields in arrays with more than 2 dimensions
-            - time fields in arrays with atom shape other than ()
-
-        :Parameter `datasheet`: the DataSheet instance being inspected.
-        :Return `ts_kind`: a flag indicating the kind of time series found
-        """
-
-        leaf = datasheet.dbt_leaf.node
-        time_types = ['time32', 'time64']
-        if isinstance(leaf, tables.Table):
-            attrs = leaf._v_attrs
-            coltypes = leaf.coltypes
-            if hasattr(attrs, 'CLASS') and attrs.CLASS == 'TimeSeriesTable' \
-                and ts:
-                return 'scikits_ts'
-            for name in leaf.colnames:
-                if coltypes.has_key(name) and coltypes[name] in time_types: 
-                    return 'pytables_ts'
-        elif leaf.atom.type in time_types and \
-            len(leaf.shape) < 3 and \
-            leaf.atom.shape == () and \
-            datasheet.dbt_leaf.node_kind != u'vlarray': 
-            return 'pytables_ts'
-        else:
-            return None
-
-
-    def tsPositions(self, ts_kind, leaf):
-        """Return the position of the time field going to be formatted.
-
-        The following cases can occur:
-        - leaf is a TimeSeriesTable instance. It contains just one time field,
-          in a column labeled as _dates.
-        - leaf is a regular Table instance. Every column can contain a time
-          data type so we must inspect every column
-        - leaf is an Array instance. As it is a homogeneous data container if
-          a column contains a time data type then every column contains a time
-          data type. Specific positions are not required
-        """
-
-        positions = []
-        if (ts_kind == 'scikits_ts'):
-            positions.append(leaf.coldescrs['_dates']._v_pos)
-        elif ts_kind == 'pytables_ts':
-            if isinstance(leaf, tables.Table):
-                for name in leaf.colnames:
-                    if leaf.coltypes[name] in ['time32', 'time64']:
-                        positions.append(leaf.coldescrs[name]._v_pos)
-            else:
-                positions = [-1]
-        return positions
-
-
-    def tsFrequency(self, ts_kind, leaf):
-        """Return the frequency (if any) of the time series.
-
-        Only time series created via scikits.timeseries module have
-        this attribute.
-        """
-
-        ts_freq = None
-        if ts_kind == 'scikits_ts':
-            # The frequency of the time serie. Default is 6000 (daily)
-            special_attrs = getattr(leaf._v_attrs, 'special_attrs', 
-                {'freq': 6000})
-            ts_freq = special_attrs['freq']
-        return ts_freq
-
-
-class ArrayTSModel(QAbstractTableModel):
+class ArrayTSModel(QtCore.QAbstractTableModel):
     """
     A model for array datasets containing time series.
 
@@ -192,7 +192,7 @@ class ArrayTSModel(QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        QAbstractTableModel.__init__(self, parent)
+        QtCore.QAbstractTableModel.__init__(self, parent)
         self.numrows = model.numrows
         self.rbuffer = model.rbuffer
 
@@ -206,7 +206,7 @@ class ArrayTSModel(QAbstractTableModel):
         return time.asctime(time.gmtime(content))
 
 
-    def data(self, index=QModelIndex(), role=Qt.DisplayRole):
+    def data(self, index=QtCore.QModelIndex(), role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
         referred to by the index.
 
@@ -218,17 +218,18 @@ class ArrayTSModel(QAbstractTableModel):
 
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
-            return QVariant()
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), index.column())
-        if role == Qt.DisplayRole:
-            return QVariant(self.formatTimeContent(cell))
-        elif role == Qt.TextAlignmentRole:
-            return QVariant(int(Qt.AlignLeft|Qt.AlignTop))
+            return QtCore.QVariant()
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
+            index.column())
+        if role == QtCore.Qt.DisplayRole:
+            return QtCore.QVariant(self.formatTimeContent(cell))
+        elif role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.QVariant(int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop))
         else:
-            return QVariant()
+            return QtCore.QVariant()
 
 
-class TableTSModel(QAbstractTableModel):
+class TableTSModel(QtCore.QAbstractTableModel):
     """
     A model for table datasets containing time series.
 
@@ -247,7 +248,7 @@ class TableTSModel(QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        QAbstractTableModel.__init__(self, parent)
+        QtCore.QAbstractTableModel.__init__(self, parent)
         self.numrows = model.numrows
         self.rbuffer = model.rbuffer
         self.time_cols = model.time_cols
@@ -292,7 +293,7 @@ class TableTSModel(QAbstractTableModel):
             return value
 
 
-    def data(self, index=QModelIndex(), role=Qt.DisplayRole):
+    def data(self, index=QtCore.QModelIndex(), role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
         referred to by the index.
 
@@ -304,13 +305,14 @@ class TableTSModel(QAbstractTableModel):
 
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
-            return QVariant()
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), index.column())
-        if role == Qt.DisplayRole:
+            return QtCore.QVariant()
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
+            index.column())
+        if role == QtCore.Qt.DisplayRole:
             if index.column() in self.time_cols:
-                return QVariant(self.formatTime(cell))
-            return QVariant(vitables.utils.formatArrayContent(cell))
-        elif role == Qt.TextAlignmentRole:
-            return QVariant(int(Qt.AlignLeft|Qt.AlignTop))
+                return QtCore.QVariant(self.formatTime(cell))
+            return QtCore.QVariant(vitables.utils.formatArrayContent(cell))
+        elif role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.QVariant(int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop))
         else:
-            return QVariant()
+            return QtCore.QVariant()
