@@ -21,7 +21,7 @@
 
 """The plugins manager module.
 
-Every module (but this one) under the plugins directory is a plugin.
+Every module under the plugins directory is a plugin.
 This module finds, loads, instantiates and registers the available plugins.
 
 There are (at least) 2 approaches for loading the plugins under
@@ -31,13 +31,12 @@ a) to iterate over a list of module names
 b) to iterate over the content of the plugins directory
 
 Syntax of a) is simpler (see below) but b) seems to be more general and
-powerful as it can deal with packages too. So *at them moment* I'll use the
+powerful as it can deal with packages too. So *at the moment* I'll use the
 approach b). In the future a better defined plugins infrastructure may be used.
 
 FYI, approach a) looks like:
 
 from vitables.plugins import __all__ as plugins
-plugins.remove('pluginsManager')
 for plugin in plugins:
     try:
         module_name = 'vitables.plugins.' + plugin
@@ -53,11 +52,71 @@ import sys
 import os
 import pkgutil
 import imp
-import inspect
 
 import vitables.plugins
 from vitables.vtSite import PLUGINSDIR
 
+
+
+def isPlugin(folder, name):
+    """Check if a given module is a plugin.
+
+    :Parameters:
+        - folder: the folder where the module being tested lives
+        - name: the filename of the module being tested
+    """
+
+    # Import the module
+    try:
+        finding_failed = True
+        file_obj, filepath, desc = imp.find_module(name, [folder])
+        finding_failed = False
+        module = imp.load_module(name, file_obj, filepath, desc)
+    except ImportError:
+        return False
+    finally:
+        if not finding_failed:
+            file_obj.close()
+
+    # Check if module is a plugin
+    try:
+        class_name = getattr(module, 'plugin_class')
+        return class_name
+    except AttributeError:
+        return False
+
+    #######################################################
+    #
+    # WARNING!!! DO NOT DELETE MODULES AFTER CHECKING
+    #
+    # Deletion has unwanted side effects. For instance,
+    # deleting the time_series module results in deleting
+    # the tables module!!!
+    #
+    #######################################################
+
+    # finally:
+        # path = '%s.py' % os.path.join(folder, name)
+        # modname = inspect.getmodulename(path)
+        # del sys.modules[modname]
+        # del module
+
+
+def scanFolder(folder):
+    """Scan a package looking for plugins.
+
+    This is a non recursive method. It scans only the top level of
+    the package.
+
+    :Parameters:
+        - folder: the folder being scanned
+    """
+
+    pkg_plugins = []
+    for loader, name, ispkg in pkgutil.iter_modules([folder]):
+        if not ispkg and isPlugin(folder, name):
+            pkg_plugins.append('%s#@#%s' % (folder, name))
+    return pkg_plugins
 class PluginsMgr(object):
     """Plugins manager class.
 
@@ -88,7 +147,7 @@ class PluginsMgr(object):
         # Make sure that other plugins (if any) are available
         for path in self.plugins_paths:
             if os.path.isabs(path) and (path not in sys.path):
-                sys.path= [path] + sys.path
+                sys.path = [path] + sys.path
 
         # Some useful stuff
         self.all_plugins = []
@@ -105,67 +164,6 @@ class PluginsMgr(object):
             self.loadPlugin(plugin)
 
 
-    def scanFolder(self, folder):
-        """Scan a package looking for plugins.
-
-        This is a non recursive method. It scans only the top level of
-        the package.
-
-        :Parameters:
-            - folder: the folder being scanned
-        """
-
-        pkg_plugins = []
-        for loader, name, ispkg in pkgutil.iter_modules([folder]):
-            if not ispkg and self.isPlugin(folder, name):
-                pkg_plugins.append('%s#@#%s' % (folder, name))
-        return pkg_plugins
-
-
-    def isPlugin(self, folder, name):
-        """Check if a given module is a plugin.
-
-        :Parameters:
-            - folder: the folder where the module being tested lives
-            - name: the filename of the module being tested
-        """
-
-        # Import the module
-        try:
-            finding_failed = True
-            file_obj, filepath, desc = imp.find_module(name, [folder])
-            finding_failed = False
-            module = imp.load_module(name, file_obj, filepath, desc)
-        except ImportError:
-            return False
-        finally:
-            if not finding_failed:
-                file_obj.close()
-
-        # Check if module is a plugin
-        try:
-            class_name = getattr(module, 'plugin_class')
-            return class_name
-        except AttributeError:
-            return False
-        finally:
-            path = '%s.py' % os.path.join(folder, name)
-            modname = inspect.getmodulename(path)
-
-            #######################################################
-            #
-            # WARNING!!! DO NOT DELETE MODULES AFTER CHECKING
-            #
-            # Deletion has unwanted side effects. For instance,
-            # deleting the time_series module results in deleting
-            # the tables module!!!
-            #
-            #######################################################
-
-            # del sys.modules[modname]
-            # del module
-
-
     def updatePluginsInfo(self):
         """Update info regarding plugins.
 
@@ -178,10 +176,10 @@ class PluginsMgr(object):
         self.all_plugins = []
         for folder in self.plugins_paths:
             for loader, name, ispkg in pkgutil.iter_modules([folder]):
-                if not ispkg and self.isPlugin(folder, name):
+                if not ispkg and isPlugin(folder, name):
                     self.all_plugins.append('%s#@#%s' % (folder, name))
                 else:
-                    pkg_plugins = self.scanFolder(os.path.join(folder, name))
+                    pkg_plugins = scanFolder(os.path.join(folder, name))
                     self.all_plugins = self.all_plugins + pkg_plugins
 
         self.disabled_plugins = [plugin for plugin in self.all_plugins \
@@ -195,6 +193,7 @@ class PluginsMgr(object):
             - plugin: th UID of the plugin being loaded
         """
 
+        # Load the module where the plugin lives
         try:
             finding_failed = True
             (folder, name) = plugin.split('#@#')
@@ -202,7 +201,6 @@ class PluginsMgr(object):
             finding_failed = False
             module = imp.load_module(name, file_obj, filepath, desc)
         except ImportError:
-            #vitables.utils.formatExceptionInfo()
             if finding_failed:
                 print """\nError: plugin %s cannot be found.""" % name
             else:
@@ -212,24 +210,23 @@ class PluginsMgr(object):
             if not finding_failed:
                 file_obj.close()
 
-        # Instantiate plugin classes
-        #module_classes = [cls for (name, cls) in \
-        #    inspect.getmembers(module, inspect.isclass)
-        #    if inspect.getmodule(cls) == module]
-        #for cls in module_classes:
-        #    if getattr(cls, 'is_plugin', None):
-        #        instance = cls()
-        #        # Register plugin
-        #        self.registered_plugins[class_name] = instance
-
+        # Retrieve the plugin class
         try:
             class_name = getattr(module, 'plugin_class')
             cls = getattr(module, class_name)
+        except AttributeError:
+            print """\nError: module %s is not a valid plugin.""" % name
+            return
+
+        # Load the plugin
+        try:
             instance = cls()
 
             # Register plugin
             # In some cases keeping a reference to instance is a must
             # (for example, the time_series plugin)
             self.loaded_plugins[plugin] = instance
-        except AttributeError:
-            print """\nError: module %s is not a plugin.""" % name
+        except:
+            print """\nError: plugin %s cannot be loaded.""" % name
+            vitables.utils.formatExceptionInfo()
+

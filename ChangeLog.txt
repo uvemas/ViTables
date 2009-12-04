@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** December 04, 2009 **
+pluginsManager module has been refactored to improve some bizarre behavior.
+
 Usability of csv_import plugin has been improved with better dialog texts.
 
 ** December 03, 2009 **
