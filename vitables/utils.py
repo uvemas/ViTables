@@ -395,6 +395,40 @@ def forwardPath(path):
     return path
 
 
+def questionBox(title='', text='', info='', detail='', buttons_def=''):
+    """The value returned by a question message box with customised buttons.
+
+    :Parameters:
+    - `title`: the window title
+    - `text`: the primary text
+    - `info`: additional informative text
+    - `detail`: a detailed text
+    - `buttons_def`: mapping with buttons definitions
+    """
+
+    qmbox = QtGui.QMessageBox()
+    qmbox.setIcon(QtGui.QMessageBox.Question)
+    qmbox.setWindowTitle(title)
+    qmbox.setText(text)
+    if info:
+        qmbox.setInformativeText(inf_text)
+    if detail:
+        qmbox.setDetailedText(detail)
+    qmbox.setDefaultButton(QtGui.QMessageBox.NoButton)
+
+    buttons = {}
+    for name, (text, role) in buttons_def.items():
+        buttons[name] = qmbox.addButton(text, role)
+
+    qmbox.exec_()
+
+    # Find out which button has been returned
+    for name in buttons.keys():
+        if buttons[name] == qmbox.clickedButton():
+            return name
+    return
+
+
 def getFinalName(nodename, sibling, pattern, info):
     """Return the node name to be used when editing a node.
 

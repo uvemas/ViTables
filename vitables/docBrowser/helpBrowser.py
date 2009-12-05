@@ -393,25 +393,15 @@ class HelpBrowser(QtCore.QObject) :
         Help --> About HelpBrowser
         """
 
-        caption = trs('About HelpBrowser', 'A dialog caption')
-        text = trs(
-            """<qt>
-            <h3>HelpBrowser</h3>
-            HelpBrowser is a very simple tool for displaying local Qt
-            rich text files. It is also reasonably capable for browsing
-            HTML files.
-            <p>Best of all... It is written using PyQt, the Python
-            bindings for the Qt GUI toolkit. :-)
-            </qt>""",
-            'About Help browser text')
-
-        # Display a customized About dialog
-        about = QtGui.QMessageBox(caption, text, 
-            QtGui.QMessageBox.Information, 
-            QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton, 
-            QtGui.QMessageBox.NoButton, self.gui)
-        # Show the message
-        about.show()
+        QtGui.QMessageBox.information(self.gui, \
+            trs('About HelpBrowser', 'A dialog caption'), 
+            trs("""<html><h3>HelpBrowser</h3>
+                HelpBrowser is a very simple tool for displaying the HTML
+                version of the ViTables' Guide without using external programs.
+                <p>Best of all... it is written using PyQt, the Python
+                bindings for the Qt GUI toolkit.</html>""",
+                'About Help browser text')
+            )
 
 
     def slotAboutQt(self) :

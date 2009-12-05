@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 05, 2009 **
+Several question like message boxes have been customised.
+
 ** December 04, 2009 **
 Removed wild imports and other minor annoyances common to most modules.
 

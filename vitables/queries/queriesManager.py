@@ -264,16 +264,22 @@ class QueriesManager(QtCore.QObject):
     def deleteAllQueries(self):
         """Delete all nodes from the query results tree."""
 
-        del_dlg = QtGui.QMessageBox.question(self.vtapp,
-            trs('Deleting all queries',
-            'Caption of the QueryDeleteAll dialog'),
-            trs("""\n\nYou are about to delete all nodes """
-                """under Query results\n\n""", 'Ask for confirmation'),
-            QtGui.QMessageBox.Yes|QtGui.QMessageBox.Default,
-            QtGui.QMessageBox.No|QtGui.QMessageBox.Escape)
+        title = trs('Deleting all queries', 
+            'Caption of the QueryDeleteAll dialog')
+        text = trs("""\n\nYou are about to delete all nodes """
+                """under Query results\n\n""", 'Ask for confirmation')
+        itext = ''
+        dtext = ''
+        buttons = {\
+            'Delete': \
+                (trs('Delete', 'Button text'), QtGui.QMessageBox.YesRole), 
+            'Cancel': \
+                (trs('Cancel', 'Button text'), QtGui.QMessageBox.NoRole), 
+            }
 
-        # OK returns Accept, Cancel returns Reject
-        if del_dlg == QtGui.QMessageBox.No:
+        # Ask for confirmation
+        answer = vitables.utils.questionBox(title, text, itext, dtext, buttons)
+        if answer == 'Cancel':
             return
 
         # Remove every filtered table from the tree of databases model/view

@@ -1953,17 +1953,23 @@ class VTApp(QtGui.QMainWindow):
 
         # Confirm deletion dialog
         if not force:
-            del_dlg = QtGui.QMessageBox.question(self,
-                trs('Node deletion',
-                'Caption of the node deletion dialog'),
-                trs("""\nYou are about to delete the node:\n%s\n""",
-                'Ask for confirmation') % node.nodepath,
-                QtGui.QMessageBox.Yes|QtGui.QMessageBox.Default,
-                QtGui.QMessageBox.No|QtGui.QMessageBox.Escape)
+            title = trs('Node deletion', 'Caption of the node deletion dialog')
+            text = trs("""\nYou are about to delete the node:\n%s\n""", 
+                'Ask for confirmation') % node.nodepath
+            itext = ''
+            dtext = ''
+            buttons = {\
+                'Delete': \
+                    (trs('Delete', 'Button text'), QtGui.QMessageBox.YesRole), 
+                'Cancel': \
+                    (trs('Cancel', 'Button text'), QtGui.QMessageBox.NoRole), 
+                }
 
-            # OK returns Accept, Cancel returns Reject
-            if del_dlg == QtGui.QMessageBox.No:
-                return
+            # Ask for confirmation
+            answer = \
+                vitables.utils.questionBox(title, text, itext, dtext, buttons)
+            if answer == 'Cancel':
+                    return
 
         # If item is a filtered table then update the list of used names
         if hasattr(node.node._v_attrs, 'query_condition'):

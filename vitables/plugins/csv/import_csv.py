@@ -203,11 +203,11 @@ def homogeneousTableInfo(input_handler, first_line, data):
     # If dtype is a string,  ask to user if the table has a header or not.
     # Then find out the biggest itemsize
     if data.dtype.name.startswith('string'):
-        question = askForHelp(first_line)
+        answer = askForHelp(first_line)
         buf_size = 1024 * 1024
         read_fh = input_handler.readlines
         input_handler.seek(0)
-        if question == 'Header':
+        if answer == 'Header':
             # Skip the header
             has_header = True
             input_handler.readline()
@@ -259,27 +259,16 @@ def askForHelp(first_line):
                              the CSVfile
     """
 
-    qmbox = QtGui.QMessageBox()
-    qmbox.setWindowTitle(trs('Resolving first line role', 
-        'Message box title'))
-    qmbox.setText(trs("""Does the first line of the file contain """
-        """a table header or regular data?""", 'Message box text'))
-    detail = reduce(lambda x, y: '%s, %s' % (x, y), first_line)
-    qmbox.setDetailedText(detail)
-    header_button = qmbox.addButton(\
-        trs('Header', 'Button text'), QtGui.QMessageBox.YesRole)
-    qmbox.addButton(\
-        trs('Data', 'Button text'), QtGui.QMessageBox.NoRole)
-    qmbox.setIcon(QtGui.QMessageBox.Question)
-    qmbox.setDefaultButton(QtGui.QMessageBox.NoButton)
-#    for button in qmbox.findChildren(QtGui.QPushButton):
-#        if button.text() == 'Show Details...':
-#            button.setText('Show first line...')
-    qmbox.exec_()
-    if qmbox.clickedButton() == header_button:
-        return 'Header'
-    else:
-        return 'Data'
+    title = trs('Resolving first line role', 'Message box title')
+    text = trs("""Does the first line of the file contain """
+        """a table header or regular data?""", 'Message box text')
+    itext = ''
+    dtext = reduce(lambda x, y: '%s, %s' % (x, y), first_line)
+    buttons = {\
+        'Header': (trs('Header', 'Button text'), QtGui.QMessageBox.YesRole), 
+        'Data': (trs('Data', 'Button text'), QtGui.QMessageBox.NoRole),
+        }
+    return vitables.utils.questionBox(title, text, itext, dtext, buttons)
 
 
 def earrayInfo(input_handler):

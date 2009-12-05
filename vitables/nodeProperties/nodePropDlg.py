@@ -544,16 +544,22 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
         name = self.userattr_model.itemFromIndex(current_index).text()
 
         # Delete the marked attribute
-        del_mb = QtGui.QMessageBox.question(self,
-            trs('User attribute deletion',
-            'Caption of the attr deletion dialog'),
-            trs("""\n\nYou are about to delete the attribute:\n%s\n\n""",
-            'Ask for confirmation') % unicode(name),
-            QtGui.QMessageBox.Yes|QtGui.QMessageBox.Default,
-            QtGui.QMessageBox.No|QtGui.QMessageBox.Escape)
+        title = trs('User attribute deletion',
+            'Caption of the attr deletion dialog')
+        text = trs("""\n\nYou are about to delete the attribute:\n%s\n\n""",
+            'Ask for confirmation') % unicode(name)
+        itext = ''
+        dtext = ''
+        buttons = {\
+            'Delete': \
+                (trs('Delete', 'Button text'), QtGui.QMessageBox.YesRole), 
+            'Cancel': \
+                (trs('Cancel', 'Button text'), QtGui.QMessageBox.NoRole), 
+            }
 
-        # OK returns Accept, Cancel returns Reject
-        if del_mb == QtGui.QMessageBox.Yes:
+        # Ask for confirmation
+        answer = vitables.utils.questionBox(title, text, itext, dtext, buttons)
+        if answer == 'Delete':
             # Updates the user attributes table
             self.userattr_model.removeRow(current_row)
 
