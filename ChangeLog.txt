@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** December 09, 2009 **
+Fixed a bug in the context menu of the logger.
+
 Fixed a couple of minor bugs.
 
 ** December 05, 2009 **

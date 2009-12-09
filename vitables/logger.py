@@ -90,7 +90,7 @@ class Logger(QtGui.QTextEdit):
             </qt>""",
             'WhatsThis help for the logger'))
 
-        self.setStyleSheet("""background-color: #ffffff""")
+        self.setStyleSheet("background-color: #ffffff")
 
         # The frame especification
         self.frame_style = {'shape': self.frameShape(),
@@ -145,6 +145,7 @@ class Logger(QtGui.QTextEdit):
 
         # Make the menu
         edit_menu = QtGui.QMenu(self)
+        edit_menu.setStyleSheet("background-color: %s" % QtGui.QPalette.Window)
         self.copy_action = edit_menu.addAction(
             trs("&Copy", 'Logger menu entry'),
             self, QtCore.SLOT('copy()'),

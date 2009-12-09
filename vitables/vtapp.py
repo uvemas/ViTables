@@ -170,8 +170,8 @@ class VTApp(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-    #    sys.stdout = self.logger
-    #    sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(trs('Configuration setup...',
