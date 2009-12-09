@@ -411,7 +411,7 @@ def questionBox(title='', text='', info='', detail='', buttons_def=''):
     qmbox.setWindowTitle(title)
     qmbox.setText(text)
     if info:
-        qmbox.setInformativeText(inf_text)
+        qmbox.setInformativeText(info)
     if detail:
         qmbox.setDetailedText(detail)
     qmbox.setDefaultButton(QtGui.QMessageBox.NoButton)

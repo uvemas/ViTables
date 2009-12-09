@@ -99,7 +99,7 @@ class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
         self.initial_prefs['Logger/Text'] = vtapp.logger.textColor()
         self.initial_prefs['Logger/Font'] = vtapp.logger.font()
         self.initial_prefs['Workspace/Background'] = \
-                                        vtapp.workspace.background().color()
+                                        vtapp.workspace.background()
         self.initial_prefs['Look/currentStyle'] = vtapp.current_style
         self.initial_prefs['Startup/startupWorkingDir'] = \
                                                 vtapp.startup_working_directory
@@ -160,7 +160,7 @@ class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
         self.sample_te.setFont(preferences['Logger/Font'])
 
         self.workspace_label.setStyleSheet('background-color: %s' % 
-            preferences['Workspace/Background'].name())
+            preferences['Workspace/Background'].color().name())
 
         index = self.styles_cb.findText(\
             preferences['Look/currentStyle'])

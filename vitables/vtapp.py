@@ -745,6 +745,7 @@ class VTApp(QtGui.QMainWindow):
                 self.logger.setFont(QtGui.QFont(value))
             elif key == 'Workspace/Background':
                 self.workspace.setBackground(QtGui.QBrush(value))
+                self.workspace.viewport().update()
             elif key == 'Look/currentStyle':
                 self.current_style = unicode(value.toString())
                 # Default style is provided by the underlying window manager
