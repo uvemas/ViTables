@@ -31,8 +31,6 @@ Methods:
 * write(self, text)
 * createCustomContextMenu(self, pos)
 * updateEditMenu(self)
-* disableCopyNodeAction(self)
-* enableCopyNodeAction(self)
 * focusInEvent(self, e)
 * focusOutEvent(self, e)
 
@@ -148,8 +146,7 @@ class Logger(QtGui.QTextEdit):
         edit_menu.setStyleSheet("background-color: %s" % QtGui.QPalette.Window)
         self.copy_action = edit_menu.addAction(
             trs("&Copy", 'Logger menu entry'),
-            self, QtCore.SLOT('copy()'),
-            QtGui.QKeySequence('CTRL+C'))
+            self, QtCore.SLOT('copy()'))
         self.clear_action = edit_menu.addAction(
             trs("Cl&ear All", 'Logger menu entry'),
             self, QtCore.SLOT('clear()'))
@@ -160,10 +157,6 @@ class Logger(QtGui.QTextEdit):
 
         self.connect(edit_menu, QtCore.SIGNAL('aboutToShow()'),
             self.updateEditMenu)
-        self.connect(edit_menu, QtCore.SIGNAL('aboutToShow()'),
-            self.disableCopyNodeAction)
-        self.connect(edit_menu, QtCore.SIGNAL('aboutToHide()'),
-            self.updateCopyNodeAction)
 
         edit_menu.popup(self.mapToGlobal(pos))
 
@@ -173,39 +166,12 @@ class Logger(QtGui.QTextEdit):
 
         # Copy is enabled when there is some selected text
         cursor = self.textCursor()
-        if cursor.hasSelection():
-            self.copy_action.setEnabled(True)
-        else:
-            self.copy_action.setEnabled(False)
+        self.copy_action.setEnabled(cursor.hasSelection())
 
         # Clear All and Select All are enabled when there is some text
-        document = self.document()
-        if document.isEmpty():
-            self.clear_action.setEnabled(False)
-            self.select_action.setEnabled(False)
-        else:
-            self.clear_action.setEnabled(True)
-            self.select_action.setEnabled(True)
-
-
-    def disableCopyNodeAction(self):
-        """
-        Disable the status of the Copy node action.
-
-        This method is called whenever the logger gets keyboard
-        focus or its contextual menu is shown.
-        """
-        self.emit(QtCore.SIGNAL('disableCopyNodeAction()'), ())
-
-
-    def updateCopyNodeAction(self):
-        """
-        Update the status of the Copy node action.
-
-        This method is called whenever the logger losts keyboard
-        focus or its contextual menu is hiden.
-        """
-        self.emit(QtCore.SIGNAL('updateCopyNodeAction()'), ())
+        has_content = not self.document().isEmpty()
+        self.clear_action.setEnabled(has_content)
+        self.select_action.setEnabled(has_content)
 
 
     def focusInEvent(self, event):
@@ -214,7 +180,6 @@ class Logger(QtGui.QTextEdit):
         :Parameter event: the event being processed
         """
 
-        self.disableCopyNodeAction()
         self.setLineWidth(2)
         self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
         pal = self.palette()
@@ -233,7 +198,6 @@ class Logger(QtGui.QTextEdit):
         :Parameter event: the event being processed
         """
 
-        self.updateCopyNodeAction()
         self.setLineWidth(self.frame_style['lwidth'])
         self.setFrameShape(self.frame_style['shape'])
         self.setFrameShadow(self.frame_style['shadow'])

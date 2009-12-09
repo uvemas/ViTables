@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** December 09, 2009 **
+The logger module has been refactored and simplified.
+
 Fixed a bug in the context menu of the logger.
 
 Fixed a couple of minor bugs.
