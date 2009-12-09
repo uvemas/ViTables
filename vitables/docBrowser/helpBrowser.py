@@ -147,74 +147,6 @@ class HelpBrowser(QtCore.QObject) :
     #
     #########################################################
 
-    def slotNewBrowser(self) :
-        """
-        Opens a new help browser window.
-
-        File --> New Window
-
-        Creates a new `HelpBrowser` instance and shows it. The new instance is
-        appended to the list of opened browsers. This way we can keep track of
-        the opened windows, what is needed when we quit the browser.
-        """
-
-        browser = HelpBrowser()
-        self.vtapp.doc_browsers.append(browser)
-
-
-    def slotOpenFile(self, filepath=None) :
-        """
-        Shows a file in the help browser window.
-
-        File --> Open File
-
-        :Parameter filepath: the path of the file being open
-        """
-
-        file_dlg = QtGui.QFileDialog(self.gui)
-        filters = QtCore.QStringList()
-        filters << trs(
-            "HTML files (*.html *.htm)", 
-            'File filter for the Open File dialog')
-        filters << trs(
-            "Any file (*.*)", 'File filter for the Open File dialog')
-        file_dlg.setNameFilters(filters)
-        file_dlg.setWindowTitle(trs('Select a file for opening', 
-            'A dialog caption'))
-        file_dlg.setDirectory(self.working_dir)
-        file_dlg.setFileMode(QtGui.QFileDialog.ExistingFile)
-        try:
-
-            # OK clicked. Working directory is updated
-            if file_dlg.exec_():
-                # The absolut path of the selected file
-                filepath = file_dlg.selectedFiles()[0]
-                # Update the working directory
-                self.working_dir = \
-                    unicode(file_dlg.directory().canonicalPath())
-                # Displays the document (history is automatically updated)
-                self.slotDisplaySrc(filepath)
-            # Cancel clicked. Working directory doesn't change
-            else:
-                pass
-        finally:
-            del file_dlg
-
-
-    def slotCloseWindow(self) :
-        """
-        Close the active window.
-
-        File --> Close Window
-
-        The generated close event is processed by the reimplemented handler
-        """
-
-        self.vtapp.hb_history = self.history
-        self.vtapp.hb_bookmarks = self.bookmarks
-        self.gui.close()
-
-
     def slotExitBrowser(self) :
         """
         Quit the HelpBrowser.
@@ -227,8 +159,10 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         # Close all browsers
-        for browser in self.vtapp.doc_browsers[:] :
-            browser.slotCloseWindow()
+        self.vtapp.hb_history = self.history
+        self.vtapp.hb_bookmarks = self.bookmarks
+        self.vtapp.doc_browser = None
+        self.gui.close()
 
     #########################################################
     #

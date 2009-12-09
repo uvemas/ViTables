@@ -170,8 +170,8 @@ class VTApp(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+    #    sys.stdout = self.logger
+    #    sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(trs('Configuration setup...',
@@ -195,7 +195,7 @@ class VTApp(QtGui.QMainWindow):
         self.file_selector_history.append(self.last_working_directory)
 
         # List of HelpBrowser instances in memory
-        self.doc_browsers = []
+        self.doc_browser = None
 
         # Load plugins.
         # Some plugins modify existing menus so plugins must be loaded after
@@ -1630,8 +1630,8 @@ class VTApp(QtGui.QMainWindow):
         """
 
         # Close all browsers
-        while len(self.doc_browsers) > 0:
-            self.doc_browsers[0].slotExitBrowser()
+        if self.doc_browser:
+            self.doc_browser.slotExitBrowser()
         # Save current configuration
         self.saveConfiguration()
         # Close every user opened file
@@ -1969,7 +1969,7 @@ class VTApp(QtGui.QMainWindow):
             answer = \
                 vitables.utils.questionBox(title, text, itext, dtext, buttons)
             if answer == 'Cancel':
-                    return
+                return
 
         # If item is a filtered table then update the list of used names
         if hasattr(node.node._v_attrs, 'query_condition'):
@@ -2058,8 +2058,7 @@ class VTApp(QtGui.QMainWindow):
         Help --> UsersGuide
         """
 
-        browser = helpBrowser.HelpBrowser()
-        self.doc_browsers.append(browser)
+        self.doc_browser = helpBrowser.HelpBrowser()
 
 
     def slotHelpAbout(self):

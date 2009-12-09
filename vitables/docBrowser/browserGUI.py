@@ -102,27 +102,6 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         """
 
         actions = {}
-        actions['newBrowser'] = vitables.utils.createAction(self, 
-                trs('&New Window', 'File --> New Window'), 
-                QtGui.QKeySequence.New, self.browser.slotNewBrowser, 
-                None, 
-                trs('New window', 
-                    'Status bar text for the File --> New Window action'))
-
-        actions['openFile'] = vitables.utils.createAction(self, 
-                trs('&Open File', 'File --> Open File'), 
-                QtGui.QKeySequence.Open, self.browser.slotOpenFile, 
-                self.icons['document-open'], 
-                trs('Open file', 
-                    'Status bar text for the File --> Open File action'))
-
-        actions['closeWindow'] = vitables.utils.createAction(self, 
-                trs('Close Window', 'File --> Close Window'), 
-                QtGui.QKeySequence.Close, self.browser.slotCloseWindow, 
-                None, 
-                trs('Close window', 
-                    'Status bar text for the File --> Close Window action'))
-
         actions['exitBrowser'] = vitables.utils.createAction(self, 
                 trs('E&xit', 'File --> Exit'), 
                 QtGui.QKeySequence('CTRL+Q'), self.browser.slotExitBrowser, 
@@ -230,8 +209,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         # Create the File menu and add actions/submenus/separators to it
         file_menu = self.menuBar().addMenu(trs("&File", 
             'The File menu entry'))
-        file_actions = ['openFile', None, 'newBrowser', 'closeWindow', None, 
-                        'exitBrowser']
+        file_actions = ['exitBrowser']
         vitables.utils.addActions(file_menu, file_actions, self.actions)
 
 
@@ -357,13 +335,10 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         :Parameter event: the event being handled
         """
 
-        # When a help browser window is closed via File --> Close or via
-        # File --> Exit the slotCloseWindow is called and its history is
-        # saved (histories are not synchronised so only the last closed
-        # window history is kept). But if we close the window with the
+        # When the help browser window is closed via File --> Exit
+        # the slotExitBrowser is called and its history is saved.
+        # But if we close the window with the
         # close button then history is not saved at all.
         # We fix this misbehavior by overwriting this method.
-        vtapp = self.browser.vtapp
-        vtapp.doc_browsers.remove(self.browser)
-        self.browser.slotCloseWindow()
+        self.browser.slotExitBrowser()
         QtGui.QMainWindow.closeEvent(self, event)
