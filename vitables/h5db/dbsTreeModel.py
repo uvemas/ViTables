@@ -405,20 +405,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 self.overwriteNode(parent, index, childname)
 
             # Paste the copied/cut node in the destination database
+            src_filepath = self.copied_node_info['node'].filepath
             if self.copied_node_info['is_copied']:
                 src_nodepath = self.copied_node_info['node'].nodepath
-                src_filepath = self.copied_node_info['node'].filepath
-                self.getDBDoc(src_filepath).pasteNode(src_nodepath, 
-                                                      parent.node, childname)
             else:
-                src_filepath = self.copied_node_info['node'].filepath
                 dirname = self.getDBDoc(src_filepath).hidden_group
                 basename = self.copied_node_info['node'].name
                 src_nodepath = '%s/%s' % (dirname, basename)
-                dst_db = self.getDBDoc(parent.filepath)
-                self.getDBDoc(src_filepath).moveNode(src_nodepath, dst_db, 
-                                                     parent.nodepath, 
-                                                     childname)            
+            self.getDBDoc(src_filepath).pasteNode(src_nodepath, 
+                                                    parent.node, childname)
             # Paste the node in the view
             self.lazyAddChildren(index)
             self.emit(QtCore.SIGNAL('nodeAdded'), index)

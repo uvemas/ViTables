@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 10, 2009 **
+In the tree view fixed a bug in the cut node + paste node sequence.
+
 ** December 09, 2009 **
 The logger module has been refactored and simplified.
 

@@ -278,6 +278,9 @@ class DBDoc(QtCore.QObject):
         if not self.hidden_group:
             self.createHiddenGroup()
         nodename = os.path.basename(nodepath)
+        # The hidden group should contain at most 1 node
+        for node in self.h5file.listNodes(self.hidden_group):
+            self.deleteNode(node._v_pathname)
         self.moveNode(nodepath, self, self.hidden_group, nodename)
 
 
