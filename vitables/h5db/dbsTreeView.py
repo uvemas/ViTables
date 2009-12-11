@@ -86,6 +86,7 @@ class DBsTreeView(QtGui.QTreeView):
         # The model
         self.setModel(model)
         self.dbt_model = model
+        self.smodel = self.selectionModel()
 
         # The custom delegate used for editing items
         self.setItemDelegate(NodeItemDelegate(self))
@@ -184,13 +185,14 @@ class DBsTreeView(QtGui.QTreeView):
 
 
     def activateNode(self, index):
-        """Expands/collapses an item.
+        """Expands an item.
 
         When the user activates the item by pressing Enter collapsed
         items are expanded. If the user activates the node by double
-        clicking on it, the item is edited (if editing is enabled).
+        clicking on it while the Shift key is pressed, the item is edited
+        (if editing is enabled).
 
-        Lazy population of the model is partially implement in this
+        Lazy population of the model is partially implemented in this
         method. Expanded items are updated so that children items are added if
         needed. This fact improves enormously the performance when files
         whit a large number of nodes are opened.
@@ -238,16 +240,19 @@ class DBsTreeView(QtGui.QTreeView):
         -`previous`: the index model of the previous current item
         """
 
+        QtGui.QTreeView.currentChanged(self, current, previous)
         self.vtapp.slotUpdateActions()
         self.vtapp.updateStatusBar()
 
-        # Activate the view (if any) of the selected node
+        # Sync the tree view with the workspace (if needed) but keep the
+        # focus (giving focus to the workspace when a given item is
+        # selected is counter intuitive)
         pcurrent = QtCore.QPersistentModelIndex(current)
         for window in self.vtapp.workspace.subWindowList():
             if pcurrent == window.pindex:
                 self.vtapp.workspace.setActiveSubWindow(window)
+                self.setFocus(True)
 
-        QtGui.QTreeView.currentChanged(self, current, previous)
 
 
     def dropEvent(self, event):
@@ -268,6 +273,7 @@ class DBsTreeView(QtGui.QTreeView):
                 self.currentIndex()):
                 event.setDropAction(QtCore.Qt.CopyAction)
                 event.accept()
+                self.setFocus(True)
         else:
             QtGui.QTreeView.dropEvent(self, event)
 

@@ -119,13 +119,18 @@ class DataSheet(QtGui.QMdiSubWindow):
 
     def syncTreeView(self):
         """When the view becomes active select its leaf in the tree view.
+
+        See bug 016548 in the issues tracker for further information on
+        this method.
         """
 
         # Locate the tree view leaf tied to this data sheet. Persistent
         # indices are used to get direct access to the leaf so we don't
         # have to walk the tree
-        self.vtapp.dbs_tree_view.setCurrentIndex(\
-            QtCore.QModelIndex(self.pindex))
+        focus_widget = QtGui.qApp.focusWidget()
+        if isinstance(focus_widget, leafView.LeafView):
+            self.vtapp.dbs_tree_view.setCurrentIndex(\
+                QtCore.QModelIndex(self.pindex))
 
 
     def zoomCell(self, index):

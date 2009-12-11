@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 11, 2009 **
+Fixed a subtle bug in the automatic sync between tree view pane and workspace.
+
 ** December 10, 2009 **
 In the tree view fixed a bug in the cut node + paste node sequence.
 

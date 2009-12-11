@@ -59,7 +59,7 @@ Methods:
 * index(self, row, column, parent)
 * nodeFromIndex(self, index)
 * parent(self, child)
-* addNode(self, parent, child, row=0, index=QModelIndex())
+* addNode(self, group, child, row=0, parent=QModelIndex())
 * removeRows(self, position, count=1, parent=QModelIndex())
 * closeViews(self, parent, start, end)
 * supportedDropActions(self)
@@ -621,10 +621,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         children_leaves = sets.Set(getattr(group, '_v_leaves').keys())
         for name in children_groups.difference(added_children):
             child_group = groupNode.GroupNode(node, name)
-            self.addNode(node, child_group, index=index)
+            self.addNode(node, child_group, parent=index)
         for name in children_leaves.difference(added_children):
             child_leaf = leafNode.LeafNode(node, name)
-            self.addNode(node, child_leaf, index=index)
+            self.addNode(node, child_leaf, parent=index)
 
 
     def flags(self, index):
@@ -856,21 +856,26 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         return self.createIndex(row, 0, parent)
 
 
-    def addNode(self, parent, child, row=0, index=QtCore.QModelIndex()):
+    def addNode(self, group, child, row=0, parent=QtCore.QModelIndex()):
         """Adds a child node to a given parent.
 
         :Parameters:
 
-        - `parent`: the parent node.
+        - `group`: the parent (XNode) of the inserted XNode.
         - `child`: the node being inserted
         - `row`: the position of the first row being inserted.
+        - `parent`: the parent (model index) of the inserted row
         """
 
         self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
-        self.beginInsertRows(index, row, row)
-        parent.insertChild(child, row)
+        self.beginInsertRows(parent, row, row)
+        group.insertChild(child, row)
         self.endInsertRows()
         self.emit(QtCore.SIGNAL("layoutChanged()"))
+        start = self.index(0, 0, parent)
+        stop = self.index(self.rowCount(parent) - 1, 0, parent)
+        self.emit(QtCore.SIGNAL("DataChanged(QModelIndex, QModelIndex)"), 
+            start, stop)
         return True
 
 
@@ -894,6 +899,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             del node.children[position + row]
         self.endRemoveRows()
         self.emit(QtCore.SIGNAL("layoutChanged()"))
+        start = self.index(0, 0, parent)
+        stop = self.index(self.rowCount(parent) - 1, 0, parent)
+        self.emit(QtCore.SIGNAL("DataChanged(QModelIndex, QModelIndex)"), 
+            start, stop)
         return True
 
 
@@ -1044,7 +1053,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 child = groupNode.GroupNode(parent_node, new_name)
             else:
                 child = leafNode.LeafNode(parent_node, new_name)
-            self.addNode(parent_node, child, index=parent)
+            self.addNode(parent_node, child, parent=parent)
             # self.emit(SIGNAL('nodeAdded'), parent)
 
         return True
