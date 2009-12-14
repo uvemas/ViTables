@@ -172,7 +172,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         filepaths = self.__openDBs.keys()
-        filepaths.remove(self.tmp_filepath)
+        try:
+            filepaths.remove(self.tmp_filepath)
+        except ValueError:
+            pass
         return filepaths
 
 
@@ -214,7 +217,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                     'A logger error message') % filepath
                 print error
                 return False
-        except Exception, inst:
+        except Exception:
             error = trs("""Opening failed: I cannot find """
                 """out if %s has HDF5 format.""", 
                 'A logger error message') % filepath
@@ -259,7 +262,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         for row, child in enumerate(self.root.children):
             if child.filepath == filepath:
                 # Deletes the node from the tree of databases model/view
-                self.removeRows(row, 1)
+                self.removeRows(row)
                 # Close the hdf5 file
                 db_doc = self.getDBDoc(filepath)
                 db_doc.closeH5File()
@@ -336,7 +339,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Deletes the node from the tree of databases model/view
             parent = self.parent(index)
             position = node.row()
-            self.removeRows(position, 1, parent)
+            self.removeRows(position, parent=parent)
             # Deletes the node from the PyTables database
             self.getDBDoc(node.filepath).deleteNode(node.nodepath)
         finally:
@@ -353,8 +356,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
             self.copied_node_info = {'is_copied': True, 'node': node, 
-                                     'initial_filepath': node.filepath, 
-                                     'initial_nodepath': node.nodepath}
+                'initial_filepath': node.filepath, 
+                'initial_nodepath': node.nodepath}
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -371,13 +374,13 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
             self.copied_node_info = {'is_copied': False, 'node': node, 
-                                     'initial_filepath': node.filepath, 
-                                     'initial_nodepath': node.nodepath}
+                'initial_filepath': node.filepath, 
+                'initial_nodepath': node.nodepath}
             # Deletes the node from the tree of databases model/view
             parent = self.parent(index)
             # position = node.row()
             position = index.row()
-            self.removeRows(position, 1, parent)
+            self.removeRows(position, parent=parent)
             # Moves the node to a hidden group in its database
             self.getDBDoc(node.filepath).cutNode(node.nodepath)
         finally:
@@ -416,7 +419,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                                                     parent.node, childname)
             # Paste the node in the view
             self.lazyAddChildren(index)
-            self.emit(QtCore.SIGNAL('nodeAdded'), index)
+            parent.updated = True
+
+            # Select the pasted node
+            self.selectIndex(index, childname)
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -445,7 +451,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
             # Paste the node in the view
             self.lazyAddChildren(index)
-            self.emit(QtCore.SIGNAL('nodeAdded'), index)
+            parent.updated = True
+
+            # Select the pasted node
+            self.selectIndex(index, childname)
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -465,18 +474,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             node = self.nodeFromIndex(index)
             parent_index = self.parent(index)
             parent = self.nodeFromIndex(parent_index)
-            # If a node is overwritten, then deletion is followed by an
-            # update of the `index` variable. The reason is that the node
-            # being deleted and that being renamed exist both in the model
-            # at the same time, so the index of the renamed node could
-            # change after the deletion. It will happen if the deleted node
-            # preceded the renamed one in the parent's list of children.
-            # If the index has not changed then the update is a harmless
-            # operation.
             if overwrite:
                 self.overwriteNode(parent, parent_index, new_name)
-                updated_row = parent.rowOfChild(node)
-                index = self.index(updated_row, 0, parent_index)
 
             # Rename the node in the PyTables database
             self.getDBDoc(node.filepath).renameNode(node.nodepath, 
@@ -486,7 +485,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # The renamed node's children must be updated too
             self.setData(index, new_name, QtCore.Qt.DisplayRole)
             old_nodepath = node.nodepath
-            dirname, old_nodename = os.path.split(old_nodepath)
+            dirname = os.path.split(old_nodepath)[0]
             new_nodepath = ('%s/%s' % (dirname, new_name)).replace('//', '/')
             self.setData(index, new_nodepath, QtCore.Qt.UserRole+1)
             self.setData(index, '%s->%s' % (node.filepath, node.nodepath), 
@@ -500,27 +499,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                             child_node.nodepath), QtCore.Qt.StatusTipRole)
         finally:
             QtGui.qApp.restoreOverrideCursor()
-
-
-    def walkTreeView(self, index):
-        """Iterates over a subtree of the tree of databases view.
-
-        :Parameter index: the model index of the root node of the iterated subtree
-        """
-
-        root = self.nodeFromIndex(index)
-        if hasattr(root, 'children'):
-            seq = root.children[:]
-        else:
-            seq = []
-        while len(seq):
-            child = seq.pop()
-            child_index = self.index(child.row(), 0, index)
-            yield child_index
-            if hasattr(child, 'children'):
-                for item_index in child.children[:]:
-                    yield item_index
-        del seq
 
 
     def moveNode(self, src_filepath, childpath, parent_index, overwrite=False):
@@ -550,8 +528,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             sibling = getattr(parent, '_v_children').keys()
             # Nodename pattern
             pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
-            # Bad nodename conditions
-            nodename_in_sibling = nodename in sibling
             info = [trs('Node move: nodename already exists', 
                     'A dialog caption'), 
                     trs("""Source file: %s\nMoved node: %s\n"""
@@ -597,34 +573,42 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.deleteNode(child_index)
 
 
-    def lazyAddChildren(self, index):
-        """Add children to a group node when it is expanded.
+    def walkTreeView(self, index):
+        """Iterates over a subtree of the tree of databases view.
 
-        Lazy population of the model is partially implemented in this
-        method. Expanded items are updated so that children items are added if
-        needed. This fact improves enormously the performance when files
-        whit a large number of nodes are opened.
-
-        :Parameter index: the index of the activated item
+        :Parameter index: the model index of the root node of the iterated subtree
         """
 
-        if not index.isValid():
-            return
-        node = self.nodeFromIndex(index)
-        group = node.node
-        # Find out if children have to be added by comparing the
-        # names of children currently added to model with the
-        # names of the whole list of children
-        added_children = sets.Set([node.childAtRow(row).name \
-            for row in range(0, len(node))])
-        children_groups = sets.Set(getattr(group, '_v_groups').keys())
-        children_leaves = sets.Set(getattr(group, '_v_leaves').keys())
-        for name in children_groups.difference(added_children):
-            child_group = groupNode.GroupNode(node, name)
-            self.addNode(node, child_group, parent=index)
-        for name in children_leaves.difference(added_children):
-            child_leaf = leafNode.LeafNode(node, name)
-            self.addNode(node, child_leaf, parent=index)
+        for prow in range(0, self.rowCount(index)):
+            child = self.index(prow, 0, index)
+            yield child
+            for crow in range(0, self.rowCount(child)):
+                yield self.index(crow, 0, child)
+
+
+    def indexChildren(self, index):
+        """Iterate over the children of a given index.
+
+        :Parameter index: the model index whose children are being retrieved
+        """
+
+        for row in range(0, self.rowCount(index)):
+            yield self.index(row, 0, index)
+
+
+    def selectIndex(self, parent, name):
+        """Select in the tree view the index with the given parent and name.
+
+        :Parameters:
+
+            - `parent`: the parent of the model index being selected
+            - `name`: the name tied to the model index being selected
+        """
+
+        for child in self.indexChildren(parent):
+            node = self.nodeFromIndex(child)
+            if node.name == name:
+                self.vtapp.dbs_tree_view.selectNode(child)
 
 
     def flags(self, index):
@@ -674,24 +658,25 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         if not index.isValid():
-            return QtCore.QVariant()
+            data = QtCore.QVariant()
         node = self.nodeFromIndex(index)
         if role == QtCore.Qt.DisplayRole:
-            return QtCore.QVariant(node.name)
+            data = QtCore.QVariant(node.name)
         elif role == QtCore.Qt.ToolTipRole:
-            return QtCore.QVariant('%s: %s' % (node.node_kind, node.name))
+            data = QtCore.QVariant('%s: %s' % (node.node_kind, node.name))
         elif role == QtCore.Qt.StatusTipRole:
-            return QtCore.QVariant(node.as_record)
+            data = QtCore.QVariant(node.as_record)
         elif role == QtCore.Qt.DecorationRole:
-            return QtCore.QVariant(node.icon)
+            data = QtCore.QVariant(node.icon)
         elif role == QtCore.Qt.UserRole:
-            return QtCore.QVariant(node.filepath)
+            data = QtCore.QVariant(node.filepath)
         elif role == QtCore.Qt.UserRole+1:
-            return QtCore.QVariant(node.nodepath)
+            data = QtCore.QVariant(node.nodepath)
         elif role == QtCore.Qt.UserRole+2:
-            return QtCore.QVariant(node.node_kind)
+            data = QtCore.QVariant(node.node_kind)
         else:
-            return QtCore.QVariant()
+            data = QtCore.QVariant()
+        return data
 
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
@@ -705,39 +690,41 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         if not index.isValid():
-            return False
+            result = False
         node = self.nodeFromIndex(index)
         if role == QtCore.Qt.DisplayRole:
             node.name = value
             self.emit(QtCore.SIGNAL(
                 'dataChanged(QModelIndex, QModelIndex)'), index, index)
-            return True
+            result = True
         elif role == QtCore.Qt.StatusTipRole:
             node.as_record = value
             self.emit(QtCore.SIGNAL(
                 'dataChanged(QModelIndex, QModelIndex)'), index, index)
-            return True
+            result = True
         elif role == QtCore.Qt.DecorationRole:
             node.icon = value
             self.emit(QtCore.SIGNAL(
                 'dataChanged(QModelIndex, QModelIndex)'), index, index)
-            return True
+            result = True
         elif role == QtCore.Qt.UserRole:
             node.filepath = value
             self.emit(QtCore.SIGNAL(
                 'dataChanged(QModelIndex, QModelIndex)'), index, index)
-            return True
+            result = True
         elif role == QtCore.Qt.UserRole+1:
             node.nodepath = value
             self.emit(QtCore.SIGNAL(
                 'dataChanged(QModelIndex, QModelIndex)'), index, index)
-            return True
+            result = True
         elif role == QtCore.Qt.UserRole+2:
             node.node_kind = value
             self.emit(QtCore.SIGNAL(
                 'dataChanged(QModelIndex, QModelIndex)'), index, index)
-            return True
-        return False
+            result = True
+        else:
+            result = False
+        return result
 
 
     def headerData(self, section, orientation, role):
@@ -759,17 +746,20 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         return 1
 
 
-    def rowCount(self, parent):
-        """The number of rows of the given index.
+    def rowCount(self, index):
+        """The number of rows of the given model index.
 
-        :Parameter parent: the index of the node being inspected.
+        :Parameter `index`: the model index being inspected.
         """
 
-        if not parent.isValid():
-            parent_node = self.root
+        node = self.nodeFromIndex(index)
+        if node == self.root:
+            nrows = len(self.getDBList()) + 1
         else:
-            parent_node = parent.internalPointer()
-        return len(parent_node)
+            nrows = 0
+            if node.node_kind in ('group', 'root group'):
+                nrows = len(node)
+        return nrows
 
 
     def hasChildren(self, index):
@@ -784,9 +774,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         only if the node's children have been added.
         As we populate our model in a lazy way (see `lazyAddChildren`
         method below and `DBsTreeView.expandNode` method) we want the
-        decoration to be painted whenever the node has children, even if
-        the children have not been added to the model yet. So the user
-        will know that the node has children.
+        decoration to be painted whenever the node has children, *even if
+        the children have not been added to the model yet (so we cannot
+        use the underlying data store, we must use the data source). So
+        the user will know that the node has children*.
 
         :Parameter index: the index of the node being inspected.
         """
@@ -819,8 +810,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         if self.hasIndex(row, column, parent):
             group = self.nodeFromIndex(parent)
-            node = group.childAtRow(row)
-            return self.createIndex(row, column, node)
+            try:
+                node = group.childAtRow(row)
+                return self.createIndex(row, column, node)
+            except IndexError:
+                return QtCore.QModelIndex()
         return QtCore.QModelIndex()
 
 
@@ -843,21 +837,50 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         node = self.nodeFromIndex(child)
-        if node is None:
-            return QtCore.QModelIndex()
+        if node is self.root:
+           return QtCore.QModelIndex()
         parent = node.parent
-        if parent is None:
+        if parent is self.root:
             return QtCore.QModelIndex()
         grandparent = parent.parent
-        if grandparent is None:
-            return QtCore.QModelIndex()
         row = grandparent.rowOfChild(parent)
-        assert row != -1
         return self.createIndex(row, 0, parent)
 
 
+    def lazyAddChildren(self, index):
+        """Add children to a group node when it is expanded.
+
+        Lazy population of the model is partially implemented in this
+        method. Expanded items are updated so that children items are added if
+        needed. This fact improves enormously the performance when files
+        whit a large number of nodes are opened.
+
+        :Parameter index: the index of the activated item
+        """
+
+        if not index.isValid():
+            return
+        node = self.nodeFromIndex(index)
+        group = node.node
+
+        # Find out if children have to be added by comparing the
+        # names of children currently added to model with the
+        # names of the whole list of children
+        model_children = sets.Set([node.childAtRow(row).name \
+            for row in range(0, len(node))])
+        children_groups = sets.Set(getattr(group, '_v_groups').keys())
+        children_leaves = sets.Set(getattr(group, '_v_leaves').keys())
+        self.gdelta = children_groups.difference(model_children)
+        self.ldelta = children_leaves.difference(model_children)
+        new_children = len(self.gdelta) + len(self.ldelta)
+        if not new_children:
+            return
+        else:
+            self.insertRows(0, new_children, index)
+
+
     def addNode(self, group, child, row=0, parent=QtCore.QModelIndex()):
-        """Adds a child node to a given parent.
+        """Adds a child node to a given parent and update the model.
 
         :Parameters:
 
@@ -870,17 +893,58 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
         self.beginInsertRows(parent, row, row)
         group.insertChild(child, row)
+        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
+            parent, parent)
         self.endInsertRows()
         self.emit(QtCore.SIGNAL("layoutChanged()"))
-        start = self.index(0, 0, parent)
-        stop = self.index(self.rowCount(parent) - 1, 0, parent)
-        self.emit(QtCore.SIGNAL("DataChanged(QModelIndex, QModelIndex)"), 
-            start, stop)
+        return True
+
+
+    def insertRows(self, position=0, count=1, parent=QtCore.QModelIndex()):
+        """Insert `count` rows before the given row.
+
+        This method is called during nodes population and when files are
+        opened/created.
+
+        :Parameters:
+
+        - `position`: the position of the first row being added.
+        - `count`: the number of rows being added
+        - `parent`: the index of the parent item.
+
+        :Returns: True if the row is added. Otherwise it returns False.
+        """
+
+        # Add rows to the model and update its underlaying data store
+        self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
+        first = position
+        last = position + count - 1
+        self.beginInsertRows(parent, first, last)
+        node = self.nodeFromIndex(parent)
+        for name in self.gdelta:
+            group = groupNode.GroupNode(node, name)
+            node.insertChild(group, 0)
+        for name in self.ldelta:
+            leaf = leafNode.LeafNode(node, name)
+            node.insertChild(leaf, 0)
+        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
+            parent, parent)
+        self.endInsertRows()
+        self.emit(QtCore.SIGNAL("layoutChanged()"))
+
+        # Report views about changes in data
+        top_left = self.index(first, 0, parent)
+        bottom_right = self.index(last, 0, parent)
+        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
+            top_left, bottom_right)
+
         return True
 
 
     def removeRows(self, position, count=1, parent=QtCore.QModelIndex()):
         """Removes `count` rows before the given row.
+
+        This method is called when an item is cut/deleted/D&D.
 
         :Parameters:
 
@@ -891,18 +955,21 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Returns: True if the row is removed. Otherwise it returns False.
         """
 
-        node = self.nodeFromIndex(parent)
+        # Remove rows from the model and update its underlaying data store
         self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
-        self.beginRemoveRows(parent, position,
-            position + count - 1)
-        for row in range(count):
-            del node.children[position + row]
+        self.beginRemoveRows(parent, position, position)
+        group = self.nodeFromIndex(parent)
+        del group.children[position]
+        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
+            parent, parent)
         self.endRemoveRows()
         self.emit(QtCore.SIGNAL("layoutChanged()"))
-        start = self.index(0, 0, parent)
-        stop = self.index(self.rowCount(parent) - 1, 0, parent)
-        self.emit(QtCore.SIGNAL("DataChanged(QModelIndex, QModelIndex)"), 
-            start, stop)
+
+        # Report views about changes in data
+        ichild = self.index(position, 0, parent)
+        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
+            ichild, ichild)
+
         return True
 
 
@@ -964,12 +1031,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             if index.isValid():
                 filepath = self.data(index, QtCore.Qt.UserRole).toString()
                 nodepath = self.data(index, QtCore.Qt.UserRole+1).toString()
-                node_kind = self.data(index, QtCore.Qt.UserRole+2).toString()
-                name = self.data(index, QtCore.Qt.DisplayRole).toString()
-                stream << filepath << nodepath << node_kind << name
+                row = QtCore.QString(str(index.row()))
+                stream << filepath << nodepath << row
 
-                self.before_dragging_info = (self.parent(index),
-                    index.internalPointer().row())
+                self.initial_parent = self.parent(index)
 
         mime_data.setData("application/x-dbstreemodeldatalist", encoded_data)
         return mime_data
@@ -1022,8 +1087,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         encoded_data = data.data("application/x-dbstreemodeldatalist")
 
         # Moving is not allowed if the parent group remains the same
-        (old_parent, dragged_node_position) = self.before_dragging_info
-        if parent == old_parent:
+        initial_parent = self.initial_parent
+        if parent == initial_parent:
             return False
 
         stream = QtCore.QDataStream(encoded_data, QtCore.QIODevice.ReadOnly)
@@ -1031,52 +1096,26 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Decode the encoded data
             filepath = QtCore.QString()
             nodepath = QtCore.QString()
-            node_kind = QtCore.QString()
-            name = QtCore.QString()
-            stream >> filepath >> nodepath >> node_kind >> name
+            initial_row = QtCore.QString()
+            stream >> filepath >> nodepath >> initial_row
 
             filepath = unicode(filepath)
             nodepath = unicode(nodepath)
-            node_kind = unicode(node_kind)
-            name = unicode(name)
+            initial_row = int(initial_row.toInt()[0])
+
+            # Remove the dragged node from the model
+            self.removeRows(initial_row, parent=initial_parent)
 
             # Move the node to its final destination in the PyTables database
             new_name = self.moveNode(filepath, nodepath, parent)
             if new_name == None:
                 return False
 
-            # Update the children list of the dragged node's parent
-            self.removeRows(dragged_node_position, 1, old_parent)
+            # Add the dropped node to the model
+            self.lazyAddChildren(parent)
+            parent_node.updated = True
 
-            # Insert the new node
-            if node_kind == 'group':
-                child = groupNode.GroupNode(parent_node, new_name)
-            else:
-                child = leafNode.LeafNode(parent_node, new_name)
-            self.addNode(parent_node, child, parent=parent)
-            # self.emit(SIGNAL('nodeAdded'), parent)
+            # Select the pasted node
+            self.selectIndex(parent, new_name)
 
         return True
-
-if __name__ == '__main__':
-    import sys
-    from vitables.h5db import dbsTreeView
-
-    APP = QtGui.QApplication(sys.argv)
-    DB_TREE_VIEW = dbsTreeView.DBsTreeView()
-
-    # The tree of databases model
-    DB_TREE_MODEL = DBsTreeModel()
-    DB_TREE_VIEW.setModel(DB_TREE_MODEL)
-    DB_TREE_VIEW.show()
-
-    # Add some databases to the model
-    BASEDIR = '/home/vmas/repositoris.nobackup/vitables_portingpyqt4/examples'
-    FILEPATH = '%s/tutorial1.h5' % BASEDIR
-    DB_TREE_MODEL.openDBDoc(FILEPATH, 'a')
-    FILEPATH = '%s/array1.h5' % BASEDIR
-    DB_TREE_MODEL.openDBDoc(FILEPATH, 'a')
-#    FILEPATH = '%s/vlarray2.h5' % BASEDIR
-#    DB_TREE_MODEL.openDBDoc(FILEPATH, 'r')
-#    DB_TREE_MODEL.closeDBDoc(FILEPATH)
-    APP.exec_()

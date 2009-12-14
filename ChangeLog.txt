@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 14, 2009 **
+The code dealing with the tree view has been debugged and simplified.
+
 ** December 11, 2009 **
 Fixed a subtle bug in the automatic sync between tree view pane and workspace.
 

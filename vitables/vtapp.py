@@ -238,8 +238,6 @@ class VTApp(QtGui.QMainWindow):
         self.connect(self.dbs_tree_model, \
             QtCore.SIGNAL('rowsInserted(QModelIndex, int, int)'), 
             self.slotUpdateActions)
-        self.connect(self.dbs_tree_model, QtCore.SIGNAL('nodeAdded'), \
-            self.dbs_tree_view.expand)
 
         self.slotUpdateWindowsMenu()
 

@@ -66,6 +66,7 @@ class GroupNode(object):
         - `name`: the name of the node
         """
 
+        self.updated = False
         self.children = []
         self.parent = parent
         self.node = parent.node._f_getChild(name)

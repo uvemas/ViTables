@@ -70,6 +70,7 @@ class RootGroupNode(object):
         - `tmp_db`: True if the node is tied to the temporary database
         """
 
+        self.updated = False
         self.children = []
         self.parent = parent
         self.name = u'root node'

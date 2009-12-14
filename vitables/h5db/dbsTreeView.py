@@ -120,93 +120,86 @@ class DBsTreeView(QtGui.QTreeView):
         # Connect signals to slots
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(QPoint)"),
             self.createCustomContextMenu)
-        self.connect(self, QtCore.SIGNAL('activated(QModelIndex)'),
+        self.connect(self, QtCore.SIGNAL('activated(QModelIndex)'), 
             self.activateNode)
-        self.connect(self, QtCore.SIGNAL('expanded(QModelIndex)'),
+        self.connect(self, QtCore.SIGNAL('expanded(QModelIndex)'), 
             self.updateExpandedGroup)
-        self.connect(self, QtCore.SIGNAL('collapsed(QModelIndex)'),
+        self.connect(self, QtCore.SIGNAL('collapsed(QModelIndex)'), 
             self.updateCollapsedGroup)
 
 
-    def mouseDoubleClickEvent(self, event):
-        """Specialised handler for mouse double click events.
-
-        When a node is double clicked in the tree of databases pane:
-        - if the node can be renamed and the Shift key is pressed then
-          rename the node
-        - if the node is a leaf with no view and the Shift key is not pressed
-          then open the node
-        - if the node is a collpased group and the Shift key is not pressed
-          then expand the group
-        """
-
-        modifier = event.modifiers()
-        current = self.currentIndex()
-        if modifier == QtCore.Qt.ShiftModifier:
-            if current.flags() & QtCore.Qt.ItemIsEditable:
-                self.edit(current)
-        else:
-            self.activateNode(current)
-
-
-    def updateCollapsedGroup(self, index):
-        """After collapsing a group update its icon.
-
-        :Parameter index: the index of the collapsed group
-        """
-
-        model = self.model()
-        node = model.nodeFromIndex(index)
-        if node.node_kind == 'group':
-            model.setData(index, QtCore.QVariant(node.closed_folder),
-                QtCore.Qt.DecorationRole)
-
-
-    def updateExpandedGroup(self, index):
-        """After a group expansion update the icon and the displayed children.
-
-        Lazy population of the model is partially implemented in this
-        method. Expanded items are updated so that children items are added if
-        needed. This fact reduces enormously the opening times for files
-        whit a large number of nodes and also saves memory.
-
-        :Parameter index: the index of the expanded item
-        """
-
-        model = self.model()
-        node = model.nodeFromIndex(index)
-        node_kind = node.node_kind
-        if node_kind in ['group', 'root group']:
-            model.lazyAddChildren(index)
-        if node_kind == 'group':
-            model.setData(index, QtCore.QVariant(node.open_folder),
-                QtCore.Qt.DecorationRole)
-        self.update(index)
-
-
     def activateNode(self, index):
-        """Expands an item.
+        """Expands an item via Enter/Return key or mouse double click.
 
-        When the user activates the item by pressing Enter collapsed
-        items are expanded. If the user activates the node by double
-        clicking on it while the Shift key is pressed, the item is edited
-        (if editing is enabled).
+        When the user activates a collapsed item (by pressing Enter, Return
+        or by double clicking the item) then it is expanded. If the user
+        activates the node by double clicking on it while the Shift key is
+         pressed, the item is edited (if editing is enabled).
 
         Lazy population of the model is partially implemented in this
         method. Expanded items are updated so that children items are added if
         needed. This fact improves enormously the performance when files
         whit a large number of nodes are opened.
 
+        This method is a slot connected to the activated(QModelIndex) signal
+        in the ctor.
+
         :Parameter index: the index of the activated item
         """
 
-        model = self.model()
-        node = model.nodeFromIndex(index)
+        node = self.dbt_model.nodeFromIndex(index)
         if node.node_kind.count('group'):
             if not self.isExpanded(index):
                 self.expand(index)
         elif not node.has_view:
             self.vtapp.slotNodeOpen(index)
+
+
+    def updateCollapsedGroup(self, index):
+        """After collapsing a group update its icon.
+
+        This method is a slot connected to the collapsed(QModelIndex) signal
+        in the ctor.
+
+        :Parameter index: the index of the collapsed group
+        """
+
+        node = self.dbt_model.nodeFromIndex(index)
+        if node.node_kind == 'group':
+            self.dbt_model.setData(index, QtCore.QVariant(node.closed_folder), 
+                QtCore.Qt.DecorationRole)
+        self.smodel.clearSelection()
+        self.smodel.setCurrentIndex(index, 
+            QtGui.QItemSelectionModel.SelectCurrent)
+        self.update(index)
+
+
+    def updateExpandedGroup(self, index):
+        """After a group expansion, update the icon and the displayed children.
+
+        Lazy population of the model is partially implemented in this
+        method. Expanded items are updated so that children items are added if
+        needed. This fact reduces enormously the opening times for files
+        whit a large number of nodes and also saves memory.
+
+        This method is a slot connected to the expanded(QModelIndex) signal
+        in the ctor.
+
+        :Parameter index: the index of the expanded item
+        """
+
+        node = self.dbt_model.nodeFromIndex(index)
+        node_kind = node.node_kind
+        if node_kind == 'group':
+            self.dbt_model.setData(index, QtCore.QVariant(node.open_folder), 
+                QtCore.Qt.DecorationRole)
+        if node_kind in ['group', 'root group']:
+            if not node.updated:
+                self.dbt_model.lazyAddChildren(index)
+                node.updated = True
+                self.smodel.clearSelection()
+                self.smodel.setCurrentIndex(index, 
+                    QtGui.QItemSelectionModel.SelectCurrent)
 
 
     def createCustomContextMenu(self, pos):
@@ -220,12 +213,11 @@ class DBsTreeView(QtGui.QTreeView):
         :Parameter pos: the local position at which the menu will popup
         """
 
-        model = self.model()
         index = self.indexAt(pos)
         if not index.isValid():
             kind = 'view'
         else:
-            node = model.nodeFromIndex(index)
+            node = self.dbt_model.nodeFromIndex(index)
             kind = node.node_kind
         pos = self.mapToGlobal(pos)
         self.vtapp.popupContextualMenu(kind, pos)
@@ -254,6 +246,37 @@ class DBsTreeView(QtGui.QTreeView):
                 self.setFocus(True)
 
 
+    def selectNode(self, index):
+        """Select the given index.
+
+        :Parameters `index`: the model index being selected
+        """
+
+        self.smodel.clearSelection()
+        self.smodel.setCurrentIndex(index, 
+            QtGui.QItemSelectionModel.SelectCurrent)
+
+
+    def mouseDoubleClickEvent(self, event):
+        """Specialised handler for mouse double click events.
+
+        When a node is double clicked in the tree of databases pane:
+        - if the node can be renamed and the Shift key is pressed then
+          rename the node
+        - if the node is a leaf with no view and the Shift key is not pressed
+          then open the node
+        - if the node is a collpased group and the Shift key is not pressed
+          then expand the group
+        """
+
+        modifier = event.modifiers()
+        current = self.currentIndex()
+        if modifier == QtCore.Qt.ShiftModifier:
+            if current.flags() & QtCore.Qt.ItemIsEditable:
+                self.edit(current)
+        else:
+            self.activateNode(current)
+
 
     def dropEvent(self, event):
         """
@@ -267,10 +290,9 @@ class DBsTreeView(QtGui.QTreeView):
         """
 
         mime_data = event.mimeData()
-        model = self.model()
         if mime_data.hasFormat('text/uri-list'):
-            if model.dropMimeData(mime_data, QtCore.Qt.CopyAction, -1, -1, 
-                self.currentIndex()):
+            if self.dbt_model.dropMimeData(\
+                mime_data, QtCore.Qt.CopyAction, -1, -1, self.currentIndex()):
                 event.setDropAction(QtCore.Qt.CopyAction)
                 event.accept()
                 self.setFocus(True)
