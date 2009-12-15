@@ -41,8 +41,6 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'QueriesManager'
 
-import sets
-
 from PyQt4 import QtCore, QtGui
 
 import vitables.utils
@@ -68,7 +66,7 @@ def getTableInfo(table):
     info[u'src_path'] = table._v_pathname
     info[u'name'] = table._v_name
     # Fields info: top level fields names, flat fields shapes and types
-    info[u'col_names'] = sets.Set(table.colnames)
+    info[u'col_names'] = frozenset(table.colnames)
     info[u'col_shapes'] = \
         dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
     info[u'col_types'] = table.coltypes

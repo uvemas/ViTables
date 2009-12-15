@@ -48,8 +48,6 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'AttrEditor'
 
-import sets
-
 import numpy
 
 from PyQt4 import QtGui
@@ -297,10 +295,10 @@ class AttrEditor(object):
 
         # Get rid of deleted attributes
         if self.edited_attrs.has_key(u'TITLE'):
-            all_attrs = sets.Set(self.asi._v_attrnamesuser + [u"TITLE"])
+            all_attrs = frozenset(self.asi._v_attrnamesuser + [u"TITLE"])
         else:
-            all_attrs = sets.Set(self.asi._v_attrnamesuser)
-        edited_attrs_names = sets.Set([self.edited_attrs[row][0] 
+            all_attrs = frozenset(self.asi._v_attrnamesuser)
+        edited_attrs_names = frozenset([self.edited_attrs[row][0] 
                                         for row in self.edited_attrs.keys()])
         for attr in (all_attrs - edited_attrs_names):
             try:

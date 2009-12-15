@@ -27,7 +27,6 @@ _context = 'VTApp'
 import os
 import time
 import re
-import sets
 import sys
 
 import tables
@@ -1040,12 +1039,12 @@ class VTApp(QtGui.QMainWindow):
         # fileNew, fileOpen, fileOpenRO, fileExit and the Help menu actions
 
         # The set of actions that can be enabled or disabled
-        actions = sets.Set(['fileClose', 'fileCloseAll', 'fileSaveAs', 
+        actions = frozenset(['fileClose', 'fileCloseAll', 'fileSaveAs', 
                             'nodeOpen', 'nodeClose', 'nodeProperties', 
                             'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy', 
                             'nodePaste', 'nodeDelete', 
                             'queryNew', 'queryDeleteAll'])
-        enabled = sets.Set([])
+        enabled = set([])
 
         model_rows = self.dbs_tree_model.rowCount(QtCore.QModelIndex())
         if model_rows <= 0:

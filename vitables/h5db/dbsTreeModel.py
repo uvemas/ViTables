@@ -83,7 +83,6 @@ _context = 'DBsTreeModel'
 import tempfile
 import os
 import sys
-import sets
 import re
 
 import tables
@@ -866,10 +865,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         # Find out if children have to be added by comparing the
         # names of children currently added to model with the
         # names of the whole list of children
-        model_children = sets.Set([node.childAtRow(row).name \
+        model_children = frozenset([node.childAtRow(row).name \
             for row in range(0, len(node))])
-        children_groups = sets.Set(getattr(group, '_v_groups').keys())
-        children_leaves = sets.Set(getattr(group, '_v_leaves').keys())
+        children_groups = frozenset(getattr(group, '_v_groups').keys())
+        children_leaves = frozenset(getattr(group, '_v_leaves').keys())
         self.gdelta = children_groups.difference(model_children)
         self.ldelta = children_leaves.difference(model_children)
         new_children = len(self.gdelta) + len(self.ldelta)
@@ -1103,13 +1102,18 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             nodepath = unicode(nodepath)
             initial_row = int(initial_row.toInt()[0])
 
-            # Remove the dragged node from the model
-            self.removeRows(initial_row, parent=initial_parent)
+            # A node cannot be moved on itself
+            if (parent_node.filepath, parent_node.nodepath) == (filepath, 
+                nodepath):
+                return False
 
             # Move the node to its final destination in the PyTables database
             new_name = self.moveNode(filepath, nodepath, parent)
             if new_name == None:
                 return False
+
+            # Remove the dragged node from the model
+            self.removeRows(initial_row, parent=initial_parent)
 
             # Add the dropped node to the model
             self.lazyAddChildren(parent)

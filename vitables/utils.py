@@ -29,7 +29,6 @@ __docformat__ = 'restructuredtext'
 import sys
 import os
 import traceback
-import sets
 import locale
 
 import numpy
@@ -192,7 +191,7 @@ def getIcons():
     """Return the icons dictionary to be used by the main window."""
 
     if not ICONS_DICT:
-        large_icons = sets.Set([
+        large_icons = frozenset([
             # Icons for toolbars
             'document-close', 'document-new', 'document-open', 
             'document-save-as', 'application-exit', 'folder-new', 
@@ -203,7 +202,7 @@ def getIcons():
             'file_ro', 'file_rw', 'dbfilters', 'folder', 
             'document-open-folder'])
 
-        small_icons = sets.Set([
+        small_icons = frozenset([
             # Icons for menu items
             'document-close', 'document-new', 'document-open', 
             'document-save-as', 'document-open-recent', 'application-exit', 
@@ -231,13 +230,13 @@ def getHBIcons():
     """Return the icons dictionary to be used by the Help Browser."""
 
     if not HB_ICONS_DICT:
-        large_icons = sets.Set([
+        large_icons = frozenset([
         # Icons for toolbar
         'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
         'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out', 
         'edit-clear-history'])
 
-        small_icons = sets.Set([
+        small_icons = frozenset([
         # Icons for menu items
         'document-open', 'application-exit',
         'zoom-in', 'zoom-out',

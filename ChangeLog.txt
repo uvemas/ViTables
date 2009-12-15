@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 15, 2009 **
+The deprecated (in Python 2.6) sets module is not used anymore.
+
 ** December 14, 2009 **
 The code dealing with the tree view has been debugged and simplified.
 
