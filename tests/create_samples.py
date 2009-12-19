@@ -28,7 +28,7 @@ Coord = {
 # fields with blanks in their names
 ComplexObject = {
     "ID": tables.StringCol(8, pos=0),   # 8-character String
-    "long ID": tables.StringCol(16, pos=1),   # 16-character String
+    "long_ID": tables.StringCol(16, pos=1),   # 16-character String
     "position": tables.IntCol(shape=2, pos=2),        # integer
     "imag": tables.ComplexCol(16, pos=3), # complex (double precision)
     "info": Info(),
@@ -98,7 +98,7 @@ cobject = t2.row
 for i in xrange(10):
     # First, assign the values to the ComplexObject record
     cobject['ID']  = 'OID: %3d' % (i)
-    cobject['long ID']  = 'Long ID: %6d' % (i)
+    cobject['long_ID']  = 'Long ID: %6d' % (i)
     cobject['position'] = (i, i+1)
     cobject['imag'] = complex(i, 2*i)
     cobject['info/name'] = 'Name: %6d' % (i)

@@ -170,12 +170,12 @@ def createIcons(large_icons, small_icons, icons_dict):
         icon = QtGui.QIcon()
         if name in large_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR, 'big_icons','%s.png') % name)
+                os.path.join(ICONDIR, '22x22','%s.png') % name)
             pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR,'small_icons', '%s.png') % name)
+                os.path.join(ICONDIR,'16x16', '%s.png') % name)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 

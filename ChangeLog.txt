@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 19, 2009 **
+The plugins framework has been debugged and refactored and has a new ui.
+
 ** December 15, 2009 **
 The deprecated (in Python 2.6) sets module is not used anymore.
 

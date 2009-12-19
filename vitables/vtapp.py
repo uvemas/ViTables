@@ -39,6 +39,7 @@ import vitables.vtsplash
 from vitables.vtSite import ICONDIR
 
 from  vitables.preferences import vtconfig
+import vitables.preferences.pluginsLoader as pluginsLoader
 from  vitables.preferences import preferences
 
 import vitables.h5db.dbsTreeModel as dbsTreeModel
@@ -55,9 +56,6 @@ from vitables.docBrowser import helpBrowser
 
 import vitables.vtTables.buffer as rbuffer
 import vitables.vtTables.dataSheet as dataSheet
-
-import vitables.pluginsManager.pluginsManager as pluginsMgr
-import vitables.pluginsManager.pluginsDlg as pluginsDlg
 
 
 
@@ -169,8 +167,8 @@ class VTApp(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+    #    sys.stdout = self.logger
+    #    sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(trs('Configuration setup...',
@@ -201,7 +199,7 @@ class VTApp(QtGui.QMainWindow):
         # creating the user interface.
         # Some plugins modify datasets displaying so plugins must be loaded
         # before opening any file.
-        self.plugins_mgr = pluginsMgr.PluginsMgr(self.plugins_paths, 
+        self.plugins_mgr = pluginsLoader.PluginsLoader(self.plugins_paths, 
             self.enabled_plugins)
 
         # Restore last session
@@ -382,14 +380,6 @@ class VTApp(QtGui.QMainWindow):
             trs('Remove all filters', 
                 'Status bar text for the Query -> Delete All action'))
         actions['queryDeleteAll'].setObjectName('queryDeleteAll')
-
-        actions['pluginsConfigure'] = vitables.utils.createAction(self, 
-            trs('&Configure...', 'Plugins -> Configure'), None, 
-            self.slotPluginsConfigure, 
-            self.icons_dictionary['configure'], 
-            trs('Configure plugins', 
-                'Status bar text for the Plugins -> Configure action'))
-        actions['pluginsConfigure'].setObjectName('pluginsConfigure')
 
         actions['settingsPreferences'] = vitables.utils.createAction(self, 
             trs('&Preferences...', 'Settings -> Preferences'), None, 
@@ -584,29 +574,18 @@ class VTApp(QtGui.QMainWindow):
         vitables.utils.addActions(self.dataset_menu, dataset_actions, 
             self.gui_actions)
 
-        # Create the Tools menu and add actions/submenus/separators to it
-        tools_menu = self.menuBar().addMenu(trs("&Tools", 
-            'The Tools menu entry'))
-
-        # The popup containing checkable entries for the toolbars and
-        # dock widgets present in the main window
-        self.hide_toolbar_submenu = self.createPopupMenu()
-        self.hide_toolbar_submenu.menuAction().setText(trs('ToolBars', 
-                                                'Tools -> ToolBars action'))
-        tools_actions = [self.hide_toolbar_submenu]
-        vitables.utils.addActions(tools_menu, tools_actions, self.gui_actions)
-
         # Create the Plugins menu and add actions/submenus/separators to it
         plugins_menu = self.menuBar().addMenu(trs("&Plugins", 
             'The Plugins menu entry'))
-        plugins_actions = ['pluginsConfigure']
-        vitables.utils.addActions(plugins_menu, plugins_actions, 
-            self.gui_actions)
 
         # Create the Settings menu and add actions/submenus/separators to it
         settings_menu = self.menuBar().addMenu(trs("&Settings", 
             'The Settings menu entry'))
-        settings_actions = ['settingsPreferences']
+        self.hide_toolbar_submenu = self.createPopupMenu()
+        self.hide_toolbar_submenu.menuAction().setText(trs('ToolBars', 
+                                                'Tools -> ToolBars action'))
+        settings_actions = ['settingsPreferences', None, 
+            self.hide_toolbar_submenu]
         vitables.utils.addActions(settings_menu, settings_actions, 
             self.gui_actions)
 
@@ -725,9 +704,7 @@ class VTApp(QtGui.QMainWindow):
                            being loaded
         """
 
-        keys = config.keys()
-        for key in keys:
-            value = config[key]
+        for key, value in config.items():
             if key == 'Logger/Paper':
                 paper = unicode(QtGui.QColor(value).name())
                 stylesheet = self.logger.styleSheet()
@@ -1998,13 +1975,6 @@ class VTApp(QtGui.QMainWindow):
         node = self.dbs_tree_model.nodeFromIndex(current)
         info = nodeInfo.NodeInfo(node)
         nodePropDlg.NodePropDlg(info)
-
-
-    def slotPluginsConfigure(self):
-        """Open the plugins management dialog.
-        """
-
-        mgr_dlg = pluginsDlg.PluginsDlg()
 
 
     def slotSettingsPreferences(self):

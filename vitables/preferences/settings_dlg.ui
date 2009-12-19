@@ -1,201 +1,382 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>SettingsDialog</class>
- <widget class="QDialog" name="SettingsDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="SettingsDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>337</width>
-    <height>394</height>
+    <width>591</width>
+    <height>425</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string comment="Caption of the Settings dialog" >ViTables settings</string>
+  <property name="windowTitle">
+   <string>ViTables settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
-    <widget class="QTabWidget" name="tab_widget" >
-     <property name="currentIndex" >
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="general_page" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>315</width>
-        <height>309</height>
-       </rect>
-      </property>
-      <attribute name="title" >
-       <string>&amp;General</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2" >
-       <item>
-        <widget class="QGroupBox" name="startup_gb" >
-         <property name="title" >
-          <string comment="The name of the groupbox where startup is configured" >Startup</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3" >
-          <item>
-           <widget class="QCheckBox" name="restore_cb" >
-            <property name="text" >
-             <string comment="Label of the restore last session check button" >Restore last session</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="last_dir_cb" >
-            <property name="text" >
-             <string comment="Label of the startup in the last open directory check box" >Start in last opened directory</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="lf_page" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>315</width>
-        <height>309</height>
-       </rect>
-      </property>
-      <attribute name="title" >
-       <string>&amp;Look and Feel</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5" >
-       <item>
-        <widget class="QGroupBox" name="logger_gb" >
-         <property name="title" >
-          <string comment="The title of the logger groubox" >Logger</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout" >
-          <item row="0" column="0" >
-           <widget class="QPushButton" name="font_pb" >
-            <property name="text" >
-             <string comment="The label of the logger font chooser button" >&amp;Font</string>
-            </property>
-           </widget>
-          </item>
-          <item rowspan="3" row="0" column="1" >
-           <widget class="QTextEdit" name="sample_te" >
-            <property name="readOnly" >
-             <bool>true</bool>
-            </property>
-            <property name="textInteractionFlags" >
-             <set>Qt::NoTextInteraction</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QPushButton" name="foreground_pb" >
-            <property name="text" >
-             <string comment="The label of the logger text color button" >F&amp;oreground</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QPushButton" name="background_pb" >
-            <property name="text" >
-             <string comment="The label of the logger color button" >&amp;Background</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="workspace_gb" >
-         <property name="title" >
-          <string comment="The title of the workspace groupbox" >Workspace</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout" >
-          <item>
-           <widget class="QPushButton" name="workspace_pb" >
-            <property name="text" >
-             <string comment="The label of the workspace color button" >&amp;Background</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="workspace_label" >
-            <property name="autoFillBackground" >
-             <bool>true</bool>
-            </property>
-            <property name="text" >
-             <string comment="A label for the workspace color sample" >Background color sample</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="style_gb" >
-         <property name="title" >
-          <string comment="The title of the global aspect groupbox" >Style</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4" >
-          <item>
-           <widget class="QComboBox" name="styles_cb" />
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QListWidget" name="contents_widget">
+       <property name="whatsThis">
+        <string>This is the settings selector widget. Click on an icon in order to select the settings you want to customise.</string>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::IconMode</enum>
+       </property>
+       <property name="currentRow">
+        <number>-1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="pages_widget">
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <widget class="QWidget" name="startup_page">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QGroupBox" name="startup_gb">
+           <property name="title">
+            <string comment="The name of the groupbox where startup is configured">Startup</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="restore_cb">
+              <property name="text">
+               <string comment="Label of the restore last session check button">Restore last session</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="last_dir_cb">
+              <property name="text">
+               <string comment="Label of the startup in the last open directory check box">Start in last opened directory</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="style_page">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QGroupBox" name="logger_gb">
+           <property name="title">
+            <string comment="The title of the logger groubox">Logger</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="1" rowspan="7">
+             <widget class="QTextEdit" name="sample_te">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::NoTextInteraction</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QPushButton" name="foreground_pb">
+              <property name="text">
+               <string comment="The label of the logger text color button">F&amp;oreground</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="5" column="0">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="4" column="0">
+             <widget class="QPushButton" name="background_pb">
+              <property name="text">
+               <string comment="The label of the logger color button">&amp;Background</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="font_pb">
+              <property name="text">
+               <string comment="The label of the logger font chooser button">&amp;Font</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="workspace_gb">
+           <property name="title">
+            <string comment="The title of the workspace groupbox">Workspace</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QPushButton" name="workspace_pb">
+              <property name="text">
+               <string comment="The label of the workspace color button">&amp;Background</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="workspace_label">
+              <property name="autoFillBackground">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string comment="A label for the workspace color sample">Background color sample</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="style_gb">
+           <property name="title">
+            <string comment="The title of the global aspect groupbox">Style</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QComboBox" name="styles_cb"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="plugins_page">
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <widget class="QGroupBox" name="folders_gbox">
+           <property name="title">
+            <string>Folders</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item>
+             <widget class="QListView" name="paths_lv">
+              <property name="toolTip">
+               <string>The list of folders where plugins can be found</string>
+              </property>
+              <property name="whatsThis">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the list of folders where plugins will be searched at start time. Click the New button for adding a folder. For deleting a folder, select it and click the Remove button.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The folders in this list should contain &lt;span style=&quot; font-weight:600;&quot;&gt;only&lt;/span&gt; ViTables plugins. Otherwise unexpected errors can happen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="new_button">
+                <property name="toolTip">
+                 <string>Press to add a new plugins folder</string>
+                </property>
+                <property name="text">
+                 <string>&amp;New</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="remove_button">
+                <property name="toolTip">
+                 <string>Press to remove the selected plugins folder</string>
+                </property>
+                <property name="text">
+                 <string>&amp;Remove</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="plugins_gbox">
+           <property name="title">
+            <string>Plugins</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <layout class="QGridLayout" name="grid_layout_3">
+              <item row="2" column="2">
+               <layout class="QGridLayout" name="grid_layout_4">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item row="2" column="1">
+                 <widget class="QToolButton" name="load_button">
+                  <property name="toolTip">
+                   <string>Press to enable the selected plugin</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="arrowType">
+                   <enum>Qt::RightArrow</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QToolButton" name="unload_button">
+                  <property name="toolTip">
+                   <string>Press to disable the selected plugin</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="arrowType">
+                   <enum>Qt::LeftArrow</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <spacer name="verticalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="3" column="1">
+                 <spacer name="verticalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="disabled_label">
+                <property name="text">
+                 <string>Disabled</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QLabel" name="enabled_label">
+                <property name="text">
+                 <string>Enabled</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4">
+               <widget class="QListView" name="enabled_lv">
+                <property name="toolTip">
+                 <string>The list of enabled plugins</string>
+                </property>
+                <property name="whatsThis">
+                 <string>This is the list of enabled plugins. You can enable a currently disabled plugin by selecting it in the list of disabled plugins and clicking the right arrow button. The selected plugin will be added to the list of enabled plugins.
+
+Changes in the enabled/disabled plugins lists will take effect the next time you start ViTables.</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QListView" name="disabled_lv">
+                <property name="toolTip">
+                 <string>The list of disabled plugins</string>
+                </property>
+                <property name="whatsThis">
+                 <string>This is the list of disabled plugins. You can disable a currently enabled plugin by selecting it in the list of enabled plugins and clicking the left arrow button. The selected plugin will be added to the list of disabled plugins.
+
+Changes in the enabled/disabled plugins lists will take effect the next time you start ViTables.</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttons_box" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttons_box">
+     <property name="toolTip">
+      <string>Forget changes done in this dialog</string>
+     </property>
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttons_box</sender>
-   <signal>accepted()</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttons_box</sender>
-   <signal>rejected()</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -19,7 +19,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""The plugins manager module.
+"""The plugins loader module.
 
 Every module under the plugins directory is a plugin.
 This module finds, loads, instantiates and registers the available plugins.
@@ -53,6 +53,7 @@ import os
 import pkgutil
 import imp
 
+import vitables.utils
 import vitables.plugins
 from vitables.vtSite import PLUGINSDIR
 
@@ -71,8 +72,11 @@ def isPlugin(folder, name):
         finding_failed = True
         file_obj, filepath, desc = imp.find_module(name, [folder])
         finding_failed = False
-        module = imp.load_module(name, file_obj, filepath, desc)
-    except ImportError:
+#        module = imp.load_module(name, file_obj, filepath, desc)
+        module = imp.load_source(name, filepath, file_obj)
+    except (ImportError, Exception):
+        # Warning! If the module being loaded is not a ViTables plugin
+        # then unexpected errors can occur
         return False
     finally:
         if not finding_failed:
@@ -117,8 +121,8 @@ def scanFolder(folder):
         if not ispkg and isPlugin(folder, name):
             pkg_plugins.append('%s#@#%s' % (folder, name))
     return pkg_plugins
-class PluginsMgr(object):
-    """Plugins manager class.
+class PluginsLoader(object):
+    """Plugins loader class.
 
     Every module|package under the plugins directory is a plugin. At the
     moment packages can contain module plugins only at top level because
@@ -135,6 +139,7 @@ class PluginsMgr(object):
         - enabled_plugins: a QStringList with the UIDs of the enabled plugins
         """
 
+        vtapp = vitables.utils.getVTApp()
         # Move from PyQt QStringLists to python lists
         self.plugins_paths = [unicode(item) for item in plugins_paths]
         self.enabled_plugins = [unicode(item) for item in enabled_plugins]
@@ -154,7 +159,7 @@ class PluginsMgr(object):
         self.disabled_plugins = []
 
         # Update plugins information: available plugins, disabled plugins
-        self.updatePluginsInfo()
+        self.trackPlugins()
 
         # Try to load the enabled plugins
         self.loaded_plugins = {}
@@ -164,15 +169,14 @@ class PluginsMgr(object):
             self.loadPlugin(plugin)
 
 
-    def updatePluginsInfo(self):
-        """Update info regarding plugins.
+    def trackPlugins(self):
+        """Update the lists of available/enabled/disabled plugins.
 
-        This method MUST be called every time that:
-
-        - the list of plugins paths changes
-        - the list of enabled plugins changes
+        This method MUST be called every time that the plugins 
+        configuration changes.
         """
 
+        # Setup the list of available plugins
         self.all_plugins = []
         for folder in self.plugins_paths:
             for loader, name, ispkg in pkgutil.iter_modules([folder]):
@@ -182,6 +186,14 @@ class PluginsMgr(object):
                     pkg_plugins = scanFolder(os.path.join(folder, name))
                     self.all_plugins = self.all_plugins + pkg_plugins
 
+        # Make sure that enabled plugins are included in the list of
+        # available plugins (sometimes this is required. When it is not
+        # doing it is harmless)
+        for enabled in self.enabled_plugins:
+            if enabled not in self.all_plugins:
+                self.all_plugins.append(enabled)
+
+        # Setup the list of disabled plugins
         self.disabled_plugins = [plugin for plugin in self.all_plugins \
             if plugin not in self.enabled_plugins]
 
@@ -199,10 +211,12 @@ class PluginsMgr(object):
             (folder, name) = plugin.split('#@#')
             file_obj, filepath, desc = imp.find_module(name, [folder])
             finding_failed = False
-            module = imp.load_module(name, file_obj, filepath, desc)
-        except ImportError:
+    #        module = imp.load_module(name, file_obj, filepath, desc)
+            module = imp.load_source(name, filepath, file_obj)
+        except (ImportError, ValueError):
+            self.untrackPlugin(plugin)
             if finding_failed:
-                print """\nError: plugin %s cannot be found.""" % name
+                print """\nError: plugin %s cannot be found.""" % plugin
             else:
                 print """\nError: plugin %s cannot be loaded.""" % name
             return
@@ -215,6 +229,7 @@ class PluginsMgr(object):
             class_name = getattr(module, 'plugin_class')
             cls = getattr(module, class_name)
         except AttributeError:
+            self.untrackPlugin(plugin)
             print """\nError: module %s is not a valid plugin.""" % name
             return
 
@@ -227,6 +242,23 @@ class PluginsMgr(object):
             # (for example, the time_series plugin)
             self.loaded_plugins[plugin] = instance
         except:
+            self.untrackPlugin(plugin)
             print """\nError: plugin %s cannot be loaded.""" % name
             vitables.utils.formatExceptionInfo()
+            return
+
+
+    def untrackPlugin(self, plugin):
+        """Remove a plugin from the lists of available/enabled plugins.
+
+        Plugins that cannot be loaded should be removed using this method.
+
+        :Parameter `plugin`: the plugin being removed
+        """
+
+        try:
+            self.all_plugins.remove(plugin)
+            self.enabled_plugins.remove(plugin)
+        except IndexError:
+            pass
 

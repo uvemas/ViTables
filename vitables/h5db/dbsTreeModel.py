@@ -837,7 +837,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         node = self.nodeFromIndex(child)
         if node is self.root:
-           return QtCore.QModelIndex()
+            return QtCore.QModelIndex()
         parent = node.parent
         if parent is self.root:
             return QtCore.QModelIndex()
