@@ -56,6 +56,7 @@ from PyQt4 import QtCore, QtGui
 
 from vitables.preferences import settingsUI
 from vitables.vtSite import ICONDIR
+import vitables.utils
 
 
 
@@ -67,23 +68,20 @@ class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
     Create the Settings dialog.
     """
 
-    def __init__(self, vtapp):
+    def __init__(self):
         """
         Initialize the preferences dialog.
 
         * initializes the GUI appearance according to current preferences
         * connects dialog widgets to slots that provide them functionality
-
-        :Parameters:
-
-        - `vtapp`: an instance of VTApp
         """
 
+        self.vtapp = vitables.utils.getVTApp()
         # Create the Settings dialog and customise it
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        QtGui.QDialog.__init__(self, self.vtapp)
         self.setupUi(self)
 
-        self.vtapp = vtapp
+        self.config = self.vtapp.config
         self.pg_loader = self.vtapp.plugins_mgr
         self.plugins_paths = self.pg_loader.plugins_paths[:]
         self.enabled_plugins = self.pg_loader.enabled_plugins[:]
@@ -105,24 +103,30 @@ class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
         self.styles_cb.insertItems(0, styles)
 
         # Setup the Plugins page
+        self.enabled_model = QtGui.QStandardItemModel()
+        self.enabled_lv.setModel(self.enabled_model)
+        self.disabled_model = QtGui.QStandardItemModel()
+        self.disabled_lv.setModel(self.disabled_model)
+        self.paths_model = QtGui.QStandardItemModel()
+        self.paths_lv.setModel(self.paths_model)
         for button in (self.remove_button, self.load_button, 
             self.unload_button):
             button.setEnabled(False)
 
         # The current preferences of the application
         self.initial_prefs = {}
-        style_sheet = vtapp.logger.styleSheet()
+        style_sheet = self.vtapp.logger.styleSheet()
         paper = style_sheet[-7:]
         self.initial_prefs['Logger/Paper'] = QtGui.QColor(paper)
-        self.initial_prefs['Logger/Text'] = vtapp.logger.textColor()
-        self.initial_prefs['Logger/Font'] = vtapp.logger.font()
+        self.initial_prefs['Logger/Text'] = self.vtapp.logger.textColor()
+        self.initial_prefs['Logger/Font'] = self.vtapp.logger.font()
         self.initial_prefs['Workspace/Background'] = \
-                                        vtapp.workspace.background()
-        self.initial_prefs['Look/currentStyle'] = vtapp.current_style
+            self.vtapp.workspace.background()
+        self.initial_prefs['Look/currentStyle'] = self.config.current_style
         self.initial_prefs['Startup/startupWorkingDir'] = \
-                                                vtapp.startup_working_directory
+            self.config.startup_working_directory
         self.initial_prefs['Startup/restoreLastSession'] = \
-                                                    vtapp.restore_last_session
+            self.config.restore_last_session
 
         # The dictionary used to update the preferences
         self.new_prefs = {}
@@ -219,8 +223,8 @@ class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
             view = self.enabled_lv
         elif uid == 'disabled':
             view = self.disabled_lv
-        model = QtGui.QStandardItemModel()
-        view.setModel(model)
+        model = view.model()
+        model.clear()
         for i in seq:
             if split:
                 folder, name = i.split('#@#')

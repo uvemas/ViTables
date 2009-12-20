@@ -94,8 +94,6 @@ class HelpBrowser(QtCore.QObject) :
         Initializes the browser.
 
         Restore history and bookmarks from disk and makes the browser window.
-
-        :Parameter vtapp: an instance of `VTApp`
         """
 
         QtCore.QObject.__init__(self)
@@ -103,8 +101,8 @@ class HelpBrowser(QtCore.QObject) :
         self.vtapp = vitables.utils.getVTApp()
 
         # Get the bookmarks and the navigation history
-        self.bookmarks = self.vtapp.hb_bookmarks
-        self.history = self.vtapp.hb_history
+        self.bookmarks = self.vtapp.config.hb_bookmarks
+        self.history = self.vtapp.config.hb_history
 
         # create the GUI
         self.gui = browserGUI.HelpBrowserGUI(self)
@@ -159,8 +157,8 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         # Close all browsers
-        self.vtapp.hb_history = self.history
-        self.vtapp.hb_bookmarks = self.bookmarks
+        self.vtapp.config.hb_history = self.history
+        self.vtapp.config.hb_bookmarks = self.bookmarks
         self.vtapp.doc_browser = None
         self.gui.close()
 

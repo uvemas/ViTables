@@ -167,13 +167,13 @@ class VTApp(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-    #    sys.stdout = self.logger
-    #    sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
         # Apply the configuration stored on disk
         splash.drawMessage(trs('Configuration setup...',
             'A splash screen message'))
-        self.loadConfiguration(self.readConfiguration())
+        self.config.loadConfiguration(self.config.readConfiguration())
 
         # Print the welcome message
         print trs('''ViTables %s\nCopyright (c) 2008-2009 Vicent Mas.'''
@@ -182,14 +182,14 @@ class VTApp(QtGui.QMainWindow):
 
         # The list of most recently open DBs
         self.number_of_recent_files = 10
-        while self.recent_files.count() > self.number_of_recent_files:
-            self.recent_files.takeLast()
+        while self.config.recent_files.count() > self.number_of_recent_files:
+            self.config.recent_files.takeLast()
 
         # The File Selector History
         self.file_selector_history = QtCore.QStringList()
-        if self.startup_working_directory != u'last':
-            self.last_working_directory = os.getcwdu()
-        self.file_selector_history.append(self.last_working_directory)
+        if self.config.startup_working_directory != u'last':
+            self.config.last_working_directory = os.getcwdu()
+        self.file_selector_history.append(self.config.last_working_directory)
 
         # List of HelpBrowser instances in memory
         self.doc_browser = None
@@ -199,11 +199,12 @@ class VTApp(QtGui.QMainWindow):
         # creating the user interface.
         # Some plugins modify datasets displaying so plugins must be loaded
         # before opening any file.
-        self.plugins_mgr = pluginsLoader.PluginsLoader(self.plugins_paths, 
-            self.enabled_plugins)
+        self.plugins_mgr = \
+            pluginsLoader.PluginsLoader(self.config.plugins_paths, 
+            self.config.enabled_plugins)
 
         # Restore last session
-        if self.restore_last_session:
+        if self.config.restore_last_session:
             splash.drawMessage(trs('Recovering last session...',
                 'A splash screen message'))
             self.recoverLastSession()
@@ -659,205 +660,6 @@ class VTApp(QtGui.QMainWindow):
         status_bar.showMessage(trs('Ready...',
             'The status bar startup message'))
 
-
-    def readConfiguration(self):
-        """
-        Get the application configuration currently stored on disk.
-
-        Read the configuration from the stored settings. If a setting
-        cannot be read (as it happens when the package is just
-        installed) then its default value is returned.
-        Geometry and Recent settings are returned as lists, color
-        settings as QColor instances. The rest of settings are returned
-        as QStrings or integers.
-
-        :Returns: a dictionary with the configuration stored on disk
-        """
-
-        config = {}
-        config['Logger/Paper'] = self.config.loggerPaper()
-        config['Logger/Text'] = self.config.loggerText()
-        config['Logger/Font'] = self.config.loggerFont()
-        config['Workspace/Background'] = self.config.workspaceBackground()
-        config['Startup/restoreLastSession'] = self.config.startupLastSession()
-        config['Startup/startupWorkingDir'] = self.config.startupWorkingDir()
-        config['Startup/lastWorkingDir'] = self.config.lastWorkingDir()
-        config['Geometry/Position'] = self.config.windowPosition()
-        config['Geometry/Layout'] = self.config.windowLayout()
-        config['Geometry/HSplitter'] = self.config.hsplitterPosition()
-        config['Geometry/VSplitter'] = self.config.vsplitterPosition()
-        config['Recent/Files'] = self.config.recentFiles()
-        config['Session/Files'] = self.config.sessionFiles()
-        config['HelpBrowser/History'] = self.config.helpHistory()
-        config['HelpBrowser/Bookmarks'] = self.config.helpBookmarks()
-        config['Look/currentStyle'] = self.config.readStyle()
-        config['Plugins/Paths'] = self.config.readPluginsPaths()
-        config['Plugins/Enabled'] = self.config.enabledPlugins()
-        return config
-
-
-    def loadConfiguration(self, config):
-        """
-        Configure the application with the given configuration/preferences.
-
-        :Parameter config: a dictionary with the configuration/preferences
-                           being loaded
-        """
-
-        for key, value in config.items():
-            if key == 'Logger/Paper':
-                paper = unicode(QtGui.QColor(value).name())
-                stylesheet = self.logger.styleSheet()
-                old_paper = stylesheet[-7:]
-                stylesheet.replace(old_paper, paper)
-                self.logger.setStyleSheet(stylesheet)
-            elif key == 'Logger/Text':
-                text_color = QtGui.QColor(value)
-                self.logger.moveCursor(QtGui.QTextCursor.End)
-                self.logger.setTextColor(text_color)
-            elif key == 'Logger/Font':
-                self.logger.setFont(QtGui.QFont(value))
-            elif key == 'Workspace/Background':
-                self.workspace.setBackground(QtGui.QBrush(value))
-                self.workspace.viewport().update()
-            elif key == 'Look/currentStyle':
-                self.current_style = unicode(value.toString())
-                # Default style is provided by the underlying window manager
-                QtGui.qApp.setStyle(self.current_style)
-            elif key == 'Geometry/Position':
-                # Default position is provided by the underlying window manager
-                if value.isValid():
-                    self.restoreGeometry(value.toByteArray())
-            elif key == 'Geometry/Layout':
-                # Default layout is provided by the underlying Qt installation
-                if value.isValid():
-                    self.restoreState(value.toByteArray())
-            elif key == 'Geometry/HSplitter':
-                # Default geometry provided by the underlying Qt installation
-                if value.isValid():
-                    self.hsplitter.restoreState(value.toByteArray())
-            elif key == 'Geometry/VSplitter':
-                # Default geometry provided by the underlying Qt installation
-                if value.isValid():
-                    self.vsplitter.restoreState(value.toByteArray())
-            elif key == 'Startup/restoreLastSession':
-                self.restore_last_session = value.toBool()
-            elif key == 'Startup/startupWorkingDir':
-                self.startup_working_directory = \
-                                unicode(value.toString())
-            elif key == 'Startup/lastWorkingDir':
-                self.last_working_directory = \
-                                unicode(value.toString())
-            elif key == 'Recent/Files':
-                self.recent_files = value.toStringList()
-            elif key == 'Session/Files':
-                self.session_files_nodes = value.toStringList()
-            elif key == 'HelpBrowser/History':
-                self.hb_history = value.toStringList()
-            elif key == 'HelpBrowser/Bookmarks':
-                self.hb_bookmarks = value.toStringList()
-            elif key == 'Plugins/Paths':
-                self.plugins_paths = value.toStringList()
-            elif key == 'Plugins/Enabled':
-                self.enabled_plugins = value.toStringList()
-
-
-    def saveConfiguration(self):
-        """
-        Store current application settings on disk.
-
-        Note that we are using ``QSettings`` for writing to the config file,
-        so we **must** rely on its searching algorithms in order to find
-        that file.
-        """
-
-        # Logger paper
-        style_sheet = self.logger.styleSheet()
-        paper = style_sheet[-7:]
-        self.config.writeValue('Logger/Paper', QtGui.QColor(paper))
-        # Logger text color
-        self.config.writeValue('Logger/Text', self.logger.textColor())
-        # Logger text font
-        self.config.writeValue('Logger/Font', self.logger.font())
-        # Workspace
-        self.config.writeValue('Workspace/Background', 
-            self.workspace.background())
-        # Style
-        self.config.writeValue('Look/currentStyle', self.current_style)
-        # Startup working directory
-        self.config.writeValue('Startup/startupWorkingDir', 
-            self.startup_working_directory)
-        # Startup restore last session
-        self.config.writeValue('Startup/restoreLastSession', 
-            self.restore_last_session)
-        # Startup last working directory
-        self.config.writeValue('Startup/lastWorkingDir', 
-            self.last_working_directory)
-        # Window geometry
-        self.config.writeValue('Geometry/Position', self.saveGeometry())
-        # Window layout
-        self.config.writeValue('Geometry/Layout', self.saveState())
-        # Horizontal splitter geometry
-        self.config.writeValue('Geometry/HSplitter', 
-                            self.hsplitter.saveState())
-        # Vertical splitter geometry
-        self.config.writeValue('Geometry/VSplitter', 
-                            self.vsplitter.saveState())
-        # The list of recent files
-        self.config.writeValue('Recent/Files', self.recent_files)
-        # The list of session files and nodes
-        self.session_files_nodes = self.getSessionFilesNodes()
-        self.config.writeValue('Session/Files', self.session_files_nodes)
-        # The Help Browser history
-        self.config.writeValue('HelpBrowser/History', self.hb_history)
-        # The Help Browser bookmarks
-        self.config.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
-        # The directories where plugins live
-        self.config.writeValue('Plugins/Paths', self.plugins_mgr.plugins_paths)
-        # The list of enabled plugins
-        self.config.writeValue('Plugins/Enabled', \
-            self.plugins_mgr.enabled_plugins)
-        # If we don't sync then errors appear for every QColor and QFont
-        # instances trying to be saved
-        # QVariant::load: unable to load type 67 (appears 3 times)
-        # QVariant::load: unable to load type 64 (appears 1 time)
-        self.config.sync()
-
-
-    def getSessionFilesNodes(self):
-        """
-        The list of files and nodes currently open.
-
-        The current session state is grabbed from the tracking
-        dictionaries managed by the leaves manager and the db manager.
-        The list looks like::
-
-            ['mode#@#filepath1#@#nodepath1#@#nodepath2, ...',
-            'mode#@#filepath2#@#nodepath1#@#nodepath2, ...', ...]
-        """
-
-        session_files_nodes = QtCore.QStringList([])
-        # The list of files returned by getDBList doesn't include the temporary
-        # database
-        filepaths = self.dbs_tree_model.getDBList()
-        node_views = [window for window in self.workspace.subWindowList() \
-                        if isinstance(window, dataSheet.DataSheet)]
-        for path in filepaths:
-            mode = self.dbs_tree_model.getDBDoc(path).mode
-            # If a new file has been created during the current session
-            # then write mode must be replaced by append mode or the file
-            # will be created from scratch in the next ViTables session
-            if mode == u'w':
-                mode = u'a'
-            item_path = mode + u'#@#' + path
-            for view in node_views:
-                if view.dbt_leaf.filepath == path:
-                    item_path = item_path + u'#@#' + view.dbt_leaf.nodepath
-            session_files_nodes.append(item_path)
-
-        # Format the list in a handy way to store it on disk
-        return session_files_nodes
-
     # Databases are automatically opened at startup when:
     # 
     #     * application is configured for recovering last session
@@ -878,7 +680,7 @@ class VTApp(QtGui.QMainWindow):
         """
 
         expanded_signal = QtCore.SIGNAL("expanded(QModelIndex)")
-        for file_data in self.session_files_nodes:
+        for file_data in self.config.session_files_nodes:
             item = unicode(file_data).split('#@#')
             # item looks like [mode, filepath1, nodepath1, nodepath2, ...]
             mode = item.pop(0)
@@ -1097,14 +899,15 @@ class VTApp(QtGui.QMainWindow):
         """
 
         item = mode + u'#@#' + filepath
+        recent_files = self.config.recent_files
         # Updates the list of recently open files. Most recent goes first.
-        if not self.recent_files.contains(item):
-            self.recent_files.insert(0, item)
+        if not recent_files.contains(item):
+            recent_files.insert(0, item)
         else:
-            self.recent_files.removeAt(self.recent_files.indexOf(item))
-            self.recent_files.insert(0, item)
-        while self.recent_files.count() > self.number_of_recent_files:
-            self.recent_files.takeLast()
+            recent_files.removeAt(recent_files.indexOf(item))
+            recent_files.insert(0, item)
+        while recent_files.count() > self.number_of_recent_files:
+            recent_files.takeLast()
 
 
     def clearRecentFiles(self):
@@ -1113,7 +916,7 @@ class VTApp(QtGui.QMainWindow):
         historical file.
         """
 
-        self.recent_files.clear()
+        self.config.recent_files.clear()
 
 
     def slotUpdateRecentSubmenu(self):
@@ -1122,7 +925,7 @@ class VTApp(QtGui.QMainWindow):
         index = 0
         self.open_recent_submenu.clear()
         iconset = vitables.utils.getIcons()
-        for item in self.recent_files:
+        for item in self.config.recent_files:
             index += 1
             (mode, filepath) = item.split('#@#')
             action = QtGui.QAction(u'%s. ' % index + filepath, self)
@@ -1280,7 +1083,7 @@ class VTApp(QtGui.QMainWindow):
         :Parameter `working_dir`: the last visited directory
         """
 
-        self.last_working_directory = working_dir
+        self.config.last_working_directory = working_dir
         if not self.file_selector_history.contains(working_dir):
             self.file_selector_history.append(working_dir)
         else:
@@ -1608,7 +1411,7 @@ class VTApp(QtGui.QMainWindow):
         if self.doc_browser:
             self.doc_browser.slotExitBrowser()
         # Save current configuration
-        self.saveConfiguration()
+        self.config.saveConfiguration()
         # Close every user opened file
         self.slotFileCloseAll()
         # Close the temporary database
@@ -1985,10 +1788,10 @@ class VTApp(QtGui.QMainWindow):
         Preferences dialog.
         """
 
-        prefs =  preferences.Preferences(self)
+        prefs =  preferences.Preferences()
         try:
             if prefs.exec_() == QtGui.QDialog.Accepted:
-                self.loadConfiguration(prefs.new_prefs)
+                self.config.loadConfiguration(prefs.new_prefs)
         finally:
             del prefs
 

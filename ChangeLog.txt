@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 20, 2009 **
+The code dealing with application setup has been debugged and refactored.
+
 ** December 19, 2009 **
 The plugins framework has been debugged and refactored and has a new ui.
 

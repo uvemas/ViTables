@@ -117,6 +117,7 @@ from PyQt4 import QtCore, QtGui
 
 from vitables.preferences import configException
 import vitables.utils
+import vitables.vtTables.dataSheet as dataSheet
 
 
 def getVersion():
@@ -129,9 +130,9 @@ class Config(QtCore.QSettings):
     Manages the application configuration dynamically.
 
     This class defines accessor methods that allow the application (a
-    VTApp instance)to read the configuration file.
+    VTApp instance) to read the configuration file/registry/plist.
     The class also provides a method to save the current configuration
-    in the configuration file.
+    in the configuration file/registry/plist.
     """
 
     def __init__(self):
@@ -150,10 +151,12 @@ class Config(QtCore.QSettings):
         version = QtGui.qApp.applicationVersion()
         if (not sys.platform.startswith('win')) and \
         (not sys.platform.startswith('darwin')):
-            QtCore.QSettings.__init__(self, organization, 
-                product.append('-').append(version))
+            arg1 = organization
+            arg2 = product.append('-').append(version)
         else:
-            QtCore.QSettings.__init__(self, product, version)
+            arg1 = product
+            arg2 = version
+        QtCore.QSettings.__init__(self, arg1, arg2)
 
         # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback
@@ -163,9 +166,9 @@ class Config(QtCore.QSettings):
         # The application default style depends on the platform
         styles = QtGui.QStyleFactory.keys()
         self.default_style = styles[0]
-        vtapp = vitables.utils.getVTApp()
-        if not (vtapp is None):
-            style_name = vtapp.style().objectName()
+        self.vtapp = vitables.utils.getVTApp()
+        if not (self.vtapp is None):
+            style_name = self.vtapp.style().objectName()
             for item in styles:
                 if item.toLower() == style_name:
                     self.default_style = item
@@ -447,3 +450,268 @@ class Config(QtCore.QSettings):
                     '%s=%s' % (key, value)
         except configException.ConfigFileIOException, inst:
             print inst.error_message
+
+
+    def readConfiguration(self):
+        """
+        Get the application configuration currently stored on disk.
+
+        Read the configuration from the stored settings. If a setting
+        cannot be read (as it happens when the package is just
+        installed) then its default value is returned.
+        Geometry and Recent settings are returned as lists, color
+        settings as QColor instances. The rest of settings are returned
+        as QStrings or integers.
+
+        :Returns: a dictionary with the configuration stored on disk
+        """
+
+        config = {}
+        config['Logger/Paper'] = self.loggerPaper()
+        config['Logger/Text'] = self.loggerText()
+        config['Logger/Font'] = self.loggerFont()
+        config['Workspace/Background'] = self.workspaceBackground()
+        config['Startup/restoreLastSession'] = self.startupLastSession()
+        config['Startup/startupWorkingDir'] = self.startupWorkingDir()
+        config['Startup/lastWorkingDir'] = self.lastWorkingDir()
+        config['Geometry/Position'] = self.windowPosition()
+        config['Geometry/Layout'] = self.windowLayout()
+        config['Geometry/HSplitter'] = self.hsplitterPosition()
+        config['Geometry/VSplitter'] = self.vsplitterPosition()
+        config['Recent/Files'] = self.recentFiles()
+        config['Session/Files'] = self.sessionFiles()
+        config['HelpBrowser/History'] = self.helpHistory()
+        config['HelpBrowser/Bookmarks'] = self.helpBookmarks()
+        config['Look/currentStyle'] = self.readStyle()
+        config['Plugins/Paths'] = self.readPluginsPaths()
+        config['Plugins/Enabled'] = self.enabledPlugins()
+        return config
+
+
+    def saveConfiguration(self):
+        """
+        Store current application settings on disk.
+
+        Note that we are using ``QSettings`` for writing to the config file,
+        so we **must** rely on its searching algorithms in order to find
+        that file.
+        """
+
+        # Logger paper
+        style_sheet = self.vtapp.logger.styleSheet()
+        paper = style_sheet[-7:]
+        self.writeValue('Logger/Paper', QtGui.QColor(paper))
+        # Logger text color
+        self.writeValue('Logger/Text', self.vtapp.logger.textColor())
+        # Logger text font
+        self.writeValue('Logger/Font', self.vtapp.logger.font())
+        # Workspace
+        self.writeValue('Workspace/Background', 
+            self.vtapp.workspace.background())
+        # Style
+        self.writeValue('Look/currentStyle', self.current_style)
+        # Startup working directory
+        self.writeValue('Startup/startupWorkingDir', 
+            self.startup_working_directory)
+        # Startup restore last session
+        self.writeValue('Startup/restoreLastSession', 
+            self.restore_last_session)
+        # Startup last working directory
+        self.writeValue('Startup/lastWorkingDir', 
+            self.last_working_directory)
+        # Window geometry
+        self.writeValue('Geometry/Position', self.vtapp.saveGeometry())
+        # Window layout
+        self.writeValue('Geometry/Layout', self.vtapp.saveState())
+        # Horizontal splitter geometry
+        self.writeValue('Geometry/HSplitter', 
+                            self.vtapp.hsplitter.saveState())
+        # Vertical splitter geometry
+        self.writeValue('Geometry/VSplitter', 
+                            self.vtapp.vsplitter.saveState())
+        # The list of recent files
+        self.writeValue('Recent/Files', self.recent_files)
+        # The list of session files and nodes
+        self.session_files_nodes = self.getSessionFilesNodes()
+        self.writeValue('Session/Files', self.session_files_nodes)
+        # The Help Browser history
+        self.writeValue('HelpBrowser/History', self.hb_history)
+        # The Help Browser bookmarks
+        self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
+        # The directories where plugins live
+        self.writeValue('Plugins/Paths', self.vtapp.plugins_mgr.plugins_paths)
+        # The list of enabled plugins
+        self.writeValue('Plugins/Enabled', \
+            self.vtapp.plugins_mgr.enabled_plugins)
+        # If we don't sync then errors appear for every QColor and QFont
+        # instances trying to be saved
+        # QVariant::load: unable to load type 67 (appears 3 times)
+        # QVariant::load: unable to load type 64 (appears 1 time)
+        self.sync()
+
+
+    def getSessionFilesNodes(self):
+        """
+        The list of files and nodes currently open.
+
+        The current session state is grabbed from the tracking
+        dictionaries managed by the leaves manager and the db manager.
+        The list looks like::
+
+            ['mode#@#filepath1#@#nodepath1#@#nodepath2, ...',
+            'mode#@#filepath2#@#nodepath1#@#nodepath2, ...', ...]
+        """
+
+        # Get the list of views
+        workspace = self.vtapp.workspace
+        node_views = [window for window in workspace.subWindowList() \
+                        if isinstance(window, dataSheet.DataSheet)]
+
+        # Get the list of open files (temporary database is not included)
+        dbt_model = self.vtapp.dbs_tree_model
+        session_files_nodes = QtCore.QStringList([])
+        filepaths = dbt_model.getDBList()
+        for path in filepaths:
+            mode = dbt_model.getDBDoc(path).mode
+            # If a new file has been created during the current session
+            # then write mode must be replaced by append mode or the file
+            # will be created from scratch in the next ViTables session
+            if mode == u'w':
+                mode = u'a'
+            item_path = mode + u'#@#' + path
+            for view in node_views:
+                if view.dbt_leaf.filepath == path:
+                    item_path = item_path + u'#@#' + view.dbt_leaf.nodepath
+            session_files_nodes.append(item_path)
+
+        # Format the list in a handy way to store it on disk
+        return session_files_nodes
+
+
+    def loadConfiguration(self, config):
+        """
+        Configure the application with the given settings.
+
+        We call `user settings` to those settings that can be setup via
+        Settings dialog and `internal settings` to the rest of settings.
+
+        At startup all settings will be loaded. At any time later the
+        `users settings` can be explicitely changed via Settings dialog.
+
+        :Parameter config: a dictionary with the settings to be (re)loaded
+        """
+
+        # Load the user settings
+        self.userSettings(config)
+
+        # Load the internal settings (if any)
+        try:
+            key = 'Geometry/Position'
+            value = config[key]
+            if value.isValid():
+                # Default position is provided by the underlying window manager
+                self.vtapp.restoreGeometry(value.toByteArray())
+
+            key = 'Geometry/Layout'
+            value = config[key]
+            if value.isValid():
+                # Default layout is provided by the underlying Qt installation
+                self.vtapp.restoreState(value.toByteArray())
+
+            key = 'Geometry/HSplitter'
+            value = config[key]
+            if value.isValid():
+                # Default geometry provided by the underlying Qt installation
+                self.vtapp.hsplitter.restoreState(value.toByteArray())
+
+            key = 'Geometry/VSplitter'
+            value = config[key]
+            if value.isValid():
+                # Default geometry provided by the underlying Qt installation
+                self.vtapp.vsplitter.restoreState(value.toByteArray())
+
+            key = 'Startup/lastWorkingDir'
+            value = config[key]
+            self.last_working_directory = unicode(value.toString())
+
+            key = 'Recent/Files'
+            value = config[key]
+            self.recent_files = value.toStringList()
+
+            key = 'Session/Files'
+            value = config[key]
+            self.session_files_nodes = value.toStringList()
+
+            key = 'HelpBrowser/History'
+            value = config[key]
+            self.hb_history = value.toStringList()
+
+            key = 'HelpBrowser/Bookmarks'
+            value = config[key]
+            self.hb_bookmarks = value.toStringList()
+        except KeyError:
+            pass
+
+
+    def userSettings(self, config):
+        """Load settings that can be setup via Settings dialog.
+
+        :Parameter config: a dictionary with the settings to be (re)loaded
+        """
+
+        # Usually after calling the Settings dialog only some user
+        # settings will need to be reloaded. So for every user setting
+        # we have to check if it needs to be reloaded or not
+        key = 'Startup/restoreLastSession'
+        if config.has_key(key):
+            value = config[key]
+            self.restore_last_session = value.toBool()
+
+        key = 'Startup/startupWorkingDir'
+        if config.has_key(key):
+            value = config[key]
+            self.startup_working_directory = unicode(value.toString())
+
+        key = 'Logger/Paper'
+        if config.has_key(key):
+            value = config[key]
+            paper = unicode(QtGui.QColor(value).name())
+            stylesheet = self.vtapp.logger.styleSheet()
+            old_paper = stylesheet[-7:]
+            stylesheet.replace(old_paper, paper)
+            self.vtapp.logger.setStyleSheet(stylesheet)
+
+        key = 'Logger/Text'
+        if config.has_key(key):
+            value = config[key]
+            text_color = QtGui.QColor(value)
+            self.vtapp.logger.moveCursor(QtGui.QTextCursor.End)
+            self.vtapp.logger.setTextColor(text_color)
+
+        key = 'Logger/Font'
+        if config.has_key(key):
+            value = config[key]
+            self.vtapp.logger.setFont(QtGui.QFont(value))
+
+        key = 'Workspace/Background'
+        if config.has_key(key):
+            value = config[key]
+            self.vtapp.workspace.setBackground(QtGui.QBrush(value))
+            self.vtapp.workspace.viewport().update()
+
+        key = 'Look/currentStyle'
+        if config.has_key(key):
+            value = config[key]
+            self.current_style = unicode(value.toString())
+            # Default style is provided by the underlying window manager
+            QtGui.qApp.setStyle(self.current_style)
+
+        key = 'Plugins/Paths'
+        if config.has_key(key):
+            value = config[key]
+            self.plugins_paths = value.toStringList()
+
+        key = 'Plugins/Enabled'
+        if config.has_key(key):
+            value = config[key]
+            self.enabled_plugins = value.toStringList()
