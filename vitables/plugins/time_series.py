@@ -26,6 +26,7 @@ series contained in PyTables tables generated via scikits.timeseries.
 """
 
 __docformat__ = 'restructuredtext'
+_context = 'TSFormatter'
 __version__ = '0.7'
 plugin_class = 'TSFormatter'
 
@@ -38,10 +39,17 @@ try:
 except ImportError:
     ts = None
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 import vitables.utils
+from vitables.vtSite import PLUGINSDIR
 
+
+
+
+def trs(source, comment=None):
+    """Translate string function."""
+    return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
 def findTS(datasheet):
@@ -173,6 +181,28 @@ class TSFormatter(object):
             model.formatTime = new_model.formatTime
             model.data = new_model.data
 
+
+
+    def helpAbout(self):
+        """Brief description of the plugin."""
+
+        # Text to be displayed
+        about_text = trs(
+            """<qt>
+            <p>Plugin that provides nice string formatting for time fields.
+            <p>It supports not only native PyTables time datatypes but 
+            also the time series tables generated 
+            via scikits.timeseries package.
+            </qt>""",
+            'Text of an About plugin message box')
+
+        descr = dict(module_name='time_series.py', folder=PLUGINSDIR, 
+            version=__version__, 
+            plugin_name='Time series formatter', 
+            author='Vicent Mas <vmas@vitables.org>', 
+            descr=about_text)
+
+        return descr
 
 
 class ArrayTSModel(QtCore.QAbstractTableModel):

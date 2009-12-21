@@ -19,7 +19,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""Plugin that provides export of arrays to files with CSV format.
+"""Plugin that provides export of datasets to files with CSV format.
 
 When exporting tables, a header with the field names can be inserted.
 """
@@ -230,6 +230,29 @@ class ExportToCSV(object):
         finally:
             out_handler.close()
             QtGui.qApp.restoreOverrideCursor()
+
+
+    def helpAbout(self):
+        """Brief description of the plugin."""
+
+        # Text to be displayed
+        about_text = trs(
+            """<qt>
+            <p>Plugin that provides export to CSV files capabilities.
+            <p>Any kind of PyTables dataset can be exported. When 
+            exporting tables, a header with the field names can be 
+            inserted at top of the CSV file.
+            </qt>""",
+            'Text of an About plugin message box')
+
+        descr = dict(module_name='export_csv.py', 
+            folder=os.path.join(PLUGINSDIR, 'csv'), 
+            version=__version__, 
+            plugin_name='Export to CSV', 
+            author='Vicent Mas <vmas@vitables.org>', 
+            descr=about_text)
+
+        return descr
 
 
 

@@ -539,14 +539,11 @@ class Config(QtCore.QSettings):
         # The Help Browser bookmarks
         self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
         # The directories where plugins live
-        self.writeValue('Plugins/Paths', self.vtapp.plugins_mgr.plugins_paths)
+        self.writeValue('Plugins/Paths', 
+            QtCore.QStringList(self.vtapp.plugins_mgr.plugins_paths))
         # The list of enabled plugins
-        self.writeValue('Plugins/Enabled', \
-            self.vtapp.plugins_mgr.enabled_plugins)
-        # If we don't sync then errors appear for every QColor and QFont
-        # instances trying to be saved
-        # QVariant::load: unable to load type 67 (appears 3 times)
-        # QVariant::load: unable to load type 64 (appears 1 time)
+        self.writeValue('Plugins/Enabled', 
+            QtCore.QStringList(self.vtapp.plugins_mgr.enabled_plugins))
         self.sync()
 
 

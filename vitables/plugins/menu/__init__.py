@@ -17,4 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['csv', 'menu', 'time_series', 'plotter']
+__all__ = ['plugins_menu']

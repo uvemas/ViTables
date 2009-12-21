@@ -751,3 +751,31 @@ class ImportCSV(object):
         finally:
             QtGui.qApp.restoreOverrideCursor()
             del data
+
+
+    def helpAbout(self):
+        """Brief description of the plugin."""
+
+        # Text to be displayed
+        about_text = trs(
+            """<qt>
+            <p>Plugin that provides import CSV files capabilities.
+            <p>CSV files can be imported into any of the following 
+            PyTables containers: Array, EArray, CArray and Table.
+            <p>When a file is imported into a Table automatic header
+            detection is provided.
+            <p>Beware that importing large files is a potentially slow 
+            process because the whole file has to be read from disk, 
+            transformed and write back to disk again so there is a lot 
+            of disk IO.
+            </qt>""",
+            'Text of an About plugin message box')
+
+        descr = dict(module_name='import_csv.py', 
+            folder=os.path.join(PLUGINSDIR, 'csv'), 
+            version=__version__, 
+            plugin_name='Import from CSV', 
+            author='Vicent Mas <vmas@vitables.org>', 
+            descr=about_text)
+
+        return descr

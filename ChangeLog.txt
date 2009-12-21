@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 21, 2009 **
+Added the new plugins_menu.py plugin. It show info about the loaded plugins.
+
 ** December 20, 2009 **
 The code dealing with application setup has been debugged and refactored.
 

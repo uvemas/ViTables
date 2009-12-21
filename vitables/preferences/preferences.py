@@ -341,7 +341,7 @@ class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
         # Update the plugins manager
         self.pg_loader.plugins_paths = self.plugins_paths[:]
         self.pg_loader.enabled_plugins = self.enabled_plugins[:]
-        self.pg_loader.trackPlugins()
+        self.pg_loader.register()
 
         # Update the rest of settings
         for key, value in self.new_prefs.items():

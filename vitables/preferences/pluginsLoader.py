@@ -157,19 +157,13 @@ class PluginsLoader(object):
         # Some useful stuff
         self.all_plugins = []
         self.disabled_plugins = []
+        self.loaded_plugins = {}
 
         # Update plugins information: available plugins, disabled plugins
-        self.trackPlugins()
-
-        # Try to load the enabled plugins
-        self.loaded_plugins = {}
-        if self.enabled_plugins == []:
-            return
-        for plugin in self.enabled_plugins:
-            self.loadPlugin(plugin)
+        self.register()
 
 
-    def trackPlugins(self):
+    def register(self):
         """Update the lists of available/enabled/disabled plugins.
 
         This method MUST be called every time that the plugins 
@@ -198,7 +192,17 @@ class PluginsLoader(object):
             if plugin not in self.enabled_plugins]
 
 
-    def loadPlugin(self, plugin):
+    def loadAll(self):
+        """Try to load the enabled plugins.
+        """
+
+        if self.enabled_plugins == []:
+            return
+        for plugin in self.enabled_plugins:
+            self.load(plugin)
+
+
+    def load(self, plugin):
         """Load a given plugin.
 
         :Parameters:
@@ -214,7 +218,7 @@ class PluginsLoader(object):
     #        module = imp.load_module(name, file_obj, filepath, desc)
             module = imp.load_source(name, filepath, file_obj)
         except (ImportError, ValueError):
-            self.untrackPlugin(plugin)
+            self.untrack(plugin)
             if finding_failed:
                 print """\nError: plugin %s cannot be found.""" % plugin
             else:
@@ -229,7 +233,7 @@ class PluginsLoader(object):
             class_name = getattr(module, 'plugin_class')
             cls = getattr(module, class_name)
         except AttributeError:
-            self.untrackPlugin(plugin)
+            self.untrack(plugin)
             print """\nError: module %s is not a valid plugin.""" % name
             return
 
@@ -242,13 +246,13 @@ class PluginsLoader(object):
             # (for example, the time_series plugin)
             self.loaded_plugins[plugin] = instance
         except:
-            self.untrackPlugin(plugin)
+            self.untrack(plugin)
             print """\nError: plugin %s cannot be loaded.""" % name
             vitables.utils.formatExceptionInfo()
             return
 
 
-    def untrackPlugin(self, plugin):
+    def untrack(self, plugin):
         """Remove a plugin from the lists of available/enabled plugins.
 
         Plugins that cannot be loaded should be removed using this method.

@@ -202,6 +202,8 @@ class VTApp(QtGui.QMainWindow):
         self.plugins_mgr = \
             pluginsLoader.PluginsLoader(self.config.plugins_paths, 
             self.config.enabled_plugins)
+        self.plugins_mgr.loadAll()
+        self.emit(QtCore.SIGNAL('pluginsLoaded'))
 
         # Restore last session
         if self.config.restore_last_session:
@@ -543,8 +545,10 @@ class VTApp(QtGui.QMainWindow):
         # Create the File menu and add actions/submenus/separators to it
         self.file_menu = self.menuBar().addMenu(trs("&File", 
             'The File menu entry'))
+        self.file_menu.setObjectName('file_menu')
         self.open_recent_submenu = QtGui.QMenu(trs('Open R&ecent Files',
             'File -> Open Recent Files'))
+        self.open_recent_submenu.setObjectName('open_recent_submenu')
         self.open_recent_submenu.setSeparatorsCollapsible(False)
         self.open_recent_submenu.setIcon(\
             self.icons_dictionary['document-open-recent'])
@@ -563,6 +567,7 @@ class VTApp(QtGui.QMainWindow):
         # Create the Node menu and add actions/submenus/separators to it
         node_menu = self.menuBar().addMenu(trs("&Node", 
             'The Node menu entry'))
+        node_menu.setObjectName('node_menu')
         node_actions = ['nodeOpen', 'nodeClose', 'nodeProperties', None, 
             'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy', 'nodePaste', 
             'nodeDelete']
@@ -571,17 +576,15 @@ class VTApp(QtGui.QMainWindow):
         # Create the Dataset menu and add actions/submenus/separators to it
         self.dataset_menu = self.menuBar().addMenu(trs("&Dataset", 
             'The Dataset menu entry'))
+        self.dataset_menu.setObjectName('dataset_menu')
         dataset_actions = ['queryNew', None]
         vitables.utils.addActions(self.dataset_menu, dataset_actions, 
             self.gui_actions)
 
-        # Create the Plugins menu and add actions/submenus/separators to it
-        plugins_menu = self.menuBar().addMenu(trs("&Plugins", 
-            'The Plugins menu entry'))
-
         # Create the Settings menu and add actions/submenus/separators to it
         settings_menu = self.menuBar().addMenu(trs("&Settings", 
             'The Settings menu entry'))
+        settings_menu.setObjectName('settings-menu')
         self.hide_toolbar_submenu = self.createPopupMenu()
         self.hide_toolbar_submenu.menuAction().setText(trs('ToolBars', 
                                                 'Tools -> ToolBars action'))
@@ -593,7 +596,7 @@ class VTApp(QtGui.QMainWindow):
         # Create the Window menu and add actions/menus/separators to it
         self.windows_menu = self.menuBar().addMenu(trs("&Window", 
             'The Windows menu entry'))
-        self.windows_menu
+        self.windows_menu.setObjectName('windows_menu')
         action_group = QtGui.QActionGroup(self.windows_menu)
         action_group.setExclusive(True)
         self.windows_menu.action_group = action_group
@@ -603,6 +606,7 @@ class VTApp(QtGui.QMainWindow):
         # Create the Help menu and add actions/menus/separators to it
         help_menu = self.menuBar().addMenu(trs("&Help", 
             'The Help menu entry'))
+        help_menu.setObjectName('help_menu')
         help_actions = ['helpUsersGuide', None, 'helpAbout', 'helpAboutQt', 
             'helpVersions', None]
         vitables.utils.addActions(help_menu, help_actions, self.gui_actions)
