@@ -29,6 +29,7 @@ Classes:
 Methods:
 
 * __init__(self, vtapp, parent=None)
+* updateColumnWidth(self)
 * mouseDoubleClickEvent(self, event)
 * updateCollapsedGroup(self, index)
 * updateExpandedGroup(self, index)
@@ -58,10 +59,11 @@ import vitables.utils
 from vitables.h5db.nodeItemDelegate import NodeItemDelegate
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class DBsTreeView(QtGui.QTreeView):
     """
     The tree of DBs view.
@@ -126,6 +128,22 @@ class DBsTreeView(QtGui.QTreeView):
             self.updateExpandedGroup)
         self.connect(self, QtCore.SIGNAL('collapsed(QModelIndex)'), 
             self.updateCollapsedGroup)
+        self.connect(self.dbt_model, QtCore.SIGNAL('layoutChanged()'), 
+            self.updateColumnWidth)
+
+
+    def updateColumnWidth(self):
+        """Make sure that a horizontal scrollbar is shown as needed.
+
+        This is a subtle method. As the tree view has only 1 column its
+        width and the width of the viewport are always the same so the
+        horizontal scrollbar is never shown. As the contents width  
+        changes every time the layout changes (rows are inserted or 
+        deleted) by resizing column to contents when it happens we 
+        ensure that the column and the viewport will have different 
+        width and the scrollbar will indeed be added as needed.
+        """
+        self.resizeColumnToContents(0)
 
 
     def activateNode(self, index):

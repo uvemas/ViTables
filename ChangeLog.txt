@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 23, 2009 **
+Tree view usability improved.
+
 ** December 21, 2009 **
 Added the new plugins_menu.py plugin. It show info about the loaded plugins.
 
