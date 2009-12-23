@@ -48,8 +48,6 @@ import vitables.queries.queryDlg as queryDlg
 import vitables.queries.query as query
 
 
-
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
@@ -121,6 +119,8 @@ def getTableInfo(table):
            'An informational note for users')
 
     return info
+
+
 class QueriesManager(QtCore.QObject):
     """This is the class in charge of threading the execution of queries.
 

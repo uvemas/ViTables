@@ -46,10 +46,11 @@ _context = 'InputNodeName'
 from PyQt4 import QtCore, QtGui
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class InputNodeName(QtGui.QDialog):
     """
     Dialog for interactively entering a name for a given node.

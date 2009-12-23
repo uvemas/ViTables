@@ -61,10 +61,11 @@ from vitables.nodeProperties import nodePropUI
 import vitables.nodeProperties.attrEditor as attrEditor
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
     """
     Node properties dialog.

@@ -55,10 +55,10 @@ from PyQt4 import QtGui
 import vitables.utils
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
 
 def checkSyntax(value):
     """Check the syntax of a `Python` expression.

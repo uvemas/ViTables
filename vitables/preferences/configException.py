@@ -43,10 +43,11 @@ _context = 'ConfigFileIOException'
 from PyQt4 import QtGui
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class ConfigFileIOException(Exception):
     """Exception class for IO errors in the configuration file."""
 

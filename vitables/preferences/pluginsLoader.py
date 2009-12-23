@@ -58,7 +58,6 @@ import vitables.plugins
 from vitables.vtSite import PLUGINSDIR
 
 
-
 def isPlugin(folder, name):
     """Check if a given module is a plugin.
 
@@ -121,6 +120,8 @@ def scanFolder(folder):
         if not ispkg and isPlugin(folder, name):
             pkg_plugins.append('%s#@#%s' % (folder, name))
     return pkg_plugins
+
+
 class PluginsLoader(object):
     """Plugins loader class.
 

@@ -49,10 +49,11 @@ from PyQt4 import QtCore, QtGui
 import vitables.utils
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class NodeItemDelegate(QtGui.QItemDelegate):
     """
     A custom delegate for editing items of the tree of databases model.

@@ -40,10 +40,11 @@ import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class ExportToCSV(object):
     """Provides CSV export capabilities for arrays.
 
@@ -90,8 +91,6 @@ class ExportToCSV(object):
         # Add the action to the Dataset menu
         menu.addSeparator()
         menu.addAction(self.export_action)
-
-
 
 
     def updateDatasetMenu(self):

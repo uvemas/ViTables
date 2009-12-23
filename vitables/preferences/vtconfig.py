@@ -175,7 +175,6 @@ class Config(QtCore.QSettings):
                     break
 
 
-
     def loggerPaper(self):
         """
         Returns the logger background color.

@@ -69,10 +69,11 @@ from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class HelpBrowser(QtCore.QObject) :
     """
     Very simple documentation browser.

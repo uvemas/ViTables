@@ -45,8 +45,6 @@ import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
 
-
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
@@ -133,6 +131,8 @@ def tsFrequency(ts_kind, leaf):
             {'freq': 6000})
         ts_freq = special_attrs['freq']
     return ts_freq
+
+
 class TSFormatter(object):
     """An inspector class intended for finding out if a Leaf instance contains
     a time series suitable to be formatted in a user friendly way.
@@ -180,7 +180,6 @@ class TSFormatter(object):
             new_model = TableTSModel(model, freq, ts_kind)
             model.formatTime = new_model.formatTime
             model.data = new_model.data
-
 
 
     def helpAbout(self):

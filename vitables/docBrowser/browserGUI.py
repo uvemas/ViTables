@@ -54,10 +54,11 @@ import vitables.utils
 from vitables.vtSite import DOCDIR
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class HelpBrowserGUI(QtGui.QMainWindow) :
     """Very simple documentation browser."""
 

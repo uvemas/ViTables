@@ -59,10 +59,11 @@ from vitables.vtSite import ICONDIR
 import vitables.utils
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
     """
     Create the Settings dialog.

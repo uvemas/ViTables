@@ -70,7 +70,6 @@ import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
@@ -409,6 +408,8 @@ def isValidFilepath(filepath):
         valid = False
 
     return valid
+
+
 class ImportCSV(object):
     """Provides CSV import capabilities for tables and arrays.
 

@@ -59,10 +59,11 @@ import vitables.utils
 from vitables.queries import queryUI
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
     """
     A dialog for filter creation .

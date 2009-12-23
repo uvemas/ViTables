@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** December 23, 2009 **
+Inconsistencies in the spacing between lines have been fixed.
+
 Tree view usability improved.
 
 ** December 21, 2009 **

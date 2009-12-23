@@ -50,10 +50,11 @@ _context = 'Logger'
 from PyQt4 import QtCore, QtGui
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class Logger(QtGui.QTextEdit):
     """
     Logger that receives all informational application messages.

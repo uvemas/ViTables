@@ -37,7 +37,6 @@ import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
@@ -54,6 +53,8 @@ def setupTextWidget(parent, palette, kind='line'):
     widget.setReadOnly(True)
     widget.setPalette(palette)
     return widget
+
+
 class PluginsMenu(QtCore.QObject):
     """Add a Plugins menu to the ViTables menubar.
     """

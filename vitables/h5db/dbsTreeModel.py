@@ -96,10 +96,11 @@ from vitables.h5db import groupNode
 from vitables.h5db import leafNode
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class DBsTreeModel(QtCore.QAbstractItemModel):
     """
     The tree of databases model.

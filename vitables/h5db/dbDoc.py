@@ -65,10 +65,11 @@ from PyQt4 import QtCore, QtGui
 import vitables.utils
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class DBDoc(QtCore.QObject):
     """
     A database contained in an hdf5/PyTables file.

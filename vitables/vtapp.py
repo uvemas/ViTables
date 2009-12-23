@@ -58,10 +58,11 @@ import vitables.vtTables.buffer as rbuffer
 import vitables.vtTables.dataSheet as dataSheet
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class VTApp(QtGui.QMainWindow):
     """
     The application core.
@@ -72,7 +73,6 @@ class VTApp(QtGui.QMainWindow):
     * GUI initialization and configuration methods
     * slots that handle user input
     """
-
 
 
     def __init__(self, mode='', dblist='', h5files=None, keep_splash=True):
@@ -1493,8 +1493,6 @@ class VTApp(QtGui.QMainWindow):
                 break
 
 
-
-
     def slotNodeNewGroup(self):
         """Create a new group node."""
 
@@ -1898,6 +1896,8 @@ class VTApp(QtGui.QMainWindow):
 
         # Show the dialog
         about_dlg.exec_()
+
+
     def makePage(self, content):
         """Create a page for the About ViTables dialog.
 

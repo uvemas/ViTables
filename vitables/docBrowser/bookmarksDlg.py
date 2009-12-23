@@ -54,10 +54,11 @@ import os.path
 from PyQt4 import QtCore, QtGui
 
 
-
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
+
+
 class BookmarksDlg(QtGui.QDialog):
     """
     The dialog for editing bookmarks.

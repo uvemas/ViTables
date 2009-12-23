@@ -89,7 +89,6 @@ class Query(QtCore.QObject):
         self.qdescr = qdescr
 
 
-
     def run(self):
         """
         Query a table and add a the result to the temporary database.
