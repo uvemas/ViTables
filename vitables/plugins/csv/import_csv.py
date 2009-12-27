@@ -105,7 +105,11 @@ def tableInfo(input_handler):
     # (reading the first line is not safe as it could be a header)
     input_handler.seek(0)
     first_line = getArray(input_handler.readline())
-    data = getArray(input_handler.readline())
+    try:
+        data = getArray(input_handler.readline())
+    except IOError:
+        # The second line cannot be read. We assume there is only on line
+        data = first_line
 
     # Estimate the number of rows of the file
     filesize = os.path.getsize(input_handler.name)
@@ -210,8 +214,11 @@ def homogeneousTableInfo(input_handler, first_line, data):
             # Skip the header
             has_header = True
             input_handler.readline()
-        buf = read_fh(buf_size)
         itemsize = 0
+        buf = read_fh(buf_size)
+        if not buf:
+            # If the CSV file contains just one line
+            itemsize = first_line.dtype.itemsize
         while buf:
             temp_file = tempfile.TemporaryFile()
             temp_file.writelines(buf)
@@ -224,29 +231,27 @@ def homogeneousTableInfo(input_handler, first_line, data):
     elif first_line.dtype.name.startswith('string'):
         has_header = True
 
-    if data.shape:
-        # CSV file has more than one field
-        data_fields = range(0, data.shape[0])
-    else:
-        # CSV file has just one field
-        data_fields = [0]
+    # Iterate over the data fields and make the table description
+    # If the CSV file contains just one field then first_line is a
+    # scalar array and cannot be iterated so we reshape it
+    if first_line.shape == ():
+        first_line = first_line.reshape(1,)
+    indices = range(0, first_line.shape[0])
 
     if has_header:
-        descr = {}
         if data.dtype.name.startswith('string'):
-            for i in range(0, first_line.size):
-                descr[first_line[i]] = tables.StringCol(itemsize, pos=i)
+            descr = dict([(first_line[i], 
+                tables.StringCol(itemsize, pos=i)) for i in indices])
         else:
-            for i in range(0, first_line.size):
-                descr[first_line[i]] = \
-                    tables.Col.from_dtype(data.dtype, pos=i)
+            descr = dict([(first_line[i], 
+                tables.Col.from_dtype(data.dtype, pos=i)) for i in indices])
     else:
         if data.dtype.name.startswith('string'):
             descr = dict([('f%s' % field, tables.StringCol(itemsize)) \
-                for field in data_fields])
+                for field in indices])
         else:
-            descr = dict([('f%s' % i, tables.Col.from_dtype(data.dtype)) \
-                for i in data_fields])
+            descr = dict([('f%s' % field, tables.Col.from_dtype(data.dtype)) \
+                for field in indices])
 
     return descr, has_header
 
@@ -262,7 +267,11 @@ def askForHelp(first_line):
     text = trs("""Does the first line of the file contain """
         """a table header or regular data?""", 'Message box text')
     itext = ''
-    dtext = reduce(lambda x, y: '%s, %s' % (x, y), first_line)
+    try:
+        dtext = reduce(lambda x, y: '%s, %s' % (x, y), first_line)
+    except TypeError:
+        # If first_line has only one field reduce raises a TypeError
+        dtext = first_line.tostring()
     buttons = {\
         'Header': (trs('Header', 'Button text'), QtGui.QMessageBox.YesRole), 
         'Data': (trs('Data', 'Button text'), QtGui.QMessageBox.NoRole),
@@ -392,17 +401,18 @@ def isValidFilepath(filepath):
     :Parameter `filepath`: the filepath where the imported dataset will live
     """
 
+
     valid = True
     if os.path.exists(filepath):
         print trs(
             """\nWarning: """
-            """export failed because destination file already exists.""",
+            """import failed because destination file already exists.""",
             'A file creation error')
         valid = False
 
     elif os.path.isdir(filepath):
         print trs(
-            """\nWarning: export failed """
+            """\nWarning: import failed """
             """because destination container is a directory.""",
             'A file creation error')
         valid = False
@@ -410,7 +420,7 @@ def isValidFilepath(filepath):
     return valid
 
 
-class ImportCSV(object):
+class ImportCSV(QtCore.QObject):
     """Provides CSV import capabilities for tables and arrays.
 
     Some minor flaws: multidimensional fields are not well supported.
@@ -420,6 +430,8 @@ class ImportCSV(object):
     def __init__(self):
         """The class constructor.
         """
+
+        QtCore.QObject.__init__(self)
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
@@ -434,7 +446,7 @@ class ImportCSV(object):
 
 
     def addEntry(self):
-        """Add the Import CSV... entry to the File menu.
+        """Add the Import CSV... entry to the menus.
         """
 
         icon = QtGui.QIcon()
@@ -450,7 +462,7 @@ class ImportCSV(object):
         # Create the actions
         actions = {}
         actions['import_table'] = vitables.utils.createAction(\
-            self.import_submenu, 
+            self, 
             trs("Import T&able...", \
                 "Import table from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importTable,
@@ -459,7 +471,7 @@ class ImportCSV(object):
             "Status bar text for the File -> Import CSV... -> Import Table"))
 
         actions['import_array'] = vitables.utils.createAction(\
-            self.import_submenu, 
+            self, 
             trs("Import A&rray...", "Import array from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importArray,
             None,
@@ -467,7 +479,7 @@ class ImportCSV(object):
             "Status bar text for the File -> Import CSV... -> Import Array"))
 
         actions['import_carray'] = vitables.utils.createAction(\
-            self.import_submenu, 
+            self, 
             trs("Import C&Array...", "Import carray from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importCArray,
             None,
@@ -475,7 +487,7 @@ class ImportCSV(object):
             "Status bar text for the File -> Import CSV... -> Import CArray"))
 
         actions['import_earray'] = vitables.utils.createAction(\
-            self.import_submenu, 
+            self, 
             trs("Import E&Array...", "Import earray from CSV file"),
             QtGui.QKeySequence.UnknownKey, self.importEArray,
             None,
@@ -492,6 +504,13 @@ class ImportCSV(object):
             if item.objectName() == 'fileClose':
                 self.vtapp.file_menu.insertMenu(item, self.import_submenu)
                 self.vtapp.file_menu.insertSeparator(item)
+
+        # Add submenu to file context menu before the Close File action
+        cmenu = self.vtapp.view_cm
+        for item in cmenu.actions():
+            if item.objectName() == 'fileClose':
+                cmenu.insertMenu(item, self.import_submenu)
+                cmenu.insertSeparator(item)
 
 
     def createDestFile(self, filepath):

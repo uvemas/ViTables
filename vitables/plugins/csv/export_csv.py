@@ -45,7 +45,7 @@ def trs(source, comment=None):
     return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
-class ExportToCSV(object):
+class ExportToCSV(QtCore.QObject):
     """Provides CSV export capabilities for arrays.
 
     Some minor flaws: vlarrays with content other than ascii text cannot
@@ -56,6 +56,8 @@ class ExportToCSV(object):
         """The class constructor.
         """
 
+        QtCore.QObject.__init__(self)
+
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
         if self.vtapp is None:
@@ -65,23 +67,20 @@ class ExportToCSV(object):
         self.addEntry()
 
         # Connect signals to slots
-        QtCore.QObject.connect(self.vtapp.dataset_menu, 
-            QtCore.SIGNAL('aboutToShow()'), 
+        self.connect(self.vtapp.dataset_menu, QtCore.SIGNAL('aboutToShow()'), 
             self.updateDatasetMenu)
 
 
     def addEntry(self):
-        """Add the Export to CSV... entry to the Dataset menu.
+        """Add the Export to CSV... entry to menus.
         """
-
-        menu = self.vtapp.dataset_menu
 
         icon = QtGui.QIcon()
         pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
             'csv/icons/document-export.png'))
         icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
-        self.export_action = vitables.utils.createAction(menu, 
+        self.export_action = vitables.utils.createAction(self, 
             trs("E&xport to CSV...", "Save dataset as CSV"), 
             QtGui.QKeySequence.UnknownKey, self.export, 
             icon, 
@@ -89,8 +88,14 @@ class ExportToCSV(object):
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
+        menu = self.vtapp.dataset_menu
         menu.addSeparator()
         menu.addAction(self.export_action)
+
+        # Add the action to the leaf context menu
+        cmenu = self.vtapp.leaf_node_cm
+        cmenu.addSeparator()
+        cmenu.addAction(self.export_action)
 
 
     def updateDatasetMenu(self):

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 27, 2009 **
+The import_csv and export_csv plugins have been improved.
+
 ** December 23, 2009 **
 Inconsistencies in the spacing between lines have been fixed.
 
