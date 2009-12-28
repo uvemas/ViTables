@@ -59,8 +59,8 @@ Methods:
 * index(self, row, column, parent)
 * nodeFromIndex(self, index)
 * parent(self, child)
-* addNode(self, group, child, row=0, parent=QModelIndex())
-* removeRows(self, position, count=1, parent=QModelIndex())
+* insertRows(self, position=0, count=1, parent=QtCore.QModelIndex())
+* removeRows(self, position, count=1, parent=QtCore.QModelIndex())
 * closeViews(self, parent, start, end)
 * supportedDropActions(self)
 * mimeTypes(self)
@@ -238,12 +238,16 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             'w'rite or 'a'ppend
         """
 
+
         if self.checkOpening(filepath):
             # Open the database and add it to model
             db_doc = dbDoc.DBDoc(filepath, mode)
             self.mapDB(filepath, db_doc)
             root_node = rootGroupNode.RootGroupNode(db_doc, self.root)
-            self.addNode(self.root, root_node, position)
+            self.fdelta = frozenset([root_node])
+            self.gdelta = frozenset([])
+            self.ldelta = frozenset([])
+            self.insertRows(position, 1)
 
 
     def closeDBDoc(self, filepath):
@@ -292,7 +296,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 self.mapDB(filepath, db_doc)
                 root = rootGroupNode.RootGroupNode(db_doc, self.root, 
                     is_tmp_db)
-                self.addNode(self.root, root)
+                self.fdelta = frozenset([root])
+                self.gdelta = frozenset([])
+                self.ldelta = frozenset([])
+                self.insertRows(0, 1)
             except:
                 db_doc = None
                 print trs(
@@ -754,7 +761,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         node = self.nodeFromIndex(index)
         if node == self.root:
-            nrows = len(self.getDBList()) + 1
+            nrows = len(node)
         else:
             nrows = 0
             if node.node_kind in ('group', 'root group'):
@@ -872,32 +879,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         children_leaves = frozenset(getattr(group, '_v_leaves').keys())
         self.gdelta = children_groups.difference(model_children)
         self.ldelta = children_leaves.difference(model_children)
+        self.fdelta = frozenset([])
         new_children = len(self.gdelta) + len(self.ldelta)
         if not new_children:
             return
         else:
             self.insertRows(0, new_children, index)
-
-
-    def addNode(self, group, child, row=0, parent=QtCore.QModelIndex()):
-        """Adds a child node to a given parent and update the model.
-
-        :Parameters:
-
-        - `group`: the parent (XNode) of the inserted XNode.
-        - `child`: the node being inserted
-        - `row`: the position of the first row being inserted.
-        - `parent`: the parent (model index) of the inserted row
-        """
-
-        self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
-        self.beginInsertRows(parent, row, row)
-        group.insertChild(child, row)
-        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-            parent, parent)
-        self.endInsertRows()
-        self.emit(QtCore.SIGNAL("layoutChanged()"))
-        return True
 
 
     def insertRows(self, position=0, count=1, parent=QtCore.QModelIndex()):
@@ -921,12 +908,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         last = position + count - 1
         self.beginInsertRows(parent, first, last)
         node = self.nodeFromIndex(parent)
+        for file_node in self.fdelta:
+            self.root.insertChild(file_node, position)
         for name in self.gdelta:
             group = groupNode.GroupNode(node, name)
-            node.insertChild(group, 0)
+            node.insertChild(group, position)
         for name in self.ldelta:
             leaf = leafNode.LeafNode(node, name)
-            node.insertChild(leaf, 0)
+            node.insertChild(leaf, position)
         self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
             parent, parent)
         self.endInsertRows()
@@ -957,18 +946,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         # Remove rows from the model and update its underlaying data store
         self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
-        self.beginRemoveRows(parent, position, position)
+        first = position
+        last = position + count - 1
+        self.beginRemoveRows(parent, first, last)
         group = self.nodeFromIndex(parent)
         del group.children[position]
         self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
             parent, parent)
         self.endRemoveRows()
         self.emit(QtCore.SIGNAL("layoutChanged()"))
-
-        # Report views about changes in data
-        ichild = self.index(position, 0, parent)
-        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-            ichild, ichild)
 
         return True
 

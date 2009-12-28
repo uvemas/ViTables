@@ -1278,17 +1278,15 @@ class VTApp(QtGui.QMainWindow):
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
-        # Close the copied file (which is selected in the tree view) and
-        # open the new copy in read-write mode. The position in the tree
-        # is kept but it should never be the last position (ViTables assumes
-        # that the temporary database has always the last position).
-        # If a file has been closed in the Save As process then we have to
-        # check that the position is not the last one.
-        position = current_index.row()
-        if position == self.dbs_tree_model.rowCount(QtCore.QModelIndex()) - 1:
-            position = position - 1
-        self.slotFileClose()
-        self.slotFileOpen(filepath, 'a', position) 
+        # Close the copied file (which is not necessarely selected in
+        # the tree view because closing an overwritten file can change
+        # the selected item) and open the new copy in read-write mode.
+        # The position in the tree is kept
+        for row, child in enumerate(self.dbs_tree_model.root.children):
+            if child.filepath == initial_filepath:
+                self.slotFileClose(self.dbs_tree_model.index(row, 0, 
+                                                        QtCore.QModelIndex()))
+                self.slotFileOpen(filepath, 'a', row) 
 
 
     def slotFileOpenRO(self, filepath=None):
@@ -1322,8 +1320,9 @@ class VTApp(QtGui.QMainWindow):
 
         :Parameters:
 
-            - `filepath`: the full path of the file to be open
-            - `mode`: the file opening mode. It can be read-write or read-only
+        - `filepath`: the full path of the file to be open
+        - `mode`: the file opening mode. It can be read-write or read-only
+        - `position`: position in the tree view of the new file
         """
 
         if not filepath:

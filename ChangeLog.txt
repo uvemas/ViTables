@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 28, 2009 **
+Rows insertion/deletion in the tree view has been simplified and debugged.
+
 ** December 27, 2009 **
 The import_csv and export_csv plugins have been improved.
 
