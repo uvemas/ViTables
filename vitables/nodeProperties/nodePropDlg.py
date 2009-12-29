@@ -70,10 +70,17 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
     """
     Node properties dialog.
 
-    This class displays a tabbed dialog that shows some properties of the
-    selected node. First tab, General, shows general properties like name,
-    path, type etc. The second and third tabs show the system and user
-    attributes in a tabular way.
+    This class displays a tabbed dialog that shows some properties of
+    the selected node. First tab, General, shows general properties like
+    name, path, type etc. The second and third tabs show the system and
+    user attributes in a tabular way.
+
+    Beware that data types shown in the General page are PyTables data
+    types so we can deal with enum, time64 and pseudoatoms (none of them
+    are supported by numpy).
+    However data types shown in the System and User attributes pages are
+    numpy data types because PyTables attributes are stored as numpy
+    arrays.
     """
 
     def __init__(self, info):
@@ -221,11 +228,11 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
         self.bottomgb_layout.addWidget(shape_label, 1, 0)
         self.bottomgb_layout.addWidget(shape_ledit, 1, 1)
 
-        # Data type label
+        # PyTables data type label
         dtype_label = QtGui.QLabel(trs('Data type:', 'A label'), 
             self.bottom_gb)
         dtype_ledit = vitables.utils.customLineEdit(self.bottom_gb)
-        dtype_ledit.setText(info.dtype)
+        dtype_ledit.setText(info.type)
         self.bottomgb_layout.addWidget(dtype_label, 2, 0)
         self.bottomgb_layout.addWidget(dtype_ledit, 2, 1)
 
@@ -340,10 +347,6 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
                 dtype_name = u'tables.filters.Filters'
             elif hasattr(value, u'shape'):
                 dtype_name = vitables.utils.toUnicode(value.dtype.name)
-                if dtype_name.startswith(u'string'):
-                    dtype_name = u'string'
-                if dtype_name.startswith(u'unicode'):
-                    dtype_name = u'unicode'
             else:
                 # Attributes can be scalar Python objects (PyTables <1.1)
                 # or non scalar Python objects, e.g. sequences

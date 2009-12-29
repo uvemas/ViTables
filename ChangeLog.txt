@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 29, 2009 **
+Some code dealing with PyTables datatypes and numpy datatypes has been cleaned.
+
 ** December 28, 2009 **
 Rows insertion/deletion in the tree view has been simplified and debugged.
 

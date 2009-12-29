@@ -187,8 +187,8 @@ class NodeInfo(object):
 
     # Properties for Leaf instances
 
-    def _dtype(self):
-        """The numpy dtype that most closely matches the atom of this leaf."""
+    def _type(self):
+        """The PyTables data type of the atom."""
 
         if self.node_type.count(u'array'):
             try:
@@ -198,7 +198,7 @@ class NodeInfo(object):
         elif self.node_type == u'table':
             return u'record'
 
-    dtype = property(fget=_dtype)
+    type = property(fget=_type)
 
 
     def _nrows(self):
@@ -271,7 +271,7 @@ class NodeInfo(object):
 
 
     def _colTypes(self):
-        """A mapping between the name of the table columns and their datatypes.
+        """Mapping the column names of a table to its PyTables datatypes.
         """
 
         try:
