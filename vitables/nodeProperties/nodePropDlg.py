@@ -29,11 +29,13 @@ Classes:
 Methods:
 
 * __init__(self, info)
-* makeGeneralPage(self, info)
-* groupGB(self, info, page, title)
-* leafGB(self, info, page, table=False)
-* makeSysAttrsPage(self, info)
-* makeUserAttrsPage(self, info)
+* cleanGeneralPage(self, info)
+* databaseGB(self, info)
+* groupGB(self, info)
+* leafGB(self, info)
+* fillGeneralPage(self, info)
+* fillSysAttrsPage(self, info)
+* fillUserAttrsPage(self, info)
 * slotDisplayCellContent(self, index)
 * slotAddAttr(self)
 * slotDelAttr(self)
@@ -104,9 +106,11 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
         self.setWindowTitle(caption_for_type[info.node_type])
 
         # Customise the dialog's pages
-        self.makeGeneralPage(info)
-        self.makeSysAttrsPage(info)
-        self.makeUserAttrsPage(info)
+        self.cleanGeneralPage(info.node_type)
+        self.fillGeneralPage(info)
+        self.fillSysAttrsPage(info)
+        self.fillUserAttrsPage(info)
+        self.resize(self.size().width(), self.minimumHeight())
 
         # Variables used for checking the table of user attributes
         self.mode = info.mode
@@ -121,66 +125,77 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
         self.show()
 
 
-    def makeGeneralPage(self, info):
+    def cleanGeneralPage(self, node_type):
+        """Remove unneeded components from the General page.
+
+        :Parameter `node_type`: the type of node (root group, group, array...)
+        """
+
+        if node_type.count('group'):
+            # Remove the Dataspace groupbox
+            self.general_layout.removeWidget(self.dataspace_gb)
+            self.dataspace_gb.deleteLater()
+        else:
+            # Remove the Group groupbox
+            self.general_layout.removeWidget(self.bottom_gb)
+            self.bottom_gb.deleteLater()
+
+        if node_type != 'root group':
+            # Remove the Access mode widgets
+            self.database_layout.removeWidget(self.mode_label)
+            self.database_layout.removeWidget(self.mode_ledit)
+            self.mode_label.deleteLater()
+            self.mode_ledit.deleteLater()
+
+        if node_type != 'table':
+            # Remove the table description
+            self.dataspace_layout.removeWidget(self.records_table)
+            self.records_table.deleteLater()
+
+
+    def fillGeneralPage(self, info):
         """Make the General page of the Properties dialog.
 
         The page contains two groupboxes that are laid out vertically.
         """
 
-        ###############################
-        # Setup the Database groupbox #
-        ###############################
+        self.databaseGB(info)
+        if info.node_type.count('group'):
+            self.groupGB(info)
+        else:
+            self.leafGB(info)
+
+
+    def databaseGB(self, info):
+        """Fill the Database groupbox o fthe General page.
+        """
+
         if info.node_type == u'root group':
             self.name_ledit.setText(info.filename)
             self.path_ledit.setText(info.filepath)
             self.path_ledit.setToolTip(info.filepath)
             self.type_ledit.setText(info.file_type)
-            mode_label = QtGui.QLabel(trs('Access mode:', 'A label'), 
-                                    self.database_gb)
-            mode_ledit = vitables.utils.customLineEdit(self.database_gb)
-            mode_ledit.setText(info.mode)
-            self.database_layout.addWidget(mode_label, 3, 0)
-            self.database_layout.addWidget(mode_ledit, 3, 1)
+            self.mode_ledit.setText(info.mode)
         else:
             self.name_ledit.setText(info.nodename)
             self.path_ledit.setText(info.nodepath)
             self.path_ledit.setToolTip(info.nodepath)
             self.type_ledit.setText(info.node_type)
 
-        ############################################
-        # Setup the Root group/Group/Leaf groupbox #
-        ############################################
+
+    def groupGB(self, info):
+        """Fill the Group groupbox of the General page for File/Group nodes."""
+
         if info.node_type == u'root group':
-            title = trs('Root group', 'Title of a groupbox')
-            self.groupGB(info, title)
-        elif info.node_type == u'group':
-            title = trs('Group', 'Title of a groupbox')
-            self.groupGB(info, title)
-        elif info.node_type.count(u'array'):
-            self.leafGB(info, table=False)
+            self.bottom_gb.setTitle(trs('Root group', 'Title of a groupbox'))
         else:
-            self.leafGB(info, table=True)
-
-
-    def groupGB(self, info, title):
-        """Make the groupbox of the General page for File/Group instances."""
-
-        #######################################
-        # Setup the Group/Root group groupbox #
-        #######################################
-        self.bottom_gb.setTitle(title)
+            self.bottom_gb.setTitle(trs('Group', 'Title of a groupbox'))
 
         # Number of children label
-        label = QtGui.QLabel(trs('Number of children:', 'A label'), 
-                            self.bottom_gb)
-        ledit = vitables.utils.customLineEdit(self.bottom_gb)
-        ledit.setText(unicode(len(info.hanging_nodes)))
-        self.bottomgb_layout.addWidget(label, 0, 0)
-        self.bottomgb_layout.addWidget(ledit, 0, 1)
+        self.nchildren_ledit.setText(unicode(len(info.hanging_nodes)))
 
         # The group's children table
-        table = QtGui.QTableView(self.bottom_gb)
-        table.verticalHeader().hide()
+        table = self.nchildren_table
         table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
         table.setStyleSheet("background-color: %s" % background.name())
@@ -193,65 +208,30 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
         table.setModel(self.children_model)
         for name in info.hanging_groups.keys():
             name_item = QtGui.QStandardItem(name)
-            name_item.setEditable(False)
             type_item = QtGui.QStandardItem(trs('group'))
-            type_item.setEditable(False)
             self.children_model.appendRow([name_item, type_item])
         for name in info.hanging_leaves.keys():
             name_item = QtGui.QStandardItem(name)
-            name_item.setEditable(False)
             type_item = QtGui.QStandardItem(trs('leaf'))
-            type_item.setEditable(False)
             self.children_model.appendRow([name_item, type_item])
-        self.bottomgb_layout.addWidget(table, 1, 0, 1, 2)
 
 
-    def leafGB(self, info, table=False):
-        """Make the groupbox of the General page for Leaf nodes."""
+    def leafGB(self, info):
+        """Fill the Dataspace groupbox of the General page for Leaf nodes."""
 
-        ################################
-        # Setup the Dataspace groupbox #
-        ################################
-        self.bottom_gb.setTitle(trs('Dataspace', 'Title of a groupbox'))
-
-        # Number of dimensions label
-        dim_label = QtGui.QLabel(trs('Dimensions:', 'A label'), self.bottom_gb)
-        dim_ledit = vitables.utils.customLineEdit(self.bottom_gb)
-        dim_ledit.setText(unicode(len(info.shape)))
-        self.bottomgb_layout.addWidget(dim_label, 0, 0)
-        self.bottomgb_layout.addWidget(dim_ledit, 0, 1)
-
-        # Shape label
-        shape_label = QtGui.QLabel(trs('Shape:', 'A label'), self.bottom_gb)
-        shape_ledit = vitables.utils.customLineEdit(self.bottom_gb)
-        shape_ledit.setText(unicode(info.shape))
-        self.bottomgb_layout.addWidget(shape_label, 1, 0)
-        self.bottomgb_layout.addWidget(shape_ledit, 1, 1)
-
-        # PyTables data type label
-        dtype_label = QtGui.QLabel(trs('Data type:', 'A label'), 
-            self.bottom_gb)
-        dtype_ledit = vitables.utils.customLineEdit(self.bottom_gb)
-        dtype_ledit.setText(info.type)
-        self.bottomgb_layout.addWidget(dtype_label, 2, 0)
-        self.bottomgb_layout.addWidget(dtype_ledit, 2, 1)
-
-        # Compression library label
-        compression_label = QtGui.QLabel(trs('Compression:', 'A label'), 
-            self.bottom_gb)
-        compression_ledit = vitables.utils.customLineEdit(self.bottom_gb)
+        self.dim_ledit.setText(unicode(len(info.shape)))
+        self.shape_ledit.setText(unicode(info.shape))
+        self.dtype_ledit.setText(info.type)
         if info.filters.complib is None:
-            compression_ledit.setText(unicode('uncompressed', 'utf_8'))
+            self.compression_ledit.setText(unicode('uncompressed', 'utf_8'))
         else:
-            compression_ledit.setText(unicode(info.filters.complib, 'utf_8'))
-        self.bottomgb_layout.addWidget(compression_label, 3, 0)
-        self.bottomgb_layout.addWidget(compression_ledit, 3, 1)
+            self.compression_ledit.setText(unicode(info.filters.complib, 
+                'utf_8'))
 
         # Information about the fields of Table instances
-        if table:
+        if info.node_type == 'table':
+            table = self.records_table
             # The Table's fields description
-            table = QtGui.QTableView(self.bottom_gb)
-            table.verticalHeader().hide()
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
             background = table.palette().brush(QtGui.QPalette.Window).color()
             table.setStyleSheet("background-color: %s" % background.name())
@@ -275,35 +255,27 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
                     else:
                         seen_paths.append(field_name)
                     pathname_item = QtGui.QStandardItem(field_name)
-                    pathname_item.setEditable(False)
                     type_item = QtGui.QStandardItem(trs('nested'))
-                    type_item.setEditable(False)
                     shape_item = QtGui.QStandardItem(trs('-'))
-                    shape_item.setEditable(False)
                 else:
                     pathname_item = QtGui.QStandardItem(unicode(pathname, 
                                                                 'utf_8'))
-                    pathname_item.setEditable(False)
                     type_item = QtGui.QStandardItem(\
                             unicode(info.columns_types[pathname], 'utf_8'))
-                    type_item.setEditable(False)
                     shape_item = QtGui.QStandardItem(\
                                         unicode(info.columns_shapes[pathname]))
-                    shape_item.setEditable(False)
                 self.fields_model.appendRow([pathname_item, type_item, 
                                             shape_item])
-            self.bottomgb_layout.addWidget(table, 4, 0, 1, 2)
 
 
-    def makeSysAttrsPage(self, info):
-        """Make the System attributes page of the Properties dialog."""
+    def fillSysAttrsPage(self, info):
+        """Fill the page of system attributes."""
 
         # Number of attributes label
         self.sattr_ledit.setText(\
             vitables.utils.toUnicode(len(info.system_attrs)))
 
         # Table of system attributes
-        self.sys_table.verticalHeader().hide()
         self.sys_table.horizontalHeader().setResizeMode(\
             QtGui.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
@@ -372,8 +344,8 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
                                 self.slotDisplayCellContent)
 
 
-    def makeUserAttrsPage(self, info):
-        """Make the User attributes page of the Properties dialog."""
+    def fillUserAttrsPage(self, info):
+        """Fill the page of user attributes."""
 
         self.user_attrs_before = []
 
@@ -382,7 +354,6 @@ class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
             vitables.utils.toUnicode(len(info.user_attrs)))
 
         # Table of user attributes
-        self.user_table.verticalHeader().hide()
         self.user_table.horizontalHeader().\
                         setResizeMode(QtGui.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()

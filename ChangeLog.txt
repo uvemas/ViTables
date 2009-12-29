@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** December 29, 2009 **
+Module nodePropDlg.py has been refactored and simplified.
+
 Some code dealing with PyTables datatypes and numpy datatypes has been cleaned.
 
 ** December 28, 2009 **
