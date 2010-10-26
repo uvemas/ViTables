@@ -18,37 +18,33 @@
   <firstname>Vicent</firstname><surname>Mas</surname>
   </author>
   <edition>User's Guide version 1.0 for ViTables 2.1</edition>
-  <pubdate>September, 21, 2009</pubdate>
+  <pubdate>October, 26, 2010</pubdate>
   <copyright>
   <year>2005-2007</year>
   <holder>Cárabos Coop. V. All rights reserved.</holder>
   </copyright>
   <copyright>
-  <year>2008-2009</year>
+  <year>2008-2010</year>
   <holder>Vicent Mas. All rights reserved.</holder>
   </copyright>
 
   <!-- ViTables copyright notice -->
   <legalnotice>
-  <para><emphasis role="bold">Copyright Notice and Statement for the
-  <application>ViTables</application> User's Guide</emphasis>.</para>
-  <para>This manual is part of the Licensed Software included in the
-  <application>ViTables</application> package. For detailed information see the
-  LICENSE.txt file.</para>
+  <para><emphasis role="bold">Copyright Notice and Statement for the <application>ViTables</application> User's
+  Guide</emphasis>.</para>
+  <para>This manual is part of the Licensed Software included in the <application>ViTables</application> package. For
+  detailed information see the LICENSE.txt file.</para>
   </legalnotice>
 
   <!-- Qt copyright notice -->
   <legalnotice>
-  <para><emphasis role="bold">Copyright Notice and Statement for the
-  Qt library</emphasis>.</para>
-  <para>Qt is registered trademark of
-  Nokia Corporation.</para>
+  <para><emphasis role="bold">Copyright Notice and Statement for the Qt library</emphasis>.</para>
+  <para>Qt is registered trademark of Nokia Corporation.</para>
   </legalnotice>
 
   <!-- PyQt copyright notice -->
   <legalnotice>
-  <para><emphasis role="bold">Copyright Notice and Statement for the
-  PyQt library</emphasis>.</para>
+  <para><emphasis role="bold">Copyright Notice and Statement for the PyQt library</emphasis>.</para>
   <para>PyQt library Copyright by Riverbank Computing Limited.</para>
   </legalnotice>
 
@@ -82,39 +78,31 @@
     <section id='Ch1_Capabilities'>
       <title>Capabilities</title>
 
-      <para>The current release provides browsing, editing and querying
-      capabilities. Most of them are listed below. Details are discussed in the
-      related chapters.</para>
+      <para>The current release provides browsing, displaying, editing and querying capabilities. Some of them are listed
+      below. Details are discussed in the related chapters.</para>
 
       <section id='Ch1_Browsing_Capabilities'>
-        <title>Browsing Capabilities</title>
+        <title>Browsing and Displaying Capabilities</title>
 
         <itemizedlist>
-          <listitem><para>Display data hierarchy as a fully browsable object
-          tree.</para></listitem>
+          <listitem><para>Display data hierarchy as a fully browsable object tree.</para></listitem>
 
           <listitem><para>Open several files simultaneously.</para></listitem>
 
-          <listitem><para>Open files in write mode as well as in read-only
-          mode, disabling all editing functions.</para></listitem>
+          <listitem><para>Open files in write mode as well as in read-only mode, disabling all editing
+          functions.</para></listitem>
 
-          <listitem><para>Display file information (path, size, number of
-          nodes...).</para></listitem>
+          <!--<listitem><para>Display file information (path, size, number of nodes...).</para></listitem>-->
 
-          <listitem><para>Display node (group or leaf) properties, including
-          metadata and attributes.</para></listitem>
+          <listitem><para>Display node (group or leaf) properties, including metadata and attributes.</para></listitem>
 
-          <listitem><para>Display numerical arrays, i.e. homogeneous tables.
-          </para></listitem>
+          <listitem><para>Display numerical arrays, i.e. homogeneous tables.</para></listitem>
 
-          <listitem><para>Display heterogeneous table entities, i.e. records.
-          </para></listitem>
+          <listitem><para>Display heterogeneous table entities, i.e. records.</para></listitem>
 
-          <listitem><para>Display multidimensional table cells.
-          </para></listitem>
+          <listitem><para>Display multidimensional table cells.</para></listitem>
 
-          <listitem><para>Zoom into the inner dimensions of multidimensional table cells.
-          </para></listitem>
+          <listitem><para>Unlimited zoom into the inner dimensions of multidimensional table cells.</para></listitem>
         </itemizedlist>
       </section>
 
@@ -128,20 +116,16 @@
         <itemizedlist>
           <listitem><para>File creation and renaming.</para></listitem>
 
-          <listitem><para>Node creation (only for groups), renaming and
-            deletion.</para>
-          </listitem>
+          <listitem><para>Node creation (only for groups), renaming and deletion.</para></listitem>
 
-          <listitem><para>Ability to copy and move nodes from their location to
-          a different one, even in different files.</para></listitem>
+          <listitem><para>Ability to copy and move nodes from their location to a different one, even in different files.
+          </para></listitem>
 
-          <listitem><para>Attribute creation, renaming and deletion.</para>
-          </listitem>
+          <listitem><para>Attribute creation, renaming and deletion.</para></listitem>
         </itemizedlist>
         </para>
 
-        <para>All these changes automatically update the database (i.e. the
-        file) to which the nodes belong.</para>
+        <para>All these changes automatically update the database (i.e. the file) to which the nodes belong.</para>
 
       </section>
 
@@ -151,40 +135,23 @@
         <para>Other nice features include:
 
         <itemizedlist>
-          <listitem><para><emphasis>Ability to view really large
-          datasets</emphasis>.
-          </para></listitem>
+          <listitem><para><emphasis>Ability to smoothly navigate really large datasets</emphasis>.</para></listitem>
 
-          <listitem><para>Support for complex table queries.
-          </para></listitem>
+          <listitem><para>Support for doing complex table queries with a low memory footprint.</para></listitem>
 
-          <listitem><para>Flexible and fast dataset navigation.
-          </para></listitem>
+          <listitem><para>Flexible plugins framework. A bunch of useful plugins are already included, see the appendix for
+          details</para></listitem>
 
-          <listitem><para>A logger area, where the result of
-          user requested operations is printed.
-          </para></listitem>
+          <listitem><para>Configurable look and feel.</para></listitem>
 
-          <listitem><para>Several levels of help are available: context help
-          , tooltips, status bar...</para></listitem>
+          <listitem><para>A logger area, where errors and warnings (if any) are printed.</para></listitem>
 
-          <listitem><para>Flexible plugins framework.
-          </para></listitem>
-
-
-          <listitem><para>Export datasets to CSV format.
-          </para></listitem>
-
-          <listitem><para>Human friendly format of dates and times.
-          </para></listitem>
-
-          <listitem><para>Configurable look and feel.
-          </para></listitem>
+          <listitem><para>Several levels of help are available: users guide, context help, tooltips and status bar.</para>
+          </listitem>
         </itemizedlist>
 
-        We have paid special attention to usability issues so making use
-        of these features is intuitive and pleasant. Nevertheless, and
-        just in case, we are providing this guide :-).
+        We have paid special attention to usability issues so making use of these features is intuitive and pleasant.
+        Nevertheless, and just in case, we are providing this guide :-).
         </para>
 
       </section>
@@ -194,19 +161,14 @@
     <section id='Ch1_System_Requirements'>
         <title>System Requirements</title>
 
-      <para>To run <application>ViTables</application> you need to install
-      Python <symbol role="geq">&#x2265;</symbol> 2.4, PyTables <symbol
-      role="geq">&#x2265;</symbol> 2.0 (so you have to fulfill its own
-      requirements), the Qt4 <symbol role="geq">&#x2265;</symbol> 4.4 library
-      and PyQt4 <symbol role="geq">&#x2265;</symbol> 4.4.</para>
+      <para>To run <application>ViTables</application> you need to install Python <symbol role="geq">&#x2265;</symbol> 2.5,
+      PyTables <symbol role="geq">&#x2265;</symbol> 2.1 (so you have to fulfill its own requirements), the Qt4
+      <symbol role="geq">&#x2265;</symbol> 4.4 library and PyQt4 <symbol role="geq">&#x2265;</symbol> 4.4.</para>
 
-      <para>At the moment, <application>ViTables</application> has been fully
-      tested on Linux and Windows XP platforms. Other Unices should
-      run just fine when using the Unix version of
-      <application>ViTables</application> because all the software that
-      <application>ViTables</application> relies on (i.e. Python, Qt, PyQt,
-      HDF5 and PyTables) is known to run fine on many Unix platforms as well.
-      </para>
+      <para>At the moment, <application>ViTables</application> has been fully tested on Linux and Windows XP platforms.
+      Other Unices should run just fine when using the Unix version of <application>ViTables</application> because all the
+      software that <application>ViTables</application> relies on (i.e. Python, Qt, PyQt, HDF5 and PyTables) is known to
+      run fine on many Unix platforms as well.</para>
 
     </section>
 
@@ -268,7 +230,7 @@
           need PyTables and PyQt4 already installed on your system (excellent installers for both packages are
           available) in order to install ViTables.</para></footnote>
           </para>
-          
+
         </section>
 
         <section id='Ch1_Mac_OS_X_Binary_Installers'>
@@ -544,7 +506,7 @@ options:
         </keycombo></shortcut>
         <guimenu>File</guimenu><guimenuitem>Open File</guimenuitem>
         </menuchoice>
-        
+
         <footnote><para>Remember that files can be opened in two different
         modes: read-write and read-only. In read-only mode all editing
         functions
@@ -1132,7 +1094,7 @@ options:
         </glossterm>
         <glossdef><para>the size of the horizontal splitter</para></glossdef>
         </glossentry>
-				
+
 				<glossentry>
 					<glossterm><emphasis role="bold">[Geometry] Layout</emphasis>
 					</glossterm>
@@ -1154,21 +1116,21 @@ options:
         </glossterm>
         <glossdef><para>the size of the vertical splitter</para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm><emphasis role="bold">[HelpBrowser] Bookmarks</emphasis>
         </glossterm>
         <glossdef><para>the list of current bookmarks of the help browser
         </para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm><emphasis role="bold">[HelpBrowser] History</emphasis>
         </glossterm>
         <glossdef><para>the navigation history of the help browser</para>
         </glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm><emphasis role="bold">[Logger] Font</emphasis></glossterm>
         <glossdef><para>the logger font</para></glossdef>
@@ -1191,28 +1153,28 @@ options:
         Available styles fit the most common platforms, i.e., Windows, Unix
         (Motif and SGI flavors), and Macintosh</para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm><emphasis role="bold">[Plugins] Enabled</emphasis></glossterm>
         <glossdef><para>the list of full paths of enabled plugins</para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm><emphasis role="bold">[Plugins] Paths</emphasis></glossterm>
         <glossdef><para>the list of paths where plugins will be searched</para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm><emphasis role="bold">[Recent] Files</emphasis></glossterm>
         <glossdef><para>the list of files recently opened</para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm><emphasis role="bold">[Session] Files</emphasis></glossterm>
         <glossdef><para>the list of files and views that were open the last
         time ViTables was closed</para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm>
             <emphasis role="bold">[Startup] lastWorkingDir</emphasis>
@@ -1220,7 +1182,7 @@ options:
         <glossdef><para>The last directory accessed from within ViTables
         via Open File dialog</para></glossdef>
         </glossentry>
-        
+
         <glossentry>
         <glossterm>
             <emphasis role="bold">[Startup] restoreLastSession</emphasis>
@@ -1269,7 +1231,7 @@ options:
 
     <itemizedlist>
       <listitem><para>capable of multiple views</para></listitem>
-      
+
       <listitem><para>bookmarks</para></listitem>
 
       <listitem><para>session history</para></listitem>

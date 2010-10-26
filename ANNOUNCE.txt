@@ -1,9 +1,10 @@
-=========================
-Announcing ViTables 2.1b
-=========================
+=======================
+Announcing ViTables 2.1
+=======================
 
-I'm happy to present ViTables 2.1b, the latest release of this viewer for
-PyTables/HDF5 files.
+After a long period retired from development activities I'm happy to come back
+and present ViTables 2.1, the latest release of this viewer for PyTables/HDF5
+files.
 
 As it happens with the entire PyTables family, the main strength of ViTables
 is its ability to manage really large datasets in a fast and comfortable
@@ -14,18 +15,14 @@ application, i.e., it runs flawlessly in Unix (and hence, GNU/Linux), Mac OS
 X and Windows. The fact that it runs on top of PyTables ensures its speed and
 memory efficiency.
 
-This version is labeled a beta version because it contains some new and
-relatively untested features. However ViTables' core should be quite reliable.
-
 In this release you will find some bug fixes and usability enhancements. New 
 features include:
 
-- queries are executed in a separate thread so the application will not be
-  frozen if a large table is queried
+- queries have been improved. They are faster and eat much less memory
 - a plugins framework has been added
 - human friendly format of times and dates for PyTables native Time fields
   and also for time series created via scikits.timeseries package
-- datasets can be exported to CSV format
+- datasets can be imported/exported from/to files with CSV format
 
 Platforms
 ---------

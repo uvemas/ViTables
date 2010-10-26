@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** October 26, 2010 **
+Information about version number and copyright has been updated.
+
 ** December 29, 2009 **
 Module nodePropDlg.py has been refactored and simplified.
 

@@ -176,7 +176,7 @@ class VTApp(QtGui.QMainWindow):
         self.config.loadConfiguration(self.config.readConfiguration())
 
         # Print the welcome message
-        print trs('''ViTables %s\nCopyright (c) 2008-2009 Vicent Mas.'''
+        print trs('''ViTables %s\nCopyright (c) 2008-2010 Vicent Mas.'''
             '''\nAll rights reserved.''' % vtconfig.getVersion(),
             'Application startup message')
 

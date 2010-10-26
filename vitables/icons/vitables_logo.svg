@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -13,9 +14,8 @@
    height="220"
    id="svg2516"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.47 r22583"
    version="1.0"
-   sodipodi:docbase="/home/ivan/svn/carabos/dissenys/vitables"
    sodipodi:docname="vitables_logo.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/home/vmas/ViTables/hg_branches/vitables_tip/vitables/icons/vitables_logo.png"
@@ -75,7 +75,8 @@
      inkscape:window-height="956"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     showgrid="false" />
+     showgrid="false"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata2522">
     <rdf:RDF>
@@ -237,14 +238,18 @@
        y="203.3819" />
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:100%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans;text-align:start"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
        x="10.096598"
        y="17.543539"
        id="text2806"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
-         id="tspan2420">© 2005-2007 by Cárabos Coop. V.</tspan><tspan
+         id="tspan2420"
+         x="10.096598"
+         y="17.543539">© 2005-2007 by Cárabos Coop. V.</tspan><tspan
          sodipodi:role="line"
-         id="tspan2422">© 2008-2009 by Vicent Mas</tspan></text>
+         id="tspan2422"
+         x="10.096598"
+         y="29.543539">© 2008-2010 by Vicent Mas</tspan></text>
   </g>
 </svg>
