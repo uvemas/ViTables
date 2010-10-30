@@ -54,13 +54,21 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'NodePropDlg'
 
+import os.path
+
 import tables
 
 from PyQt4 import QtGui, QtCore
+from PyQt4.uic import loadUiType
 
 import vitables.utils
-from vitables.nodeProperties import nodePropUI
 import vitables.nodeProperties.attrEditor as attrEditor
+
+# This method of the PyQt4.uic module allows for dinamically loading user 
+# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# info.
+Ui_NodePropDialog = \
+    loadUiType(os.path.join(os.path.dirname(__file__),'prop_dlg.ui'))[0]
 
 
 def trs(source, comment=None):
@@ -68,9 +76,14 @@ def trs(source, comment=None):
     return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
-class NodePropDlg(QtGui.QDialog, nodePropUI.Ui_NodePropDialog):
+class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
     """
     Node properties dialog.
+
+    By loading UI files at runtime we can:
+
+        - create user interfaces at runtime (without using pyuic)
+        - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
     This class displays a tabbed dialog that shows some properties of
     the selected node. First tab, General, shows general properties like

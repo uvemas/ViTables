@@ -24,7 +24,7 @@ Here is defined the Preferences class.
 
 Classes:
 
-* Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog)
+* Preferences(QtGui.QDialog, Ui_SettingsDialog)
 
 Methods:
 
@@ -53,20 +53,31 @@ _context = 'Preferences'
 import os
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.uic import loadUiType
 
-from vitables.preferences import settingsUI
 from vitables.vtSite import ICONDIR
 import vitables.utils
 
+# This method of the PyQt4.uic module allows for dinamically loading user 
+# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# info.
+Ui_SettingsDialog = \
+    loadUiType(os.path.join(os.path.dirname(__file__),'settings_dlg.ui'))[0]
 
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
-class Preferences(QtGui.QDialog, settingsUI.Ui_SettingsDialog):
+class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     """
     Create the Settings dialog.
+
+    By loading UI files at runtime we can:
+
+        - create user interfaces at runtime (without using pyuic)
+        - use multiple inheritance, MyParentClass(BaseClass, FormClass)
+
     """
 
     def __init__(self):

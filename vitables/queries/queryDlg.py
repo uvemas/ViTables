@@ -51,12 +51,20 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'QueryDlg'
 
+import os.path
+
 import numpy
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.uic import loadUiType
 
 import vitables.utils
-from vitables.queries import queryUI
+
+# This method of the PyQt4.uic module allows for dinamically loading user 
+# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# info.
+Ui_QueryDialog = \
+    loadUiType(os.path.join(os.path.dirname(__file__),'query_dlg.ui'))[0]
 
 
 def trs(source, comment=None):
@@ -64,9 +72,14 @@ def trs(source, comment=None):
     return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
-class QueryDlg(QtGui.QDialog, queryUI.Ui_QueryDialog):
+class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
     """
     A dialog for filter creation .
+
+    By loading UI files at runtime we can:
+
+        - create user interfaces at runtime (without using pyuic)
+        - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
     The dialog layout looks like this::
 
