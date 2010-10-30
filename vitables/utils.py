@@ -473,24 +473,6 @@ def getFinalName(nodename, sibling, pattern, info):
     return nodename, overwrite
 
 
-def customLineEdit(parent):
-    """A customized QLineEdit suitable for the Properties dialog.
-
-    The widget has no frame, is read-only and has a 'transparent'
-    background.
-
-    :Parameter parent: the parent widge of the QLineEdit
-    """
-
-    ledit = QtGui.QLineEdit(parent)
-    ledit.setFrame(False)
-    ledit.setReadOnly(True)
-    palette = ledit.palette()
-    bg_color = palette.color(QtGui.QPalette.Window)
-    palette.setColor(QtGui.QPalette.Base, bg_color)
-    return ledit
-
-
 def getLicense():
     """The ViTables license in Rich Text format."""
 
