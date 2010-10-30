@@ -5,6 +5,8 @@ The utils.py module has been simplified.
 
 Some unwanted directories have been removed from the repository.
 
+Copyright statements updated in every source file.
+
 ** October 26, 2010 **
 Information about version number and copyright has been updated.
 
