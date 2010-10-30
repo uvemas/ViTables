@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** October 30, 2010 **
 The utils.py module has been simplified.
 
+Some unwanted directories have been removed from the repository.
+
 ** October 26, 2010 **
 Information about version number and copyright has been updated.
 
