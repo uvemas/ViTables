@@ -24,13 +24,11 @@ Here is defined the InputNodeName class.
 
 Classes:
 
-* InputNodeName(QDialog)
+* InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog)
 
 Methods:
 
 * __init__(self, title, info, action)
-* __tr(self, source, comment=None)
-* addComponents(self)
 * slotCheckNewName(self, current)
 * slotAccept(self)
 
@@ -43,17 +41,27 @@ Misc variables:
 __docformat__ = 'restructuredtext'
 _context = 'InputNodeName'
 
+import os.path
+
 from PyQt4 import QtCore, QtGui
+from PyQt4.uic import loadUiType
+
+# This method of the PyQt4.uic module allows for dinamically loading user 
+# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# info.
+Ui_InputNodenameDialog = \
+    loadUiType(os.path.join(os.path.dirname(__file__),'nodename_dlg.ui'))[0]
 
 
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
 
-
-class InputNodeName(QtGui.QDialog):
+class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
     """
     Dialog for interactively entering a name for a given node.
+
+    By loading UI files at runtime we can:
+
+        - create user interfaces at runtime (without using pyuic)
+        - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
     This dialog is called when a new group is being created and also when
     a node of any kind is being renamed.
@@ -69,30 +77,26 @@ class InputNodeName(QtGui.QDialog):
 
         - `title`: the dialog title
         - `info`: information to be displayed in the dialog
-        - `action`: the editing action to be done, Create or Rename
+        - `action`: string with the editing action to be done, Create or Rename
         """
 
         # Makes the dialog and gives it a layout
         QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
-        QtGui.QVBoxLayout(self)
+        self.setupUi(self)
 
-        # Sets dialog caption
+        # Set dialog caption and label with general info
         self.setWindowTitle(title)
+        self.general_info.setText(info)
 
-        self.info = info
-
-        # Main widgets
-        self.value_le = QtGui.QLineEdit(self)
-
-        self.edit_button = QtGui.QPushButton(action, self)
-        self.cancel_button = \
-            QtGui.QPushButton(trs('Cancel', 'A button label'), self)
-
-        self.buttons_box = QtGui.QDialogButtonBox(QtCore.Qt.Horizontal, self)
-        self.buttons_box.addButton(self.edit_button, 
+        # The Create/Rename button
+        self.edit_button = self.buttons_box.addButton(action, 
             QtGui.QDialogButtonBox.AcceptRole)
-        self.buttons_box.addButton(self.cancel_button, 
-            QtGui.QDialogButtonBox.RejectRole)
+
+        # Setup a validator for checking the entered node name
+        validator = QtGui.QRegExpValidator(self)
+        pattern = QtCore.QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
+        validator.setRegExp(pattern)
+        self.value_le.setValidator(validator)
 
         # Connects SIGNALs to SLOTs
         self.connect(self.value_le, 
@@ -102,46 +106,11 @@ class InputNodeName(QtGui.QDialog):
         self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
             QtCore.SLOT('reject()'))
 
-        self.addComponents()
         self.value_le.selectAll()
 
         # Make sure that buttons are in the proper activation state
         self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), 
             (self.value_le.text()))
-
-
-    def addComponents(self):
-        """
-        Adds components to the dialog.
-
-        The dialog layout looks like this::
-
-            root
-                label_text
-                label + textbox
-                Create + Cancel
-        """
-
-        # FIRST ROW -- An informative label
-        info = QtGui.QLabel(self.info, self)
-        self.layout().addWidget(info)
-
-        # SECOND ROW -- An input box
-        # Blanks are not allowed. First character cannot be a digit
-        name_layout = QtGui.QHBoxLayout()
-        name_layout.setSpacing(5)
-        value_label = QtGui.QLabel(trs('Node name:', 'A text box label'),
-            self)
-        name_layout.addWidget(value_label)
-        validator = QtGui.QRegExpValidator(self)
-        pattern = QtCore.QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
-        validator.setRegExp(pattern)
-        self.value_le.setValidator(validator)
-        name_layout.addWidget(self.value_le)
-        self.layout().addLayout(name_layout)
-
-        # LAST ROW -- A set of  buttons
-        self.layout().addWidget(self.buttons_box)
 
 
     def slotCheckName(self, current):
