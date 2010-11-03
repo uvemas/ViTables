@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 03, 2010 **
+The Preferences dialog has been improved.
+
 ** November 02, 2010 **
 A couple of pure Python modules have been split in a Python part and a ui part.
 

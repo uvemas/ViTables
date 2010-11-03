@@ -18,6 +18,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QListWidget" name="contents_widget">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="whatsThis">
         <string>This is the settings selector widget. Click on an icon in order to select the settings you want to customise.</string>
        </property>
@@ -35,15 +41,24 @@
         <number>2</number>
        </property>
        <widget class="QWidget" name="startup_page">
+        <property name="whatsThis">
+         <string>Configure the startup behavior of ViTables.</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QGroupBox" name="startup_gb">
+           <property name="whatsThis">
+            <string/>
+           </property>
            <property name="title">
             <string comment="The name of the groupbox where startup is configured">Startup</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
              <widget class="QCheckBox" name="restore_cb">
+              <property name="whatsThis">
+               <string>If checked, the last working session -i.e. open files and views- will be restored. If not, ViTables will start with an empty session.</string>
+              </property>
               <property name="text">
                <string comment="Label of the restore last session check button">Restore last session</string>
               </property>
@@ -51,6 +66,9 @@
             </item>
             <item>
              <widget class="QCheckBox" name="last_dir_cb">
+              <property name="whatsThis">
+               <string>The working directory used when opening the very first file. It defaults to the user's home directory. If the checkbox is checked then the last entered directory will be used.</string>
+              </property>
               <property name="text">
                <string comment="Label of the startup in the last open directory check box">Start in last opened directory</string>
               </property>
@@ -62,15 +80,24 @@
         </layout>
        </widget>
        <widget class="QWidget" name="style_page">
+        <property name="whatsThis">
+         <string>Configure the look and feel of ViTables.</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QGroupBox" name="logger_gb">
+           <property name="whatsThis">
+            <string>Customise font and colors of the Logger.</string>
+           </property>
            <property name="title">
             <string comment="The title of the logger groubox">Logger</string>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <item row="0" column="1" rowspan="7">
              <widget class="QTextEdit" name="sample_te">
+              <property name="whatsThis">
+               <string>You can preview your settings here.</string>
+              </property>
               <property name="readOnly">
                <bool>true</bool>
               </property>
@@ -81,6 +108,9 @@
             </item>
             <item row="3" column="0">
              <widget class="QPushButton" name="foreground_pb">
+              <property name="whatsThis">
+               <string>Setup the text color.</string>
+              </property>
               <property name="text">
                <string comment="The label of the logger text color button">F&amp;oreground</string>
               </property>
@@ -114,6 +144,9 @@
             </item>
             <item row="4" column="0">
              <widget class="QPushButton" name="background_pb">
+              <property name="whatsThis">
+               <string>Setup the background color.</string>
+              </property>
               <property name="text">
                <string comment="The label of the logger color button">&amp;Background</string>
               </property>
@@ -121,6 +154,9 @@
             </item>
             <item row="2" column="0">
              <widget class="QPushButton" name="font_pb">
+              <property name="whatsThis">
+               <string>Here you can choose the font used in the Logger.</string>
+              </property>
               <property name="text">
                <string comment="The label of the logger font chooser button">&amp;Font</string>
               </property>
@@ -131,12 +167,18 @@
          </item>
          <item>
           <widget class="QGroupBox" name="workspace_gb">
+           <property name="whatsThis">
+            <string>Setup the background color of the workspace.</string>
+           </property>
            <property name="title">
             <string comment="The title of the workspace groupbox">Workspace</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="QPushButton" name="workspace_pb">
+              <property name="whatsThis">
+               <string/>
+              </property>
               <property name="text">
                <string comment="The label of the workspace color button">&amp;Background</string>
               </property>
@@ -157,12 +199,19 @@
          </item>
          <item>
           <widget class="QGroupBox" name="style_gb">
+           <property name="whatsThis">
+            <string>Choose the global style of ViTables here.</string>
+           </property>
            <property name="title">
             <string comment="The title of the global aspect groupbox">Style</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QComboBox" name="styles_cb"/>
+             <widget class="QComboBox" name="styles_cb">
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -173,6 +222,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
           <widget class="QGroupBox" name="folders_gbox">
+           <property name="whatsThis">
+            <string/>
+           </property>
            <property name="title">
             <string>Folders</string>
            </property>
@@ -222,6 +274,9 @@ p, li { white-space: pre-wrap; }
                <widget class="QPushButton" name="remove_button">
                 <property name="toolTip">
                  <string>Press to remove the selected plugins folder</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Remove the selected directory.</string>
                 </property>
                 <property name="text">
                  <string>&amp;Remove</string>
@@ -364,9 +419,6 @@ Changes in the enabled/disabled plugins lists will take effect the next time you
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttons_box">
-     <property name="toolTip">
-      <string>Forget changes done in this dialog</string>
-     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
