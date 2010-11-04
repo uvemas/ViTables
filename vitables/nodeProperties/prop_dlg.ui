@@ -207,7 +207,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="mode_label">
+             <widget class="QLabel" name="modeLabel">
               <property name="text">
                <string>Access mode: </string>
               </property>
@@ -218,7 +218,7 @@
           <item row="0" column="1">
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
-             <widget class="QLineEdit" name="name_ledit">
+             <widget class="QLineEdit" name="nameLE">
               <property name="frame">
                <bool>false</bool>
               </property>
@@ -228,7 +228,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="path_ledit">
+             <widget class="QLineEdit" name="pathLE">
               <property name="frame">
                <bool>false</bool>
               </property>
@@ -238,7 +238,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="type_ledit">
+             <widget class="QLineEdit" name="typeLE">
               <property name="frame">
                <bool>false</bool>
               </property>
@@ -248,7 +248,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="mode_ledit">
+             <widget class="QLineEdit" name="modeLE">
               <property name="frame">
                <bool>false</bool>
               </property>
@@ -263,7 +263,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="bottom_gb">
+        <widget class="QGroupBox" name="bottomGB">
          <property name="title">
           <string>GroupBox</string>
          </property>
@@ -276,7 +276,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="nchildren_ledit">
+           <widget class="QLineEdit" name="nchildrenLE">
             <property name="frame">
              <bool>false</bool>
             </property>
@@ -286,7 +286,7 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="3">
-           <widget class="QTableView" name="nchildren_table">
+           <widget class="QTableView" name="nchildrenTable">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -299,13 +299,16 @@
             <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="dataspace_gb">
+        <widget class="QGroupBox" name="dataspaceGB">
          <property name="title">
           <string>Dataspace</string>
          </property>
@@ -318,7 +321,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="dim_ledit">
+           <widget class="QLineEdit" name="dimLE">
             <property name="frame">
              <bool>false</bool>
             </property>
@@ -335,7 +338,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="shape_ledit">
+           <widget class="QLineEdit" name="shapeLE">
             <property name="frame">
              <bool>false</bool>
             </property>
@@ -352,7 +355,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="dtype_ledit">
+           <widget class="QLineEdit" name="dtypeLE">
             <property name="frame">
              <bool>false</bool>
             </property>
@@ -369,7 +372,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="compression_ledit">
+           <widget class="QLineEdit" name="compressionLE">
             <property name="frame">
              <bool>false</bool>
             </property>
@@ -379,7 +382,7 @@
            </widget>
           </item>
           <item row="4" column="0" colspan="2">
-           <widget class="QTableView" name="records_table">
+           <widget class="QTableView" name="recordsTable">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -389,6 +392,9 @@
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
             </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
             <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
@@ -451,7 +457,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="sattr_ledit">
+          <widget class="QLineEdit" name="sattrLE">
            <property name="frame">
             <bool>false</bool>
            </property>
@@ -461,7 +467,7 @@
           </widget>
          </item>
          <item row="1" column="0" colspan="2">
-          <widget class="QTableView" name="sys_table">
+          <widget class="QTableView" name="sysTable">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -538,10 +544,13 @@
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>
            </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
           </widget>
          </item>
          <item row="2" column="0" colspan="2">
-          <widget class="QLineEdit" name="scc_display">
+          <widget class="QLineEdit" name="systemAttrCellLE">
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -566,7 +575,7 @@
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QLineEdit" name="uattr_ledit">
+          <widget class="QLineEdit" name="uattrLE">
            <property name="frame">
             <bool>false</bool>
            </property>
@@ -576,7 +585,7 @@
           </widget>
          </item>
          <item row="1" column="2" colspan="2">
-          <widget class="QTableView" name="user_table">
+          <widget class="QTableView" name="userTable">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -671,10 +680,13 @@
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>
            </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
           </widget>
          </item>
          <item row="2" column="2" colspan="2">
-          <widget class="QLineEdit" name="ucc_display">
+          <widget class="QLineEdit" name="userAttrCellLE">
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -696,21 +708,21 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="add_button">
+            <widget class="QPushButton" name="addButton">
              <property name="text">
               <string>&amp;Add</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="del_button">
+            <widget class="QPushButton" name="delButton">
              <property name="text">
               <string>&amp;Delete</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="help_button">
+            <widget class="QPushButton" name="helpButton">
              <property name="text">
               <string>&amp;What's this</string>
              </property>
@@ -738,7 +750,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttons_box">
+    <widget class="QDialogButtonBox" name="buttonsBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -752,23 +764,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttons_box</sender>
-   <signal>accepted()</signal>
-   <receiver>NodePropDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttons_box</sender>
+   <sender>buttonsBox</sender>
    <signal>rejected()</signal>
    <receiver>NodePropDialog</receiver>
    <slot>reject()</slot>

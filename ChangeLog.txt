@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** November 04, 2010 **
 The Preferences dialog has been debugged and refactored.
 
+Signals and slots are connected via setUi method in several modules.
+
 ** November 03, 2010 **
 The Preferences dialog has been improved.
 

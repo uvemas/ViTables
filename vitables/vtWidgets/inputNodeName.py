@@ -29,8 +29,8 @@ Classes:
 Methods:
 
 * __init__(self, title, info, action)
-* slotCheckNewName(self, current)
-* slotAccept(self)
+* on_valueLE_textChanged(self, current)
+* on_buttonsBox_accepted(self)
 
 Misc variables:
 
@@ -45,6 +45,8 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.uic import loadUiType
+
+import vitables.utils
 
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
@@ -80,42 +82,34 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
         - `action`: string with the editing action to be done, Create or Rename
         """
 
+        vtapp = vitables.utils.getVTApp()
         # Makes the dialog and gives it a layout
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        QtGui.QDialog.__init__(self, vtapp)
         self.setupUi(self)
 
         # Set dialog caption and label with general info
         self.setWindowTitle(title)
-        self.general_info.setText(info)
+        self.generalInfo.setText(info)
 
         # The Create/Rename button
-        self.edit_button = self.buttons_box.addButton(action, 
+        self.edit_button = self.buttonsBox.addButton(action, 
             QtGui.QDialogButtonBox.AcceptRole)
 
         # Setup a validator for checking the entered node name
         validator = QtGui.QRegExpValidator(self)
         pattern = QtCore.QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
         validator.setRegExp(pattern)
-        self.value_le.setValidator(validator)
-
-        # Connects SIGNALs to SLOTs
-        self.connect(self.value_le, 
-            QtCore.SIGNAL('textChanged(const QString)'),self.slotCheckName)
-        self.connect(self.buttons_box, QtCore.SIGNAL('accepted()'),
-            self.slotAccept)
-        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
-            QtCore.SLOT('reject()'))
-
-        self.value_le.selectAll()
+        self.valueLE.setValidator(validator)
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), 
-            (self.value_le.text()))
+        self.valueLE.emit(QtCore.SIGNAL('textChanged(QString)'), 
+            (self.valueLE.text()))
 
 
-    def slotCheckName(self, current):
+    @QtCore.pyqtSignature("QString")
+    def on_valueLE_textChanged(self, current):
         """
-        Check the current name value.
+        Slot for checking the current name value.
 
         The state of the Create button depends on the passed string. If
         it is empty then the button is disabled. Otherwhise it is enabled.
@@ -129,9 +123,10 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
             self.edit_button.setEnabled(1)
 
 
-    def slotAccept(self):
-        """Save the entered group name and hide the dialog.
+    @QtCore.pyqtSignature("")
+    def on_buttonsBox_accepted(self):
+        """Slot for saving the entered name and hide the dialog.
         """
 
-        self.node_name = unicode(self.value_le.text())
+        self.node_name = unicode(self.valueLE.text())
         self.accept()

@@ -36,10 +36,11 @@ Methods:
 * fillGeneralPage(self, info)
 * fillSysAttrsPage(self, info)
 * fillUserAttrsPage(self, info)
-* slotDisplayCellContent(self, index)
-* slotAddAttr(self)
-* slotDelAttr(self)
-* accept(self)
+* on_sysTable_clicked(self, index)
+* on_userTable_clicked(self, index)
+* on_addButton_clicked(self)
+* on_delButton_clicked(self)
+* on_buttonsBox_accepted(self)
 
 Functions:
 
@@ -104,7 +105,8 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         - `info`: a NodeInfo instance describing a given node
         """
 
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        vtapp = vitables.utils.getVTApp()
+        QtGui.QDialog.__init__(self, vtapp)
         self.setupUi(self)
 
         # The dialog caption
@@ -129,11 +131,6 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         self.mode = info.mode
         self.asi = info.asi
 
-        self.connect(self.buttons_box, QtCore.SIGNAL('accepted()'), 
-                    self.accept)
-        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'), 
-                    QtCore.SLOT('reject()'))
-
         # Show the dialog
         self.show()
 
@@ -146,24 +143,24 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
 
         if node_type.count('group'):
             # Remove the Dataspace groupbox
-            self.general_layout.removeWidget(self.dataspace_gb)
-            self.dataspace_gb.deleteLater()
+            self.general_layout.removeWidget(self.dataspaceGB)
+            self.dataspaceGB.deleteLater()
         else:
             # Remove the Group groupbox
-            self.general_layout.removeWidget(self.bottom_gb)
-            self.bottom_gb.deleteLater()
+            self.general_layout.removeWidget(self.bottomGB)
+            self.bottomGB.deleteLater()
 
         if node_type != 'root group':
             # Remove the Access mode widgets
-            self.database_layout.removeWidget(self.mode_label)
-            self.database_layout.removeWidget(self.mode_ledit)
-            self.mode_label.deleteLater()
-            self.mode_ledit.deleteLater()
+            self.database_layout.removeWidget(self.modeLabel)
+            self.database_layout.removeWidget(self.modeLE)
+            self.modeLabel.deleteLater()
+            self.modeLE.deleteLater()
 
         if node_type != 'table':
             # Remove the table description
-            self.dataspace_layout.removeWidget(self.records_table)
-            self.records_table.deleteLater()
+            self.dataspace_layout.removeWidget(self.recordsTable)
+            self.recordsTable.deleteLater()
 
 
     def fillGeneralPage(self, info):
@@ -184,31 +181,31 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """
 
         if info.node_type == u'root group':
-            self.name_ledit.setText(info.filename)
-            self.path_ledit.setText(info.filepath)
-            self.path_ledit.setToolTip(info.filepath)
-            self.type_ledit.setText(info.file_type)
-            self.mode_ledit.setText(info.mode)
+            self.nameLE.setText(info.filename)
+            self.pathLE.setText(info.filepath)
+            self.pathLE.setToolTip(info.filepath)
+            self.typeLE.setText(info.file_type)
+            self.modeLE.setText(info.mode)
         else:
-            self.name_ledit.setText(info.nodename)
-            self.path_ledit.setText(info.nodepath)
-            self.path_ledit.setToolTip(info.nodepath)
-            self.type_ledit.setText(info.node_type)
+            self.nameLE.setText(info.nodename)
+            self.pathLE.setText(info.nodepath)
+            self.pathLE.setToolTip(info.nodepath)
+            self.typeLE.setText(info.node_type)
 
 
     def groupGB(self, info):
         """Fill the Group groupbox of the General page for File/Group nodes."""
 
         if info.node_type == u'root group':
-            self.bottom_gb.setTitle(trs('Root group', 'Title of a groupbox'))
+            self.bottomGB.setTitle(trs('Root group', 'Title of a groupbox'))
         else:
-            self.bottom_gb.setTitle(trs('Group', 'Title of a groupbox'))
+            self.bottomGB.setTitle(trs('Group', 'Title of a groupbox'))
 
         # Number of children label
-        self.nchildren_ledit.setText(unicode(len(info.hanging_nodes)))
+        self.nchildrenLE.setText(unicode(len(info.hanging_nodes)))
 
         # The group's children table
-        table = self.nchildren_table
+        table = self.nchildrenTable
         table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
         table.setStyleSheet("background-color: %s" % background.name())
@@ -232,18 +229,18 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
     def leafGB(self, info):
         """Fill the Dataspace groupbox of the General page for Leaf nodes."""
 
-        self.dim_ledit.setText(unicode(len(info.shape)))
-        self.shape_ledit.setText(unicode(info.shape))
-        self.dtype_ledit.setText(info.type)
+        self.dimLE.setText(unicode(len(info.shape)))
+        self.shapeLE.setText(unicode(info.shape))
+        self.dtypeLE.setText(info.type)
         if info.filters.complib is None:
-            self.compression_ledit.setText(unicode('uncompressed', 'utf_8'))
+            self.compressionLE.setText(unicode('uncompressed', 'utf_8'))
         else:
-            self.compression_ledit.setText(unicode(info.filters.complib, 
+            self.compressionLE.setText(unicode(info.filters.complib, 
                 'utf_8'))
 
         # Information about the fields of Table instances
         if info.node_type == 'table':
-            table = self.records_table
+            table = self.recordsTable
             # The Table's fields description
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
             background = table.palette().brush(QtGui.QPalette.Window).color()
@@ -285,11 +282,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """Fill the page of system attributes."""
 
         # Number of attributes label
-        self.sattr_ledit.setText(\
+        self.sattrLE.setText(\
             vitables.utils.toUnicode(len(info.system_attrs)))
 
         # Table of system attributes
-        self.sys_table.horizontalHeader().setResizeMode(\
+        self.sysTable.horizontalHeader().setResizeMode(\
             QtGui.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
@@ -299,11 +296,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             'Second column header of the table'), 
             trs('Datatype', 
             'Third column header of the table')])
-        self.sys_table.setModel(self.sysattr_model)
+        self.sysTable.setModel(self.sysattr_model)
 
         # Fill the table
-        bg_brush = self.sys_table.palette().brush(QtGui.QPalette.Window)
-        base_brush = self.sys_table.palette().brush(QtGui.QPalette.Base)
+        bg_brush = self.sysTable.palette().brush(QtGui.QPalette.Window)
+        base_brush = self.sysTable.palette().brush(QtGui.QPalette.Base)
         for name, value in info.system_attrs.items():
             name = vitables.utils.toUnicode(name)
             name_item = QtGui.QStandardItem(name)
@@ -352,10 +349,6 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
                 value_item.setBackground(base_brush)
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
 
-        # The cell contents displayer
-        self.connect(self.sys_table, QtCore.SIGNAL('clicked(QModelIndex)'), 
-                                self.slotDisplayCellContent)
-
 
     def fillUserAttrsPage(self, info):
         """Fill the page of user attributes."""
@@ -363,11 +356,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         self.user_attrs_before = []
 
         # Number of attributes label
-        self.uattr_ledit.setText(\
+        self.uattrLE.setText(\
             vitables.utils.toUnicode(len(info.user_attrs)))
 
         # Table of user attributes
-        self.user_table.horizontalHeader().\
+        self.userTable.horizontalHeader().\
                         setResizeMode(QtGui.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
@@ -377,7 +370,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             'Second column header of the table'), 
             trs('Datatype', 
             'Third column header of the table')])
-        self.user_table.setModel(self.userattr_model)
+        self.userTable.setModel(self.userattr_model)
 
         # Fill the table
         # The Data Type cell is a combobox with static content
@@ -386,8 +379,8 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             """string unicode python""")
         dtypes_list = QtCore.QStringList(datatypes.split(u' '))
 
-        bg_brush = self.user_table.palette().brush(QtGui.QPalette.Window)
-        base_brush = self.user_table.palette().brush(QtGui.QPalette.Base)
+        bg_brush = self.userTable.palette().brush(QtGui.QPalette.Window)
+        base_brush = self.userTable.palette().brush(QtGui.QPalette.Base)
         for name, value in info.user_attrs.items():
             name_item = QtGui.QStandardItem(vitables.utils.toUnicode(name))
             dtype_item = QtGui.QStandardItem()
@@ -409,7 +402,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             value_item = QtGui.QStandardItem(vitables.utils.toUnicode(value))
             self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo.setCurrentIndex(dtypes_combo.findText(dtype_name))
-            self.user_table.setIndexWidget(dtype_item.index(), dtypes_combo)
+            self.userTable.setIndexWidget(dtype_item.index(), dtypes_combo)
 
             # Complex attributes and ND_array attributes need some visual
             # adjustments
@@ -439,26 +432,21 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
 
         # The group of buttons Add, Delete, What's This
         self.page_buttons = QtGui.QButtonGroup(self.userattrs_page)
-        self.page_buttons.addButton(self.add_button, 0)
-        self.page_buttons.addButton(self.del_button, 1)
-        self.page_buttons.addButton(self.help_button, 2)
+        self.page_buttons.addButton(self.addButton, 0)
+        self.page_buttons.addButton(self.delButton, 1)
+        self.page_buttons.addButton(self.helpButton, 2)
 
         # If the database is in read-only mode user attributes cannot be edited
         if info.mode == u'read-only':
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
 
-        self.connect(self.user_table, QtCore.SIGNAL('clicked(QModelIndex)'), 
-                                self.slotDisplayCellContent)
-        self.connect(self.help_button, QtCore.SIGNAL('clicked()'), 
+        self.connect(self.helpButton, QtCore.SIGNAL('clicked()'), 
                                 QtGui.QWhatsThis.enterWhatsThisMode)
-        self.connect(self.add_button, QtCore.SIGNAL('clicked()'), 
-                                self.slotAddAttr)
-        self.connect(self.del_button, QtCore.SIGNAL('clicked()'), 
-                                self.slotDelAttr)
 
 
-    def slotDisplayCellContent(self, index):
+    @QtCore.pyqtSignature("QModelIndex")
+    def on_sysTable_clicked(self, index):
         """Show the content of the clicked cell in the line edit at bottom.
 
         This SLOT is connected to clicked SIGNALs coming from both the
@@ -470,20 +458,22 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         page = self.tabw.currentIndex()
         if page == 1:
             model_item = self.sysattr_model.itemFromIndex(index)
-            self.scc_display.clear()
-            self.scc_display.setText(model_item.text())
+            self.systemAttrCellLE.clear()
+            self.systemAttrCellLE.setText(model_item.text())
         elif page == 2:
             model_item = self.userattr_model.itemFromIndex(index)
-            self.ucc_display.clear()
-            self.ucc_display.setText(model_item.text())
+            self.userAttrCellLE.clear()
+            self.userAttrCellLE.setText(model_item.text())
 
-    # SLOT methods for user attributes
 
-    def slotAddAttr(self):
-        """Adds a new row to the attributes table.
+    @QtCore.pyqtSignature("QModelIndex")
+    def on_userTable_clicked(self, index):
+        self.on_sysTable_clicked(index)
 
-        This slot is connected to the clicked signal of the ``Add`` button.
-        """
+
+    @QtCore.pyqtSignature("")
+    def on_addButton_clicked(self):
+        """Slot for adding a new row to the attributes table."""
 
         name_item = QtGui.QStandardItem()
         value_item = QtGui.QStandardItem()
@@ -498,16 +488,17 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         dtypes_combo = QtGui.QComboBox()
         dtypes_combo.addItems(dtypes_list)
         dtypes_combo.setEditable(False)
-        self.user_table.setIndexWidget(dtype_item.index(), dtypes_combo)
+        self.userTable.setIndexWidget(dtype_item.index(), dtypes_combo)
 
         # Start editing the proper cell. If not, clicking Add+Delete
         # would result in the deletion of an attribute different to that
         # just added. It is also more handy as it allows to start editing
         # without double clicking the cell.
-        self.user_table.edit(name_item.index())
+        self.userTable.edit(name_item.index())
 
 
-    def slotDelAttr(self):
+    @QtCore.pyqtSignature("")
+    def on_delButton_clicked(self):
         """
         Deletes a user attribute.
 
@@ -518,7 +509,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """
 
         # If there is not a selected attribute then return
-        current_index = self.user_table.currentIndex()
+        current_index = self.userTable.currentIndex()
         if not current_index.isValid():
             print trs('Please, select the attribute to be deleted.',
                 'A usage text')
@@ -572,11 +563,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
 
         # Check user attributes
         self.user_attrs_after = []
-        for index in range(0, self.user_table.model().rowCount()):
+        for index in range(0, self.userTable.model().rowCount()):
             name_after = unicode(self.userattr_model.item(index, 0).text())
             value_after = unicode(self.userattr_model.item(index, 1).text())
             dtype_item = self.userattr_model.item(index, 2)
-            dtype_combo = self.user_table.indexWidget(dtype_item.index())
+            dtype_combo = self.userTable.indexWidget(dtype_item.index())
             dtype_after = unicode(dtype_combo.currentText())
             self.user_attrs_after.append((name_after, value_after, 
                 dtype_after))
@@ -587,7 +578,8 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         return False
 
 
-    def accept(self):
+    @QtCore.pyqtSignature("")
+    def on_buttonsBox_accepted(self):
         """
         Customised slot for accepted dialogs.
 
@@ -604,7 +596,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
 
         # Check the editable attributes
         aeditor = attrEditor.AttrEditor(self.asi, self.title_after, 
-            self.user_table)
+            self.userTable)
         attrs_are_ok, error = aeditor.checkAttributes()
         # If the attributes pass correctness checks then update the
         # attributes and close the dialog
@@ -617,5 +609,5 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         else:
             del aeditor
             self.tabw.setCurrentIndex(2)
-            self.ucc_display.clear()
-            self.ucc_display.setText(error)
+            self.userAttrCellLE.clear()
+            self.userAttrCellLE.setText(error)

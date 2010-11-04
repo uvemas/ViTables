@@ -50,6 +50,8 @@ import re
 from PyQt4 import QtCore, QtGui
 from PyQt4.uic import loadUiType
 
+import vitables.utils
+
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -100,13 +102,14 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         - `info`: dialog title and label
         """
 
+        vtapp = vitables.utils.getVTApp()
         # Makes the dialog and gives it a layout
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        QtGui.QDialog.__init__(self, vtapp)
         self.setupUi(self)
 
         # Sets dialog caption
         self.setWindowTitle(info[0])
-        self.general_info.setText(info[1])
+        self.generalInfo.setText(info[1])
 
         self.troubled_name = name
         self.cpattern = re.compile(pattern)
@@ -119,41 +122,32 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         self.action = {'overwrite': False, 'new_name': ''}
 
         # The dialog buttons: Rename, Overwrite and Cancel
-        self.overwrite_button = self.buttons_box.addButton(trs('Overwrite', 
+        self.overwrite_button = self.buttonsBox.addButton(trs('Overwrite', 
             'A button label'), QtGui.QDialogButtonBox.AcceptRole)
-        self.rename_button = self.buttons_box.addButton(trs('Rename', 
+        self.rename_button = self.buttonsBox.addButton(trs('Rename', 
             'A button label'), QtGui.QDialogButtonBox.AcceptRole)
         self.rename_button.setDefault(1)
-        self.cancel_button = self.buttons_box.button(\
+        self.cancel_button = self.buttonsBox.button(\
             QtGui.QDialogButtonBox.Cancel)
 
         # Setup a validator for checking the entered node name
         validator = QtGui.QRegExpValidator(self)
         qt_pattern = QtCore.QRegExp(pattern)
         validator.setRegExp(qt_pattern)
-        self.value_le.setValidator(validator)
-        self.value_le.setText(self.troubled_name)
+        self.valueLE.setValidator(validator)
+        self.valueLE.setText(self.troubled_name)
 
-        # Connects SIGNALs to SLOTs
-        self.connect(self.value_le, 
-            QtCore.SIGNAL('textChanged(const QString)'), 
-            self.slotCheckNewName)
-        self.connect(self.buttons_box, 
-            QtCore.SIGNAL('clicked(QAbstractButton *)'), 
-            self.chooseAction)
-        self.connect(self.buttons_box, QtCore.SIGNAL('rejected()'),
-            QtCore.SLOT('reject()'))
-
-        self.value_le.selectAll()
+        self.valueLE.selectAll()
 
         # Make sure that buttons are in the proper activation state
-        self.value_le.emit(QtCore.SIGNAL('textChanged(const QString)'), 
-            (self.value_le.text()))
+        self.valueLE.emit(QtCore.SIGNAL('textChanged(const QString)'), 
+            (self.valueLE.text()))
 
 
-    def slotCheckNewName(self, new_name):
+    @QtCore.pyqtSignature("QString")
+    def on_valueLE_textChanged(self, new_name):
         """
-        Check the new name value.
+        Slot for checking the new name value.
 
         Every time that the text box content changes, this method is 
         asked to check if the new name and the original name differ.
@@ -198,7 +192,8 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
             self.overwrite_button.setEnabled(0)
 
 
-    def chooseAction(self, button):
+    @QtCore.pyqtSignature("QAbstractButton *")
+    def on_buttonsBox_clicked(self, button):
         """Perform the action specified by the clicked button."""
 
         if button == self.rename_button:
@@ -228,7 +223,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         the dialog finishes.
         """
 
-        new_name = unicode(self.value_le.text())
+        new_name = unicode(self.valueLE.text())
         self.action['overwrite'] = False
         self.action['new_name'] = new_name
         self.accept()

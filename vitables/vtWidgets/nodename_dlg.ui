@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>InputNodeNameDlg</class>
  <widget class="QDialog" name="InputNodeNameDlg">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +20,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="general_info">
+      <widget class="QLabel" name="generalInfo">
        <property name="text">
         <string>InfoLabel</string>
        </property>
@@ -26,21 +29,21 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLabel" name="value_label">
+        <widget class="QLabel" name="valueLabel">
          <property name="text">
           <string>Node name: </string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="value_le"/>
+        <widget class="QLineEdit" name="valueLE"/>
        </item>
       </layout>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttons_box">
+    <widget class="QDialogButtonBox" name="buttonsBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -54,23 +57,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttons_box</sender>
-   <signal>accepted()</signal>
-   <receiver>InputNodeNameDlg</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttons_box</sender>
+   <sender>buttonsBox</sender>
    <signal>rejected()</signal>
    <receiver>InputNodeNameDlg</receiver>
    <slot>reject()</slot>
