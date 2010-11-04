@@ -17,15 +17,27 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QListWidget" name="contents_widget">
+      <widget class="QListWidget" name="contentsWidget">
        <property name="minimumSize">
         <size>
          <width>100</width>
          <height>0</height>
         </size>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="whatsThis">
         <string>This is the settings selector widget. Click on an icon in order to select the settings you want to customise.</string>
+       </property>
+       <property name="movement">
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="spacing">
+        <number>12</number>
        </property>
        <property name="viewMode">
         <enum>QListView::IconMode</enum>
@@ -36,17 +48,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QStackedWidget" name="pages_widget">
+      <widget class="QStackedWidget" name="stackedPages">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
-       <widget class="QWidget" name="startup_page">
+       <widget class="QWidget" name="startupPage">
         <property name="whatsThis">
          <string>Configure the startup behavior of ViTables.</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QGroupBox" name="startup_gb">
+          <widget class="QGroupBox" name="startupGB">
            <property name="whatsThis">
             <string/>
            </property>
@@ -55,7 +67,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QCheckBox" name="restore_cb">
+             <widget class="QCheckBox" name="restoreCB">
               <property name="whatsThis">
                <string>If checked, the last working session -i.e. open files and views- will be restored. If not, ViTables will start with an empty session.</string>
               </property>
@@ -65,9 +77,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="last_dir_cb">
+             <widget class="QCheckBox" name="lastDirCB">
               <property name="whatsThis">
-               <string>The working directory used when opening the very first file. It defaults to the user's home directory. If the checkbox is checked then the last entered directory will be used.</string>
+               <string>The working directory used when opening the very first file. It defaults to the current directory if ViTables has been launched from the command line or to the user's home directory if ViTables started from a menu or a desktop icon. If the checkbox is checked then the last entered directory will be used.</string>
               </property>
               <property name="text">
                <string comment="Label of the startup in the last open directory check box">Start in last opened directory</string>
@@ -79,13 +91,13 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="style_page">
+       <widget class="QWidget" name="stylePage">
         <property name="whatsThis">
          <string>Configure the look and feel of ViTables.</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QGroupBox" name="logger_gb">
+          <widget class="QGroupBox" name="loggerGB">
            <property name="whatsThis">
             <string>Customise font and colors of the Logger.</string>
            </property>
@@ -94,12 +106,28 @@
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <item row="0" column="1" rowspan="7">
-             <widget class="QTextEdit" name="sample_te">
+             <widget class="QTextEdit" name="sampleTE">
+              <property name="acceptDrops">
+               <bool>false</bool>
+              </property>
               <property name="whatsThis">
-               <string>You can preview your settings here.</string>
+               <string>You can preview your Font settings here.</string>
               </property>
               <property name="readOnly">
                <bool>true</bool>
+              </property>
+              <property name="html">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;En un lugar de La Mancha,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;de cuyo nombre no quiero acordarme,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;no ha mucho tiempo vivia un hidalgo..&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::NoTextInteraction</set>
@@ -107,7 +135,7 @@
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="QPushButton" name="foreground_pb">
+             <widget class="QPushButton" name="foregroundPB">
               <property name="whatsThis">
                <string>Setup the text color.</string>
               </property>
@@ -143,7 +171,7 @@
              </spacer>
             </item>
             <item row="4" column="0">
-             <widget class="QPushButton" name="background_pb">
+             <widget class="QPushButton" name="backgroundPB">
               <property name="whatsThis">
                <string>Setup the background color.</string>
               </property>
@@ -153,7 +181,7 @@
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QPushButton" name="font_pb">
+             <widget class="QPushButton" name="fontPB">
               <property name="whatsThis">
                <string>Here you can choose the font used in the Logger.</string>
               </property>
@@ -166,7 +194,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="workspace_gb">
+          <widget class="QGroupBox" name="workspaceGB">
            <property name="whatsThis">
             <string>Setup the background color of the workspace.</string>
            </property>
@@ -175,7 +203,7 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QPushButton" name="workspace_pb">
+             <widget class="QPushButton" name="workspacePB">
               <property name="whatsThis">
                <string/>
               </property>
@@ -185,7 +213,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="workspace_label">
+             <widget class="QLabel" name="workspaceLabel">
               <property name="autoFillBackground">
                <bool>true</bool>
               </property>
@@ -198,7 +226,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="style_gb">
+          <widget class="QGroupBox" name="styleGB">
            <property name="whatsThis">
             <string>Choose the global style of ViTables here.</string>
            </property>
@@ -207,7 +235,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QComboBox" name="styles_cb">
+             <widget class="QComboBox" name="stylesCB">
               <property name="whatsThis">
                <string/>
               </property>
@@ -218,10 +246,10 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="plugins_page">
+       <widget class="QWidget" name="pluginsPage">
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <widget class="QGroupBox" name="folders_gbox">
+          <widget class="QGroupBox" name="foldersGB">
            <property name="whatsThis">
             <string/>
            </property>
@@ -230,7 +258,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <widget class="QListView" name="paths_lv">
+             <widget class="QListView" name="pathsLV">
               <property name="toolTip">
                <string>The list of folders where plugins can be found</string>
               </property>
@@ -261,7 +289,7 @@ p, li { white-space: pre-wrap; }
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="new_button">
+               <widget class="QPushButton" name="newButton">
                 <property name="toolTip">
                  <string>Press to add a new plugins folder</string>
                 </property>
@@ -271,7 +299,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="remove_button">
+               <widget class="QPushButton" name="removeButton">
                 <property name="toolTip">
                  <string>Press to remove the selected plugins folder</string>
                 </property>
@@ -302,7 +330,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="plugins_gbox">
+          <widget class="QGroupBox" name="pluginsGB">
            <property name="title">
             <string>Plugins</string>
            </property>
@@ -315,7 +343,7 @@ p, li { white-space: pre-wrap; }
                  <number>0</number>
                 </property>
                 <item row="2" column="1">
-                 <widget class="QToolButton" name="load_button">
+                 <widget class="QToolButton" name="loadButton">
                   <property name="toolTip">
                    <string>Press to enable the selected plugin</string>
                   </property>
@@ -328,7 +356,7 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QToolButton" name="unload_button">
+                 <widget class="QToolButton" name="unloadButton">
                   <property name="toolTip">
                    <string>Press to disable the selected plugin</string>
                   </property>
@@ -369,21 +397,21 @@ p, li { white-space: pre-wrap; }
                </layout>
               </item>
               <item row="0" column="0">
-               <widget class="QLabel" name="disabled_label">
+               <widget class="QLabel" name="disabledLabel">
                 <property name="text">
                  <string>Disabled</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="4">
-               <widget class="QLabel" name="enabled_label">
+               <widget class="QLabel" name="enabledLabel">
                 <property name="text">
                  <string>Enabled</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="4">
-               <widget class="QListView" name="enabled_lv">
+               <widget class="QListView" name="enabledLV">
                 <property name="toolTip">
                  <string>The list of enabled plugins</string>
                 </property>
@@ -395,7 +423,7 @@ Changes in the enabled/disabled plugins lists will take effect the next time you
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QListView" name="disabled_lv">
+               <widget class="QListView" name="disabledLV">
                 <property name="toolTip">
                  <string>The list of disabled plugins</string>
                 </property>
@@ -418,7 +446,7 @@ Changes in the enabled/disabled plugins lists will take effect the next time you
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttons_box">
+    <widget class="QDialogButtonBox" name="buttonsBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>

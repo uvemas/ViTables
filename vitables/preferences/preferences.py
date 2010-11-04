@@ -28,18 +28,26 @@ Classes:
 
 Methods:
 
-* __init__(self, vtapp)
-* setPreferences(self, preferences)
-* slotButtonClicked(self, button)
-* slotResetButton(self)
-* slotOKButton(self)
-* slotSetStartupDir(self, button_id)
-* slotSetStartupSession(self, cb_on)
-* slotSetLoggerFont(self)
-* slotSetLoggerForeground(self)
-* slotSetLoggerBackground(self)
-* slotSetWorkspaceBackground(self)
-* slotSetStyle(self, style_name)
+* __init__(self)
+* setupIcons(self)
+* resetPreferences(self)
+* setupList(self, uid, seq, split=False)
+* makeConnections(self)
+* on_contentsWidget_currentItemChanged(self, current, previous)
+* on_buttonsBox_clicked(self, button)
+* applySettings(self)
+* on_lastDirCb_toggled(self, cb_on)
+* on_restoreCb_toggled(self, cb_on)
+* on_fontPB_clicked(self)
+* on_foregroundPB_clicked(self)
+* on_backgroundPB_clicked(self)
+* on_workspacePB_clicked(self)
+* on_stylesCB_activated(self, style_name)
+* on_newButton_clicked(self)
+* on_removeButton_clicked(self)
+* on_loadButton_clicked(self)
+* on_unloadButton_clicked(self)
+* updateButton(self, selected, deselected)
 
 Misc variables:
 
@@ -100,32 +108,23 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         # Setup the page selector widget
         self.setupIcons()
-        self.contents_widget.setMovement(QtGui.QListView.Static)
-        self.contents_widget.setMaximumWidth(120)
-        self.contents_widget.setSpacing(12)
-
-        # Set the sample text in the Logger groupbox
-        text = """<p>En un lugar de La Mancha,<br>""" \
-        """de cuyo nombre no quiero acordarme,<br>""" \
-        """no ha mucho tiempo vivia un hidalgo...</p>"""
-        self.sample_te.setText(text)
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
         styles = QtGui.QStyleFactory.keys()
-        self.styles_cb.insertItems(0, styles)
+        self.stylesCB.insertItems(0, styles)
 
         # Setup the Plugins page
         self.enabled_model = QtGui.QStandardItemModel()
-        self.enabled_lv.setModel(self.enabled_model)
+        self.enabledLV.setModel(self.enabled_model)
         self.disabled_model = QtGui.QStandardItemModel()
-        self.disabled_lv.setModel(self.disabled_model)
+        self.disabledLV.setModel(self.disabled_model)
         self.paths_model = QtGui.QStandardItemModel()
-        self.paths_lv.setModel(self.paths_model)
-        for button in (self.remove_button, self.load_button, 
-            self.unload_button):
+        self.pathsLV.setModel(self.paths_model)
+        for button in (self.removeButton, self.loadButton, 
+            self.unloadButton):
             button.setEnabled(False)
 
-        # The current preferences of the application
+        # The dictionary of current ViTables preferences
         self.initial_prefs = {}
         style_sheet = self.vtapp.logger.styleSheet()
         paper = style_sheet[-7:]
@@ -155,7 +154,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         iconsdir = os.path.join(ICONDIR, '64x64')
-        general_button = QtGui.QListWidgetItem(self.contents_widget)
+        general_button = QtGui.QListWidgetItem(self.contentsWidget)
         general_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-other.png')))
         general_button.setText(trs("  General  ", 
@@ -164,7 +163,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         general_button.setFlags(QtCore.Qt.ItemIsSelectable | 
             QtCore.Qt.ItemIsEnabled)
 
-        style_button = QtGui.QListWidgetItem(self.contents_widget)
+        style_button = QtGui.QListWidgetItem(self.contentsWidget)
         style_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-desktop-theme.png')))
         style_button.setText(trs("Look & Feel", "Text for page selector icon"))
@@ -172,7 +171,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         style_button.setFlags(QtCore.Qt.ItemIsSelectable | 
             QtCore.Qt.ItemIsEnabled)
 
-        plugins_button = QtGui.QListWidgetItem(self.contents_widget)
+        plugins_button = QtGui.QListWidgetItem(self.contentsWidget)
         plugins_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-plugin.png')))
         plugins_button.setText(trs("  Plugins  ", 
@@ -189,27 +188,27 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         # Startup page
         if self.initial_prefs['Startup/startupWorkingDir'] == u'last':
-            self.last_dir_cb.setChecked(True)
+            self.lastDirCB.setChecked(True)
         else:
-            self.last_dir_cb.setChecked(False)
+            self.lastDirCB.setChecked(False)
 
-        self.restore_cb.setChecked(\
+        self.restoreCB.setChecked(\
             self.initial_prefs['Startup/restoreLastSession'])
 
         # Style page
-        self.sample_te.selectAll()
-        self.sample_te.setTextColor(self.initial_prefs['Logger/Text'])
-        self.sample_te.moveCursor(QtGui.QTextCursor.End)  # Unselect text
-        self.sample_te.setStyleSheet("""background-color: %s""" % 
+        self.sampleTE.selectAll()
+        self.sampleTE.setCurrentFont(self.initial_prefs['Logger/Font'])
+        self.sampleTE.setTextColor(self.initial_prefs['Logger/Text'])
+        self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
+        self.sampleTE.setStyleSheet("""background-color: %s""" % 
             self.initial_prefs['Logger/Paper'].name())
-        self.sample_te.setFont(self.initial_prefs['Logger/Font'])
 
-        self.workspace_label.setStyleSheet('background-color: %s' % 
+        self.workspaceLabel.setStyleSheet('background-color: %s' % 
             self.initial_prefs['Workspace/Background'].color().name())
 
-        index = self.styles_cb.findText(\
+        index = self.stylesCB.findText(\
             self.initial_prefs['Look/currentStyle'])
-        self.styles_cb.setCurrentIndex(index)
+        self.stylesCB.setCurrentIndex(index)
 
         # Plugins page
         self.setupList('paths', seq=self.pg_loader.plugins_paths)
@@ -217,6 +216,11 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             split=True)
         self.setupList('disabled', seq=self.pg_loader.disabled_plugins, 
             split=True)
+
+        # The visual update done above is not enough, we must reset the
+        # new preferences dictionary too
+        self.new_prefs.clear()
+        self.new_prefs.update(self.initial_prefs)
 
 
     def setupList(self, uid, seq, split=False):
@@ -230,11 +234,11 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         if uid == 'paths':
-            view = self.paths_lv
+            view = self.pathsLV
         elif uid == 'enabled':
-            view = self.enabled_lv
+            view = self.enabledLV
         elif uid == 'disabled':
-            view = self.disabled_lv
+            view = self.disabledLV
         model = view.model()
         model.clear()
         for i in seq:
@@ -250,65 +254,27 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     def makeConnections(self):
         """Connect signals to slots.
 
-        There is a bunch of connections to stablish so I've moved them to
-        their own method just for clarity.
+        The connections that cannot be managed by the setupUi method are
+        collected here.
         """
 
-        # Apply, OK, Reset and Cancel buttons
-        self.connect(self.buttons_box, 
-            QtCore.SIGNAL('clicked(QAbstractButton *)'),
-            self.buttonClicked)
-
-        # Selector widget
-        self.connect(self.contents_widget, 
-            QtCore.SIGNAL(\
-                'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'), 
-            self.changePage)
-
-        # General page
-        self.connect(self.last_dir_cb, QtCore.SIGNAL('toggled(bool)'),
-            self.startupDir)
-        self.connect(self.restore_cb, QtCore.SIGNAL('toggled(bool)'),
-            self.startupSession)
-
-        # Style page
-        self.connect(self.font_pb, QtCore.SIGNAL('clicked()'),
-            self.loggerFont)
-        self.connect(self.foreground_pb, QtCore.SIGNAL('clicked()'),
-            self.loggerForeground)
-        self.connect(self.background_pb, QtCore.SIGNAL('clicked()'),
-            self.loggerBackground)
-        self.connect(self.workspace_pb, QtCore.SIGNAL('clicked()'),
-            self.workspaceBackground)
-        self.connect(self.styles_cb,
-            QtCore.SIGNAL('activated(QString)'), self.style)
+        self.connect(self.buttonsBox, QtCore.SIGNAL('helpRequested()'),
+            QtGui.QWhatsThis.enterWhatsThisMode)
 
         # Plugins page
-        self.connect(self.buttons_box, QtCore.SIGNAL('helpRequested()'),
-            QtGui.QWhatsThis.enterWhatsThisMode)
-        self.connect(self.new_button, QtCore.SIGNAL('clicked()'), 
-            self.addPath)
-        self.connect(self.remove_button, QtCore.SIGNAL('clicked()'),
-            self.removePath)
-        self.connect(self.load_button, QtCore.SIGNAL('clicked()'),
-            self.enablePlugin)
-        self.connect(self.unload_button, QtCore.SIGNAL('clicked()'),
-            self.disablePlugin)
         current_changed = \
             QtCore.SIGNAL('selectionChanged(QItemSelection, QItemSelection)')
-        self.connect(self.disabled_lv.selectionModel(), current_changed, 
+        self.connect(self.disabledLV.selectionModel(), current_changed, 
             self.updateButton)
-        self.connect(self.enabled_lv.selectionModel(), current_changed, 
+        self.connect(self.enabledLV.selectionModel(), current_changed, 
             self.updateButton)
-        self.connect(self.paths_lv.selectionModel(), current_changed, 
+        self.connect(self.pathsLV.selectionModel(), current_changed, 
             self.updateButton)
 
 
-    def changePage(self, current, previous):
-        """Change the selected page in the Settings dialog.
-
-        This method is a slot connected to the `currentItemChanged` signal.
-        See ctor for details.
+    @QtCore.pyqtSignature("QListWidgetItem *, QListWidgetItem *")
+    def on_contentsWidget_currentItemChanged(self, current, previous):
+        """Slot for changing the selected page in the Settings dialog.
 
         :Parameters:
 
@@ -318,25 +284,24 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         if not current:
             current = previous
 
-        self.pages_widget.setCurrentIndex(self.contents_widget.row(current))
+        self.stackedPages.setCurrentIndex(self.contentsWidget.row(current))
 
 
-    def buttonClicked(self, button):
-        """Manages dialog button cliks in the Preferences dialog.
+    @QtCore.pyqtSignature("QAbstractButton *")
+    def on_buttonsBox_clicked(self, button):
+        """Slot that manages button box clicks in the Preferences dialog.
 
         Whenever one of the Help, Reset, Cancel or OK buttons is
         clicked in the Preferences dialog this slot is called.
 
-        This method is a slot. See the makeConnections method for details.
-
         :Parameter button: the clicked button.
         """
 
-        if button == self.buttons_box.button(QtGui.QDialogButtonBox.Reset):
+        if button == self.buttonsBox.button(QtGui.QDialogButtonBox.Reset):
             self.resetPreferences()
-        elif button == self.buttons_box.button(QtGui.QDialogButtonBox.Help):
+        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Help):
             pass
-        elif button == self.buttons_box.button(QtGui.QDialogButtonBox.Cancel):
+        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Cancel):
             self.reject()
         else:
             self.applySettings()
@@ -362,7 +327,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.accept()
 
 
-    def startupDir(self, cb_on):
+    @QtCore.pyqtSignature("bool")
+    def on_lastDirCB_toggled(self, cb_on):
         """
         Set startup behavior of the application.
 
@@ -376,7 +342,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         been started from a menu/desktop-icon/run-command-applet the
         CDFSD will be the users home.
 
-        This method is a slot. See the makeConnections method for details.
+        This is a slot method.
 
         :Parameter cb_on: a boolean indicator of the checkbox state.
         """
@@ -387,7 +353,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.new_prefs['Startup/startupWorkingDir'] = u'home'
 
 
-    def startupSession(self, cb_on):
+    @QtCore.pyqtSignature("bool")
+    def on_restoreCB_toggled(self, cb_on):
         """
         Set startup behavior of the application.
 
@@ -395,7 +362,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         next startup, the application will atempt to restore the last
         working session.
 
-        This method is a slot. See the makeConnections method for details.
+        This is a slot method.
 
         :Parameter cb_on: a boolean indicator of the checkbox state.
         """
@@ -406,83 +373,74 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.new_prefs['Startup/restoreLastSession'] = 0
 
 
-    def loggerFont(self):
-        """Set the logger font.
+    @QtCore.pyqtSignature("")
+    def on_fontPB_clicked(self):
+        """Slot for setting the logger font."""
 
-        This method is a slot. See the makeConnections method for details.
-        """
-
-        new_font, is_ok = QtGui.QFontDialog.getFont(self.sample_te.font())
+        new_font, is_ok = QtGui.QFontDialog.getFont(self.sampleTE.currentFont())
         # The selected font is applied to the sample text
         if is_ok:
             self.new_prefs['Logger/Font'] = new_font
-            self.sample_te.setFont(new_font)
+            self.sampleTE.selectAll()
+            self.sampleTE.setCurrentFont(new_font)
+            self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
 
 
-    def loggerForeground(self):
-        """Set the logger foreground color.
+    @QtCore.pyqtSignature("")
+    def on_foregroundPB_clicked(self):
+        """Slot for setting the logger foreground color."""
 
-        This method is a slot. See the makeConnections method for details.
-        """
-
-        text_color = self.sample_te.textColor()
+        text_color = self.sampleTE.textColor()
         color = QtGui.QColorDialog.getColor(text_color)
         # The selected text color is applied to the sample text
         if color.isValid():
             self.new_prefs['Logger/Text'] = color
-            self.sample_te.selectAll()
-            self.sample_te.setTextColor(color)
-            self.sample_te.moveCursor(QtGui.QTextCursor.End)
+            self.sampleTE.selectAll()
+            self.sampleTE.setTextColor(color)
+            self.sampleTE.moveCursor(QtGui.QTextCursor.End)
 
 
-    def loggerBackground(self):
-        """Set the logger background color.
+    @QtCore.pyqtSignature("")
+    def on_backgroundPB_clicked(self):
+        """Slot for setting the logger background color."""
 
-        This method is a slot. See the makeConnections method for details.
-        """
-
-        stylesheet = self.sample_te.styleSheet()
+        stylesheet = self.sampleTE.styleSheet()
         background = stylesheet[-7:]
         color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
         # The selected paper color is applied to the sample text window
         if color.isValid():
             self.new_prefs['Logger/Paper'] = color
             stylesheet.replace(background, color.name())
-            self.sample_te.setStyleSheet(stylesheet)
+            self.sampleTE.setStyleSheet(stylesheet)
 
 
-    def workspaceBackground(self):
-        """Set the workspace background color.
+    @QtCore.pyqtSignature("")
+    def on_workspacePB_clicked(self):
+        """Slot for setting the workspace background color."""
 
-        This method is a slot. See the makeConnections method for details.
-        """
-
-        stylesheet = self.workspace_label.styleSheet()
+        stylesheet = self.workspaceLabel.styleSheet()
         background = stylesheet[-7:]
         color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
         # The selected color is applied to the sample label besides the button
         if color.isValid():
             self.new_prefs['Workspace/Background'] = QtGui.QBrush(color)
             stylesheet.replace(background, color.name())
-            self.workspace_label.setStyleSheet(stylesheet)
+            self.workspaceLabel.setStyleSheet(stylesheet)
 
 
-    def style(self, style_name):
+    @QtCore.pyqtSignature("QString")
+    def on_stylesCB_activated(self, style_name):
         """
-        Set the application style.
-
-        This method is a slot. See the makeConnections method for details.
+        Slot for setting the application style.
 
         :Parameter style_name: the style to be applied
         """
         self.new_prefs['Look/currentStyle'] = unicode(style_name)
 
 
-    def addPath(self):
-        """New button clicked.
-
-        This method is a slot. See the makeConnections method for details.
-        """
+    @QtCore.pyqtSignature("")
+    def on_newButton_clicked(self):
+        """Slot for adding a new searchable path if New button is clicked."""
 
         folder = QtGui.QFileDialog.getExistingDirectory()
         folder = unicode(folder)
@@ -490,7 +448,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             return
 
         # Add the folder to the list of folders unless it is already there
-        model = self.paths_lv.model()
+        model = self.pathsLV.model()
         self.plugins_paths = [unicode(model.item(row).text()) \
             for row in range(model.rowCount())]
         if not folder in self.plugins_paths:
@@ -499,29 +457,25 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.plugins_paths.append(folder)
 
 
-    def removePath(self):
-        """Remove button clicked.
+    @QtCore.pyqtSignature("")
+    def on_removeButton_clicked(self):
+        """Slot for removing a searchable path if Remove button clicked."""
 
-        This method is a slot. See the makeConnections method for details.
-        """
-
-        current = self.paths_lv.currentIndex()
-        model = self.paths_lv.model()
+        current = self.pathsLV.currentIndex()
+        model = self.pathsLV.model()
         model.removeRow(current.row(), current.parent())
         self.plugins_paths = [unicode(model.item(row).text()) \
             for row in range(model.rowCount())]
 
 
-    def enablePlugin(self):
-        """Load button clicked.
+    @QtCore.pyqtSignature("")
+    def on_loadButton_clicked(self):
+        """Slot for enabling a plugin if Load button clicked."""
 
-        This method is a slot. See the makeConnections method for details.
-        """
+        enabled_model = self.enabledLV.model()
+        disabled_model = self.disabledLV.model()
 
-        enabled_model = self.enabled_lv.model()
-        disabled_model = self.disabled_lv.model()
-
-        current_index = self.disabled_lv.currentIndex()
+        current_index = self.disabledLV.currentIndex()
         row = current_index.row()
         item = QtGui.QStandardItem(disabled_model.item(row))
         enabled_model.appendRow(item)
@@ -536,16 +490,14 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.enabled_plugins.append('%s#@#%s' % (folder, name))
 
 
-    def disablePlugin(self):
-        """Unload button clicked.
+    @QtCore.pyqtSignature("")
+    def on_unloadButton_clicked(self):
+        """Slot for diabling plugins if Unload button clicked."""
 
-        This method is a slot. See the makeConnections method for details.
-        """
+        enabled_model = self.enabledLV.model()
+        disabled_model = self.disabledLV.model()
 
-        enabled_model = self.enabled_lv.model()
-        disabled_model = self.disabled_lv.model()
-
-        current_index = self.enabled_lv.currentIndex()
+        current_index = self.enabledLV.currentIndex()
         row = current_index.row()
         item = QtGui.QStandardItem(enabled_model.item(row))
         enabled_model.removeRows(row, 1, current_index.parent())
@@ -575,12 +527,12 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         model = selection_model.model()
 
         # Find out which button has to be updated
-        if model == self.paths_lv.model():
-            button = self.remove_button
-        elif model == self.enabled_lv.model():
-            button = self.unload_button
-        elif model == self.disabled_lv.model():
-            button = self.load_button
+        if model == self.pathsLV.model():
+            button = self.removeButton
+        elif model == self.enabledLV.model():
+            button = self.unloadButton
+        elif model == self.disabledLV.model():
+            button = self.loadButton
 
         # If the list is empty the button is disabled
         selected_indexes = selected.indexes()
