@@ -112,50 +112,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         """
 
         #
-        # Create the dialog and customise the content of some widgets
-        #
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
-        self.setupUi(self)
-
-        self.setWindowTitle(trs('New query on table: %s',
-            'A dialog caption') % info[u'name'])
-
-        self.name_le.setText('FilteredTable_%s' % counter)
-
-        self.indices_column.setEnabled(0)
-
-        # Use the values of the last query done on this table (if any)
-        if initial_query != '':
-            self.query_le.setText(initial_query)
-
-        # Fill the combos
-        operators = [u'&', u'|', u'~', u'<', u'<=', u'==', u'!=', u'>', u'>=', 
-            u'+', u'-', u'*', u'/', u'**', u'%']
-        self.operators_cb.insertItems(0, QtCore.QStringList(operators))
-        functions = [u'where', u'sin', u'cos', u'tan', u'arcsin', u'arccos', 
-            u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', 
-            u'arcsinh', u'arccosh', u'arctanh', u'log', u'log10', u'log1p', 
-            u'exp', u'expm1', u'sqrt', 
-            u'real', u'imag', u'complex']
-        self.functions_cb.insertItems(0, QtCore.QStringList(functions))
-        sorted_fields = [field for field in info[u'valid_fields']]
-        sorted_fields.sort()
-        self.columns_cb.insertItems(0, QtCore.QStringList(sorted_fields))
-        self.rstop.setText(u'%s' % info[u'nrows'])
-
-        whatsthis_button = self.button_box.button(QtGui.QDialogButtonBox.Help)
-        whatsthis_button.setText("&What's this")
-
-        #
-        # Setup a validator for Range selectors section
-        #
-        validator = QtGui.QRegExpValidator(QtCore.QRegExp("\\d*"), self)
-        self.rstart.setValidator(validator)
-        self.rstop.setValidator(validator)
-        self.rstep.setValidator(validator)
-
-        #
-        # Attributes used by method slotUpdateOKState
+        # Attributes used by slot updateOKState
         #
         self.used_names = ft_names
         self.col_names = info[u'col_names']
@@ -164,7 +121,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         self.num_rows = info[u'nrows']
 
         #
-        # Attributes used by method slotAccept
+        # Attributes used by slot composeQuery
         #
         # If the dialog is cancelled these initial values will be returned to
         # the caller. If the dialog is accepted then these values will be
@@ -179,32 +136,60 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         self.query_info[u'src_path'] = info[u'src_path']
 
         #
+        # Create the dialog and customise the content of some widgets
+        #
+        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        self.setupUi(self)
+
+        self.setWindowTitle(trs('New query on table: %s',
+            'A dialog caption') % info[u'name'])
+
+        self.nameLE.setText('FilteredTable_%s' % counter)
+
+        self.indicesColumnLE.setEnabled(0)
+
+        # Use the values of the last query done on this table (if any)
+        if initial_query != '':
+            self.queryLE.setText(initial_query)
+
+        # Fill the combos
+        operators = [u'&', u'|', u'~', u'<', u'<=', u'==', u'!=', u'>', u'>=', 
+            u'+', u'-', u'*', u'/', u'**', u'%']
+        self.operatorsComboBox.insertItems(0, QtCore.QStringList(operators))
+        functions = [u'where', u'sin', u'cos', u'tan', u'arcsin', u'arccos', 
+            u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', 
+            u'arcsinh', u'arccosh', u'arctanh', u'log', u'log10', u'log1p', 
+            u'exp', u'expm1', u'sqrt', 
+            u'real', u'imag', u'complex']
+        self.functionsComboBox.insertItems(0, QtCore.QStringList(functions))
+        sorted_fields = [field for field in info[u'valid_fields']]
+        sorted_fields.sort()
+        self.columnsComboBox.insertItems(0, QtCore.QStringList(sorted_fields))
+        self.rstopLE.setText(u'%s' % info[u'nrows'])
+
+        whatsthis_button = self.buttonBox.button(QtGui.QDialogButtonBox.Help)
+        whatsthis_button.setText("&What's this")
+
+        #
+        # Setup a validator for Range selectors section
+        #
+        validator = QtGui.QRegExpValidator(QtCore.QRegExp("\\d*"), self)
+        self.rstartLE.setValidator(validator)
+        self.rstopLE.setValidator(validator)
+        self.rstep.setValidator(validator)
+
+        #
         # Connect signals to slots
         #
-        activated = QtCore.SIGNAL('activated(const QString &)')
-        text_changed = QtCore.SIGNAL('textChanged(const QString &)')
-        self.connect(self.name_le, text_changed, self.slotUpdateOKState)
-        self.connect(self.indices_checkbox, QtCore.SIGNAL('toggled(bool)'),
-            self.slotEnableIndicesColumn)
-        self.connect(self.indices_column, text_changed, self.slotUpdateOKState)
-        self.connect(self.query_le, text_changed, self.slotUpdateOKState)
-        self.connect(self.rstart, text_changed, self.slotUpdateOKState)
-        self.connect(self.rstop, text_changed, self.slotUpdateOKState)
-        self.connect(self.columns_cb, activated, self.slotInsertField)
-        self.connect(self.operators_cb, activated, self.slotInsertOperator)
-        self.connect(self.functions_cb, activated, self.slotInsertFunction)
-        self.connect(self.button_box, QtCore.SIGNAL('helpRequested()'),
+        self.connect(self.buttonBox, QtCore.SIGNAL('helpRequested()'),
             QtGui.QWhatsThis.enterWhatsThisMode)
-        self.connect(self.button_box, QtCore.SIGNAL('accepted()'), 
-            self.slotAccept)
-        self.connect(self.button_box, QtCore.SIGNAL('rejected()'),
-            QtCore.SLOT('reject()'))
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
-        self.name_le.emit(text_changed, self.name_le.text())
+        self.nameLE.emit(QtCore.SIGNAL("textChanged(QString)"), self.nameLE.text())
 
 
-    def slotEnableIndicesColumn(self, cb_on):
+    @QtCore.pyqtSlot(bool, name="on_indicesCheckBox_toggled")
+    def enableIndicesColumn(self, cb_on):
         """
         Enable/disable the indices column name field.
 
@@ -217,21 +202,23 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
     """
 
         if cb_on:
-            self.indices_column.setEnabled(1)
+            self.indicesColumnLE.setEnabled(1)
         else:
-            self.indices_column.setEnabled(0)
+            self.indicesColumnLE.setEnabled(0)
 
 
-    def slotInsertOperator(self, operator):
+    @QtCore.pyqtSlot("QString", name="on_operatorsComboBox_activated")
+    def insertOperator(self, operator):
         """
         Insert an operator in the query line editor.
 
         :Parameter operator: is the operator in the combobox current item
         """
-        self.query_le.insert(u' %s ' % operator)
+        self.queryLE.insert(u' %s ' % operator)
 
 
-    def slotInsertField(self, field_id):
+    @QtCore.pyqtSlot("QString", name="on_columnsComboBox_activated")
+    def insertField(self, field_id):
         """
         Insert a fieldname in the query line editor.
 
@@ -243,10 +230,11 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         :Parameter field_id: is the field identifier in the combobox current item
         """
-        self.query_le.insert(field_id.split(u' ')[0])
+        self.queryLE.insert(field_id.split(u' ')[0])
 
 
-    def slotInsertFunction(self, text):
+    @QtCore.pyqtSlot("QString", name="on_functionsComboBox_activated")
+    def insertFunction(self, text):
         """
         Update  the contents of the query line editor.
 
@@ -280,10 +268,15 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             u'imag': u'imag(C)', 
             u'complex': u'complex(F, F)'
             }
-        self.query_le.insert(name2call[unicode(text)])
+        self.queryLE.insert(name2call[unicode(text)])
 
 
-    def slotUpdateOKState(self):
+    @QtCore.pyqtSlot("QString", name="on_nameLE_textChanged")
+    @QtCore.pyqtSlot("QString", name="on_indicesColumnLE_textChanged")
+    @QtCore.pyqtSlot("QString", name="on_queryLE_textChanged")
+    @QtCore.pyqtSlot("QString", name="on_rstartLE_textChanged")
+    @QtCore.pyqtSlot("QString", name="on_rstopLE_textChanged")
+    def updateOKState(self):
         """
         Update the activation state of the OK button.
 
@@ -308,7 +301,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         status_ok = True
 
         # Check the table name
-        ft_name = unicode(self.name_le.text())
+        ft_name = unicode(self.nameLE.text())
         if not ft_name:
             status_ok = False
         elif ft_name in self.used_names:
@@ -317,8 +310,8 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
                 """ choose another one.""", 'A logger info message')
 
         # Check the indices column name
-        indices_colname = unicode(self.indices_column.text())
-        if self.indices_column.isEnabled():
+        indices_colname = unicode(self.indicesColumnLE.text())
+        if self.indicesColumnLE.isEnabled():
             if indices_colname == '':
                 status_ok = False
                 print trs("""Enter a name for the column of indices, """
@@ -337,13 +330,13 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         # Check the condition.
         # If it is an empty string the OK button is not enabled
-        condition = unicode(self.query_le.text())
+        condition = unicode(self.queryLE.text())
         if condition.isspace() or (condition in [None, u'']):
             status_ok = False
 
         # Check the range values
-        start_str = unicode(self.rstart.text())
-        stop_str = unicode(self.rstop.text())
+        start_str = unicode(self.rstartLE.text())
+        stop_str = unicode(self.rstopLE.text())
         if not (start_str and stop_str):
             status_ok = False
         else:
@@ -365,7 +358,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
                                 'A logger info message')
 
         # Enable/disable the OK button
-        ok_button = self.button_box.button(QtGui.QDialogButtonBox.Ok)
+        ok_button = self.buttonBox.button(QtGui.QDialogButtonBox.Ok)
         if status_ok:
             ok_button.setEnabled(1)
         else:
@@ -404,11 +397,12 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         return syntax_ok
 
 
-    def slotAccept(self):
-        """Compose the query and return."""
+    @QtCore.pyqtSlot(name="on_buttonBox_accepted")
+    def composeQuery(self):
+        """Slot for composing the query and accept the dialog."""
 
         # Get the query
-        condition = unicode(self.query_le.text())
+        condition = unicode(self.queryLE.text())
         # Blanks at the begining of condition raise a SyntaxError
         condition = condition.strip()
         if not self.checkConditionSyntax(condition):
@@ -417,15 +411,15 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         self.query_info[u'condition'] = condition
 
         # Get the table name and the name of the column with indices (if any)
-        self.query_info[u'ft_name'] = unicode(self.name_le.text())
-        if self.indices_column.isEnabled():
+        self.query_info[u'ft_name'] = unicode(self.nameLE.text())
+        if self.indicesColumnLE.isEnabled():
             self.query_info[u'indices_field_name'] = \
-                unicode(self.indices_column.text())
+                unicode(self.indicesColumnLE.text())
 
         # Get the range and convert it into a Python range
         self.query_info[u'rows_range'] = (
-           numpy.array(unicode(self.rstart.text())).astype(numpy.int64) - 1,
-           numpy.array(unicode(self.rstop.text())).astype(numpy.int64),
+           numpy.array(unicode(self.rstartLE.text())).astype(numpy.int64) - 1,
+           numpy.array(unicode(self.rstopLE.text())).astype(numpy.int64),
            numpy.array(unicode(self.rstep.text())).astype(numpy.int64))
 
         # Exit

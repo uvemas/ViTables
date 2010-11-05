@@ -36,11 +36,10 @@ Methods:
 * fillGeneralPage(self, info)
 * fillSysAttrsPage(self, info)
 * fillUserAttrsPage(self, info)
-* on_sysTable_clicked(self, index)
-* on_userTable_clicked(self, index)
-* on_addButton_clicked(self)
-* on_delButton_clicked(self)
-* on_buttonsBox_accepted(self)
+* displaySelectedCell(self, index)
+* addAttribute(self)
+* delAttribute(self)
+* accept(self)
 
 Functions:
 
@@ -445,12 +444,10 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
                                 QtGui.QWhatsThis.enterWhatsThisMode)
 
 
-    @QtCore.pyqtSignature("QModelIndex")
-    def on_sysTable_clicked(self, index):
+    @QtCore.pyqtSlot("QModelIndex", name="on_sysTable_clicked")
+    @QtCore.pyqtSlot("QModelIndex", name="on_userTable_clicked")
+    def displaySelectedCell(self, index):
         """Show the content of the clicked cell in the line edit at bottom.
-
-        This SLOT is connected to clicked SIGNALs coming from both the
-        system attributes table and the user attributes table.
 
         :Parameter index: the model index of the clicked cell
         """
@@ -466,14 +463,9 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             self.userAttrCellLE.setText(model_item.text())
 
 
-    @QtCore.pyqtSignature("QModelIndex")
-    def on_userTable_clicked(self, index):
-        self.on_sysTable_clicked(index)
-
-
-    @QtCore.pyqtSignature("")
-    def on_addButton_clicked(self):
-        """Slot for adding a new row to the attributes table."""
+    @QtCore.pyqtSlot(name="on_addButton_clicked")
+    def addAttribute(self):
+        """Add a new attribute to the user's attributes table."""
 
         name_item = QtGui.QStandardItem()
         value_item = QtGui.QStandardItem()
@@ -497,10 +489,10 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         self.userTable.edit(name_item.index())
 
 
-    @QtCore.pyqtSignature("")
-    def on_delButton_clicked(self):
+    @QtCore.pyqtSlot(name="on_delButton_clicked")
+    def delAttribute(self):
         """
-        Deletes a user attribute.
+        Remove an attribute from the user's attributes table.
 
         This slot is connected to the clicked signal of the Delete button.
         An attribute is marked for deletion by giving focus to any cell
@@ -578,8 +570,8 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         return False
 
 
-    @QtCore.pyqtSignature("")
-    def on_buttonsBox_accepted(self):
+    @QtCore.pyqtSlot(name="on_buttonsBox_accepted")
+    def accept(self):
         """
         Customised slot for accepted dialogs.
 

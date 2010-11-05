@@ -1,7 +1,11 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QueryDialog</class>
- <widget class="QDialog" name="QueryDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QueryDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,95 +13,95 @@
     <height>545</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_7" >
+  <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_6" >
-     <property name="spacing" >
+    <layout class="QVBoxLayout" name="verticalLayout_6">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin" >
+     <property name="margin">
       <number>11</number>
      </property>
      <item>
-      <widget class="QGroupBox" name="global_opt_gb" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <widget class="QGroupBox" name="global_opt_gb">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="title" >
+       <property name="title">
         <string>Global options</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_4" >
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="margin" >
+          <property name="margin">
            <number>11</number>
           </property>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2" >
-            <property name="spacing" >
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
              <number>6</number>
             </property>
-            <property name="margin" >
+            <property name="margin">
              <number>11</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_4" >
-              <property name="text" >
+             <widget class="QLabel" name="label_4">
+              <property name="text">
                <string>Name:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="name_le" >
-              <property name="whatsThis" >
-               <string>&lt;qt>
+             <widget class="QLineEdit" name="nameLE">
+              <property name="whatsThis">
+               <string>&lt;qt&gt;
         The name of the table where the query results will be added.
-        &lt;/qt></string>
+        &lt;/qt&gt;</string>
               </property>
              </widget>
             </item>
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" >
-            <property name="spacing" >
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="spacing">
              <number>6</number>
             </property>
-            <property name="margin" >
+            <property name="margin">
              <number>11</number>
             </property>
             <item>
-             <widget class="QCheckBox" name="indices_checkbox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="indicesCheckBox">
+              <property name="text">
                <string/>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_5" >
-              <property name="text" >
+             <widget class="QLabel" name="label_5">
+              <property name="text">
                <string>Original indices into column:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="indices_column" >
-              <property name="whatsThis" >
-               <string>&lt;qt>
+             <widget class="QLineEdit" name="indicesColumnLE">
+              <property name="whatsThis">
+               <string>&lt;qt&gt;
         The name of the column where the indices of the selected rows
         will be added.
-        &lt;/qt></string>
+        &lt;/qt&gt;</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>Orig_idx</string>
               </property>
              </widget>
@@ -110,65 +114,65 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="condition_gb" >
-       <property name="title" >
+      <widget class="QGroupBox" name="condition_gb">
+       <property name="title">
         <string>Query condition</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2" >
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="margin" >
+          <property name="margin">
            <number>11</number>
           </property>
           <item>
-           <widget class="QLineEdit" name="query_le" >
-            <property name="whatsThis" >
-             <string>&lt;qt>
-        &lt;h3>Conditions syntax&lt;/h3>
-        A condition on a table is just a &lt;em>string&lt;/em> containing a
-        Python expression that involves &lt;em>at least one column&lt;/em>
+           <widget class="QLineEdit" name="queryLE">
+            <property name="whatsThis">
+             <string>&lt;qt&gt;
+        &lt;h3&gt;Conditions syntax&lt;/h3&gt;
+        A condition on a table is just a &lt;em&gt;string&lt;/em&gt; containing a
+        Python expression that involves &lt;em&gt;at least one column&lt;/em&gt;
         , and maybe some constants and external variables, all combined
         with algebraic operators or functions.
-        Beware that &lt;tt>&amp;&lt;/tt>, &lt;tt>|&lt;/tt> and &lt;tt>~&lt;/tt> operators
+        Beware that &lt;tt&gt;&amp;&lt;/tt&gt;, &lt;tt&gt;|&lt;/tt&gt; and &lt;tt&gt;~&lt;/tt&gt; operators
         are used for logical comparisons. They have higher precedence
-        than logical operators so we recommend to &lt;em>always use
-        parenthesis around logical operators&lt;/em>.&lt;/p>
-        &lt;p>The following table shows some examples of conditions and
-        their equivalent Python expressions.&lt;/p>
-        &lt;div align='center'>&lt;table border='1'>
-        &lt;tr>&lt;th>Condition&lt;/th>&lt;th>Python expression&lt;/th>&lt;/tr>
-        &lt;tr>&lt;td>&lt;code>a &amp; (b == c)&lt;/code>&lt;/td>
-        &lt;td>&lt;code>a and b == c&lt;/code>&lt;/td>&lt;/tr>
-        &lt;tr>&lt;td>&lt;code>(0 &amp;lt; x) &amp; (x &amp;lt; 1)&lt;/code>&lt;/td>
-        &lt;td>&lt;code>0 &amp;lt; x &amp;lt; 1&lt;/code>&lt;/td>&lt;/tr>
-        &lt;tr>&lt;td>&lt;code>a + b  &amp;gt; c&lt;/code>&lt;/td>
-        &lt;td>&lt;code>a + b  &amp;gt; c&lt;/code>&lt;/td>&lt;/tr>
-        &lt;tr>&lt;td>&lt;code>where(a > b, 3, 4)&lt;/code>&lt;/td>
-        &lt;td>&lt;/td>&lt;/tr>
-        &lt;/table>&lt;/div>
-        &lt;p>You can find detailed information about conditions in the
-        Appendix B of the PyTables users guide.&lt;/p>
-        &lt;/qt></string>
+        than logical operators so we recommend to &lt;em&gt;always use
+        parenthesis around logical operators&lt;/em&gt;.&lt;/p&gt;
+        &lt;p&gt;The following table shows some examples of conditions and
+        their equivalent Python expressions.&lt;/p&gt;
+        &lt;div align='center'&gt;&lt;table border='1'&gt;
+        &lt;tr&gt;&lt;th&gt;Condition&lt;/th&gt;&lt;th&gt;Python expression&lt;/th&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;a &amp; (b == c)&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;code&gt;a and b == c&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;(0 &amp;lt; x) &amp; (x &amp;lt; 1)&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;code&gt;0 &amp;lt; x &amp;lt; 1&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;a + b  &amp;gt; c&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;code&gt;a + b  &amp;gt; c&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;where(a &gt; b, 3, 4)&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;/table&gt;&lt;/div&gt;
+        &lt;p&gt;You can find detailed information about conditions in the
+        Appendix B of the PyTables users guide.&lt;/p&gt;
+        &lt;/qt&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout" >
-            <property name="spacing" >
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
              <number>6</number>
             </property>
-            <property name="margin" >
+            <property name="margin">
              <number>11</number>
             </property>
             <item>
-             <spacer name="horizontalSpacer_2" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>40</width>
                 <height>20</height>
@@ -177,53 +181,53 @@
              </spacer>
             </item>
             <item>
-             <widget class="QComboBox" name="columns_cb" >
-              <property name="whatsThis" >
-               <string>&lt;qt>
+             <widget class="QComboBox" name="columnsComboBox">
+              <property name="whatsThis">
+               <string>&lt;qt&gt;
         The names of the searchable columns. They must
         fulfill the following requirements:
-        &lt;ul>&lt;li>must be not nested&lt;/li>
-        &lt;li>must have a scalar data type&lt;/li>
-        &lt;li>their data type cannot be &lt;code>complex&lt;/code>&lt;/li>&lt;/ul>
+        &lt;ul&gt;&lt;li&gt;must be not nested&lt;/li&gt;
+        &lt;li&gt;must have a scalar data type&lt;/li&gt;
+        &lt;li&gt;their data type cannot be &lt;code&gt;complex&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
         Columns whose names contains blanks are automatically mapped
         to variables whose names contain no blanks. For querying
         those columns the mapped variables will be used.
-        &lt;/qt></string>
+        &lt;/qt&gt;</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="operators_cb" >
-              <property name="whatsThis" >
-               <string>&lt;qt>
+             <widget class="QComboBox" name="operatorsComboBox">
+              <property name="whatsThis">
+               <string>&lt;qt&gt;
         The operators that can be used in a given condition. Operators
-        can be logical, comparison and arithmetic.&lt;br>Not all operators
+        can be logical, comparison and arithmetic.&lt;br&gt;Not all operators
         are available for every data type.
-        &lt;/qt></string>
+        &lt;/qt&gt;</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="functions_cb" >
-              <property name="whatsThis" >
-               <string>&lt;qt>
+             <widget class="QComboBox" name="functionsComboBox">
+              <property name="whatsThis">
+               <string>&lt;qt&gt;
         The set of functions that can appear in a condition.
         It includes functions for doing selections, trigonometric
         functions and functions on complex numbers. For ease
         of use, arguments are automatically included when a
         function is inserted. The arguments meaning is:
-        &lt;ul>&lt;li>N: number&lt;/li>&lt;li>B: boolean&lt;/li>
-        &lt;li>F: float&lt;/li>&lt;li>C: complex&lt;/li>&lt;/ul>
-        &lt;/qt></string>
+        &lt;ul&gt;&lt;li&gt;N: number&lt;/li&gt;&lt;li&gt;B: boolean&lt;/li&gt;
+        &lt;li&gt;F: float&lt;/li&gt;&lt;li&gt;C: complex&lt;/li&gt;&lt;/ul&gt;
+        &lt;/qt&gt;</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>40</width>
                 <height>20</height>
@@ -239,52 +243,52 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="rows_range_gb" >
-       <property name="whatsThis" >
+      <widget class="QGroupBox" name="rows_range_gb">
+       <property name="whatsThis">
         <string>The range of rows included in the query.</string>
        </property>
-       <property name="title" >
+       <property name="title">
         <string>Range of rows</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_5" >
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <layout class="QGridLayout" name="range_layout" >
-          <property name="margin" >
+         <layout class="QGridLayout" name="range_layout">
+          <property name="margin">
            <number>11</number>
           </property>
-          <property name="spacing" >
+          <property name="spacing">
            <number>6</number>
           </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label" >
-            <property name="text" >
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
              <string>Start:</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QLineEdit" name="rstart" >
-            <property name="text" >
-             <string comment="A range selector label" >1</string>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="rstartLE">
+            <property name="text">
+             <string comment="A range selector label">1</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label_2" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
              <string>Stop:</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QLineEdit" name="rstop" />
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="rstopLE"/>
           </item>
-          <item row="1" column="2" >
-           <spacer name="horizontalSpacer_3" >
-            <property name="orientation" >
+          <item row="1" column="2">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>40</width>
               <height>20</height>
@@ -292,17 +296,17 @@
             </property>
            </spacer>
           </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_3" >
-            <property name="text" >
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
              <string>Step:</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
-           <widget class="QLineEdit" name="rstep" >
-            <property name="text" >
-             <string comment="A range selector label" >1</string>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="rstep">
+            <property name="text">
+             <string comment="A range selector label">1</string>
             </property>
            </widget>
           </item>
@@ -312,11 +316,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="button_box" >
-       <property name="standardButtons" >
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
        </property>
-       <property name="centerButtons" >
+       <property name="centerButtons">
         <bool>true</bool>
        </property>
       </widget>
@@ -326,5 +330,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QueryDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>217</x>
+     <y>517</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>272</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

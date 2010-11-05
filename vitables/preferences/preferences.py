@@ -33,20 +33,20 @@ Methods:
 * resetPreferences(self)
 * setupList(self, uid, seq, split=False)
 * makeConnections(self)
-* on_contentsWidget_currentItemChanged(self, current, previous)
-* on_buttonsBox_clicked(self, button)
+* changeSettingsPage(self, current, previous)
+* executeButtonAction(self, button)
 * applySettings(self)
-* on_lastDirCb_toggled(self, cb_on)
-* on_restoreCb_toggled(self, cb_on)
-* on_fontPB_clicked(self)
-* on_foregroundPB_clicked(self)
-* on_backgroundPB_clicked(self)
-* on_workspacePB_clicked(self)
-* on_stylesCB_activated(self, style_name)
-* on_newButton_clicked(self)
-* on_removeButton_clicked(self)
-* on_loadButton_clicked(self)
-* on_unloadButton_clicked(self)
+* setInitialWorkingDirectory(self, cb_on)
+* setRestoreSession(self, cb_on)
+* setLoggerFont(self)
+* setLoggerTextColor(self)
+* setLoggerBackgroundColor(self)
+* setWorkspaceColor(self)
+* setGlobalStyle(self, style_name)
+* addSearchablePath(self)
+* removeSearchablePath(self)
+* enablePlugin(self)
+* disablePlugin(self)
 * updateButton(self, selected, deselected)
 
 Misc variables:
@@ -272,8 +272,9 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.updateButton)
 
 
-    @QtCore.pyqtSignature("QListWidgetItem *, QListWidgetItem *")
-    def on_contentsWidget_currentItemChanged(self, current, previous):
+    @QtCore.pyqtSlot("QListWidgetItem *", "QListWidgetItem *", \
+        name="on_contentsWidget_currentItemChanged")
+    def changeSettingsPage(self, current, previous):
         """Slot for changing the selected page in the Settings dialog.
 
         :Parameters:
@@ -287,8 +288,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.stackedPages.setCurrentIndex(self.contentsWidget.row(current))
 
 
-    @QtCore.pyqtSignature("QAbstractButton *")
-    def on_buttonsBox_clicked(self, button):
+    @QtCore.pyqtSlot("QAbstractButton *", name="on_buttonsBox_clicked")
+    def executeButtonAction(self, button):
         """Slot that manages button box clicks in the Preferences dialog.
 
         Whenever one of the Help, Reset, Cancel or OK buttons is
@@ -327,8 +328,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.accept()
 
 
-    @QtCore.pyqtSignature("bool")
-    def on_lastDirCB_toggled(self, cb_on):
+    @QtCore.pyqtSlot("bool", name="on_lastDirCB_toggled")
+    def setInitialWorkingDirectory(self, cb_on):
         """
         Set startup behavior of the application.
 
@@ -353,8 +354,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.new_prefs['Startup/startupWorkingDir'] = u'home'
 
 
-    @QtCore.pyqtSignature("bool")
-    def on_restoreCB_toggled(self, cb_on):
+    @QtCore.pyqtSlot("bool", name="on_restoreCB_toggled")
+    def setRestoreSession(self, cb_on):
         """
         Set startup behavior of the application.
 
@@ -373,8 +374,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.new_prefs['Startup/restoreLastSession'] = 0
 
 
-    @QtCore.pyqtSignature("")
-    def on_fontPB_clicked(self):
+    @QtCore.pyqtSlot(name="on_fontPB_clicked")
+    def setLoggerFont(self):
         """Slot for setting the logger font."""
 
         new_font, is_ok = QtGui.QFontDialog.getFont(self.sampleTE.currentFont())
@@ -386,8 +387,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
 
 
-    @QtCore.pyqtSignature("")
-    def on_foregroundPB_clicked(self):
+    @QtCore.pyqtSlot(name="on_foregroundPB_clicked")
+    def setLoggerTextColor(self):
         """Slot for setting the logger foreground color."""
 
         text_color = self.sampleTE.textColor()
@@ -400,8 +401,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.sampleTE.moveCursor(QtGui.QTextCursor.End)
 
 
-    @QtCore.pyqtSignature("")
-    def on_backgroundPB_clicked(self):
+    @QtCore.pyqtSlot(name="on_backgroundPB_clicked")
+    def setLoggerBackgroundColor(self):
         """Slot for setting the logger background color."""
 
         stylesheet = self.sampleTE.styleSheet()
@@ -414,8 +415,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.sampleTE.setStyleSheet(stylesheet)
 
 
-    @QtCore.pyqtSignature("")
-    def on_workspacePB_clicked(self):
+    @QtCore.pyqtSlot(name="on_workspacePB_clicked")
+    def setWorkspaceColor(self):
         """Slot for setting the workspace background color."""
 
         stylesheet = self.workspaceLabel.styleSheet()
@@ -428,8 +429,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.workspaceLabel.setStyleSheet(stylesheet)
 
 
-    @QtCore.pyqtSignature("QString")
-    def on_stylesCB_activated(self, style_name):
+    @QtCore.pyqtSlot("QString", name="on_stylesCB_activated")
+    def setGlobalStyle(self, style_name):
         """
         Slot for setting the application style.
 
@@ -438,8 +439,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.new_prefs['Look/currentStyle'] = unicode(style_name)
 
 
-    @QtCore.pyqtSignature("")
-    def on_newButton_clicked(self):
+    @QtCore.pyqtSlot(name="on_newButton_clicked")
+    def addSearchablePath(self):
         """Slot for adding a new searchable path if New button is clicked."""
 
         folder = QtGui.QFileDialog.getExistingDirectory()
@@ -457,8 +458,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.plugins_paths.append(folder)
 
 
-    @QtCore.pyqtSignature("")
-    def on_removeButton_clicked(self):
+    @QtCore.pyqtSlot(name="on_removeButton_clicked")
+    def removeSearchablePath(self):
         """Slot for removing a searchable path if Remove button clicked."""
 
         current = self.pathsLV.currentIndex()
@@ -468,8 +469,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             for row in range(model.rowCount())]
 
 
-    @QtCore.pyqtSignature("")
-    def on_loadButton_clicked(self):
+    @QtCore.pyqtSlot(name="on_loadButton_clicked")
+    def enablePlugin(self):
         """Slot for enabling a plugin if Load button clicked."""
 
         enabled_model = self.enabledLV.model()
@@ -490,8 +491,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.enabled_plugins.append('%s#@#%s' % (folder, name))
 
 
-    @QtCore.pyqtSignature("")
-    def on_unloadButton_clicked(self):
+    @QtCore.pyqtSlot(name="on_unloadButton_clicked")
+    def disablePlugin(self):
         """Slot for diabling plugins if Unload button clicked."""
 
         enabled_model = self.enabledLV.model()

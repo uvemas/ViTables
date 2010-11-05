@@ -77,10 +77,14 @@ def getTableInfo(table):
             'Warning message for users') % info[u'name']
         return None
 
-    # The searchable fields and condition variables
-    # First discard nested fields
+    # Find out the valid (i.e. searchable) fields and condition variables.
+    # First discard nested fields.
+    # Beware that order matters in binary operations that mix set instances
+    # with frozensets: set & frozenset returns a set but frozenset & set
+    # returns a frozenset
     valid_fields = \
-    info[u'col_names'].intersection(info[u'col_shapes'].keys())
+    set(info[u'col_shapes'].keys()).intersection(info[u'col_names'])
+#    info[u'col_names'].intersection(info[u'col_shapes'].keys())
 
     # Then discard fields that aren't scalar and those that are complex
     for name in valid_fields.copy():
@@ -173,7 +177,7 @@ class QueriesManager(QtCore.QObject):
 
 
     def newQuery(self):
-        """Proces the query requests launched by users.
+        """Process the query requests launched by users.
         """
 
         # The VTApp.updateQueryActions method ensures that the current node is

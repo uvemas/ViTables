@@ -29,8 +29,8 @@ Classes:
 Methods:
 
 * __init__(self, title, info, action)
-* on_valueLE_textChanged(self, current)
-* on_buttonsBox_accepted(self)
+* checkName(self, current)
+* saveName(self)
 
 Misc variables:
 
@@ -106,10 +106,10 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
             (self.valueLE.text()))
 
 
-    @QtCore.pyqtSignature("QString")
-    def on_valueLE_textChanged(self, current):
+    @QtCore.pyqtSlot("QString", name="on_valueLE_textChanged")
+    def checkName(self, current):
         """
-        Slot for checking the current name value.
+        Check the current name value.
 
         The state of the Create button depends on the passed string. If
         it is empty then the button is disabled. Otherwhise it is enabled.
@@ -123,8 +123,8 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
             self.edit_button.setEnabled(1)
 
 
-    @QtCore.pyqtSignature("")
-    def on_buttonsBox_accepted(self):
+    @QtCore.pyqtSlot(name="on_buttonsBox_accepted")
+    def saveName(self):
         """Slot for saving the entered name and hide the dialog.
         """
 

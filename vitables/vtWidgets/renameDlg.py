@@ -30,8 +30,8 @@ Methods:
 
 * __init__(self, name, pattern, info)
 * trs(source, comment=None)
-* slotCheckNewName(self, new_name)
-* chooseAction(self, button)
+* checkNewName(self, new_name)
+* executeAction(self, button)
 * overwriteNode(self)
 * renameNode(self)
 
@@ -144,10 +144,10 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
             (self.valueLE.text()))
 
 
-    @QtCore.pyqtSignature("QString")
-    def on_valueLE_textChanged(self, new_name):
+    @QtCore.pyqtSlot("QString", name="on_valueLE_textChanged")
+    def checkName(self, new_name):
         """
-        Slot for checking the new name value.
+        Check the new name value.
 
         Every time that the text box content changes, this method is 
         asked to check if the new name and the original name differ.
@@ -192,9 +192,9 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
             self.overwrite_button.setEnabled(0)
 
 
-    @QtCore.pyqtSignature("QAbstractButton *")
-    def on_buttonsBox_clicked(self, button):
-        """Perform the action specified by the clicked button."""
+    @QtCore.pyqtSlot("QAbstractButton *", name="on_buttonsBox_clicked")
+    def executeAction(self, button):
+        """Execute the action specified by the clicked button."""
 
         if button == self.rename_button:
             self.renameNode()

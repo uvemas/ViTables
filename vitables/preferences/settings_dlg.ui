@@ -50,7 +50,7 @@
      <item>
       <widget class="QStackedWidget" name="stackedPages">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="startupPage">
         <property name="whatsThis">
@@ -82,7 +82,7 @@
                <string>The working directory used when opening the very first file. It defaults to the current directory if ViTables has been launched from the command line or to the user's home directory if ViTables started from a menu or a desktop icon. If the checkbox is checked then the last entered directory will be used.</string>
               </property>
               <property name="text">
-               <string comment="Label of the startup in the last open directory check box">Start in last opened directory</string>
+               <string comment="Label of the startup in the last open directory check box">Start in last working directory</string>
               </property>
              </widget>
             </item>

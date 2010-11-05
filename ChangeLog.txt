@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 05, 2010 **
+Several modules refactored. Code for querying tables has been debugged.
+
 ** November 04, 2010 **
 The Preferences dialog has been debugged and refactored.
 
