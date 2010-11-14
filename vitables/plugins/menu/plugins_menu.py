@@ -26,7 +26,7 @@ Plugin dialog with the details of the plugin.
 
 __docformat__ = 'restructuredtext'
 _context = 'PluginsMenu'
-__version__ = '0.1'
+__version__ = '0.2'
 plugin_class = 'PluginsMenu'
 
 import os
@@ -81,8 +81,7 @@ class PluginsMenu(QtCore.QObject):
         # The Plugins menu cannot be populated without knowing which 
         # plugins are loaded so we have to wait until the convenience
         # pluginsLoaded signal is emitted
-        self.connect(self.vtapp, QtCore.SIGNAL('pluginsLoaded'), 
-            self.populateMenu)
+        self.vtapp.pluginsLoaded.connect(self.populateMenu)
 
 
     def populateMenu(self):
@@ -104,11 +103,9 @@ class PluginsMenu(QtCore.QObject):
             else:
                 slot = self.noInfo
                 name = key.split('#@#')[1]
-            action = QtGui.QAction(name, self.plugins_menu)
+            action = QtGui.QAction(name, self.plugins_menu, triggered=slot)
             action.setObjectName(key)
             self.plugins_menu.addAction(action)
-            self.connect(action, QtCore.SIGNAL('triggered()'), 
-                slot)
 
 
     def helpAbout(self):
@@ -201,8 +198,7 @@ class PluginsMenu(QtCore.QObject):
         grid.addWidget(field6, 5, 1)
         grid.addWidget(button_box, 6, 1)
 
-        self.connect(button_box, QtCore.SIGNAL('accepted()'), 
-            info_dlg.close)
+        button_box.accepted.connect(info_dlg.close)
         info_dlg.show()
 
 

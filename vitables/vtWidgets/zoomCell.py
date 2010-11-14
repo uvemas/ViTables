@@ -164,9 +164,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
             self.grid.verticalHeader().setResizeMode(rmode)
 
         # Connect signals to slots
-        QtCore.QObject.connect(self.grid,
-            QtCore.SIGNAL('cellDoubleClicked(int, int)'), 
-            self.slotZoomView)
+        self.grid.cellDoubleClicked.connect(self.slotZoomView) 
 
 
     def hasShape(self):

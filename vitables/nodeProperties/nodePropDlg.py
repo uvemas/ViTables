@@ -440,8 +440,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
 
-        self.connect(self.helpButton, QtCore.SIGNAL('clicked()'), 
-                                QtGui.QWhatsThis.enterWhatsThisMode)
+        self.helpButton.clicked.connect(QtGui.QWhatsThis.enterWhatsThisMode)
 
 
     @QtCore.pyqtSlot("QModelIndex", name="on_sysTable_clicked")

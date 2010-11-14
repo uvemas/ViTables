@@ -75,6 +75,12 @@ class VTApp(QtGui.QMainWindow):
     """
 
 
+    leaf_model_created = QtCore.pyqtSignal(QtGui.QMdiSubWindow, \
+        name="leafModelCreated")
+
+    pluginsLoaded = QtCore.pyqtSignal()
+
+
     def __init__(self, mode='', dblist='', h5files=None, keep_splash=True):
         """
         Initialize the application.
@@ -151,14 +157,8 @@ class VTApp(QtGui.QMainWindow):
 
         # The signal mapper used to keep the the Windows menu updated
         self.window_mapper = QtCore.QSignalMapper(self)
-        self.connect(self.window_mapper, QtCore.SIGNAL("mapped(QWidget*)"), 
+        self.window_mapper.mapped[QtGui.QWidget].connect(\
             self.workspace.setActiveSubWindow)
-        # The following version of the previous connect doesn't work
-        # I think it's a pyqt bug
-        #self.window_mapper = QSignalMapper(self)
-        #self.connect(self.window_mapper, SIGNAL("mapped(QWidget*)"), 
-        #            self.workspace, 
-        #            SLOT("setActiveSubWindow(QMdiSubWindow*)"))
 
         self.gui_actions = self.setupActions()
         self.setupToolBars()
@@ -203,7 +203,7 @@ class VTApp(QtGui.QMainWindow):
             pluginsLoader.PluginsLoader(self.config.plugins_paths, 
             self.config.enabled_plugins)
         self.plugins_mgr.loadAll()
-        self.emit(QtCore.SIGNAL('pluginsLoaded'))
+        self.pluginsLoaded.emit()
 
         # Restore last session
         if self.config.restore_last_session:
@@ -232,12 +232,8 @@ class VTApp(QtGui.QMainWindow):
         # Ensure that QActions have a consistent state
         self.slotUpdateActions()
 
-        self.connect(self.dbs_tree_model, \
-            QtCore.SIGNAL('rowsRemoved(QModelIndex, int, int)'), 
-            self.slotUpdateActions)
-        self.connect(self.dbs_tree_model, \
-            QtCore.SIGNAL('rowsInserted(QModelIndex, int, int)'), 
-            self.slotUpdateActions)
+        self.dbs_tree_model.rowsRemoved.connect(self.slotUpdateActions)
+        self.dbs_tree_model.rowsInserted.connect(self.slotUpdateActions)
 
         self.slotUpdateWindowsMenu()
 
@@ -561,7 +557,7 @@ class VTApp(QtGui.QMainWindow):
         file_open_button = self.file_toolbar.widgetForAction(
             self.gui_actions['fileOpen'])
         file_open_button.setMenu(self.open_recent_submenu)
-        self.connect(self.open_recent_submenu, QtCore.SIGNAL("aboutToShow()"), 
+        self.open_recent_submenu.aboutToShow.connect(\
             self.slotUpdateRecentSubmenu)
 
         # Create the Node menu and add actions/submenus/separators to it
@@ -600,8 +596,7 @@ class VTApp(QtGui.QMainWindow):
         action_group = QtGui.QActionGroup(self.windows_menu)
         action_group.setExclusive(True)
         self.windows_menu.action_group = action_group
-        self.connect(self.windows_menu, QtCore.SIGNAL("aboutToShow()"), 
-            self.slotUpdateWindowsMenu)
+        self.windows_menu.aboutToShow.connect(self.slotUpdateWindowsMenu)
 
         # Create the Help menu and add actions/menus/separators to it
         help_menu = self.menuBar().addMenu(trs("&Help", 
@@ -713,7 +708,7 @@ class VTApp(QtGui.QMainWindow):
                 # so its row is 0
                 group = self.dbs_tree_model.root.childAtRow(0)
                 index = self.dbs_tree_model.index(0, 0, QtCore.QModelIndex())
-                self.dbs_tree_view.emit(expanded_signal, index)
+                self.dbs_tree_view.expanded.emit(index)
                 groups.pop(0)
                 # Expand the rest of groups of the nodepath
                 while groups != []:
@@ -722,7 +717,7 @@ class VTApp(QtGui.QMainWindow):
                     group = parent_group.findChild(groups[0])
                     row = group.row()
                     index = self.dbs_tree_model.index(row, 0, parent_index)
-                    self.dbs_tree_view.emit(expanded_signal, index)
+                    self.dbs_tree_view.expanded.emit(index)
                     groups.pop(0)
                 # Finally we open the leaf
                 leaf_name = nodepath.split('/')[-1]
@@ -934,8 +929,7 @@ class VTApp(QtGui.QMainWindow):
             (mode, filepath) = item.split('#@#')
             action = QtGui.QAction(u'%s. ' % index + filepath, self)
             action.setData(QtCore.QVariant(item))
-            self.connect(action, QtCore.SIGNAL("triggered()"), 
-                self.openRecentFile)
+            action.triggered.connect(self.openRecentFile)
             if mode == 'r':
                 action.setIcon(iconset['file_ro'])
             else:
@@ -947,8 +941,7 @@ class VTApp(QtGui.QMainWindow):
         self.open_recent_submenu.addSeparator()
         action = QtGui.QAction(trs('&Clear',
             'A recent submenu command'), self)
-        self.connect(action, QtCore.SIGNAL("triggered()"), 
-            self.clearRecentFiles)
+        action.triggered.connect(self.clearRecentFiles)
         self.open_recent_submenu.addAction(action)
 
 
@@ -992,8 +985,7 @@ class VTApp(QtGui.QMainWindow):
             if self.workspace.activeSubWindow() == window:
                 action.setChecked(True)
             menu.action_group.addAction(action)
-            self.connect(action, QtCore.SIGNAL("triggered()"), 
-                        self.window_mapper, QtCore.SLOT("map()"))
+            action.triggered.connect(self.window_mapper.map)
             self.window_mapper.setMapping(action, window)
             counter = counter + 1
 
@@ -1465,7 +1457,7 @@ class VTApp(QtGui.QMainWindow):
         # datasets customisations (for instance, additional formatting)
         subwindow = dataSheet.DataSheet(index)
         subwindow.show()
-        self.emit(QtCore.SIGNAL("leaf_model_created"), subwindow)
+        self.leaf_model_created.emit(subwindow)
 
 
     def slotNodeClose(self, current=None):
@@ -1876,8 +1868,7 @@ class VTApp(QtGui.QMainWindow):
         layout.addWidget(tab_widget)
         layout.addWidget(buttons_box)
 
-        self.connect(buttons_box, QtCore.SIGNAL("accepted()"), about_dlg, 
-            QtCore.SLOT("accept()"))
+        buttons_box.accepted.connect(about_dlg.accept)
 
         # Make About page
         content = [about_text, thanks_text, license_text]
@@ -1966,8 +1957,7 @@ class VTApp(QtGui.QMainWindow):
         layout.addWidget(versions_edit)
         layout.addWidget(buttons_box)
 
-        self.connect(buttons_box, QtCore.SIGNAL("accepted()"), versions_dlg, 
-            QtCore.SLOT("accept()"))
+        buttons_box.accepted.connect(versions_dlg.accept)
 
         versions_edit.setReadOnly(1)
         versions_edit.setText(\

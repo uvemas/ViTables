@@ -70,6 +70,9 @@ class Query(QtCore.QObject):
     """
 
 
+    query_completed = QtCore.pyqtSignal(bool, unicode, name="queryCompleted")
+
+
     def __init__(self, tmp_h5file, table_uid, table, qdescr):
         """Initialises the thread.
 
@@ -95,7 +98,7 @@ class Query(QtCore.QObject):
         """
 
         self.queryTable()
-        self.emit(QtCore.SIGNAL("completed"), self.completed, self.table_uid)
+        self.query_completed.emit(self.completed, self.table_uid)
 
 
     def flushTable(self, ftable):

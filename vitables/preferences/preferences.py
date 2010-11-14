@@ -216,6 +216,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             split=True)
         self.setupList('disabled', seq=self.pg_loader.disabled_plugins, 
             split=True)
+        self.unloadButton.setEnabled(False)
+        self.loadButton.setEnabled(False)
 
         # The visual update done above is not enough, we must reset the
         # new preferences dictionary too
@@ -254,22 +256,20 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     def makeConnections(self):
         """Connect signals to slots.
 
-        The connections that cannot be managed by the setupUi method are
-        collected here.
+        The connections that cannot be done by name (i.e. automatically by
+        setupUi) are setup here.
         """
 
-        self.connect(self.buttonsBox, QtCore.SIGNAL('helpRequested()'),
+        self.buttonsBox.helpRequested.connect(\
             QtGui.QWhatsThis.enterWhatsThisMode)
 
         # Plugins page
         current_changed = \
             QtCore.SIGNAL('selectionChanged(QItemSelection, QItemSelection)')
-        self.connect(self.disabledLV.selectionModel(), current_changed, 
-            self.updateButton)
-        self.connect(self.enabledLV.selectionModel(), current_changed, 
-            self.updateButton)
-        self.connect(self.pathsLV.selectionModel(), current_changed, 
-            self.updateButton)
+        self.disabledLV.selectionModel().selectionChanged.connect(self.updateButton)
+        self.enabledLV.selectionModel().selectionChanged.connect(self.updateButton)
+        self.pathsLV.selectionModel().selectionChanged.connect(self.updateButton)
+
 
 
     @QtCore.pyqtSlot("QListWidgetItem *", "QListWidgetItem *", \

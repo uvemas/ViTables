@@ -102,8 +102,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
         self.valueLE.setValidator(validator)
 
         # Make sure that buttons are in the proper activation state
-        self.valueLE.emit(QtCore.SIGNAL('textChanged(QString)'), 
-            (self.valueLE.text()))
+        self.valueLE.textChanged.emit(self.valueLE.text())
 
 
     @QtCore.pyqtSlot("QString", name="on_valueLE_textChanged")

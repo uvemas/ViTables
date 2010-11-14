@@ -65,7 +65,7 @@ class LeafView(QtGui.QTableView):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setModel(tmodel)
         self.tmodel = tmodel  # This is a MUST
-        self.leaf_numrows = tmodel.rbuffer.leaf_numrows
+        self.leaf_numrows = self.tmodel.rbuffer.leaf_numrows
         self.selection_model = self.selectionModel()
         self.current_cell = (None, None)
 
@@ -74,7 +74,7 @@ class LeafView(QtGui.QTableView):
         self.vscrollbar = self.verticalScrollBar()
 
         # For potentially huge datasets use a customised scrollbar
-        if self.leaf_numrows > tmodel.numrows:
+        if self.leaf_numrows > self.tmodel.numrows:
             self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
             self.tricky_vscrollbar = scrollBar.ScrollBar(self.vscrollbar)
             self.max_value = self.tricky_vscrollbar.maximum()
@@ -93,26 +93,21 @@ class LeafView(QtGui.QTableView):
 
         # Setup the headers' resize mode
         rmode = QtGui.QHeaderView.Stretch
-        if tmodel.columnCount() == 1:
+        if self.tmodel.columnCount() == 1:
             self.horizontalHeader().setResizeMode(rmode)
-        if tmodel.rowCount() == 1:
+        if self.tmodel.rowCount() == 1:
             self.vheader.setResizeMode(rmode)
 
         # Setup the text elide mode
         self.setTextElideMode(QtCore.Qt.ElideRight)
 
-        # Connect SIGNALS to slots
-        if self.leaf_numrows > tmodel.numrows:
-            self.connect(self.tricky_vscrollbar, 
-                        QtCore.SIGNAL("actionTriggered(int)"), 
-                        self.navigateWithMouse)
-            self.connect(self.selection_model, 
-                        QtCore.SIGNAL(\
-                            "currentChanged(QModelIndex, QModelIndex)"), 
-                        self.trackValidCurrentCell)
-            self.connect(tmodel, 
-                        QtCore.SIGNAL("headerDataChanged(int, int, int)"), 
-                        self.repaintCurrentCell)
+        # Connect signals to slots
+        if self.leaf_numrows > self.tmodel.numrows:
+            self.tricky_vscrollbar.actionTriggered.connect(\
+                self.navigateWithMouse)
+            self.selection_model.currentChanged.connect(\
+                self.trackValidCurrentCell)
+            self.tmodel.headerDataChanged.connect(self.repaintCurrentCell)
 
 
     def syncView(self):
@@ -120,10 +115,9 @@ class LeafView(QtGui.QTableView):
         vertical scrollbar.
         """
 
-        tmodel = self.model()
         top_left_corner = QtCore.QPoint(0, 0)
         fv_label = \
-            tmodel.rbuffer.start + self.indexAt(top_left_corner).row() + 1
+            self.tmodel.rbuffer.start + self.indexAt(top_left_corner).row() + 1
         value = numpy.array(fv_label*self.max_value/self.leaf_numrows, 
                             dtype=numpy.int64)
         self.tricky_vscrollbar.setValue(value)
@@ -138,12 +132,11 @@ class LeafView(QtGui.QTableView):
             - `event`: the received event
         """
 
-        tmodel = self.model()
         if event.type() in (QtCore.QEvent.MouseButtonRelease, 
             QtCore.QEvent.Wheel):
-            top_left = tmodel.index(0, 0)
-            bottom_right = tmodel.index(tmodel.numrows - 1, 
-                                            tmodel.numcols - 1)
+            top_left = self.tmodel.index(0, 0)
+            bottom_right = self.tmodel.index(self.tmodel.numrows - 1, 
+                                            self.tmodel.numcols - 1)
             self.dataChanged(top_left, bottom_right)
         return QtGui.QTableView.eventFilter(self, widget, event)
 
@@ -191,9 +184,8 @@ class LeafView(QtGui.QTableView):
         """Move towards the last section line by line or page by page.
         """
 
-        tmodel = self.model()
-        table_size = tmodel.numrows
-        last_section = tmodel.rbuffer.start + table_size
+        table_size = self.tmodel.numrows
+        last_section = self.tmodel.rbuffer.start + table_size
 
         # The required offset to make the last section visible
         last_section_offset = self.vheader.length() - \
@@ -203,8 +195,8 @@ class LeafView(QtGui.QTableView):
         if last_section_offset <= self.vheader.offset():
             if last_section < self.leaf_numrows:
                 # Buffer fault. We read the next (contiguous) buffer
-                start = tmodel.rbuffer.start + table_size
-                tmodel.loadData(start, table_size)
+                start = self.tmodel.rbuffer.start + table_size
+                self.tmodel.loadData(start, table_size)
                 self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                                 table_size - 1)
                 self.scrollToTop()
@@ -219,17 +211,16 @@ class LeafView(QtGui.QTableView):
         """Move towards the first section line by line or page by page.
         """
 
-        tmodel = self.model()
-        table_size = tmodel.numrows
-        first_section = tmodel.rbuffer.start + 1
+        table_size = self.tmodel.numrows
+        first_section = self.tmodel.rbuffer.start + 1
 
         # If the first section is visible and it is not the first row of
         # the dataset then update the buffer
         if self.vheader.offset() == 0:
             if first_section > 1:
                 # Buffer fault. We read the previous (contiguous) buffer
-                start = tmodel.rbuffer.start - table_size
-                tmodel.loadData(start, table_size)
+                start = self.tmodel.rbuffer.start - table_size
+                self.tmodel.loadData(start, table_size)
                 self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                                 table_size - 1)
                 self.scrollToBottom()
@@ -256,8 +247,7 @@ class LeafView(QtGui.QTableView):
         value = (row * max_value)/numrows
         """
 
-        tmodel = self.model()
-        table_size = tmodel.numrows
+        table_size = self.tmodel.numrows
 
         value = self.tricky_vscrollbar.sliderPosition()
         if value == 0:
@@ -275,13 +265,13 @@ class LeafView(QtGui.QTableView):
         if row + table_size > self.leaf_numrows:
             start = self.leaf_numrows - table_size
         # top/bottom buffer fault condition
-        elif (row < tmodel.rbuffer.start) or \
-            (row > tmodel.rbuffer.start + table_size - 1):
+        elif (row < self.tmodel.rbuffer.start) or \
+            (row > self.tmodel.rbuffer.start + table_size - 1):
             start = row - table_size/2
         # no fault condition occurs
         else:
             return
-        tmodel.loadData(start, table_size)
+        self.tmodel.loadData(start, table_size)
         self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                         table_size - 1)
 
@@ -292,8 +282,7 @@ class LeafView(QtGui.QTableView):
         :Parameter event: the key event being processed.
         """
 
-        tmodel = self.model()
-        if tmodel.numrows < self.leaf_numrows:
+        if self.tmodel.numrows < self.leaf_numrows:
             key = event.key()
             if key == QtCore.Qt.Key_Home:
                 self.homeKeyPressEvent()
@@ -317,16 +306,15 @@ class LeafView(QtGui.QTableView):
         """Specialised handler for the Home key press event.
         """
 
-        tmodel = self.model()
         current_column = self.vheader.currentIndex().column()
 
         # Update buffer if needed
-        index = tmodel.index(0, current_column)
-        section = tmodel.rbuffer.start + 1
+        index = self.tmodel.index(0, current_column)
+        section = self.tmodel.rbuffer.start + 1
         if section > 1:
-            tmodel.loadData(0, tmodel.numrows)
+            self.tmodel.loadData(0, self.tmodel.numrows)
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
-                                            tmodel.numrows - 1)
+                                            self.tmodel.numrows - 1)
         self.vheader.setCurrentIndex(index)
         self.scrollToTop()
 
@@ -339,15 +327,14 @@ class LeafView(QtGui.QTableView):
         """Specialised handler for the End key press event.
         """
 
-        tmodel = self.model()
         current_column = self.vheader.currentIndex().column()
-        table_size = tmodel.numrows
+        table_size = self.tmodel.numrows
 
         # Update buffer if needed
-        index = tmodel.index(table_size - 1, current_column)
-        section = tmodel.rbuffer.start + table_size
+        index = self.tmodel.index(table_size - 1, current_column)
+        section = self.tmodel.rbuffer.start + table_size
         if section < self.leaf_numrows:
-            tmodel.loadData(self.leaf_numrows - table_size, 
+            self.tmodel.loadData(self.leaf_numrows - table_size, 
                                     table_size)
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                             table_size - 1)
@@ -365,21 +352,20 @@ class LeafView(QtGui.QTableView):
         :Parameter event: the key event being processed.
         """
 
-        tmodel = self.model()
-        table_size = tmodel.numrows
+        table_size = self.tmodel.numrows
 
         # Replace the fake current cell with the valid current cell
         current_index = self.vheader.currentIndex()
         buffer_row = current_index.row()
         buffer_column = current_index.column()
         self.loadValidCurrentCell(buffer_row)
-        buffer_start = tmodel.rbuffer.start
+        buffer_start = self.tmodel.rbuffer.start
 
         # If we are at the first row of the buffer but not at the first
         # row of the dataset we still can go upwards so we have to read
         # the previous contiguous buffer
         if (buffer_row == 0) and (buffer_start > 0):
-            tmodel.loadData(buffer_start - table_size, 
+            self.tmodel.loadData(buffer_start - table_size, 
                                     table_size)
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                             table_size - 1)
@@ -389,7 +375,7 @@ class LeafView(QtGui.QTableView):
                 row = int(buffer_start - 1)
             else:
                 row = table_size - 1
-            index = tmodel.index(row, buffer_column)
+            index = self.tmodel.index(row, buffer_column)
             self.vheader.setCurrentIndex(index)
             self.scrollTo(index, QtGui.QAbstractItemView.PositionAtTop)
         else:
@@ -407,8 +393,7 @@ class LeafView(QtGui.QTableView):
         :Parameter event: the key event being processed.
         """
 
-        tmodel = self.model()
-        table_size = tmodel.numrows
+        table_size = self.tmodel.numrows
         page_step = self.vscrollbar.pageStep()
 
         # Replace the fake current cell with the valid current cell
@@ -416,22 +401,22 @@ class LeafView(QtGui.QTableView):
         buffer_row = current_index.row()
         buffer_column = current_index.column()
         self.loadValidCurrentCell(buffer_row)
-        dataset_row = tmodel.rbuffer.start + buffer_row
-        old_buffer_start = tmodel.rbuffer.start
+        dataset_row = self.tmodel.rbuffer.start + buffer_row
+        old_buffer_start = self.tmodel.rbuffer.start
 
         # If we are at the first page of the buffer but not at the first
         # page of the dataset we still can go upwards so we have to read
         # the previous contiguous buffer
-        if (buffer_row - page_step < 0) and (tmodel.rbuffer.start > 0):
-            tmodel.loadData(old_buffer_start - table_size, 
+        if (buffer_row - page_step < 0) and (self.tmodel.rbuffer.start > 0):
+            self.tmodel.loadData(old_buffer_start - table_size, 
                                     table_size)
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                             table_size - 1)
             # The position of the new current row
-            row = int(dataset_row - page_step - tmodel.rbuffer.start)
+            row = int(dataset_row - page_step - self.tmodel.rbuffer.start)
             if row < 0:
                 row = 0
-            index = tmodel.index(row, buffer_column)
+            index = self.tmodel.index(row, buffer_column)
             self.vheader.setCurrentIndex(index)
             self.scrollTo(index, QtGui.QAbstractItemView.PositionAtTop)
         else:
@@ -449,32 +434,31 @@ class LeafView(QtGui.QTableView):
         :Parameter event: the key event being processed.
         """
 
-        tmodel = self.model()
-        table_size = tmodel.numrows
+        table_size = self.tmodel.numrows
 
         # Replace the fake current cell with the valid current cell
         current_index = self.vheader.currentIndex()
         buffer_row = current_index.row()
         buffer_column = current_index.column()
         self.loadValidCurrentCell(buffer_row)
-        dataset_row = tmodel.rbuffer.start + buffer_row
-        buffer_end = tmodel.rbuffer.start + table_size - 1
+        dataset_row = self.tmodel.rbuffer.start + buffer_row
+        buffer_end = self.tmodel.rbuffer.start + table_size - 1
 
         # If we are at the last row of the buffer but not at the last
         # row of the dataset we still can go downwards so we have to
         # read the next contiguous buffer
         if (buffer_row == table_size - 1) and \
-            (tmodel.rbuffer.start + table_size < self.leaf_numrows):
-            tmodel.loadData(buffer_end + 1, table_size)
+            (self.tmodel.rbuffer.start + table_size < self.leaf_numrows):
+            self.tmodel.loadData(buffer_end + 1, table_size)
             # The position of the new current row
             # Beware that `buffer_end` is the last row of the OLD buffer
             if buffer_end + table_size > self.leaf_numrows - 1:
-                row = int(dataset_row - tmodel.rbuffer.start + 1)
+                row = int(dataset_row - self.tmodel.rbuffer.start + 1)
             else:
                 row = 0
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                             table_size - 1)
-            index = tmodel.index(row, buffer_column)
+            index = self.tmodel.index(row, buffer_column)
             self.vheader.setCurrentIndex(index)
             self.scrollTo(index, QtGui.QAbstractItemView.PositionAtBottom)
         else:
@@ -492,8 +476,7 @@ class LeafView(QtGui.QTableView):
         :Parameter event: the key event being processed.
         """
 
-        tmodel = self.model()
-        table_size = tmodel.rbuffer.chunk_size
+        table_size = self.tmodel.rbuffer.chunk_size
         page_step = self.vscrollbar.pageStep()
 
         # Replace the fake current cell with the valid current cell
@@ -501,21 +484,21 @@ class LeafView(QtGui.QTableView):
         buffer_row = current_index.row()
         buffer_column = current_index.column()
         self.loadValidCurrentCell(buffer_row)
-        dataset_row = tmodel.rbuffer.start + buffer_row
+        dataset_row = self.tmodel.rbuffer.start + buffer_row
 
         # If we are at the last page of the buffer but not at the last
         # row of the dataset we still can go downwards so we have to
         # read the next contiguous buffer
         if (buffer_row + page_step > table_size - 1) and \
-            (tmodel.rbuffer.start + table_size < self.leaf_numrows):
-            tmodel.loadData(dataset_row + 1, table_size)
+            (self.tmodel.rbuffer.start + table_size < self.leaf_numrows):
+            self.tmodel.loadData(dataset_row + 1, table_size)
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                             table_size - 1)
             # The position of the new current row
-            row = dataset_row - tmodel.rbuffer.start + page_step
+            row = dataset_row - self.tmodel.rbuffer.start + page_step
             if row > table_size - 1:
                 row = table_size - 1
-            index = tmodel.index(row, buffer_column)
+            index = self.tmodel.index(row, buffer_column)
             self.vheader.setCurrentIndex(index)
             self.scrollTo(index, QtGui.QAbstractItemView.PositionAtBottom)
         else:
@@ -532,8 +515,7 @@ class LeafView(QtGui.QTableView):
         vertical scrollbar.
         """
 
-        tmodel = self.model()
-        if tmodel.rbuffer.leaf_numrows > tmodel.numrows:
+        if self.tmodel.rbuffer.leaf_numrows > self.tmodel.numrows:
             QtCore.QCoreApplication.sendEvent(self.tricky_vscrollbar, event)
         else:
             QtGui.QTableView.wheelEvent(self, event)
@@ -561,26 +543,28 @@ class LeafView(QtGui.QTableView):
             -`previous`: the model index of the previous current cell
         """
 
-        tmodel = self.model()
-        self.current_cell = (tmodel.rbuffer.start + current.row() + 1, 
+        self.current_cell = (self.tmodel.rbuffer.start + current.row() + 1, 
                             current.column())
 
 
-    def repaintCurrentCell(self):
+    def repaintCurrentCell(self, *unused):
         """Repaint the current cell if needed.
 
-        This method is called every time the vertical header is updated. As
+        This slot is called every time the vertical header is updated. As
         we force an update of that header every time the buffer is reloaded
         this method is used to repaint the current cell every time the
         buffer is reloaded.
+
+        :Parameters:
+
+            -`unused`: a tuple containing info passed by the signal
         """
 
-        tmodel = self.model()
         current_index = self.currentIndex()
         if not current_index.isValid():
             return
 
-        current_section = tmodel.rbuffer.start + current_index.row() + 1
+        current_section = self.tmodel.rbuffer.start + current_index.row() + 1
         if (current_section, current_index.column()) == self.current_cell:
             # The cell is the valid current cell
             self.selection_model.select(current_index, 
@@ -596,11 +580,10 @@ class LeafView(QtGui.QTableView):
         :Parameter row: the position of the valid current cell in the model
         """
 
-        tmodel = self.model()
-        table_size = tmodel.numrows
+        table_size = self.tmodel.numrows
         current_section = self.current_cell[0]
-        if not current_section in (tmodel.rbuffer.start, 
-            tmodel.rbuffer.start + table_size):
-            tmodel.loadData(current_section - row - 1, table_size)
+        if not current_section in (self.tmodel.rbuffer.start, 
+            self.tmodel.rbuffer.start + table_size):
+            self.tmodel.loadData(current_section - row - 1, table_size)
             self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                             table_size - 1)

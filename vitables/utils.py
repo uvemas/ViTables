@@ -278,12 +278,11 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
     if shortcut is not None:
         action.setShortcut(shortcut)
     if tip is not None:
-#            action.setToolTip(tip)
         action.setStatusTip(tip)
     if checkable:
         action.setCheckable(True)
     if slot is not None:
-        parent.connect(action, QtCore.SIGNAL("triggered()"), slot)
+        action.triggered.connect(slot)
     return action
 
 

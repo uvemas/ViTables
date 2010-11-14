@@ -193,5 +193,4 @@ class LeafModel(QtCore.QAbstractTableModel):
         """
 
         self.rbuffer.readBuffer(start, chunk_size)
-        self.emit(QtCore.SIGNAL("headerDataChanged(int, int, int)"), 
-                    QtCore.Qt.Vertical, 0, self.numrows - 1)
+        self.headerDataChanged.emit(QtCore.Qt.Vertical, 0, self.numrows - 1)

@@ -26,7 +26,7 @@ When exporting tables, a header with the field names can be inserted.
 
 __docformat__ = 'restructuredtext'
 _context = 'ExportToCSV'
-__version__ = '0.4'
+__version__ = '0.5'
 plugin_class = 'ExportToCSV'
 
 import os
@@ -67,8 +67,7 @@ class ExportToCSV(QtCore.QObject):
         self.addEntry()
 
         # Connect signals to slots
-        self.connect(self.vtapp.dataset_menu, QtCore.SIGNAL('aboutToShow()'), 
-            self.updateDatasetMenu)
+        self.vtapp.dataset_menu.aboutToShow.connect(self.updateDatasetMenu)
 
 
     def addEntry(self):

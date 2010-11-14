@@ -95,10 +95,9 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         self.pindex = QtCore.QPersistentModelIndex(index)
 
-        self.connect(self, QtCore.SIGNAL("aboutToActivate()"), 
-                     self.syncTreeView)
-        self.connect(leaf_view, QtCore.SIGNAL("doubleClicked(QModelIndex)"), 
-            self.zoomCell)
+        # Connect signals to slots
+        self.aboutToActivate.connect(self.syncTreeView)
+        leaf_view.doubleClicked.connect(self.zoomCell)
 
 
     def closeEvent(self, event):

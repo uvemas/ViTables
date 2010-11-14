@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 14, 2010 **
+All old-style signal/lot connections replaced with new-style connections.
+
 ** November 05, 2010 **
 Several modules refactored. Code for querying tables has been debugged.
 

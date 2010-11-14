@@ -181,11 +181,10 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         #
         # Connect signals to slots
         #
-        self.connect(self.buttonBox, QtCore.SIGNAL('helpRequested()'),
-            QtGui.QWhatsThis.enterWhatsThisMode)
+        self.buttonBox.helpRequested.connect(QtGui.QWhatsThis.enterWhatsThisMode)
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
-        self.nameLE.emit(QtCore.SIGNAL("textChanged(QString)"), self.nameLE.text())
+        self.nameLE.textChanged.emit(self.nameLE.text())
 
 
     @QtCore.pyqtSlot(bool, name="on_indicesCheckBox_toggled")

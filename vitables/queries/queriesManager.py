@@ -208,8 +208,7 @@ class QueriesManager(QtCore.QObject):
         tmp_h5file = self.dbt_model.tmp_dbdoc.h5file
         new_query = query.Query(tmp_h5file, table_uid, table, 
             query_description)
-        self.connect(new_query, QtCore.SIGNAL("completed"), 
-            self.addQueryResult)
+        new_query.query_completed.connect(self.addQueryResult)
         QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
         new_query.run()
 

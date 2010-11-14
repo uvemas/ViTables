@@ -129,9 +129,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.copied_node_info = {}
         self.vtapp = parent
 
-        self.connect(self, 
-                QtCore.SIGNAL("rowsAboutToBeRemoved(QModelIndex, int, int)"), 
-                self.closeViews)
+        self.rowsAboutToBeRemoved.connect(self.closeViews)
 
 
     def mapDB(self, filepath, db_doc):
@@ -701,33 +699,27 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         node = self.nodeFromIndex(index)
         if role == QtCore.Qt.DisplayRole:
             node.name = value
-            self.emit(QtCore.SIGNAL(
-                'dataChanged(QModelIndex, QModelIndex)'), index, index)
+            self.dataChanged.emit(index, index)
             result = True
         elif role == QtCore.Qt.StatusTipRole:
             node.as_record = value
-            self.emit(QtCore.SIGNAL(
-                'dataChanged(QModelIndex, QModelIndex)'), index, index)
+            self.dataChanged.emit(index, index)
             result = True
         elif role == QtCore.Qt.DecorationRole:
             node.icon = value
-            self.emit(QtCore.SIGNAL(
-                'dataChanged(QModelIndex, QModelIndex)'), index, index)
+            self.dataChanged.emit(index, index)
             result = True
         elif role == QtCore.Qt.UserRole:
             node.filepath = value
-            self.emit(QtCore.SIGNAL(
-                'dataChanged(QModelIndex, QModelIndex)'), index, index)
+            self.dataChanged.emit(index, index)
             result = True
         elif role == QtCore.Qt.UserRole+1:
             node.nodepath = value
-            self.emit(QtCore.SIGNAL(
-                'dataChanged(QModelIndex, QModelIndex)'), index, index)
+            self.dataChanged.emit(index, index)
             result = True
         elif role == QtCore.Qt.UserRole+2:
             node.node_kind = value
-            self.emit(QtCore.SIGNAL(
-                'dataChanged(QModelIndex, QModelIndex)'), index, index)
+            self.dataChanged.emit(index, index)
             result = True
         else:
             result = False
@@ -903,7 +895,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         # Add rows to the model and update its underlaying data store
-        self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
+        self.layoutAboutToBeChanged.emit()
         first = position
         last = position + count - 1
         self.beginInsertRows(parent, first, last)
@@ -916,16 +908,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         for name in self.ldelta:
             leaf = leafNode.LeafNode(node, name)
             node.insertChild(leaf, position)
-        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-            parent, parent)
+        self.dataChanged.emit(parent, parent)
         self.endInsertRows()
-        self.emit(QtCore.SIGNAL("layoutChanged()"))
+        self.layoutChanged.emit()
 
         # Report views about changes in data
         top_left = self.index(first, 0, parent)
         bottom_right = self.index(last, 0, parent)
-        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-            top_left, bottom_right)
+        self.dataChanged.emit(top_left, bottom_right)
 
         return True
 
@@ -945,16 +935,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         # Remove rows from the model and update its underlaying data store
-        self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
+        self.layoutAboutToBeChanged.emit()
         first = position
         last = position + count - 1
         self.beginRemoveRows(parent, first, last)
         group = self.nodeFromIndex(parent)
         del group.children[position]
-        self.emit(QtCore.SIGNAL("dataChanged(QModelIndex, QModelIndex)"), 
-            parent, parent)
+        self.dataChanged.emit(parent, parent)
         self.endRemoveRows()
-        self.emit(QtCore.SIGNAL("layoutChanged()"))
+        self.layoutChanged.emit()
 
         return True
 

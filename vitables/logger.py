@@ -99,9 +99,7 @@ class Logger(QtGui.QTextEdit):
                 QtGui.QPalette.WindowText)}
 
         # Connect signals to slots
-        self.connect(self, 
-            QtCore.SIGNAL("customContextMenuRequested(QPoint)"), 
-            self.createCustomContextMenu)
+        self.customContextMenuRequested.connect(self.createCustomContextMenu)
 
 
     def write(self, text):
@@ -156,8 +154,7 @@ class Logger(QtGui.QTextEdit):
             trs("Select &All", 'Logger menu entry'),
             self, QtCore.SLOT('selectAll()'))
 
-        self.connect(edit_menu, QtCore.SIGNAL('aboutToShow()'),
-            self.updateEditMenu)
+        edit_menu.aboutToShow.connect(self.updateEditMenu)
 
         edit_menu.popup(self.mapToGlobal(pos))
 

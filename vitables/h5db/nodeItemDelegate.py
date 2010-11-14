@@ -135,7 +135,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
 
         # Update the underlying data structure
         model.renameNode(index, nodename, overwrite)
-        self.emit(QtCore.SIGNAL('closeEditor(QWidget *)'), editor)
+        self.closeEditor.emit(editor, 0)
 
         # Update the application status bar
         self.vtapp.updateStatusBar()

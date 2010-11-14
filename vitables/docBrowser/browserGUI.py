@@ -284,28 +284,41 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         browser controller (`HelpBrowser`).
         """
 
-        self.connect(self.combo_history, 
-            QtCore.SIGNAL('activated(QString)'), self.browser.slotDisplaySrc)
+        self.combo_history.activated[unicode].connect(\
+            self.browser.slotDisplaySrc)
 
         # This is the most subtle connection. It encompasses source
         # changes coming from anywhere, including slots (home, backward
         # and forward), menus (Go and Bookmarks), clicked links and
         # programatic changes (setSource calls).
-        self.connect(self.text_browser, 
-            QtCore.SIGNAL('sourceChanged(QUrl)'), 
-            self.browser.updateHistory)
+        self.text_browser.sourceChanged.connect(self.browser.updateHistory)
 
-        self.connect(self.text_browser, 
-            QtCore.SIGNAL('backwardAvailable(bool)'), 
+        self.text_browser.backwardAvailable.connect(\
             self.browser.slotUpdateBackward)
 
-        self.connect(self.text_browser, 
-            QtCore.SIGNAL('forwardAvailable(bool)'), 
+        self.text_browser.forwardAvailable.connect(\
             self.browser.slotUpdateForward)
 
-        self.connect(self.bookmarks_menu, 
-            QtCore.SIGNAL('aboutToShow()'), 
-            self.browser.slotRecentSubmenuAboutToShow)
+        self.bookmarks_menu.aboutToShow.connect(self.updateRecentSubmenu)
+
+
+    def updateRecentSubmenu(self):
+        """Update the content of the Bookmarks menu."""
+
+        # Clear the current bookmarks from the Bookmarks menu
+        for action in self.bookmarks_menu.actions():
+            if action.text().count(QtCore.QRegExp("^\d")):
+                self.bookmarks_menu.removeAction(action)
+        # and refresh it
+        index = 0
+        for item in self.browser.bookmarks:
+            index += 1
+            filepath = unicode(item)
+            action = QtGui.QAction('%s. %s' % (index, filepath), 
+                                               self.bookmarks_menu)
+            action.setData(QtCore.QVariant(item))
+            self.bookmarks_menu.addAction(action)
+            action.triggered.connect(self.browser.slotDisplaySrc)
 
 
     def setupHistoryCombo(self):

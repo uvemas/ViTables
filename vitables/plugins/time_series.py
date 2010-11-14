@@ -27,7 +27,7 @@ series contained in PyTables tables generated via scikits.timeseries.
 
 __docformat__ = 'restructuredtext'
 _context = 'TSFormatter'
-__version__ = '0.7'
+__version__ = '0.8'
 plugin_class = 'TSFormatter'
 
 import time
@@ -146,8 +146,7 @@ class TSFormatter(object):
         """
 
         self.vtapp = vitables.utils.getVTApp()
-        QtCore.QObject.connect(self.vtapp, 
-            QtCore.SIGNAL("leaf_model_created"), self.customiseModel)
+        self.vtapp.leaf_model_created.connect(self.customiseModel)
 
 
     def customiseModel(self, datasheet):

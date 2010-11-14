@@ -117,15 +117,9 @@ class BookmarksDlg(QtGui.QDialog):
         self.show()
 
         # Finally we connect signals to slots
-        self.connect(self.tmodel, 
-            QtCore.SIGNAL('itemChanged(QStandardItem *)'), 
-            self.slotCheckDeleteButton)
-        self.connect(self.tree, 
-            QtCore.SIGNAL('doubleClicked(QModelIndex)'), 
-            self.slotDisplayBookmark)
-        self.connect(self.button_group, 
-            QtCore.SIGNAL('clicked(QAbstractButton *)'), 
-            self.slotButtonClicked)
+        self.tmodel.itemChanged.connect(self.updateDeleteButton)
+        self.tree.doubleClicked.connect(self.displayBookmark)
+        self.button_group.clicked.connect(self.buttonClicked)
 
         self.del_button.setEnabled(False)
 
@@ -152,7 +146,7 @@ class BookmarksDlg(QtGui.QDialog):
         self.repaint()
 
 
-    def slotDisplayBookmark(self, index):
+    def displayBookmark(self, index):
         """
         Display a given bookmark in the help browser.
 
@@ -166,7 +160,7 @@ class BookmarksDlg(QtGui.QDialog):
         self.parent().browser.slotDisplaySrc(src)
 
 
-    def slotCheckDeleteButton(self, item):
+    def updateDeleteButton(self, item):
         """
         Enable/disable the ``Delete`` button.
 
@@ -190,7 +184,7 @@ class BookmarksDlg(QtGui.QDialog):
         self.del_button.setEnabled(enabled)
 
 
-    def slotButtonClicked(self, button):
+    def buttonClicked(self, button):
         """
         Action selector method.
 

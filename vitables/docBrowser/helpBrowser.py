@@ -117,7 +117,7 @@ class HelpBrowser(QtCore.QObject) :
         self.gui.show()
 
 
-    def slotDisplaySrc(self, src=None):
+    def slotDisplaySrc(self, src=False):
         """
         Displays a document in the `HelpBrowser` window.
 
@@ -131,7 +131,7 @@ class HelpBrowser(QtCore.QObject) :
         :Parameter src: the path of the file being displayed
         """
 
-        if src is None: # entry selected in the Bookmarks menu
+        if src is False: # entry selected in the Bookmarks menu
             action = self.gui.sender()
             src = action.data().toString()
 
@@ -206,32 +206,6 @@ class HelpBrowser(QtCore.QObject) :
     def slotUpdateBackward(self, available) :
         """Enables/disables the Go --> Backward menu item."""
         self.gui.actions['goBackward'].setEnabled(available)
-
-    #########################################################
-    #
-    # 					Bookmarks menu related slots
-    #
-    #########################################################
-
-    def slotRecentSubmenuAboutToShow(self):
-        """Update the content of the Bookmarks menu."""
-
-        # Clear the last bookmarks menu...
-        menu_actions = self.gui.bookmarks_menu.actions()
-        for action in menu_actions:
-            if action.text().count(QtCore.QRegExp("^\d")):
-                self.gui.bookmarks_menu.removeAction(action)
-        # and refresh it
-        index = 0
-        for item in self.bookmarks:
-            index += 1
-            filepath = unicode(item)
-            action = QtGui.QAction('%s. %s' % (index, filepath), 
-                                               self.gui.bookmarks_menu)
-            action.setData(QtCore.QVariant(item))
-            self.gui.connect(action, QtCore.SIGNAL("triggered()"), 
-                self.slotDisplaySrc)
-            self.gui.bookmarks_menu.addAction(action)
 
 
     def slotAddBookmark(self) :

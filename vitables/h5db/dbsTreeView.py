@@ -120,16 +120,11 @@ class DBsTreeView(QtGui.QTreeView):
             'WhatsThis help for the tree pane'))
 
         # Connect signals to slots
-        self.connect(self, QtCore.SIGNAL("customContextMenuRequested(QPoint)"),
-            self.createCustomContextMenu)
-        self.connect(self, QtCore.SIGNAL('activated(QModelIndex)'), 
-            self.activateNode)
-        self.connect(self, QtCore.SIGNAL('expanded(QModelIndex)'), 
-            self.updateExpandedGroup)
-        self.connect(self, QtCore.SIGNAL('collapsed(QModelIndex)'), 
-            self.updateCollapsedGroup)
-        self.connect(self.dbt_model, QtCore.SIGNAL('layoutChanged()'), 
-            self.updateColumnWidth)
+        self.customContextMenuRequested.connect(self.createCustomContextMenu)
+        self.activated.connect(self.activateNode)
+        self.expanded.connect(self.updateExpandedGroup)
+        self.collapsed.connect(self.updateCollapsedGroup)
+        self.dbt_model.layoutChanged.connect(self.updateColumnWidth)
 
 
     def updateColumnWidth(self):
