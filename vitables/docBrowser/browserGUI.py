@@ -105,49 +105,49 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         actions = {}
         actions['exitBrowser'] = vitables.utils.createAction(self, 
                 trs('E&xit', 'File --> Exit'), 
-                QtGui.QKeySequence('CTRL+Q'), self.browser.slotExitBrowser, 
+                QtGui.QKeySequence('CTRL+Q'), self.browser.exitBrowser, 
                 self.icons['application-exit'], 
                 trs('Close Help Browser', 
                     'Status bar text for the File --> Exit action'))
 
         actions['zoomIn'] = vitables.utils.createAction(self, 
                 trs('Zoom &in', 'View --> Zoom in'), 
-                QtGui.QKeySequence.ZoomIn, self.browser.slotZoomIn, 
+                QtGui.QKeySequence.ZoomIn, self.browser.zoomIn, 
                 self.icons['zoom-in'], 
                 trs('Increases the font size', 
                     'Status bar text for the View --> Zoom in action'))
 
         actions['zoomOut'] = vitables.utils.createAction(self, 
                 trs('Zoom &out', 'View --> Zoom out'), 
-                QtGui.QKeySequence.ZoomOut, self.browser.slotZoomOut, 
+                QtGui.QKeySequence.ZoomOut, self.browser.zoomOut, 
                 self.icons['zoom-out'], 
                 trs('Decreases the font size', 
                     'Status bar text for the View --> Zoom out action'))
 
         actions['goHome'] = vitables.utils.createAction(self.text_browser, 
                 trs('&Home', 'Go --> Home'), 
-                QtGui.QKeySequence.UnknownKey, QtCore.SLOT('home()'), 
+                QtGui.QKeySequence.UnknownKey, self.text_browser.home, 
                 self.icons['go-first-view'], 
                 trs('Go to the first visited page', 
                     'Status bar text for the  Go --> Home action'))
 
         actions['goBackward'] = vitables.utils.createAction(self.text_browser, 
                 trs('&Backward', ' Go --> Backward'), 
-                QtGui.QKeySequence.Back, QtCore.SLOT('backward()'), 
+                QtGui.QKeySequence.Back, self.text_browser.backward, 
                 self.icons['go-previous-view'], 
                 trs('Go to previous page', 
                     'Status bar text for the  Go --> Backward action'))
 
         actions['goForward'] = vitables.utils.createAction(self.text_browser, 
                 trs('&Forward', ' Go --> Forward'), 
-                QtGui.QKeySequence.Forward, QtCore.SLOT('forward()'), 
+                QtGui.QKeySequence.Forward, self.text_browser.forward, 
                 self.icons['go-next-view'], 
                 trs('Go to next page', 
                     'Status bar text for the  Go --> Forward action'))
 
         actions['goReload'] = vitables.utils.createAction(self.text_browser, 
                 trs('&Reload', 'Go --> Reload'), 
-                QtGui.QKeySequence.Refresh, QtCore.SLOT('reload()'), 
+                QtGui.QKeySequence.Refresh, self.text_browser.reload, 
                 self.icons['view-refresh'], 
                 trs('Reload the current page', 
                     'Status bar text for the  Go --> Reload action'))
@@ -155,7 +155,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         actions['bookmarksAdd'] = vitables.utils.createAction(self, 
                 trs('&Add bookmark', 'Bookmarks --> Add bookmark'), 
                 QtGui.QKeySequence('CTRL+Alt+N'), 
-                self.browser.slotAddBookmark, self.icons['bookmark_add'], 
+                self.browser.addBookmark, self.icons['bookmark_add'], 
                 trs('Bookmark the current page', 
                     'Status bar text for Bookmarks --> Add bookmark action'))
 
@@ -163,34 +163,34 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
                 trs('&Edit bookmarks...', 
                           'Bookmarks --> Edit bookmarks'), 
                 QtGui.QKeySequence('CTRL+Alt+E'), 
-                self.browser.slotEditBookmarks, self.icons['bookmarks'], 
+                self.browser.editBookmarks, self.icons['bookmarks'], 
                 trs('Edit bookmarks', 
                     'Status bar text for Bookmarks --> Edit bookmarks action'))
 
         actions['bookmarksClear'] = vitables.utils.createAction(self, 
                 trs('&Clear All', 'Bookmarks --> Clear bookmark'), 
                 QtGui.QKeySequence('CTRL+Alt+C'), 
-                self.browser.slotClearBookmarks, None, 
+                self.browser.clearBookmarks, None, 
                 trs('Clear all existing bookmarks', 
                     'Status bar text for Bookmarks --> Add bookmark action'))
 
         actions['about'] = vitables.utils.createAction(self, 
                 trs('&About HelpBrowser', 'Help --> About HelpBrowser'), 
                 QtGui.QKeySequence.UnknownKey, 
-                self.browser.slotAboutHelpBrowser, None, 
+                self.browser.aboutBrowser, None, 
                 trs('About HelpBrowser', 
                     'Status bar text for Help --> About HelpBrowser action'))
 
         actions['aboutQt'] = vitables.utils.createAction(self, 
                 trs('About &Qt', 'Help --> About Qt'), 
-                QtGui.QKeySequence.UnknownKey, self.browser.slotAboutQt, 
+                QtGui.QKeySequence.UnknownKey, self.browser.aboutQt, 
                 None, 
                 trs('About Qt', 
                     'Status bar text for the Help --> About Qt action'))
 
         actions['clearSession'] = vitables.utils.createAction(self, 
                 trs('Clear history', ''), 
-                QtGui.QKeySequence.UnknownKey, self.browser.slotClearHistory, 
+                QtGui.QKeySequence.UnknownKey, self.browser.clearHistory, 
                 self.icons['edit-clear-history'], 
                 trs('Clear the content of the history combobox', 
                     ''))
@@ -285,7 +285,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         """
 
         self.combo_history.activated[unicode].connect(\
-            self.browser.slotDisplaySrc)
+            self.browser.displaySrc)
 
         # This is the most subtle connection. It encompasses source
         # changes coming from anywhere, including slots (home, backward
@@ -294,10 +294,10 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         self.text_browser.sourceChanged.connect(self.browser.updateHistory)
 
         self.text_browser.backwardAvailable.connect(\
-            self.browser.slotUpdateBackward)
+            self.browser.updateBackward)
 
         self.text_browser.forwardAvailable.connect(\
-            self.browser.slotUpdateForward)
+            self.browser.updateForward)
 
         self.bookmarks_menu.aboutToShow.connect(self.updateRecentSubmenu)
 
@@ -318,7 +318,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
                                                self.bookmarks_menu)
             action.setData(QtCore.QVariant(item))
             self.bookmarks_menu.addAction(action)
-            action.triggered.connect(self.browser.slotDisplaySrc)
+            action.triggered.connect(self.browser.displaySrc)
 
 
     def setupHistoryCombo(self):
@@ -350,9 +350,9 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         """
 
         # When the help browser window is closed via File --> Exit
-        # the slotExitBrowser is called and its history is saved.
+        # the exitBrowser is called and its history is saved.
         # But if we close the window with the
         # close button then history is not saved at all.
         # We fix this misbehavior by overwriting this method.
-        self.browser.slotExitBrowser()
+        self.browser.exitBrowser()
         QtGui.QMainWindow.closeEvent(self, event)

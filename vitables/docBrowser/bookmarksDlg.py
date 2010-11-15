@@ -157,7 +157,7 @@ class BookmarksDlg(QtGui.QDialog):
         # Get the bookmark UID
         row = self.tmodel.itemFromIndex(index).row()
         src = self.blist[row]
-        self.parent().browser.slotDisplaySrc(src)
+        self.parent().browser.displaySrc(src)
 
 
     def updateDeleteButton(self, item):

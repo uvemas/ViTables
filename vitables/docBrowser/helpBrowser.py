@@ -29,25 +29,25 @@ Classes:
 Methods:
 
 * __init__(self, vtapp) 
-* slotDisplaySrc(self, src=None)
+* displaySrc(self, src=None)
 * slotNewBrowser(self)
 * slotOpenFile(self, filepath=None)
 * slotCloseWindow(self)
-* slotExitBrowser(self)
-* slotZoomIn(self) 
-* slotZoomOut(self) 
+* exitBrowser(self)
+* zoomIn(self) 
+* zoomOut(self) 
 * updateHome(self) 
-* slotUpdateForward(self, available)
-* slotUpdateBackward(self, available)
+* updateForward(self, available)
+* updateBackward(self, available)
 * slotRecentSubmenuAboutToShow(self)
 * slotOpenBookmark(self, bmark_id)
-* slotAddBookmark(self)
-* slotEditBookmarks(self)
-* slotClearBookmarks(self)
-* slotClearHistory(self)
+* addBookmark(self)
+* editBookmarks(self)
+* clearBookmarks(self)
+* clearHistory(self)
 * updateHistory(self, src) 
-* slotAboutHelpBrowser(self)
-* slotAboutQt(self)
+* aboutBrowser(self)
+* aboutQt(self)
 
 Functions:
 
@@ -113,15 +113,15 @@ class HelpBrowser(QtCore.QObject) :
 
         # The GUI setup is slow so it is not shown until the setup is
         # done (it avoids displaying an ugly empty widget)
-        self.slotDisplaySrc('index.html')
+        self.displaySrc('index.html')
         self.gui.show()
 
 
-    def slotDisplaySrc(self, src=False):
+    def displaySrc(self, src=False):
         """
         Displays a document in the `HelpBrowser` window.
 
-        This method is called when:
+        This slot is called when:
 
             - HelpBrowser.slotOpenFile is launched
             - BookmarksDlg.slotDisplayBookmark is launched
@@ -146,15 +146,15 @@ class HelpBrowser(QtCore.QObject) :
     #
     #########################################################
 
-    def slotExitBrowser(self) :
+    def exitBrowser(self) :
         """
         Quit the HelpBrowser.
 
         File --> Exit
 
-        Before to quit, session and bookmarks must be saved. Then all browser
-        windows are closed.
-        We save the state of the window on which exit is invoqued.
+        Before quitting this slot saves session and bookmarks. Then all browser
+        windows are closed. The saved state corresponds to the window on which 
+        Exit is invoqued.
         """
 
         # Close all browsers
@@ -169,12 +169,12 @@ class HelpBrowser(QtCore.QObject) :
     #
     #########################################################
 
-    def slotZoomIn(self) :
+    def zoomIn(self) :
         """Increases the font size of the displayed source."""
         self.gui.text_browser.zoomIn(2)
 
 
-    def slotZoomOut(self) :
+    def zoomOut(self) :
         """Increases the font size of the displayed source."""
         self.gui.text_browser.zoomOut(2)
 
@@ -198,17 +198,22 @@ class HelpBrowser(QtCore.QObject) :
             self.gui.actions['goHome'].setEnabled(0)
 
 
-    def slotUpdateForward(self, available) :
+    def updateForward(self, available) :
         """Enables/disables the Go --> Forward menu item."""
         self.gui.actions['goForward'].setEnabled(available)
 
 
-    def slotUpdateBackward(self, available) :
+    def updateBackward(self, available) :
         """Enables/disables the Go --> Backward menu item."""
         self.gui.actions['goBackward'].setEnabled(available)
 
+    #########################################################
+    #
+    # 					Bookmarks menu related slots
+    #
+    #########################################################
 
-    def slotAddBookmark(self) :
+    def addBookmark(self) :
         """
         Add the current page to the bookmarks menu.
 
@@ -226,7 +231,7 @@ class HelpBrowser(QtCore.QObject) :
             self.bookmarks.append(src)
 
 
-    def slotEditBookmarks(self) :
+    def editBookmarks(self) :
         """
         Edit bookmarks.
 
@@ -238,7 +243,7 @@ class HelpBrowser(QtCore.QObject) :
         edit_dlg.exec_()
 
 
-    def slotClearBookmarks(self) :
+    def clearBookmarks(self) :
         """Clear all bookmarks."""
         self.bookmarks.clear()
 
@@ -248,7 +253,7 @@ class HelpBrowser(QtCore.QObject) :
     #
     #########################################################
 
-    def slotClearHistory(self) :
+    def clearHistory(self) :
         """
         Clear the history of visited documents.
 
@@ -293,7 +298,7 @@ class HelpBrowser(QtCore.QObject) :
     #
     #########################################################
 
-    def slotAboutHelpBrowser(self) :
+    def aboutBrowser(self) :
         """
         Shows a message box with the application ``About`` info.
 
@@ -311,7 +316,7 @@ class HelpBrowser(QtCore.QObject) :
             )
 
 
-    def slotAboutQt(self) :
+    def aboutQt(self) :
         """
         Shows a message box with the ``Qt About`` info.
 
