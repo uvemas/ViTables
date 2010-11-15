@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** November 15, 2010 **
 Some improvements applied to the docBrowser subpackage.
 
+The logger.py module has been refactored.
+
 ** November 14, 2010 **
 All old-style signal/lot connections replaced with new-style connections.
 

@@ -49,6 +49,8 @@ _context = 'Logger'
 
 from PyQt4 import QtCore, QtGui
 
+import vitables.utils
+
 
 def trs(source, comment=None):
     """Translate string function."""
@@ -143,19 +145,31 @@ class Logger(QtGui.QTextEdit):
         # Make the menu
         edit_menu = QtGui.QMenu(self)
         edit_menu.setStyleSheet("background-color: %s" % QtGui.QPalette.Window)
-        self.copy_action = edit_menu.addAction(
-            trs("&Copy", 'Logger menu entry'),
-            self, QtCore.SLOT('copy()'))
-        self.clear_action = edit_menu.addAction(
-            trs("Cl&ear All", 'Logger menu entry'),
-            self, QtCore.SLOT('clear()'))
+
+        self.copy_action = vitables.utils.createAction(self, 
+            trs("&Copy", 'Logger menu entry'), QtGui.QKeySequence.Copy, 
+            self.copy, None, 
+            trs('Copy selected text to clipboard', 
+                'Status bar text for the logger context menu -> Copy action'))
+        self.copy_action.setShortcutContext(QtCore.Qt.WidgetShortcut)
+        edit_menu.addAction(self.copy_action)
+
+        self.clear_action = vitables.utils.createAction(self, 
+            trs("Cl&ear All", 'Logger menu entry'), None, 
+            self.clear, None, 
+            trs('Empty the Logger', 
+                'Status bar text for the logger context menu -> Clear action'))
+        edit_menu.addAction(self.clear_action)
         edit_menu.addSeparator()
-        self.select_action = edit_menu.addAction(
-            trs("Select &All", 'Logger menu entry'),
-            self, QtCore.SLOT('selectAll()'))
+
+        self.select_action = vitables.utils.createAction(self, 
+            trs("Select &All", 'Logger menu entry'), None, 
+            self.selectAll, None, 
+            trs('Select the whole Logger contents', 
+                'Status bar text for the logger context menu -> Select All'))
+        edit_menu.addAction(self.select_action)
 
         edit_menu.aboutToShow.connect(self.updateEditMenu)
-
         edit_menu.popup(self.mapToGlobal(pos))
 
 
