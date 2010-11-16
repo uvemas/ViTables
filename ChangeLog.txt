@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** November 16, 2010 **
+Some improvements applied to vtapp.py module.
+
 Some small improvements have been made to several modules.
 
 Several methods renamed to shorter names. Fixed a small bug.

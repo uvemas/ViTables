@@ -101,7 +101,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # The leaf attribute is required to keep working the code for
         # cleaning the workspace when a file is closed.
         # The WA_DeleteOnClose flag makes that when the widget is
-        # closed either programatically (see VTAPP.windowsClose)
+        # closed either programatically (see VTAPP.windowClose)
         # or by the user (clicking the close button in the titlebar)
         # the widget is hiden AND destroyed --> the workspace
         # updates automatically its list of open windows --> the

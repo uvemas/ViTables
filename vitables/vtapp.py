@@ -235,7 +235,7 @@ class VTApp(QtGui.QMainWindow):
         self.dbs_tree_model.rowsRemoved.connect(self.updateActions)
         self.dbs_tree_model.rowsInserted.connect(self.updateActions)
 
-        self.updateWindowsMenu()
+        self.updateWindowMenu()
 
         self.workspace.installEventFilter(self)
 
@@ -404,33 +404,35 @@ class VTApp(QtGui.QMainWindow):
 
         actions['windowRestoreAll'] = vitables.utils.createAction(self, 
             trs('&Restore All', 'Windows -> Restore All'), None, 
-            self.windowsRestoreAll, None, 
+            self.windowRestoreAll, None, 
             trs('Restore all minimized windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowRestoreAll'].setObjectName('windowRestoreAll')
 
         actions['windowMinimizeAll'] = vitables.utils.createAction(self, 
             trs('&Minimize All', 'Windows -> Minimize All'), None, 
-            self.windowsMinimizeAll, None, 
+            self.windowMinimizeAll, None, 
             trs('Minimize all windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowMinimizeAll'].setObjectName('windowMinimizeAll')
 
         actions['windowClose'] = vitables.utils.createAction(self, 
             trs('C&lose', 'Windows -> Close'), None, 
-            self.windowsClose, None, 
+            self.windowClose, None, 
             trs('Close the active view', 
                 'Status bar text for the Windows -> Close action'))
         actions['windowClose'].setObjectName('windowClose')
 
         actions['windowCloseAll'] = vitables.utils.createAction(self, 
             trs('Close &All', 'Windows -> Close All'), None, 
-            self.windowsCloseAll, None, 
+            self.windowCloseAll, None, 
             trs('Close all views', 
                 'Status bar text for the Windows -> Close All action'))
         actions['windowCloseAll'].setObjectName('windowCloseAll')
 
-        actions['windowsActionGroup'] = QtGui.QActionGroup(self)
+        actions['windowSeparator'] = QtGui.QAction(\
+            trs('Current View', 'Windows -> separator'), self)
+        actions['windowSeparator'].setSeparator(True)
 
         actions['mdiTabbed'] = vitables.utils.createAction(self, 
             trs('Change view mode', 'MDI -> Tabbed'), None, 
@@ -526,6 +528,21 @@ class VTApp(QtGui.QMainWindow):
         self.help_toolbar.addAction(whatis)
 
 
+    def initStatusBar(self):
+        """Init status bar."""
+
+        status_bar = self.statusBar()
+        self.sb_node_info = QtGui.QLabel(status_bar)
+        self.sb_node_info.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, \
+                                        QtGui.QSizePolicy.Minimum)
+        status_bar.addPermanentWidget(self.sb_node_info)
+        self.sb_node_info.setToolTip(trs(
+            'The node currently selected in the Tree of databases pane',
+            'The Selected node box startup message'))
+        status_bar.showMessage(trs('Ready...',
+            'The status bar startup message'))
+
+
     def setupMenus(self):
         """
         Set up the main window menus.
@@ -593,10 +610,15 @@ class VTApp(QtGui.QMainWindow):
         self.windows_menu = self.menuBar().addMenu(trs("&Window", 
             'The Windows menu entry'))
         self.windows_menu.setObjectName('windows_menu')
+        windows_actions = ['windowCascade', 'windowTile', 
+                           'windowRestoreAll', 'windowMinimizeAll', 
+                           'windowClose', 'windowCloseAll', 'windowSeparator']
+        vitables.utils.addActions(self.windows_menu, windows_actions, 
+                                    self.gui_actions)
+        self.windows_menu.setSeparatorsCollapsible(True)
         action_group = QtGui.QActionGroup(self.windows_menu)
-        action_group.setExclusive(True)
         self.windows_menu.action_group = action_group
-        self.windows_menu.aboutToShow.connect(self.updateWindowsMenu)
+        self.windows_menu.aboutToShow.connect(self.updateWindowMenu)
 
         # Create the Help menu and add actions/menus/separators to it
         help_menu = self.menuBar().addMenu(trs("&Help", 
@@ -643,21 +665,6 @@ class VTApp(QtGui.QMainWindow):
         actions = ['mdiTabbed', None, 
             self.windows_menu]
         vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
-
-
-    def initStatusBar(self):
-        """Init status bar."""
-
-        status_bar = self.statusBar()
-        self.sb_node_info = QtGui.QLabel(status_bar)
-        self.sb_node_info.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, \
-                                        QtGui.QSizePolicy.Minimum)
-        status_bar.addPermanentWidget(self.sb_node_info)
-        self.sb_node_info.setToolTip(trs(
-            'The node currently selected in the Tree of databases pane',
-            'The Selected node box startup message'))
-        status_bar.showMessage(trs('Ready...',
-            'The status bar startup message'))
 
     # Databases are automatically opened at startup when:
     # 
@@ -946,7 +953,7 @@ class VTApp(QtGui.QMainWindow):
         self.open_recent_submenu.addAction(action)
 
 
-    def updateWindowsMenu(self):
+    def updateWindowMenu(self):
         """
         Update the Windows menu.
 
@@ -958,18 +965,17 @@ class VTApp(QtGui.QMainWindow):
         from scratch every time it is about to show.
         """
 
-        self.windows_menu.clear()
-        windows_actions = ['windowCascade', 'windowTile', 
-                           'windowRestoreAll', 'windowMinimizeAll', 
-                           'windowClose', 'windowCloseAll', None]
-        vitables.utils.addActions(self.windows_menu, windows_actions, 
-                                    self.gui_actions)
+        menu = self.windows_menu
         windows_list = self.workspace.subWindowList()
         if not windows_list:
             return
-        self.windows_menu.setSeparatorsCollapsible(True)
 
-        menu = self.windows_menu
+        # Clear the existing views from the Window menu
+        for action in menu.action_group.actions():
+            menu.action_group.removeAction(action)
+            menu.removeAction(action)
+
+        # Reload the existing views
         counter = 1
         for window in windows_list:
             title = window.windowTitle()
@@ -982,10 +988,10 @@ class VTApp(QtGui.QMainWindow):
             elif counter < 36:
                 accel = "&%c " % chr(counter + ord("@") - 9)
             action = menu.addAction("%s%s" % (accel, title))
+            menu.action_group.addAction(action)
             action.setCheckable(True)
             if self.workspace.activeSubWindow() == window:
                 action.setChecked(True)
-            menu.action_group.addAction(action)
             action.triggered.connect(self.window_mapper.map)
             self.window_mapper.setMapping(action, window)
             counter = counter + 1
@@ -1799,26 +1805,26 @@ class VTApp(QtGui.QMainWindow):
             del prefs
 
 
-    def windowsClose(self):
+    def windowClose(self):
         """Close the window currently active in the workspace."""
         self.workspace.activeSubWindow().close()
 
 
-    def windowsCloseAll(self):
+    def windowCloseAll(self):
         """Close all open windows."""
 
         for window in self.workspace.subWindowList():
             window.close()
 
 
-    def windowsRestoreAll(self):
+    def windowRestoreAll(self):
         """Restore every window in the workspace to its normal size."""
 
         for window in self.workspace.subWindowList():
             window.showNormal()
 
 
-    def windowsMinimizeAll(self):
+    def windowMinimizeAll(self):
         """Restore every window in the workspace to its normal size."""
 
         for window in self.workspace.subWindowList():
