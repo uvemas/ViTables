@@ -236,11 +236,6 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
 
 
         # Create the Bookmarks menu and toolbar
-        # This menu is a special case. It is due to its dynamic nature.
-        # The menu content vary every time a bookmark is added/deleted
-        # In order to track changes and keep it updated, the menu is reloaded
-        # every time it is about to be displayed. This goal is achieved using
-        # signal/slot mechanism (see helpBrowser.py module). 
         self.bookmarks_menu = self.menuBar().addMenu(trs("&Bookmarks", 
             'The Bookmarks menu entry'))
         bookmarks_toolbar = QtGui.QToolBar(trs('Bookmarks operations', 
@@ -299,6 +294,10 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         self.text_browser.forwardAvailable.connect(\
             self.browser.updateForward)
 
+        # The Bookmarks menu is special case due to its dynamic nature.
+        # The menu content vary every time a bookmark is added/deleted
+        # In order to track changes and keep it updated, the menu is reloaded
+        # every time it is about to be displayed.
         self.bookmarks_menu.aboutToShow.connect(self.updateRecentSubmenu)
 
 

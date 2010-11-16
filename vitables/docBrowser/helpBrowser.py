@@ -199,12 +199,18 @@ class HelpBrowser(QtCore.QObject) :
 
 
     def updateForward(self, available) :
-        """Enables/disables the Go --> Forward menu item."""
+        """Enables/disables the Go --> Forward menu item.
+
+        :Parameter available: a boolean
+        """
         self.gui.actions['goForward'].setEnabled(available)
 
 
     def updateBackward(self, available) :
-        """Enables/disables the Go --> Backward menu item."""
+        """Enables/disables the Go --> Backward menu item.
+
+        :Parameter available: a boolean
+        """
         self.gui.actions['goBackward'].setEnabled(available)
 
     #########################################################

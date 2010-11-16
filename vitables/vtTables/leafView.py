@@ -141,42 +141,39 @@ class LeafView(QtGui.QTableView):
         return QtGui.QTableView.eventFilter(self, widget, event)
 
 
-    def navigateWithMouse(self, int_action):
+    def navigateWithMouse(self, action):
         """Navigate the table with the mouse.
 
-        This method is called once the
-        `action` has set the slider position but before the display has
-        been updated (see documentation of the actionTriggered method in
-        the Qt4 docs). For instance, if the action `move one line
-        downwards` is received when the last section of the table is
-        visible, a buffer fault will occur once the action gets propagated
-        but, before it happens, this method is called giving us the chance
-        of make a buffer update.
+        This slot is called after the `action` has set the slider position 
+        but before the display has been updated (see documentation of the 
+        QAbstractSlider.actionTriggered signal in the Qt4 docs). So in this 
+        method we can safely do any action before that display update happens. 
+        For instance, if the received action is `move one line downwards` and 
+        the last section of the table is visible, we can make a buffer update, 
+        realize than a buffer fault is needed and do it. After executing this 
+        slot the valueChanged signal will be emitted and the visual display 
+        will be updated.
 
-        :Parameter int_action: the triggered slider action
+        :Parameter action: the triggered slider action
         """
 
-        # actionTriggered() QtCore.SIGNAL passes integer values but triggerAction()
-        # method requires an argument from the QAbstractSlider enum
-        int2action = {1: QtGui.QAbstractSlider.SliderSingleStepAdd, 
-                      2: QtGui.QAbstractSlider.SliderSingleStepSub, 
-                      3: QtGui.QAbstractSlider.SliderPageStepAdd, 
-                      4: QtGui.QAbstractSlider.SliderPageStepSub, 
-                      7: QtGui.QAbstractSlider.SliderMove}
-        if not int2action.has_key(int_action):
+        # The QAbstractSlider.SliderAction enum values used in this method
+        # QtGui.QAbstractSlider.SliderSingleStepAdd -> 1
+        # QtGui.QAbstractSlider.SliderSingleStepSub -> 2
+        # QtGui.QAbstractSlider.SliderPageStepAdd -> 3
+        # QtGui.QAbstractSlider.SliderPageStepSub -> 4
+        # QtGui.QAbstractSlider.SliderMove -> 7
+        if not action in (1, 2, 3, 4, 7):
             return
-        action = int2action[int_action]
         # Pass the action done in the visible scrollbar to the hidden scrollbar
         self.vscrollbar.triggerAction(action)
         # Check for buffer faults and synchronize displayed data and
         # visible vertical scrollbar
-        if action in (QtGui.QAbstractSlider.SliderSingleStepAdd, 
-            QtGui.QAbstractSlider.SliderPageStepAdd):
+        if action in (1, 3): 
             self.addStep()
-        elif action in (QtGui.QAbstractSlider.SliderSingleStepSub, 
-            QtGui.QAbstractSlider.SliderPageStepSub):
+        elif action in (2, 4):
             self.subStep()
-        elif action == QtGui.QAbstractSlider.SliderMove:
+        elif action == 7:
             self.dragSlider()
 
 
