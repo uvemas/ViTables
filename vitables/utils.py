@@ -271,7 +271,10 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
     - `checkable`: True if the action is checkable
     """
 
-    action = QtGui.QAction(parent)
+    if slot is not None:
+        action = QtGui.QAction(parent, triggered=slot)
+    else:
+        action = QtGui.QAction(parent)
     action.setText(text)
     if icon is not None:
         action.setIcon(icon)
@@ -281,8 +284,6 @@ def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
         action.setStatusTip(tip)
     if checkable:
         action.setCheckable(True)
-    if slot is not None:
-        action.triggered.connect(slot)
     return action
 
 

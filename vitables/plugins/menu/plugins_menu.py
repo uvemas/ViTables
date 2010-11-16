@@ -135,11 +135,13 @@ class PluginsMenu(QtCore.QObject):
     def noInfo(self):
         """
         Message box with a 'No information available' message.
+
+        This slot can called if an entry from the Plugins menu is activated.
         """
 
         # Text to be displayed
         about_text = trs(
-            "Sorry, there is not available information for this plugin.",
+            "Sorry, there is not available information about this plugin.",
             'Text of the About Plugin message box')
 
         title = trs('About plugin', 
@@ -150,6 +152,8 @@ class PluginsMenu(QtCore.QObject):
 
     def showInfo(self):
         """Show a dialog with info about a plugin.
+
+        This slot can be called if an entry from the Plugins menu is activated.
         """
 
         action = self.sender()

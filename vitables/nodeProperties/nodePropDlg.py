@@ -575,7 +575,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         Customised slot for accepted dialogs.
 
         This is an overwritten method.
-        This SLOT is always the last called method whenever the
+        This slot is always the last called method whenever the
         apply/ok buttons are pressed.
         """
 

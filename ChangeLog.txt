@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 16, 2010 **
+Some minimal changes made to a several modules.
+
 ** November 15, 2010 **
 Some improvements applied to the docBrowser subpackage.
 
