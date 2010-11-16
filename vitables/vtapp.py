@@ -230,12 +230,12 @@ class VTApp(QtGui.QMainWindow):
         del splash
 
         # Ensure that QActions have a consistent state
-        self.slotUpdateActions()
+        self.updateActions()
 
-        self.dbs_tree_model.rowsRemoved.connect(self.slotUpdateActions)
-        self.dbs_tree_model.rowsInserted.connect(self.slotUpdateActions)
+        self.dbs_tree_model.rowsRemoved.connect(self.updateActions)
+        self.dbs_tree_model.rowsInserted.connect(self.updateActions)
 
-        self.slotUpdateWindowsMenu()
+        self.updateWindowsMenu()
 
         self.workspace.installEventFilter(self)
 
@@ -249,35 +249,35 @@ class VTApp(QtGui.QMainWindow):
         actions = {}
         actions['fileNew'] = vitables.utils.createAction(self, 
             trs('&New', 'File -> New'), QtGui.QKeySequence.New, 
-            self.slotFileNew, self.icons_dictionary['document-new'], 
+            self.fileNew, self.icons_dictionary['document-new'], 
             trs('Create a new file', 
                 'Status bar text for the File -> New action'))
         actions['fileNew'].setObjectName('fileNew')
 
         actions['fileOpen'] = vitables.utils.createAction(self, 
             trs('&Open...', 'File -> Open'), QtGui.QKeySequence.Open, 
-            self.slotFileOpen, self.icons_dictionary['document-open'], 
+            self.fileOpen, self.icons_dictionary['document-open'], 
             trs('Open an existing file',
                 'Status bar text for the File -> Open action'))
         actions['fileOpen'].setObjectName('fileOpen')
 
         actions['fileOpenRO'] = vitables.utils.createAction(self, 
             trs('Read-only open...', 'File -> Open'), None, 
-            self.slotFileOpenRO, self.icons_dictionary['document-open'], 
+            self.fileOpenRO, self.icons_dictionary['document-open'], 
             trs('Open an existing file in read-only mode',
                 'Status bar text for the File -> Open action'))
         actions['fileOpenRO'].setObjectName('fileOpenRO')
 
         actions['fileClose'] = vitables.utils.createAction(self, 
             trs('&Close', 'File -> Close'), QtGui.QKeySequence.Close, 
-            self.slotFileClose, self.icons_dictionary['document-close'], 
+            self.fileClose, self.icons_dictionary['document-close'], 
             trs('Close the selected file',
                 'Status bar text for the File -> Close action'))
         actions['fileClose'].setObjectName('fileClose')
 
         actions['fileCloseAll'] = vitables.utils.createAction(self, 
             trs('Close &All', 'File -> Close All'), None, 
-            self.slotFileCloseAll, None, 
+            self.fileCloseAll, None, 
             trs('Close all files',
                 'Status bar text for the File -> Close All action'))
         actions['fileCloseAll'].setObjectName('fileCloseAll')
@@ -285,14 +285,14 @@ class VTApp(QtGui.QMainWindow):
         actions['fileSaveAs'] = vitables.utils.createAction(self, 
             trs('&Save as...', 'File -> Save As'), 
             QtGui.QKeySequence('CTRL+SHIFT+S'), 
-            self.slotFileSaveAs, self.icons_dictionary['document-save-as'], 
+            self.fileSaveAs, self.icons_dictionary['document-save-as'], 
             trs('Save a renamed copy of the selected file',
                 'Status bar text for the File -> Save As action'))
         actions['fileSaveAs'].setObjectName('fileSaveAs')
 
         actions['fileExit'] = vitables.utils.createAction(self, 
             trs('E&xit', 'File -> Exit'), QtGui.QKeySequence('CTRL+Q'), 
-            self.slotFileExit, self.icons_dictionary['application-exit'], 
+            self.fileExit, self.icons_dictionary['application-exit'], 
             trs('Quit ViTables',
                 'Status bar text for the File -> Exit action'))
         actions['fileExit'].setObjectName('fileExit')
@@ -300,7 +300,7 @@ class VTApp(QtGui.QMainWindow):
         actions['nodeOpen'] = vitables.utils.createAction(self, 
             trs('&Open view', 'Node -> Open View'), 
             QtGui.QKeySequence('CTRL+SHIFT+O'), 
-            self.slotNodeOpen, None, 
+            self.nodeOpen, None, 
             trs('Display the contents of the selected node', 
                 'Status bar text for the Node -> Open View action'))
         actions['nodeOpen'].setObjectName('nodeOpen')
@@ -308,7 +308,7 @@ class VTApp(QtGui.QMainWindow):
         actions['nodeClose'] = vitables.utils.createAction(self, 
             trs('C&lose view', 'Node -> Close View'), 
             QtGui.QKeySequence('CTRL+SHIFT+W'), 
-            self.slotNodeClose, None, 
+            self.nodeClose, None, 
             trs('Close the view of the selected node', 
                 'Status bar text for the Node -> Close View action'))
         actions['nodeClose'].setObjectName('nodeClose')
@@ -316,7 +316,7 @@ class VTApp(QtGui.QMainWindow):
         actions['nodeProperties'] = vitables.utils.createAction(self, 
             trs('Prop&erties...', 'Node -> Properties'), 
             QtGui.QKeySequence('CTRL+I'), 
-            self.slotNodeProperties, self.icons_dictionary['help-about'], 
+            self.nodeProperties, self.icons_dictionary['help-about'], 
             trs('Show the properties dialog for the selected node', 
                 'Status bar text for the Node -> Properties action'))
         actions['nodeProperties'].setObjectName('nodeProperties')
@@ -324,7 +324,7 @@ class VTApp(QtGui.QMainWindow):
         actions['nodeNew'] = vitables.utils.createAction(self, 
             trs('&New group...', 'Node -> New group'), 
             QtGui.QKeySequence('CTRL+SHIFT+N'), 
-            self.slotNodeNewGroup, self.icons_dictionary['folder-new'], 
+            self.nodeNewGroup, self.icons_dictionary['folder-new'], 
             trs('Create a new group under the selected node', 
                 'Status bar text for the Node -> New group action'))
         actions['nodeNew'].setObjectName('nodeNew')
@@ -332,35 +332,35 @@ class VTApp(QtGui.QMainWindow):
         actions['nodeRename'] = vitables.utils.createAction(self, 
             trs('&Rename...', 'Node -> Rename'), 
             QtGui.QKeySequence('CTRL+R'), 
-            self.slotNodeRename, self.icons_dictionary['edit-rename'], 
+            self.nodeRename, self.icons_dictionary['edit-rename'], 
             trs('Rename the selected node', 
                 'Status bar text for the Node -> Rename action'))
         actions['nodeRename'].setObjectName('nodeRename')
 
         actions['nodeCut'] = vitables.utils.createAction(self, 
             trs('Cu&t', 'Node -> Cut'), QtGui.QKeySequence('CTRL+X'), 
-            self.slotNodeCut, self.icons_dictionary['edit-cut'], 
+            self.nodeCut, self.icons_dictionary['edit-cut'], 
             trs('Cut the selected node', 
                 'Status bar text for the Node -> Cut action'))
         actions['nodeCut'].setObjectName('nodeCut')
 
         actions['nodeCopy'] = vitables.utils.createAction(self, 
             trs('&Copy', 'Node -> Copy'), QtGui.QKeySequence.Copy, 
-            self.slotNodeCopy, self.icons_dictionary['edit-copy'], 
+            self.makeCopy, self.icons_dictionary['edit-copy'], 
             trs('Copy the selected node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodeCopy'].setObjectName('nodeCopy')
 
         actions['nodePaste'] = vitables.utils.createAction(self, 
             trs('&Paste', 'Node -> Paste'), QtGui.QKeySequence.Paste, 
-            self.slotNodePaste, self.icons_dictionary['edit-paste'], 
+            self.nodePaste, self.icons_dictionary['edit-paste'], 
             trs('Paste the last copied/cut node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodePaste'].setObjectName('nodePaste')
 
         actions['nodeDelete'] = vitables.utils.createAction(self, 
             trs('&Delete', 'Node -> Delete'), QtGui.QKeySequence.Delete, 
-            self.slotNodeDelete, self.icons_dictionary['edit-delete'], 
+            self.nodeDelete, self.icons_dictionary['edit-delete'], 
             trs('Delete the selected node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodeDelete'].setObjectName('nodeDelete')
@@ -382,7 +382,7 @@ class VTApp(QtGui.QMainWindow):
 
         actions['settingsPreferences'] = vitables.utils.createAction(self, 
             trs('&Preferences...', 'Settings -> Preferences'), None, 
-            self.slotSettingsPreferences, 
+            self.settingsPreferences, 
             self.icons_dictionary['configure'], 
             trs('Configure ViTables', 
                 'Status bar text for the Settings -> Preferences action'))
@@ -404,28 +404,28 @@ class VTApp(QtGui.QMainWindow):
 
         actions['windowRestoreAll'] = vitables.utils.createAction(self, 
             trs('&Restore All', 'Windows -> Restore All'), None, 
-            self.slotWindowsRestoreAll, None, 
+            self.windowsRestoreAll, None, 
             trs('Restore all minimized windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowRestoreAll'].setObjectName('windowRestoreAll')
 
         actions['windowMinimizeAll'] = vitables.utils.createAction(self, 
             trs('&Minimize All', 'Windows -> Minimize All'), None, 
-            self.slotWindowsMinimizeAll, None, 
+            self.windowsMinimizeAll, None, 
             trs('Minimize all windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowMinimizeAll'].setObjectName('windowMinimizeAll')
 
         actions['windowClose'] = vitables.utils.createAction(self, 
             trs('C&lose', 'Windows -> Close'), None, 
-            self.slotWindowsClose, None, 
+            self.windowsClose, None, 
             trs('Close the active view', 
                 'Status bar text for the Windows -> Close action'))
         actions['windowClose'].setObjectName('windowClose')
 
         actions['windowCloseAll'] = vitables.utils.createAction(self, 
             trs('Close &All', 'Windows -> Close All'), None, 
-            self.slotWindowsCloseAll, None, 
+            self.windowsCloseAll, None, 
             trs('Close all views', 
                 'Status bar text for the Windows -> Close All action'))
         actions['windowCloseAll'].setObjectName('windowCloseAll')
@@ -443,7 +443,7 @@ class VTApp(QtGui.QMainWindow):
         actions['helpUsersGuide'] = vitables.utils.createAction(self, 
             trs("&User's Guide", 'Help -> Users Guide'), 
             QtGui.QKeySequence.HelpContents, 
-            self.slotHelpDocBrowser, 
+            self.helpBrowser, 
             self.icons_dictionary['help-contents'], 
             trs("Open the ViTables User's Guide",
                     'Status bar text for the Help -> Users Guide action'))
@@ -451,7 +451,7 @@ class VTApp(QtGui.QMainWindow):
 
         actions['helpAbout'] = vitables.utils.createAction(self, 
             trs('&About ViTables', 'Help -> About'), None, 
-            self.slotHelpAbout, 
+            self.helpAbout, 
             self.icons_dictionary['vitables_wm'], 
             trs('Display information about ViTables',
                     'Status bar text for the Help -> About action'))
@@ -459,14 +459,14 @@ class VTApp(QtGui.QMainWindow):
 
         actions['helpAboutQt'] = vitables.utils.createAction(self, 
             trs('About &Qt', 'Help -> About Qt'), None, 
-            self.slotHelpAboutQt, None, 
+            self.helpAboutQt, None, 
             trs('Display information about the Qt library',
                     'Status bar text for the Help -> About Qt action'))
         actions['helpAboutQt'].setObjectName('helpAboutQt')
 
         actions['helpVersions'] = vitables.utils.createAction(self, 
             trs('Show &Versions', 'Help -> Show Versions'), None, 
-            self.slotHelpVersions, None, 
+            self.helpVersions, None, 
             trs('Show the versions of the libraries used by ViTables',
                     'Status bar text for the Help -> Show Versions action'))
         actions['helpVersions'].setObjectName('helpVersions')
@@ -558,7 +558,7 @@ class VTApp(QtGui.QMainWindow):
             self.gui_actions['fileOpen'])
         file_open_button.setMenu(self.open_recent_submenu)
         self.open_recent_submenu.aboutToShow.connect(\
-            self.slotUpdateRecentSubmenu)
+            self.updateRecentSubmenu)
 
         # Create the Node menu and add actions/submenus/separators to it
         node_menu = self.menuBar().addMenu(trs("&Node", 
@@ -596,7 +596,7 @@ class VTApp(QtGui.QMainWindow):
         action_group = QtGui.QActionGroup(self.windows_menu)
         action_group.setExclusive(True)
         self.windows_menu.action_group = action_group
-        self.windows_menu.aboutToShow.connect(self.slotUpdateWindowsMenu)
+        self.windows_menu.aboutToShow.connect(self.updateWindowsMenu)
 
         # Create the Help menu and add actions/menus/separators to it
         help_menu = self.menuBar().addMenu(trs("&Help", 
@@ -725,7 +725,7 @@ class VTApp(QtGui.QMainWindow):
                 row = leaf.row()
                 leaf_index = self.dbs_tree_model.index(row, 0, index)
                 self.dbs_tree_view.setCurrentIndex(leaf_index)
-                self.slotNodeOpen(leaf_index)
+                self.nodeOpen(leaf_index)
 
 
     def processCommandLineArgs(self, mode='', h5files=None, dblist=''):
@@ -773,7 +773,17 @@ class VTApp(QtGui.QMainWindow):
         """
 
         # Main window close button clicked
-        self.slotFileExit()
+        self.fileExit()
+
+
+    def makeCopy(self):
+        """Copy text/leaf depending on which widget has focus.
+        """
+
+        if self.dbs_tree_view.hasFocus():
+            self.nodeCopy()
+        elif self.logger.hasFocus():
+            self.logger.copy()
 
     # Updating appearance means:
     # 
@@ -786,14 +796,14 @@ class VTApp(QtGui.QMainWindow):
     #     * toggling state of QActions i.e. enabling/disabling QActions
     # 
 
-    def slotUpdateActions(self):
+    def updateActions(self):
         """
         Update the state of the actions tied to menu items and toolbars.
 
         Every time that the selected item changes in the tree viewer the
         state of the actions must be updated because it depends on the
         type of selected item (leaf or group, opening mode etc.).
-        The following events trigger a call to this method:
+        The following events trigger a call to this slot:
 
             * insertion/deletion of rows in the tree of databases model
               (see VTApp.slotUpdateCurrent method)
@@ -801,7 +811,7 @@ class VTApp(QtGui.QMainWindow):
               (see DBsTreeView.currentChanged method)
 
         The slot should be manually called when a new view is activated in
-        the workspace (for instance by methods slotNodeOpen, slotNodeClose).
+        the workspace (for instance by methods nodeOpen, nodeClose).
 
         .. _Warning:
 
@@ -888,8 +898,8 @@ class VTApp(QtGui.QMainWindow):
         """
         Add a new path to the list of most recently open files.
 
-        ``processCommandLineArgs``, ``recoverLastSession``, ``slotFileNew``,
-        and ``slotFileOpen`` call this method.
+        ``processCommandLineArgs``, ``recoverLastSession``, ``fileNew``,
+        and ``fileOpen`` call this method.
 
         :Parameters:
 
@@ -909,16 +919,7 @@ class VTApp(QtGui.QMainWindow):
             recent_files.takeLast()
 
 
-    def clearRecentFiles(self):
-        """
-        Clear the list of recently opened files and delete the corresponding
-        historical file.
-        """
-
-        self.config.recent_files.clear()
-
-
-    def slotUpdateRecentSubmenu(self):
+    def updateRecentSubmenu(self):
         """Update the content of the Open Recent File submenu."""
 
         index = 0
@@ -945,7 +946,7 @@ class VTApp(QtGui.QMainWindow):
         self.open_recent_submenu.addAction(action)
 
 
-    def slotUpdateWindowsMenu(self):
+    def updateWindowsMenu(self):
         """
         Update the Windows menu.
 
@@ -1106,7 +1107,7 @@ class VTApp(QtGui.QMainWindow):
         return filepath
 
 
-    def slotFileNew(self):
+    def fileNew(self):
         """Create a new file."""
 
         # Launch the file selector
@@ -1148,12 +1149,12 @@ class VTApp(QtGui.QMainWindow):
             self.updateRecentFiles(filepath, 'a')
 
 
-    def slotFileSaveAs(self):
+    def fileSaveAs(self):
         """
         Save a renamed copy of a file.
 
         This method exhibits the typical behavior: copied file is closed
-        and the fresh renamed copy is open.
+        and the fresh renamed copy is opened.
         """
 
         overwrite = False
@@ -1250,7 +1251,7 @@ class VTApp(QtGui.QMainWindow):
         if overwrite and self.dbs_tree_model.getDBDoc(filepath):
             for row, child in enumerate(self.dbs_tree_model.root.children):
                 if child.filepath == filepath:
-                    self.slotFileClose(self.dbs_tree_model.index(row, 0, 
+                    self.fileClose(self.dbs_tree_model.index(row, 0, 
                                                         QtCore.QModelIndex()))
             # The current index could have changed when overwriting
             # so we update it
@@ -1276,18 +1277,18 @@ class VTApp(QtGui.QMainWindow):
         # The position in the tree is kept
         for row, child in enumerate(self.dbs_tree_model.root.children):
             if child.filepath == initial_filepath:
-                self.slotFileClose(self.dbs_tree_model.index(row, 0, 
+                self.fileClose(self.dbs_tree_model.index(row, 0, 
                                                         QtCore.QModelIndex()))
-                self.slotFileOpen(filepath, 'a', row) 
+                self.fileOpen(filepath, 'a', row) 
 
 
-    def slotFileOpenRO(self, filepath=None):
+    def fileOpenRO(self, filepath=None):
         """
         Open a file that contains a ``PyTables`` database in read-only mode.
 
         :Parameters filepath: the full path of the file to be open
         """
-        self.slotFileOpen(filepath, mode='r')
+        self.fileOpen(filepath, mode='r')
 
 
     def openRecentFile(self):
@@ -1298,16 +1299,25 @@ class VTApp(QtGui.QMainWindow):
         action = self.sender()
         item = action.data().toString()
         (mode, filepath) = unicode(item).split('#@#')
-        self.slotFileOpen(filepath, mode)
+        self.fileOpen(filepath, mode)
 
 
-    def slotFileOpen(self, filepath=None, mode='a', position=0):
+    def clearRecentFiles(self):
+        """
+        Clear the list of recently opened files and delete the corresponding
+        historical file.
+        """
+
+        self.config.recent_files.clear()
+
+
+    def fileOpen(self, filepath=None, mode='a', position=0):
         """
         Open a file that contains a ``PyTables`` database.
 
         If this method is invoqued via ``File -> Open`` then no filepath
         is passed and a dialog is raised. When the method is invoqued
-        via slotRecentSubmenuActivated or slotFileSaveAs methods then
+        via slotRecentSubmenuActivated or fileSaveAs methods then
         filepath is passed and the dialog is not raised.
 
         :Parameters:
@@ -1351,7 +1361,7 @@ class VTApp(QtGui.QMainWindow):
             self.updateRecentFiles(filepath, mode)
 
 
-    def slotFileClose(self, current=None):
+    def fileClose(self, current=False):
         """
         Close a file.
 
@@ -1363,7 +1373,7 @@ class VTApp(QtGui.QMainWindow):
         current: the index of a node living in the file being closed
         """
 
-        if not current:
+        if current is False:
             current = self.dbs_tree_view.currentIndex()
         filepath = self.dbs_tree_model.nodeFromIndex(current).filepath
 
@@ -1380,7 +1390,7 @@ class VTApp(QtGui.QMainWindow):
         self.dbs_tree_model.closeDBDoc(filepath)
 
 
-    def slotFileCloseAll(self):
+    def fileCloseAll(self):
         """Close every file opened by user."""
 
         # The list of top level items to be removed.
@@ -1392,10 +1402,10 @@ class VTApp(QtGui.QMainWindow):
         rows_range.reverse()
         for row in rows_range:
             index = self.dbs_tree_model.index(row, 0, QtCore.QModelIndex())
-            self.slotFileClose(index)
+            self.fileClose(index)
 
 
-    def slotFileExit(self):
+    def fileExit(self):
         """
         Safely closes the application.
 
@@ -1408,22 +1418,22 @@ class VTApp(QtGui.QMainWindow):
         # Save current configuration
         self.config.saveConfiguration()
         # Close every user opened file
-        self.slotFileCloseAll()
+        self.fileCloseAll()
         # Close the temporary database
         index = self.dbs_tree_model.index(0, 0, QtCore.QModelIndex())
-        self.slotFileClose(index)
+        self.fileClose(index)
         # Application quit
         QtGui.qApp.quit()
 
 
-    def slotNodeOpen(self, current=None):
+    def nodeOpen(self, current=False):
         """
         Opens a leaf node for viewing.
 
         :Parameter current: the model index of the item to be opened
         """
 
-        if current is None:
+        if current is False:
             # Open the node currently selected in the tree of databases
             index = self.dbs_tree_view.currentIndex()
         else:
@@ -1460,12 +1470,12 @@ class VTApp(QtGui.QMainWindow):
         self.leaf_model_created.emit(subwindow)
 
 
-    def slotNodeClose(self, current=None):
+    def nodeClose(self, current=False):
         """
         Closes the view of the selected node.
 
         The method is called by activating ``Node --> Close`` (what passes
-        no argument) or programatically by the ``VTApp.slotFileClose()``
+        no argument) or programatically by the ``VTApp.fileClose()``
         method (what does pass argument).
         If the target is an open leaf this method closes its view, delete
         its model and updates the controller tracking system.
@@ -1484,7 +1494,7 @@ class VTApp(QtGui.QMainWindow):
                 break
 
 
-    def slotNodeNewGroup(self):
+    def nodeNewGroup(self):
         """Create a new group node."""
 
         current = self.dbs_tree_view.currentIndex()
@@ -1528,7 +1538,7 @@ class VTApp(QtGui.QMainWindow):
         self.dbs_tree_model.createGroup(current, nodename, overwrite)
 
 
-    def slotNodeRename(self):
+    def nodeRename(self):
         """
         Rename the selected node.
 
@@ -1588,7 +1598,7 @@ class VTApp(QtGui.QMainWindow):
         self.updateStatusBar()
 
 
-    def slotNodeCut(self):
+    def nodeCut(self):
         """Cut the selected node."""
 
         current = self.dbs_tree_view.currentIndex()
@@ -1604,7 +1614,7 @@ class VTApp(QtGui.QMainWindow):
         self.dbs_tree_model.cutNode(current)
 
 
-    def slotNodeCopy(self):
+    def nodeCopy(self):
         """
         Copy the selected node.
         """
@@ -1629,7 +1639,7 @@ class VTApp(QtGui.QMainWindow):
         self.dbs_tree_model.copyNode(current)
 
 
-    def slotNodePaste(self):
+    def nodePaste(self):
         """
         Paste the currently copied/cut node under the selected node.
         """
@@ -1709,7 +1719,7 @@ class VTApp(QtGui.QMainWindow):
         self.dbs_tree_model.pasteNode(current, nodename, overwrite)
 
 
-    def slotNodeDelete(self, current=None, force=None):
+    def nodeDelete(self, current=False, force=None):
         """
         Delete a given node.
 
@@ -1718,7 +1728,7 @@ class VTApp(QtGui.QMainWindow):
             - `force`: ask/do not ask for confirmation before deletion
         """
 
-        if current is None:
+        if current is False:
             current = self.dbs_tree_view.currentIndex()
         node = self.dbs_tree_model.nodeFromIndex(current)
 
@@ -1760,7 +1770,7 @@ class VTApp(QtGui.QMainWindow):
         select_model.select(new_current, QtGui.QItemSelectionModel.Select)
 
 
-    def slotNodeProperties(self):
+    def nodeProperties(self):
         """
         Display the properties dialog for the currently selected node.
 
@@ -1773,7 +1783,7 @@ class VTApp(QtGui.QMainWindow):
         nodePropDlg.NodePropDlg(info)
 
 
-    def slotSettingsPreferences(self):
+    def settingsPreferences(self):
         """
         Launch the Preferences dialog.
 
@@ -1789,33 +1799,33 @@ class VTApp(QtGui.QMainWindow):
             del prefs
 
 
-    def slotWindowsClose(self):
+    def windowsClose(self):
         """Close the window currently active in the workspace."""
         self.workspace.activeSubWindow().close()
 
 
-    def slotWindowsCloseAll(self):
+    def windowsCloseAll(self):
         """Close all open windows."""
 
         for window in self.workspace.subWindowList():
             window.close()
 
 
-    def slotWindowsRestoreAll(self):
+    def windowsRestoreAll(self):
         """Restore every window in the workspace to its normal size."""
 
         for window in self.workspace.subWindowList():
             window.showNormal()
 
 
-    def slotWindowsMinimizeAll(self):
+    def windowsMinimizeAll(self):
         """Restore every window in the workspace to its normal size."""
 
         for window in self.workspace.subWindowList():
             window.showMinimized()
 
 
-    def slotHelpDocBrowser(self):
+    def helpBrowser(self):
         """
         Open the documentation browser
 
@@ -1825,7 +1835,7 @@ class VTApp(QtGui.QMainWindow):
         self.doc_browser = helpBrowser.HelpBrowser()
 
 
-    def slotHelpAbout(self):
+    def helpAbout(self):
         """
         Show a tabbed dialog with the application About and License info.
 
@@ -1905,7 +1915,7 @@ class VTApp(QtGui.QMainWindow):
         return widget
 
 
-    def slotHelpAboutQt(self):
+    def helpAboutQt(self):
         """
         Shows a message box with the Qt About info.
 
@@ -1916,7 +1926,7 @@ class VTApp(QtGui.QMainWindow):
             'Caption of the About Qt dialog'))
 
 
-    def slotHelpVersions(self):
+    def helpVersions(self):
         """
         Message box with info about versions of libraries used by
         ViTables.

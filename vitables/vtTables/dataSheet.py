@@ -91,7 +91,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # Eventually update the Node menu actions
         self.dbt_leaf.has_view = True
-        self.vtapp.slotUpdateActions()
+        self.vtapp.updateActions()
 
         self.pindex = QtCore.QPersistentModelIndex(index)
 
@@ -105,7 +105,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # Ensure that Node menu actions are properly updated
         self.dbt_leaf.has_view = False
-        self.vtapp.slotUpdateActions()
+        self.vtapp.updateActions()
 
         # Clean up things
         del self.dbt_leaf

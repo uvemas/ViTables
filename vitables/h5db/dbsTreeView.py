@@ -165,7 +165,7 @@ class DBsTreeView(QtGui.QTreeView):
             if not self.isExpanded(index):
                 self.expand(index)
         elif not node.has_view:
-            self.vtapp.slotNodeOpen(index)
+            self.vtapp.nodeOpen(index)
 
 
     def updateCollapsedGroup(self, index):
@@ -246,7 +246,7 @@ class DBsTreeView(QtGui.QTreeView):
         """
 
         QtGui.QTreeView.currentChanged(self, current, previous)
-        self.vtapp.slotUpdateActions()
+        self.vtapp.updateActions()
         self.vtapp.updateStatusBar()
 
         # Sync the tree view with the workspace (if needed) but keep the

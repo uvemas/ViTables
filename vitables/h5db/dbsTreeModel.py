@@ -1055,7 +1055,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 if sys.platform.startswith('win'):
                     path = path[1:]
                 if os.path.isfile(path):
-                    self.vtapp.slotFileOpen(path)
+                    self.vtapp.fileOpen(path)
             return True
 
         parent_node = self.nodeFromIndex(parent)

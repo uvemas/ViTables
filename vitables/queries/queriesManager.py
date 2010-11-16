@@ -291,7 +291,7 @@ class QueriesManager(QtCore.QObject):
         rows_range.reverse()
         for row in rows_range:
             index = self.dbt_model.index(row, 0, tmp_index)
-            self.vtapp.slotNodeDelete(index, force=True)
+            self.vtapp.nodeDelete(index, force=True)
 
         # Reset the queries manager
         self.counter = 0
@@ -322,4 +322,4 @@ class QueriesManager(QtCore.QObject):
         # The new filtered table is inserted in first position under
         # the Query results node and opened
         index = self.dbt_model.index(0, 0, tmp_index)
-        self.vtapp.slotNodeOpen(index)
+        self.vtapp.nodeOpen(index)

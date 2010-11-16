@@ -35,7 +35,7 @@ Methods:
 * getNestedFieldDimensions(self)
 * zoomTable(self)
 * zoomArray(self)
-* slotZoomView(self, row, col)
+* zoomView(self, row, col)
 
 Misc variables:
 
@@ -101,7 +101,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # The leaf attribute is required to keep working the code for
         # cleaning the workspace when a file is closed.
         # The WA_DeleteOnClose flag makes that when the widget is
-        # closed either programatically (see VTAPP.slotWindowsClose)
+        # closed either programatically (see VTAPP.windowsClose)
         # or by the user (clicking the close button in the titlebar)
         # the widget is hiden AND destroyed --> the workspace
         # updates automatically its list of open windows --> the
@@ -164,7 +164,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
             self.grid.verticalHeader().setResizeMode(rmode)
 
         # Connect signals to slots
-        self.grid.cellDoubleClicked.connect(self.slotZoomView) 
+        self.grid.cellDoubleClicked.connect(self.zoomView) 
 
 
     def hasShape(self):
@@ -300,7 +300,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
                     self.grid.setItem(row, column, item)
 
 
-    def slotZoomView(self, row, col):
+    def zoomView(self, row, col):
         """Makes the content of the clicked cell fully visible.
 
         :Parameters:
