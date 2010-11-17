@@ -249,43 +249,6 @@ def getHBIcons():
 
     return HB_ICONS_DICT
 
-#
-# QAction related functions
-#
-
-def createAction(parent, text, shortcut=None, slot=None, icon=None, tip=None,
-                 checkable=False):
-    """Create an action that will be added to a menu.
-
-    This is a helper function which reduce the amount of typing needed
-    for creating actions.
-
-    :Parameters:
-
-    - `parent`: the action parent
-    - `text`: the action text
-    - `shortcut`: the action shortcut
-    - `slot`: the slot where the triggered SIGNAL will be connected
-    - `icon`: the action icon
-    - `tip`: the action status tip
-    - `checkable`: True if the action is checkable
-    """
-
-    if slot is not None:
-        action = QtGui.QAction(parent, triggered=slot)
-    else:
-        action = QtGui.QAction(parent)
-    action.setText(text)
-    if icon is not None:
-        action.setIcon(icon)
-    if shortcut is not None:
-        action.setShortcut(shortcut)
-    if tip is not None:
-        action.setStatusTip(tip)
-    if checkable:
-        action.setCheckable(True)
-    return action
-
 
 def addActions(target, actions, actions_dict):
     """Add a list of actions to a menu or a toolbar.

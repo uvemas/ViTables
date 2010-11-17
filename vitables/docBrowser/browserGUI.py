@@ -103,97 +103,107 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         """
 
         actions = {}
-        actions['exitBrowser'] = vitables.utils.createAction(self, 
-                trs('E&xit', 'File --> Exit'), 
-                QtGui.QKeySequence('CTRL+Q'), self.browser.exitBrowser, 
-                self.icons['application-exit'], 
-                trs('Close Help Browser', 
+
+        actions['exitBrowser'] = QtGui.QAction(
+            trs('E&xit', 'File --> Exit'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+Q'), 
+            triggered=self.browser.exitBrowser, 
+            icon=self.icons['application-exit'], 
+            statusTip=trs('Close Help Browser', 
                     'Status bar text for the File --> Exit action'))
 
-        actions['zoomIn'] = vitables.utils.createAction(self, 
-                trs('Zoom &in', 'View --> Zoom in'), 
-                QtGui.QKeySequence.ZoomIn, self.browser.zoomIn, 
-                self.icons['zoom-in'], 
-                trs('Increases the font size', 
-                    'Status bar text for the View --> Zoom in action'))
+        actions['zoomIn'] = QtGui.QAction(
+            trs('Zoom &in', 'View --> Zoom in'), self, 
+            shortcut=QtGui.QKeySequence.ZoomIn, 
+            triggered=self.browser.zoomIn, 
+            icon=self.icons['zoom-in'], 
+            statusTip=trs('Increases the font size', 
+                'Status bar text for the View --> Zoom in action'))
 
-        actions['zoomOut'] = vitables.utils.createAction(self, 
-                trs('Zoom &out', 'View --> Zoom out'), 
-                QtGui.QKeySequence.ZoomOut, self.browser.zoomOut, 
-                self.icons['zoom-out'], 
-                trs('Decreases the font size', 
-                    'Status bar text for the View --> Zoom out action'))
+        actions['zoomOut'] = QtGui.QAction(
+            trs('Zoom &out', 'View --> Zoom out'), self, 
+            shortcut=QtGui.QKeySequence.ZoomOut, 
+            triggered=self.browser.zoomOut, 
+            icon=self.icons['zoom-out'], 
+            statusTip=trs('Decreases the font size', 
+                'Status bar text for the View --> Zoom out action'))
 
-        actions['goHome'] = vitables.utils.createAction(self.text_browser, 
-                trs('&Home', 'Go --> Home'), 
-                QtGui.QKeySequence.UnknownKey, self.text_browser.home, 
-                self.icons['go-first-view'], 
-                trs('Go to the first visited page', 
-                    'Status bar text for the  Go --> Home action'))
+        actions['goHome'] = QtGui.QAction(
+            trs('&Home', 'Go --> Home'), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.text_browser.home, 
+            icon=self.icons['go-first-view'], 
+            statusTip=trs('Go to the first visited page', 
+                'Status bar text for the  Go --> Home action'))
 
-        actions['goBackward'] = vitables.utils.createAction(self.text_browser, 
-                trs('&Backward', ' Go --> Backward'), 
-                QtGui.QKeySequence.Back, self.text_browser.backward, 
-                self.icons['go-previous-view'], 
-                trs('Go to previous page', 
-                    'Status bar text for the  Go --> Backward action'))
+        actions['goBackward'] = QtGui.QAction(
+            trs('&Backward', ' Go --> Backward'), self, 
+            shortcut=QtGui.QKeySequence.Back, 
+            triggered=self.text_browser.backward, 
+            icon=self.icons['go-previous-view'], 
+            statusTip=trs('Go to previous page', 
+                'Status bar text for the  Go --> Backward action'))
 
-        actions['goForward'] = vitables.utils.createAction(self.text_browser, 
-                trs('&Forward', ' Go --> Forward'), 
-                QtGui.QKeySequence.Forward, self.text_browser.forward, 
-                self.icons['go-next-view'], 
-                trs('Go to next page', 
-                    'Status bar text for the  Go --> Forward action'))
+        actions['goForward'] = QtGui.QAction(
+            trs('&Forward', ' Go --> Forward'), self, 
+            shortcut=QtGui.QKeySequence.Forward, 
+            triggered=self.text_browser.forward, 
+            icon=self.icons['go-next-view'], 
+            statusTip=trs('Go to next page', 
+                'Status bar text for the  Go --> Forward action'))
 
-        actions['goReload'] = vitables.utils.createAction(self.text_browser, 
-                trs('&Reload', 'Go --> Reload'), 
-                QtGui.QKeySequence.Refresh, self.text_browser.reload, 
-                self.icons['view-refresh'], 
-                trs('Reload the current page', 
-                    'Status bar text for the  Go --> Reload action'))
+        actions['goReload'] = QtGui.QAction(
+            trs('&Reload', 'Go --> Reload'), self, 
+            shortcut=QtGui.QKeySequence.Refresh, 
+            triggered=self.text_browser.reload, 
+            icon=self.icons['view-refresh'], 
+            statusTip=trs('Reload the current page', 
+                'Status bar text for the  Go --> Reload action'))
 
-        actions['bookmarksAdd'] = vitables.utils.createAction(self, 
-                trs('&Add bookmark', 'Bookmarks --> Add bookmark'), 
-                QtGui.QKeySequence('CTRL+Alt+N'), 
-                self.browser.addBookmark, self.icons['bookmark_add'], 
-                trs('Bookmark the current page', 
-                    'Status bar text for Bookmarks --> Add bookmark action'))
+        actions['bookmarksAdd'] = QtGui.QAction(
+            trs('&Add bookmark', 'Bookmarks --> Add bookmark'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+Alt+N'), 
+            triggered=self.browser.addBookmark, 
+            icon=self.icons['bookmark_add'], 
+            statusTip=trs('Bookmark the current page', 
+                'Status bar text for Bookmarks --> Add bookmark action'))
 
-        actions['bookmarksEdit'] = vitables.utils.createAction(self, 
-                trs('&Edit bookmarks...', 
-                          'Bookmarks --> Edit bookmarks'), 
-                QtGui.QKeySequence('CTRL+Alt+E'), 
-                self.browser.editBookmarks, self.icons['bookmarks'], 
-                trs('Edit bookmarks', 
-                    'Status bar text for Bookmarks --> Edit bookmarks action'))
+        actions['bookmarksEdit'] = QtGui.QAction(
+            trs('&Edit bookmarks...', 'Bookmarks --> Edit bookmarks'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+Alt+E'), 
+            triggered=self.browser.editBookmarks, 
+            icon=self.icons['bookmarks'], 
+            statusTip=trs('Edit bookmarks', 
+                'Status bar text for Bookmarks --> Edit bookmarks action'))
 
-        actions['bookmarksClear'] = vitables.utils.createAction(self, 
-                trs('&Clear All', 'Bookmarks --> Clear bookmark'), 
-                QtGui.QKeySequence('CTRL+Alt+C'), 
-                self.browser.clearBookmarks, None, 
-                trs('Clear all existing bookmarks', 
-                    'Status bar text for Bookmarks --> Add bookmark action'))
+        actions['bookmarksClear'] = QtGui.QAction(
+            trs('&Clear All', 'Bookmarks --> Clear bookmark'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+Alt+C'), 
+            triggered=self.browser.clearBookmarks, 
+            statusTip=trs('Clear all existing bookmarks', 
+                'Status bar text for Bookmarks --> Add bookmark action'))
 
-        actions['about'] = vitables.utils.createAction(self, 
-                trs('&About HelpBrowser', 'Help --> About HelpBrowser'), 
-                QtGui.QKeySequence.UnknownKey, 
-                self.browser.aboutBrowser, None, 
-                trs('About HelpBrowser', 
-                    'Status bar text for Help --> About HelpBrowser action'))
+        actions['about'] = QtGui.QAction(
+            trs('&About HelpBrowser', 'Help --> About HelpBrowser'), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.browser.aboutBrowser, 
+            statusTip=trs('About HelpBrowser', 
+                'Status bar text for Help --> About HelpBrowser action'))
 
-        actions['aboutQt'] = vitables.utils.createAction(self, 
-                trs('About &Qt', 'Help --> About Qt'), 
-                QtGui.QKeySequence.UnknownKey, self.browser.aboutQt, 
-                None, 
-                trs('About Qt', 
-                    'Status bar text for the Help --> About Qt action'))
+        actions['aboutQt'] = QtGui.QAction(
+            trs('About &Qt', 'Help --> About Qt'), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.browser.aboutQt, 
+            statusTip=trs('About Qt', 
+                'Status bar text for the Help --> About Qt action'))
 
-        actions['clearSession'] = vitables.utils.createAction(self, 
-                trs('Clear history', ''), 
-                QtGui.QKeySequence.UnknownKey, self.browser.clearHistory, 
-                self.icons['edit-clear-history'], 
-                trs('Clear the content of the history combobox', 
-                    ''))
+        actions['clearSession'] = QtGui.QAction(
+            trs('Clear history', ''), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.browser.clearHistory, 
+            icon=self.icons['edit-clear-history'], 
+            statusTip=trs('Clear the content of the history combobox', ''))
+
         return actions
 
 

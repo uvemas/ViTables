@@ -461,37 +461,32 @@ class ImportCSV(QtCore.QObject):
 
         # Create the actions
         actions = {}
-        actions['import_table'] = vitables.utils.createAction(\
-            self, 
-            trs("Import T&able...", \
-                "Import table from CSV file"),
-            QtGui.QKeySequence.UnknownKey, self.importTable,
-            None,
-            trs("Import Table from plain CSV file", 
+        actions['import_table'] = QtGui.QAction(
+            trs("Import T&able...", "Import table from CSV file"), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.importTable, 
+            statusTip=trs("Import Table from plain CSV file", 
             "Status bar text for the File -> Import CSV... -> Import Table"))
 
-        actions['import_array'] = vitables.utils.createAction(\
-            self, 
-            trs("Import A&rray...", "Import array from CSV file"),
-            QtGui.QKeySequence.UnknownKey, self.importArray,
-            None,
-            trs("Import Array from plain CSV file",
+        actions['import_array'] = QtGui.QAction(
+            trs("Import A&rray...", "Import array from CSV file"), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.importArray, 
+            statusTip=trs("Import Array from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import Array"))
 
-        actions['import_carray'] = vitables.utils.createAction(\
-            self, 
-            trs("Import C&Array...", "Import carray from CSV file"),
-            QtGui.QKeySequence.UnknownKey, self.importCArray,
-            None,
-            trs("Import CArray from plain CSV file",
+        actions['import_carray'] = QtGui.QAction(
+            trs("Import C&Array...", "Import carray from CSV file"), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.importCArray, 
+            statusTip=trs("Import CArray from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import CArray"))
 
-        actions['import_earray'] = vitables.utils.createAction(\
-            self, 
-            trs("Import E&Array...", "Import earray from CSV file"),
-            QtGui.QKeySequence.UnknownKey, self.importEArray,
-            None,
-            trs("Import EArray from plain CSV file",
+        actions['import_earray'] = QtGui.QAction(
+            trs("Import E&Array...", "Import earray from CSV file"), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, 
+            triggered=self.importEArray,
+            statusTip=trs("Import EArray from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import EArray"))
 
         # Add actions to the Import submenu

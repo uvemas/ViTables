@@ -247,229 +247,250 @@ class VTApp(QtGui.QMainWindow):
         # Setting action names makes it easier to acces this actions
         # from plugins
         actions = {}
-        actions['fileNew'] = vitables.utils.createAction(self, 
-            trs('&New', 'File -> New'), QtGui.QKeySequence.New, 
-            self.fileNew, self.icons_dictionary['document-new'], 
-            trs('Create a new file', 
+        actions['fileNew'] = QtGui.QAction(
+            trs('&New', 'File -> New'), self, 
+            shortcut=QtGui.QKeySequence.New, 
+            triggered=self.fileNew, 
+            icon=self.icons_dictionary['document-new'], 
+            statusTip=trs('Create a new file', 
                 'Status bar text for the File -> New action'))
         actions['fileNew'].setObjectName('fileNew')
 
-        actions['fileOpen'] = vitables.utils.createAction(self, 
-            trs('&Open...', 'File -> Open'), QtGui.QKeySequence.Open, 
-            self.fileOpen, self.icons_dictionary['document-open'], 
-            trs('Open an existing file',
+        actions['fileOpen'] = QtGui.QAction(
+            trs('&Open...', 'File -> Open'), self, 
+            shortcut=QtGui.QKeySequence.Open, 
+            triggered=self.fileOpen, 
+            icon=self.icons_dictionary['document-open'], 
+            statusTip=trs('Open an existing file',
                 'Status bar text for the File -> Open action'))
         actions['fileOpen'].setObjectName('fileOpen')
 
-        actions['fileOpenRO'] = vitables.utils.createAction(self, 
-            trs('Read-only open...', 'File -> Open'), None, 
-            self.fileOpenRO, self.icons_dictionary['document-open'], 
-            trs('Open an existing file in read-only mode',
+        actions['fileOpenRO'] = QtGui.QAction(
+            trs('Read-only open...', 'File -> Open'), self, 
+            triggered=self.fileOpenRO, 
+            icon=self.icons_dictionary['document-open'], 
+            statusTip=trs('Open an existing file in read-only mode',
                 'Status bar text for the File -> Open action'))
         actions['fileOpenRO'].setObjectName('fileOpenRO')
 
-        actions['fileClose'] = vitables.utils.createAction(self, 
-            trs('&Close', 'File -> Close'), QtGui.QKeySequence.Close, 
-            self.fileClose, self.icons_dictionary['document-close'], 
-            trs('Close the selected file',
+        actions['fileClose'] = QtGui.QAction(
+            trs('&Close', 'File -> Close'), self, 
+            shortcut=QtGui.QKeySequence.Close, 
+            triggered=self.fileClose, 
+            icon=self.icons_dictionary['document-close'], 
+            statusTip=trs('Close the selected file',
                 'Status bar text for the File -> Close action'))
         actions['fileClose'].setObjectName('fileClose')
 
-        actions['fileCloseAll'] = vitables.utils.createAction(self, 
-            trs('Close &All', 'File -> Close All'), None, 
-            self.fileCloseAll, None, 
-            trs('Close all files',
+        actions['fileCloseAll'] = QtGui.QAction(
+            trs('Close &All', 'File -> Close All'), self, 
+            triggered=self.fileCloseAll, 
+            statusTip=trs('Close all files', 
                 'Status bar text for the File -> Close All action'))
         actions['fileCloseAll'].setObjectName('fileCloseAll')
 
-        actions['fileSaveAs'] = vitables.utils.createAction(self, 
-            trs('&Save as...', 'File -> Save As'), 
-            QtGui.QKeySequence('CTRL+SHIFT+S'), 
-            self.fileSaveAs, self.icons_dictionary['document-save-as'], 
-            trs('Save a renamed copy of the selected file',
+        actions['fileSaveAs'] = QtGui.QAction(
+            trs('&Save as...', 'File -> Save As'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+SHIFT+S'), 
+            triggered=self.fileSaveAs, 
+            icon=self.icons_dictionary['document-save-as'], 
+            statusTip=trs('Save a renamed copy of the selected file',
                 'Status bar text for the File -> Save As action'))
         actions['fileSaveAs'].setObjectName('fileSaveAs')
 
-        actions['fileExit'] = vitables.utils.createAction(self, 
-            trs('E&xit', 'File -> Exit'), QtGui.QKeySequence('CTRL+Q'), 
-            self.fileExit, self.icons_dictionary['application-exit'], 
-            trs('Quit ViTables',
+        actions['fileExit'] = QtGui.QAction(
+            trs('E&xit', 'File -> Exit'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+Q'), 
+            triggered=self.fileExit, 
+            icon=self.icons_dictionary['application-exit'], 
+            statusTip=trs('Quit ViTables',
                 'Status bar text for the File -> Exit action'))
         actions['fileExit'].setObjectName('fileExit')
 
-        actions['nodeOpen'] = vitables.utils.createAction(self, 
-            trs('&Open view', 'Node -> Open View'), 
-            QtGui.QKeySequence('CTRL+SHIFT+O'), 
-            self.nodeOpen, None, 
-            trs('Display the contents of the selected node', 
+        actions['nodeOpen'] = QtGui.QAction(
+            trs('&Open view', 'Node -> Open View'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+SHIFT+O'), 
+            triggered=self.nodeOpen, 
+            statusTip=trs('Display the contents of the selected node', 
                 'Status bar text for the Node -> Open View action'))
         actions['nodeOpen'].setObjectName('nodeOpen')
 
-        actions['nodeClose'] = vitables.utils.createAction(self, 
-            trs('C&lose view', 'Node -> Close View'), 
-            QtGui.QKeySequence('CTRL+SHIFT+W'), 
-            self.nodeClose, None, 
-            trs('Close the view of the selected node', 
+        actions['nodeClose'] = QtGui.QAction(
+            trs('C&lose view', 'Node -> Close View'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+SHIFT+W'), 
+            triggered=self.nodeClose, 
+            statusTip=trs('Close the view of the selected node', 
                 'Status bar text for the Node -> Close View action'))
         actions['nodeClose'].setObjectName('nodeClose')
 
-        actions['nodeProperties'] = vitables.utils.createAction(self, 
-            trs('Prop&erties...', 'Node -> Properties'), 
-            QtGui.QKeySequence('CTRL+I'), 
-            self.nodeProperties, self.icons_dictionary['help-about'], 
-            trs('Show the properties dialog for the selected node', 
+        actions['nodeProperties'] = QtGui.QAction(
+            trs('Prop&erties...', 'Node -> Properties'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+I'), 
+            triggered=self.nodeProperties, 
+            icon=self.icons_dictionary['help-about'], 
+            statusTip=trs('Show the properties dialog for the selected node', 
                 'Status bar text for the Node -> Properties action'))
         actions['nodeProperties'].setObjectName('nodeProperties')
 
-        actions['nodeNew'] = vitables.utils.createAction(self, 
-            trs('&New group...', 'Node -> New group'), 
-            QtGui.QKeySequence('CTRL+SHIFT+N'), 
-            self.nodeNewGroup, self.icons_dictionary['folder-new'], 
-            trs('Create a new group under the selected node', 
+        actions['nodeNew'] = QtGui.QAction(
+            trs('&New group...', 'Node -> New group'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+SHIFT+N'), 
+            triggered=self.nodeNewGroup, 
+            icon=self.icons_dictionary['folder-new'], 
+            statusTip=trs('Create a new group under the selected node', 
                 'Status bar text for the Node -> New group action'))
         actions['nodeNew'].setObjectName('nodeNew')
 
-        actions['nodeRename'] = vitables.utils.createAction(self, 
-            trs('&Rename...', 'Node -> Rename'), 
-            QtGui.QKeySequence('CTRL+R'), 
-            self.nodeRename, self.icons_dictionary['edit-rename'], 
-            trs('Rename the selected node', 
+        actions['nodeRename'] = QtGui.QAction(
+            trs('&Rename...', 'Node -> Rename'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+R'), 
+            triggered=self.nodeRename, 
+            icon=self.icons_dictionary['edit-rename'], 
+            statusTip=trs('Rename the selected node', 
                 'Status bar text for the Node -> Rename action'))
         actions['nodeRename'].setObjectName('nodeRename')
 
-        actions['nodeCut'] = vitables.utils.createAction(self, 
-            trs('Cu&t', 'Node -> Cut'), QtGui.QKeySequence('CTRL+X'), 
-            self.nodeCut, self.icons_dictionary['edit-cut'], 
-            trs('Cut the selected node', 
+        actions['nodeCut'] = QtGui.QAction(
+            trs('Cu&t', 'Node -> Cut'), self, 
+            shortcut=QtGui.QKeySequence('CTRL+X'), 
+            triggered=self.nodeCut, 
+            icon=self.icons_dictionary['edit-cut'], 
+            statusTip=trs('Cut the selected node', 
                 'Status bar text for the Node -> Cut action'))
         actions['nodeCut'].setObjectName('nodeCut')
 
-        actions['nodeCopy'] = vitables.utils.createAction(self, 
-            trs('&Copy', 'Node -> Copy'), QtGui.QKeySequence.Copy, 
-            self.makeCopy, self.icons_dictionary['edit-copy'], 
-            trs('Copy the selected node', 
+        actions['nodeCopy'] = QtGui.QAction(
+            trs('&Copy', 'Node -> Copy'), self, 
+            shortcut=QtGui.QKeySequence.Copy, 
+            triggered=self.makeCopy, 
+            icon=self.icons_dictionary['edit-copy'], 
+            statusTip=trs('Copy the selected node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodeCopy'].setObjectName('nodeCopy')
 
-        actions['nodePaste'] = vitables.utils.createAction(self, 
-            trs('&Paste', 'Node -> Paste'), QtGui.QKeySequence.Paste, 
-            self.nodePaste, self.icons_dictionary['edit-paste'], 
-            trs('Paste the last copied/cut node', 
+        actions['nodePaste'] = QtGui.QAction(
+            trs('&Paste', 'Node -> Paste'), self, 
+            shortcut=QtGui.QKeySequence.Paste, 
+            triggered=self.nodePaste, 
+            icon=self.icons_dictionary['edit-paste'], 
+            statusTip=trs('Paste the last copied/cut node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodePaste'].setObjectName('nodePaste')
 
-        actions['nodeDelete'] = vitables.utils.createAction(self, 
-            trs('&Delete', 'Node -> Delete'), QtGui.QKeySequence.Delete, 
-            self.nodeDelete, self.icons_dictionary['edit-delete'], 
-            trs('Delete the selected node', 
+        actions['nodeDelete'] = QtGui.QAction(
+            trs('&Delete', 'Node -> Delete'), self, 
+            shortcut=QtGui.QKeySequence.Delete, 
+            triggered=self.nodeDelete, 
+            icon=self.icons_dictionary['edit-delete'], 
+            statusTip=trs('Delete the selected node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodeDelete'].setObjectName('nodeDelete')
 
-        actions['queryNew'] = vitables.utils.createAction(self, 
-            trs('&Query...', 'Query -> New...'), None, 
-            self.queries_mgr.newQuery, self.icons_dictionary['view-filter'], 
-            trs('Create a new filter for the selected table', 
+        actions['queryNew'] = QtGui.QAction(
+            trs('&Query...', 'Query -> New...'), self, 
+            triggered=self.queries_mgr.newQuery, 
+            icon=self.icons_dictionary['view-filter'], 
+            statusTip=trs('Create a new filter for the selected table', 
                 'Status bar text for the Query -> New... action'))
         actions['queryNew'].setObjectName('queryNew')
 
-        actions['queryDeleteAll'] = vitables.utils.createAction(self, 
-            trs('Delete &All', 'Query -> Delete All'), None, 
-            self.queries_mgr.deleteAllQueries, 
-            self.icons_dictionary['delete_filters'], 
-            trs('Remove all filters', 
+        actions['queryDeleteAll'] = QtGui.QAction(
+            trs('Delete &All', 'Query -> Delete All'), self, 
+            triggered=self.queries_mgr.deleteAllQueries, 
+            icon=self.icons_dictionary['delete_filters'], 
+            statusTip=trs('Remove all filters', 
                 'Status bar text for the Query -> Delete All action'))
         actions['queryDeleteAll'].setObjectName('queryDeleteAll')
 
-        actions['settingsPreferences'] = vitables.utils.createAction(self, 
-            trs('&Preferences...', 'Settings -> Preferences'), None, 
-            self.settingsPreferences, 
-            self.icons_dictionary['configure'], 
-            trs('Configure ViTables', 
+        actions['settingsPreferences'] = QtGui.QAction(
+            trs('&Preferences...', 'Settings -> Preferences'), self, 
+            triggered=self.settingsPreferences, 
+            icon=self.icons_dictionary['configure'], 
+            statusTip=trs('Configure ViTables', 
                 'Status bar text for the Settings -> Preferences action'))
         actions['settingsPreferences'].setObjectName('settingsPreferences')
 
-        actions['windowCascade'] = vitables.utils.createAction(self, 
-            trs('&Cascade', 'Windows -> Cascade'), None, 
-            self.workspace.cascadeSubWindows, None, 
-            trs('Arranges open windows in a cascade pattern', 
+        actions['windowCascade'] = QtGui.QAction(
+            trs('&Cascade', 'Windows -> Cascade'), self, 
+            triggered=self.workspace.cascadeSubWindows, 
+            statusTip=trs('Arranges open windows in a cascade pattern', 
                 'Status bar text for the Windows -> Cascade action'))
         actions['windowCascade'].setObjectName('windowCascade')
 
-        actions['windowTile'] = vitables.utils.createAction(self, 
-            trs('&Tile', 'Windows -> Tile'), None, 
-            self.workspace.tileSubWindows, None, 
-            trs('Arranges open windows in a tile pattern', 
+        actions['windowTile'] = QtGui.QAction(
+            trs('&Tile', 'Windows -> Tile'), self, 
+            triggered=self.workspace.tileSubWindows, 
+            statusTip=trs('Arranges open windows in a tile pattern', 
                 'Status bar text for the Windows -> Tile action'))
         actions['windowTile'].setObjectName('windowTile')
 
-        actions['windowRestoreAll'] = vitables.utils.createAction(self, 
-            trs('&Restore All', 'Windows -> Restore All'), None, 
-            self.windowRestoreAll, None, 
-            trs('Restore all minimized windows on the workspace', 
+        actions['windowRestoreAll'] = QtGui.QAction(
+            trs('&Restore All', 'Windows -> Restore All'), self, 
+            triggered=self.windowRestoreAll, 
+            statusTip=trs('Restore all minimized windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowRestoreAll'].setObjectName('windowRestoreAll')
 
-        actions['windowMinimizeAll'] = vitables.utils.createAction(self, 
-            trs('&Minimize All', 'Windows -> Minimize All'), None, 
-            self.windowMinimizeAll, None, 
-            trs('Minimize all windows on the workspace', 
+        actions['windowMinimizeAll'] = QtGui.QAction(
+            trs('&Minimize All', 'Windows -> Minimize All'), self, 
+            triggered=self.windowMinimizeAll, 
+            statusTip=trs('Minimize all windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowMinimizeAll'].setObjectName('windowMinimizeAll')
 
-        actions['windowClose'] = vitables.utils.createAction(self, 
-            trs('C&lose', 'Windows -> Close'), None, 
-            self.windowClose, None, 
-            trs('Close the active view', 
+        actions['windowClose'] = QtGui.QAction(
+            trs('C&lose', 'Windows -> Close'), self, 
+            triggered=self.windowClose, 
+            statusTip=trs('Close the active view', 
                 'Status bar text for the Windows -> Close action'))
         actions['windowClose'].setObjectName('windowClose')
 
-        actions['windowCloseAll'] = vitables.utils.createAction(self, 
-            trs('Close &All', 'Windows -> Close All'), None, 
-            self.windowCloseAll, None, 
-            trs('Close all views', 
+        actions['windowCloseAll'] = QtGui.QAction(
+            trs('Close &All', 'Windows -> Close All'), self, 
+            triggered=self.windowCloseAll, 
+            statusTip=trs('Close all views', 
                 'Status bar text for the Windows -> Close All action'))
         actions['windowCloseAll'].setObjectName('windowCloseAll')
 
-        actions['windowSeparator'] = QtGui.QAction(\
+        actions['windowSeparator'] = QtGui.QAction(
             trs('Current View', 'Windows -> separator'), self)
         actions['windowSeparator'].setSeparator(True)
 
-        actions['mdiTabbed'] = vitables.utils.createAction(self, 
-            trs('Change view mode', 'MDI -> Tabbed'), None, 
-            self.changeMDIViewMode, 
-            None, 
-            trs('Change the workspace view mode', 
+        actions['mdiTabbed'] = QtGui.QAction(
+            trs('Change view mode', 'MDI -> Tabbed'), self, 
+            triggered=self.changeMDIViewMode, 
+            statusTip=trs('Change the workspace view mode', 
                 'Status bar text for the MDI -> Tabbed action'))
         actions['mdiTabbed'].setObjectName('mdiTabbed')
 
-        actions['helpUsersGuide'] = vitables.utils.createAction(self, 
-            trs("&User's Guide", 'Help -> Users Guide'), 
-            QtGui.QKeySequence.HelpContents, 
-            self.helpBrowser, 
-            self.icons_dictionary['help-contents'], 
-            trs("Open the ViTables User's Guide",
+        actions['helpUsersGuide'] = QtGui.QAction(
+            trs("&User's Guide", 'Help -> Users Guide'), self, 
+            shortcut=QtGui.QKeySequence.HelpContents, 
+            triggered=self.helpBrowser, 
+            icon=self.icons_dictionary['help-contents'], 
+            statusTip=trs("Open the ViTables User's Guide",
                     'Status bar text for the Help -> Users Guide action'))
         actions['helpUsersGuide'].setObjectName('helpUsersGuide')
 
-        actions['helpAbout'] = vitables.utils.createAction(self, 
-            trs('&About ViTables', 'Help -> About'), None, 
-            self.helpAbout, 
-            self.icons_dictionary['vitables_wm'], 
-            trs('Display information about ViTables',
+        actions['helpAbout'] = QtGui.QAction(
+            trs('&About ViTables', 'Help -> About'), self, 
+            triggered=self.helpAbout, 
+            icon=self.icons_dictionary['vitables_wm'], 
+            statusTip=trs('Display information about ViTables',
                     'Status bar text for the Help -> About action'))
         actions['helpAbout'].setObjectName('helpAbout')
 
-        actions['helpAboutQt'] = vitables.utils.createAction(self, 
-            trs('About &Qt', 'Help -> About Qt'), None, 
-            self.helpAboutQt, None, 
-            trs('Display information about the Qt library',
+        actions['helpAboutQt'] = QtGui.QAction(
+            trs('About &Qt', 'Help -> About Qt'), self, 
+            triggered=self.helpAboutQt, 
+            statusTip=trs('Display information about the Qt library',
                     'Status bar text for the Help -> About Qt action'))
         actions['helpAboutQt'].setObjectName('helpAboutQt')
 
-        actions['helpVersions'] = vitables.utils.createAction(self, 
-            trs('Show &Versions', 'Help -> Show Versions'), None, 
-            self.helpVersions, None, 
-            trs('Show the versions of the libraries used by ViTables',
+        actions['helpVersions'] = QtGui.QAction(
+            trs('Show &Versions', 'Help -> Show Versions'), self, 
+            triggered=self.helpVersions, 
+            statusTip=trs('Show the versions of the libraries used by ViTables',
                     'Status bar text for the Help -> Show Versions action'))
         actions['helpVersions'].setObjectName('helpVersions')
 

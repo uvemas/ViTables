@@ -74,16 +74,16 @@ class ExportToCSV(QtCore.QObject):
         """Add the Export to CSV... entry to menus.
         """
 
-        icon = QtGui.QIcon()
+        export_icon = QtGui.QIcon()
         pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
             'csv/icons/document-export.png'))
-        icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
+        export_icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
-        self.export_action = vitables.utils.createAction(self, 
-            trs("E&xport to CSV...", "Save dataset as CSV"), 
-            QtGui.QKeySequence.UnknownKey, self.export, 
-            icon, 
-            trs("Save the dataset as a plain text with CSV format", 
+        self.export_action = QtGui.QAction(
+            trs("E&xport to CSV...", "Save dataset as CSV"), self, 
+            shortcut=QtGui.QKeySequence.UnknownKey, triggered=self.export, 
+            icon=export_icon, 
+            statusTip=trs("Save the dataset as a plain text with CSV format", 
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
