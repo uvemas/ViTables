@@ -172,8 +172,9 @@ class QueriesManager(QtCore.QObject):
         self.ft_names = []
 
         self.vtapp = vitables.utils.getVTApp()
-        self.dbt_view = self.vtapp.dbs_tree_view
-        self.dbt_model = self.vtapp.dbs_tree_model
+        self.vtgui = self.vtapp.gui
+        self.dbt_view = self.vtgui.dbs_tree_view
+        self.dbt_model = self.vtgui.dbs_tree_model
 
 
     def newQuery(self):
@@ -265,7 +266,7 @@ class QueriesManager(QtCore.QObject):
     def deleteAllQueries(self):
         """Delete all nodes from the query results tree."""
 
-        title = trs('Deleting all queries', 
+        title = trs('Cleaning the Query results file', 
             'Caption of the QueryDeleteAll dialog')
         text = trs("""\n\nYou are about to delete all nodes """
                 """under Query results\n\n""", 'Ask for confirmation')

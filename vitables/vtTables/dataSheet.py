@@ -66,17 +66,17 @@ class DataSheet(QtGui.QMdiSubWindow):
         """
 
         # The main application window
-        self.vtapp = vitables.utils.getVTApp()
+        self.vtgui = vitables.utils.getVTApp().gui
 
         # The LeafNode instance whose dataset is being displayed
-        dbt_model = self.vtapp.dbs_tree_model
+        dbt_model = self.vtgui.dbs_tree_model
         self.dbt_leaf = dbt_model.nodeFromIndex(index)
         leaf = self.dbt_leaf.node
         rbuffer = readBuffer.Buffer(leaf)
         leaf_model = leafModel.LeafModel(rbuffer)
         leaf_view = leafView.LeafView(leaf_model)
 
-        QtGui.QMdiSubWindow.__init__(self, self.vtapp.workspace)
+        QtGui.QMdiSubWindow.__init__(self, self.vtgui.workspace)
         self.setWidget(leaf_view)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
@@ -91,7 +91,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # Eventually update the Node menu actions
         self.dbt_leaf.has_view = True
-        self.vtapp.updateActions()
+        self.vtgui.updateActions()
 
         self.pindex = QtCore.QPersistentModelIndex(index)
 
@@ -105,7 +105,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # Ensure that Node menu actions are properly updated
         self.dbt_leaf.has_view = False
-        self.vtapp.updateActions()
+        self.vtgui.updateActions()
 
         # Clean up things
         del self.dbt_leaf
@@ -128,7 +128,7 @@ class DataSheet(QtGui.QMdiSubWindow):
         # have to walk the tree
         focus_widget = QtGui.qApp.focusWidget()
         if isinstance(focus_widget, leafView.LeafView):
-            self.vtapp.dbs_tree_view.setCurrentIndex(\
+            self.vtgui.dbs_tree_view.setCurrentIndex(\
                 QtCore.QModelIndex(self.pindex))
 
 
@@ -154,5 +154,5 @@ class DataSheet(QtGui.QMdiSubWindow):
             title = '%s: (%s,%s)' % (node.name, 
                 tmodel.rbuffer.start + row + 1, column + 1)
 
-        zoomCell.ZoomCell(data, title, self.vtapp.workspace, 
+        zoomCell.ZoomCell(data, title, self.vtgui.workspace, 
                           self.dbt_leaf)

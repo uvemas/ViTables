@@ -62,12 +62,13 @@ class ExportToCSV(QtCore.QObject):
         self.vtapp = vitables.utils.getVTApp()
         if self.vtapp is None:
             return
+        self.vtgui = self.vtapp.gui
 
         # Add an entry under the Dataset menu
         self.addEntry()
 
         # Connect signals to slots
-        self.vtapp.dataset_menu.aboutToShow.connect(self.updateDatasetMenu)
+        self.vtgui.dataset_menu.aboutToShow.connect(self.updateDatasetMenu)
 
 
     def addEntry(self):
@@ -87,12 +88,12 @@ class ExportToCSV(QtCore.QObject):
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
-        menu = self.vtapp.dataset_menu
+        menu = self.vtgui.dataset_menu
         menu.addSeparator()
         menu.addAction(self.export_action)
 
         # Add the action to the leaf context menu
-        cmenu = self.vtapp.leaf_node_cm
+        cmenu = self.vtgui.leaf_node_cm
         cmenu.addSeparator()
         cmenu.addAction(self.export_action)
 
@@ -104,9 +105,9 @@ class ExportToCSV(QtCore.QObject):
         """
 
         enabled = True
-        current = self.vtapp.dbs_tree_view.currentIndex()
+        current = self.vtgui.dbs_tree_view.currentIndex()
         if current:
-            leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current)
+            leaf = self.vtgui.dbs_tree_model.nodeFromIndex(current)
             if leaf.node_kind in (u'group', u'root group'):
                 enabled = False
 
@@ -124,7 +125,7 @@ class ExportToCSV(QtCore.QObject):
 
         # Call the file selector (and, if needed, customise it)
         file_selector = vitables.utils.getFileSelector(\
-            self.vtapp, 
+            self.vtgui, 
             trs('Exporting dataset to CSV format', 
                 'Caption of the Export to CSV dialog'), 
             dfilter=trs("""All Files (*)""", 
@@ -196,8 +197,8 @@ class ExportToCSV(QtCore.QObject):
         """
 
         # The PyTables node tied to the current leaf of the databases tree
-        current = self.vtapp.dbs_tree_view.currentIndex()
-        leaf = self.vtapp.dbs_tree_model.nodeFromIndex(current).node
+        current = self.vtgui.dbs_tree_view.currentIndex()
+        leaf = self.vtgui.dbs_tree_model.nodeFromIndex(current).node
         is_table = isinstance(leaf, tables.Table)
 
         # Get the required info for exporting the dataset

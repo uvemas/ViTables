@@ -109,13 +109,13 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
     files) by the model.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, vtapp):
         """Create the model.
 
-        :Parameter parent: the parent of the model
+        :Parameters vtapp: the VTAPP instance
         """
 
-        QtCore.QAbstractItemModel.__init__(self, parent)
+        QtCore.QAbstractItemModel.__init__(self, parent=None)
 
         # The underlying data structure used to populate the model
         self.root = rootGroupNode.RootGroupNode()
@@ -127,7 +127,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.tmp_dbdoc = self.__createTempDB()
 
         self.copied_node_info = {}
-        self.vtapp = parent
+        self.vtapp = vtapp
+        self.vtgui = self.vtapp.gui
 
         self.rowsAboutToBeRemoved.connect(self.closeViews)
 
@@ -237,6 +238,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
 
+        is_open = False
         if self.checkOpening(filepath):
             # Open the database and add it to model
             db_doc = dbDoc.DBDoc(filepath, mode)
@@ -246,6 +248,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             self.gdelta = frozenset([])
             self.ldelta = frozenset([])
             self.insertRows(position, 1)
+            is_open = True
+
+        return is_open
 
 
     def closeDBDoc(self, filepath):
@@ -613,7 +618,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         for child in self.indexChildren(parent):
             node = self.nodeFromIndex(child)
             if node.name == name:
-                self.vtapp.dbs_tree_view.selectNode(child)
+                self.vtgui.dbs_tree_view.selectNode(child)
 
 
     def flags(self, index):
@@ -963,7 +968,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             node = self.nodeFromIndex(self.index(position, 0, parent))
             nodepaths.append(node.nodepath)
         filepath = node.filepath
-        for window in self.vtapp.workspace.subWindowList():
+        for window in self.vtgui.workspace.subWindowList():
             if window.dbt_leaf.filepath == filepath:
                 wpath = window.dbt_leaf.nodepath
                 for path in nodepaths:

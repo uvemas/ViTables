@@ -28,7 +28,7 @@ Classes:
 
 Methods:
 
-* __init__(self, vtapp, parent=None)
+* __init__(self, vtapp)
 * updateColumnWidth(self)
 * mouseDoubleClickEvent(self, event)
 * updateCollapsedGroup(self, index)
@@ -55,7 +55,6 @@ _context = 'DBsTreeView'
 
 from PyQt4 import QtCore, QtGui
 
-import vitables.utils
 from vitables.h5db.nodeItemDelegate import NodeItemDelegate
 
 
@@ -73,17 +72,22 @@ class DBsTreeView(QtGui.QTreeView):
     node of the tree contains the object tree of a database.
     """
 
-    def __init__(self, model, parent=None):
+
+    dbsTreeViewCreated = QtCore.pyqtSignal(QtGui.QTreeView)
+
+    def __init__(self, vtapp, model):
         """Create the view.
 
-        :Parameters:
-
+        :Parameter:
+            - `vtapp`: the VTAPP instance
             - `model`: the model for this view
-            - `parent`: the parent widget.
         """
 
-        QtGui.QTreeView.__init__(self, parent)
-        self.vtapp = vitables.utils.getVTApp()
+        QtGui.QTreeView.__init__(self, parent=None)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
+        self.vtapp = vtapp
+        self.vtgui = self.vtapp.gui
 
         # The model
         self.setModel(model)
@@ -125,6 +129,9 @@ class DBsTreeView(QtGui.QTreeView):
         self.expanded.connect(self.updateExpandedGroup)
         self.collapsed.connect(self.updateCollapsedGroup)
         self.dbt_model.layoutChanged.connect(self.updateColumnWidth)
+        self.dbsTreeViewCreated.connect(self.vtgui.setup)
+
+        self.dbsTreeViewCreated.emit(self)
 
 
     def updateColumnWidth(self):
@@ -233,7 +240,7 @@ class DBsTreeView(QtGui.QTreeView):
             node = self.dbt_model.nodeFromIndex(index)
             kind = node.node_kind
         pos = self.mapToGlobal(pos)
-        self.vtapp.popupContextualMenu(kind, pos)
+        self.vtgui.popupContextualMenu(kind, pos)
 
 
     def currentChanged(self, current, previous):
@@ -246,16 +253,16 @@ class DBsTreeView(QtGui.QTreeView):
         """
 
         QtGui.QTreeView.currentChanged(self, current, previous)
-        self.vtapp.updateActions()
-        self.vtapp.updateStatusBar()
+        self.vtgui.updateActions()
+        self.vtgui.updateStatusBar()
 
         # Sync the tree view with the workspace (if needed) but keep the
         # focus (giving focus to the workspace when a given item is
         # selected is counter intuitive)
         pcurrent = QtCore.QPersistentModelIndex(current)
-        for window in self.vtapp.workspace.subWindowList():
+        for window in self.vtgui.workspace.subWindowList():
             if pcurrent == window.pindex:
-                self.vtapp.workspace.setActiveSubWindow(window)
+                self.vtgui.workspace.setActiveSubWindow(window)
                 self.setFocus(True)
 
 

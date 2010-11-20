@@ -168,7 +168,7 @@ class Config(QtCore.QSettings):
         self.default_style = styles[0]
         self.vtapp = vitables.utils.getVTApp()
         if not (self.vtapp is None):
-            style_name = self.vtapp.style().objectName()
+            style_name = self.vtapp.gui.style().objectName()
             for item in styles:
                 if item.toLower() == style_name:
                     self.default_style = item
@@ -496,17 +496,17 @@ class Config(QtCore.QSettings):
         that file.
         """
 
+        vtgui = self.vtapp.gui
         # Logger paper
-        style_sheet = self.vtapp.logger.styleSheet()
+        style_sheet = vtgui.logger.styleSheet()
         paper = style_sheet[-7:]
         self.writeValue('Logger/Paper', QtGui.QColor(paper))
         # Logger text color
-        self.writeValue('Logger/Text', self.vtapp.logger.textColor())
+        self.writeValue('Logger/Text', vtgui.logger.textColor())
         # Logger text font
-        self.writeValue('Logger/Font', self.vtapp.logger.font())
+        self.writeValue('Logger/Font', vtgui.logger.font())
         # Workspace
-        self.writeValue('Workspace/Background', 
-            self.vtapp.workspace.background())
+        self.writeValue('Workspace/Background', vtgui.workspace.background())
         # Style
         self.writeValue('Look/currentStyle', self.current_style)
         # Startup working directory
@@ -516,18 +516,15 @@ class Config(QtCore.QSettings):
         self.writeValue('Startup/restoreLastSession', 
             self.restore_last_session)
         # Startup last working directory
-        self.writeValue('Startup/lastWorkingDir', 
-            self.last_working_directory)
+        self.writeValue('Startup/lastWorkingDir', self.last_working_directory)
         # Window geometry
-        self.writeValue('Geometry/Position', self.vtapp.saveGeometry())
+        self.writeValue('Geometry/Position', vtgui.saveGeometry())
         # Window layout
-        self.writeValue('Geometry/Layout', self.vtapp.saveState())
+        self.writeValue('Geometry/Layout', vtgui.saveState())
         # Horizontal splitter geometry
-        self.writeValue('Geometry/HSplitter', 
-                            self.vtapp.hsplitter.saveState())
+        self.writeValue('Geometry/HSplitter', vtgui.hsplitter.saveState())
         # Vertical splitter geometry
-        self.writeValue('Geometry/VSplitter', 
-                            self.vtapp.vsplitter.saveState())
+        self.writeValue('Geometry/VSplitter', vtgui.vsplitter.saveState())
         # The list of recent files
         self.writeValue('Recent/Files', self.recent_files)
         # The list of session files and nodes
@@ -559,12 +556,12 @@ class Config(QtCore.QSettings):
         """
 
         # Get the list of views
-        workspace = self.vtapp.workspace
+        workspace = self.vtapp.gui.workspace
         node_views = [window for window in workspace.subWindowList() \
                         if isinstance(window, dataSheet.DataSheet)]
 
         # Get the list of open files (temporary database is not included)
-        dbt_model = self.vtapp.dbs_tree_model
+        dbt_model = self.vtapp.gui.dbs_tree_model
         session_files_nodes = QtCore.QStringList([])
         filepaths = dbt_model.getDBList()
         for path in filepaths:
@@ -601,30 +598,31 @@ class Config(QtCore.QSettings):
         self.userSettings(config)
 
         # Load the internal settings (if any)
+        gui = self.vtapp.gui
         try:
             key = 'Geometry/Position'
             value = config[key]
             if value.isValid():
                 # Default position is provided by the underlying window manager
-                self.vtapp.restoreGeometry(value.toByteArray())
+                gui.restoreGeometry(value.toByteArray())
 
             key = 'Geometry/Layout'
             value = config[key]
             if value.isValid():
                 # Default layout is provided by the underlying Qt installation
-                self.vtapp.restoreState(value.toByteArray())
+                gui.restoreState(value.toByteArray())
 
             key = 'Geometry/HSplitter'
             value = config[key]
             if value.isValid():
                 # Default geometry provided by the underlying Qt installation
-                self.vtapp.hsplitter.restoreState(value.toByteArray())
+                gui.hsplitter.restoreState(value.toByteArray())
 
             key = 'Geometry/VSplitter'
             value = config[key]
             if value.isValid():
                 # Default geometry provided by the underlying Qt installation
-                self.vtapp.vsplitter.restoreState(value.toByteArray())
+                gui.vsplitter.restoreState(value.toByteArray())
 
             key = 'Startup/lastWorkingDir'
             value = config[key]
@@ -669,31 +667,33 @@ class Config(QtCore.QSettings):
             self.startup_working_directory = unicode(value.toString())
 
         key = 'Logger/Paper'
+        logger = self.vtapp.gui.logger
         if config.has_key(key):
             value = config[key]
             paper = unicode(QtGui.QColor(value).name())
-            stylesheet = self.vtapp.logger.styleSheet()
+            stylesheet = logger.styleSheet()
             old_paper = stylesheet[-7:]
             stylesheet.replace(old_paper, paper)
-            self.vtapp.logger.setStyleSheet(stylesheet)
+            logger.setStyleSheet(stylesheet)
 
         key = 'Logger/Text'
         if config.has_key(key):
             value = config[key]
             text_color = QtGui.QColor(value)
-            self.vtapp.logger.moveCursor(QtGui.QTextCursor.End)
-            self.vtapp.logger.setTextColor(text_color)
+            logger.moveCursor(QtGui.QTextCursor.End)
+            logger.setTextColor(text_color)
 
         key = 'Logger/Font'
         if config.has_key(key):
             value = config[key]
-            self.vtapp.logger.setFont(QtGui.QFont(value))
+            logger.setFont(QtGui.QFont(value))
 
         key = 'Workspace/Background'
+        workspace = self.vtapp.gui.workspace
         if config.has_key(key):
             value = config[key]
-            self.vtapp.workspace.setBackground(QtGui.QBrush(value))
-            self.vtapp.workspace.viewport().update()
+            workspace.setBackground(QtGui.QBrush(value))
+            workspace.viewport().update()
 
         key = 'Look/currentStyle'
         if config.has_key(key):

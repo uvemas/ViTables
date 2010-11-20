@@ -70,7 +70,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
 
         QtGui.QItemDelegate.__init__(self, parent)
         self.current_name = None
-        self.vtapp = parent.vtapp
+        self.vtgui = vitables.utils.getVTApp().gui
 
 
     def setEditorData(self, editor, index):
@@ -138,4 +138,4 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         self.closeEditor.emit(editor, 0)
 
         # Update the application status bar
-        self.vtapp.updateStatusBar()
+        self.vtgui.updateStatusBar()

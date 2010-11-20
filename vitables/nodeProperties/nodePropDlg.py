@@ -105,7 +105,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """
 
         vtapp = vitables.utils.getVTApp()
-        QtGui.QDialog.__init__(self, vtapp)
+        QtGui.QDialog.__init__(self, vtapp.gui)
         self.setupUi(self)
 
         # The dialog caption

@@ -34,7 +34,6 @@ import tables
 from PyQt4 import QtCore, QtGui
 
 import vitables.utils
-import vitables.logger as logger
 import vitables.vtsplash
 from vitables.vtSite import ICONDIR
 
@@ -57,13 +56,17 @@ from vitables.docBrowser import helpBrowser
 import vitables.vtTables.buffer as rbuffer
 import vitables.vtTables.dataSheet as dataSheet
 
+import vitables.vtGUI as vtGUI
+
+
 
 def trs(source, comment=None):
     """Translate string function."""
     return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
-class VTApp(QtGui.QMainWindow):
+#class VTApp(QtGui.QMainWindow):
+class VTApp(QtCore.QObject):
     """
     The application core.
 
@@ -96,15 +99,12 @@ class VTApp(QtGui.QMainWindow):
         - `dblist`: a file that contains a list of files to be open at startup
         """
 
-        QtGui.QMainWindow.__init__(self)
+        QtCore.QObject.__init__(self)
 
         # Make the main window easily accessible for external modules
         self.setObjectName('VTApp')
 
         self.is_first_opening = True  # for Open file dialogs
-        self.icons_dictionary = vitables.utils.getIcons()
-        # Instantiate a configurator object for the application
-        self.config = vtconfig.Config()
 
         # Show a splash screen
         logo = QtGui.QPixmap(os.path.join(ICONDIR, "vitables_logo.png"))
@@ -112,63 +112,21 @@ class VTApp(QtGui.QMainWindow):
         splash.show()
         t_i = time.time()
 
-        #
-        # Make the GUI
-        #
+        # Create the GUI. This is done in 3 steps:
+        # - create the main window
+        # - create the model/view for the tree of databases
+        # - setup the main window
         splash.drawMessage(trs('Creating the GUI...',
             'A splash screen message'))
-        self.setWindowTitle(trs('ViTables %s' % vtconfig.getVersion(),
-            'Main window title'))
-        self.setIconSize(QtCore.QSize(22, 22))
-        self.setWindowIcon(self.icons_dictionary['vitables_wm'])
-        central_widget = QtGui.QWidget(self)
-        central_layout = QtGui.QVBoxLayout(central_widget)
-        self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical, central_widget)
-        central_layout.addWidget(self.vsplitter)
-        self.setCentralWidget(central_widget)
-
-        # Divide the top region of the window into 2 regions and put there
-        # the tree of databases and the workspace
-        self.hsplitter = QtGui.QSplitter(self.vsplitter)
-        self.dbs_tree_model = dbsTreeModel.DBsTreeModel(self)
-        self.dbs_tree_view = dbsTreeView.DBsTreeView(self.dbs_tree_model, 
-            self.hsplitter)
-        self.workspace = QtGui.QMdiArea(self.hsplitter)
-        sb_as_needed = QtCore.Qt.ScrollBarAsNeeded
-        self.workspace.setHorizontalScrollBarPolicy(sb_as_needed)
-        self.workspace.setVerticalScrollBarPolicy(sb_as_needed)
-        self.workspace.setWhatsThis(trs(
-            """<qt>
-            <h3>The Workspace</h3>
-            This is the area where open leaves of the object tree are
-            displayed. Many tables and arrays can be displayed
-            simultaneously.
-            <p>The diferent views can be tiled as a mosaic or stacked as
-            a cascade.
-            </qt>""",
-            'WhatsThis help for the workspace')
-            )
-
-        # Put the logging console in the bottom region of the window
-        self.logger = logger.Logger(self.vsplitter)
+        self.gui = vtGUI.VTGUI(self, vtconfig.getVersion())
+        dbs_tmodel = dbsTreeModel.DBsTreeModel(self)
+        dbsTreeView.DBsTreeView(self, dbs_tmodel)
 
         # The queries manager
         self.queries_mgr = qmgr.QueriesManager()
 
-        # The signal mapper used to keep the the Windows menu updated
-        self.window_mapper = QtCore.QSignalMapper(self)
-        self.window_mapper.mapped[QtGui.QWidget].connect(\
-            self.workspace.setActiveSubWindow)
-
-        self.gui_actions = self.setupActions()
-        self.setupToolBars()
-        self.setupMenus()
-        self.initStatusBar()
-        self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
-
-        # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+        # Instantiate a configurator object for the application
+        self.config = vtconfig.Config()
 
         # Apply the configuration stored on disk
         splash.drawMessage(trs('Configuration setup...',
@@ -226,466 +184,17 @@ class VTApp(QtGui.QMainWindow):
             t_f = time.time()
             while t_f - t_i < 2:
                 t_f = time.time()
-        splash.finish(self)
+        splash.finish(self.gui)
         del splash
 
         # Ensure that QActions have a consistent state
-        self.updateActions()
+        self.gui.updateActions()
 
-        self.dbs_tree_model.rowsRemoved.connect(self.updateActions)
-        self.dbs_tree_model.rowsInserted.connect(self.updateActions)
+        self.gui.dbs_tree_model.rowsRemoved.connect(self.gui.updateActions)
+        self.gui.dbs_tree_model.rowsInserted.connect(self.gui.updateActions)
 
-        self.updateWindowMenu()
+        self.gui.updateWindowMenu()
 
-        self.workspace.installEventFilter(self)
-
-
-    def setupActions(self):
-        """Provide actions to the menubar and the toolbars.
-        """
-
-        # Setting action names makes it easier to acces this actions
-        # from plugins
-        actions = {}
-        actions['fileNew'] = QtGui.QAction(
-            trs('&New', 'File -> New'), self, 
-            shortcut=QtGui.QKeySequence.New, 
-            triggered=self.fileNew, 
-            icon=self.icons_dictionary['document-new'], 
-            statusTip=trs('Create a new file', 
-                'Status bar text for the File -> New action'))
-        actions['fileNew'].setObjectName('fileNew')
-
-        actions['fileOpen'] = QtGui.QAction(
-            trs('&Open...', 'File -> Open'), self, 
-            shortcut=QtGui.QKeySequence.Open, 
-            triggered=self.fileOpen, 
-            icon=self.icons_dictionary['document-open'], 
-            statusTip=trs('Open an existing file',
-                'Status bar text for the File -> Open action'))
-        actions['fileOpen'].setObjectName('fileOpen')
-
-        actions['fileOpenRO'] = QtGui.QAction(
-            trs('Read-only open...', 'File -> Open'), self, 
-            triggered=self.fileOpenRO, 
-            icon=self.icons_dictionary['document-open'], 
-            statusTip=trs('Open an existing file in read-only mode',
-                'Status bar text for the File -> Open action'))
-        actions['fileOpenRO'].setObjectName('fileOpenRO')
-
-        actions['fileClose'] = QtGui.QAction(
-            trs('&Close', 'File -> Close'), self, 
-            shortcut=QtGui.QKeySequence.Close, 
-            triggered=self.fileClose, 
-            icon=self.icons_dictionary['document-close'], 
-            statusTip=trs('Close the selected file',
-                'Status bar text for the File -> Close action'))
-        actions['fileClose'].setObjectName('fileClose')
-
-        actions['fileCloseAll'] = QtGui.QAction(
-            trs('Close &All', 'File -> Close All'), self, 
-            triggered=self.fileCloseAll, 
-            statusTip=trs('Close all files', 
-                'Status bar text for the File -> Close All action'))
-        actions['fileCloseAll'].setObjectName('fileCloseAll')
-
-        actions['fileSaveAs'] = QtGui.QAction(
-            trs('&Save as...', 'File -> Save As'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+S'), 
-            triggered=self.fileSaveAs, 
-            icon=self.icons_dictionary['document-save-as'], 
-            statusTip=trs('Save a renamed copy of the selected file',
-                'Status bar text for the File -> Save As action'))
-        actions['fileSaveAs'].setObjectName('fileSaveAs')
-
-        actions['fileExit'] = QtGui.QAction(
-            trs('E&xit', 'File -> Exit'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+Q'), 
-            triggered=self.fileExit, 
-            icon=self.icons_dictionary['application-exit'], 
-            statusTip=trs('Quit ViTables',
-                'Status bar text for the File -> Exit action'))
-        actions['fileExit'].setObjectName('fileExit')
-
-        actions['nodeOpen'] = QtGui.QAction(
-            trs('&Open view', 'Node -> Open View'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+O'), 
-            triggered=self.nodeOpen, 
-            statusTip=trs('Display the contents of the selected node', 
-                'Status bar text for the Node -> Open View action'))
-        actions['nodeOpen'].setObjectName('nodeOpen')
-
-        actions['nodeClose'] = QtGui.QAction(
-            trs('C&lose view', 'Node -> Close View'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+W'), 
-            triggered=self.nodeClose, 
-            statusTip=trs('Close the view of the selected node', 
-                'Status bar text for the Node -> Close View action'))
-        actions['nodeClose'].setObjectName('nodeClose')
-
-        actions['nodeProperties'] = QtGui.QAction(
-            trs('Prop&erties...', 'Node -> Properties'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+I'), 
-            triggered=self.nodeProperties, 
-            icon=self.icons_dictionary['help-about'], 
-            statusTip=trs('Show the properties dialog for the selected node', 
-                'Status bar text for the Node -> Properties action'))
-        actions['nodeProperties'].setObjectName('nodeProperties')
-
-        actions['nodeNew'] = QtGui.QAction(
-            trs('&New group...', 'Node -> New group'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+N'), 
-            triggered=self.nodeNewGroup, 
-            icon=self.icons_dictionary['folder-new'], 
-            statusTip=trs('Create a new group under the selected node', 
-                'Status bar text for the Node -> New group action'))
-        actions['nodeNew'].setObjectName('nodeNew')
-
-        actions['nodeRename'] = QtGui.QAction(
-            trs('&Rename...', 'Node -> Rename'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+R'), 
-            triggered=self.nodeRename, 
-            icon=self.icons_dictionary['edit-rename'], 
-            statusTip=trs('Rename the selected node', 
-                'Status bar text for the Node -> Rename action'))
-        actions['nodeRename'].setObjectName('nodeRename')
-
-        actions['nodeCut'] = QtGui.QAction(
-            trs('Cu&t', 'Node -> Cut'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+X'), 
-            triggered=self.nodeCut, 
-            icon=self.icons_dictionary['edit-cut'], 
-            statusTip=trs('Cut the selected node', 
-                'Status bar text for the Node -> Cut action'))
-        actions['nodeCut'].setObjectName('nodeCut')
-
-        actions['nodeCopy'] = QtGui.QAction(
-            trs('&Copy', 'Node -> Copy'), self, 
-            shortcut=QtGui.QKeySequence.Copy, 
-            triggered=self.makeCopy, 
-            icon=self.icons_dictionary['edit-copy'], 
-            statusTip=trs('Copy the selected node', 
-                'Status bar text for the Node -> Copy action'))
-        actions['nodeCopy'].setObjectName('nodeCopy')
-
-        actions['nodePaste'] = QtGui.QAction(
-            trs('&Paste', 'Node -> Paste'), self, 
-            shortcut=QtGui.QKeySequence.Paste, 
-            triggered=self.nodePaste, 
-            icon=self.icons_dictionary['edit-paste'], 
-            statusTip=trs('Paste the last copied/cut node', 
-                'Status bar text for the Node -> Copy action'))
-        actions['nodePaste'].setObjectName('nodePaste')
-
-        actions['nodeDelete'] = QtGui.QAction(
-            trs('&Delete', 'Node -> Delete'), self, 
-            shortcut=QtGui.QKeySequence.Delete, 
-            triggered=self.nodeDelete, 
-            icon=self.icons_dictionary['edit-delete'], 
-            statusTip=trs('Delete the selected node', 
-                'Status bar text for the Node -> Copy action'))
-        actions['nodeDelete'].setObjectName('nodeDelete')
-
-        actions['queryNew'] = QtGui.QAction(
-            trs('&Query...', 'Query -> New...'), self, 
-            triggered=self.queries_mgr.newQuery, 
-            icon=self.icons_dictionary['view-filter'], 
-            statusTip=trs('Create a new filter for the selected table', 
-                'Status bar text for the Query -> New... action'))
-        actions['queryNew'].setObjectName('queryNew')
-
-        actions['queryDeleteAll'] = QtGui.QAction(
-            trs('Delete &All', 'Query -> Delete All'), self, 
-            triggered=self.queries_mgr.deleteAllQueries, 
-            icon=self.icons_dictionary['delete_filters'], 
-            statusTip=trs('Remove all filters', 
-                'Status bar text for the Query -> Delete All action'))
-        actions['queryDeleteAll'].setObjectName('queryDeleteAll')
-
-        actions['settingsPreferences'] = QtGui.QAction(
-            trs('&Preferences...', 'Settings -> Preferences'), self, 
-            triggered=self.settingsPreferences, 
-            icon=self.icons_dictionary['configure'], 
-            statusTip=trs('Configure ViTables', 
-                'Status bar text for the Settings -> Preferences action'))
-        actions['settingsPreferences'].setObjectName('settingsPreferences')
-
-        actions['windowCascade'] = QtGui.QAction(
-            trs('&Cascade', 'Windows -> Cascade'), self, 
-            triggered=self.workspace.cascadeSubWindows, 
-            statusTip=trs('Arranges open windows in a cascade pattern', 
-                'Status bar text for the Windows -> Cascade action'))
-        actions['windowCascade'].setObjectName('windowCascade')
-
-        actions['windowTile'] = QtGui.QAction(
-            trs('&Tile', 'Windows -> Tile'), self, 
-            triggered=self.workspace.tileSubWindows, 
-            statusTip=trs('Arranges open windows in a tile pattern', 
-                'Status bar text for the Windows -> Tile action'))
-        actions['windowTile'].setObjectName('windowTile')
-
-        actions['windowRestoreAll'] = QtGui.QAction(
-            trs('&Restore All', 'Windows -> Restore All'), self, 
-            triggered=self.windowRestoreAll, 
-            statusTip=trs('Restore all minimized windows on the workspace', 
-                'Status bar text for the Windows -> Restore All action'))
-        actions['windowRestoreAll'].setObjectName('windowRestoreAll')
-
-        actions['windowMinimizeAll'] = QtGui.QAction(
-            trs('&Minimize All', 'Windows -> Minimize All'), self, 
-            triggered=self.windowMinimizeAll, 
-            statusTip=trs('Minimize all windows on the workspace', 
-                'Status bar text for the Windows -> Restore All action'))
-        actions['windowMinimizeAll'].setObjectName('windowMinimizeAll')
-
-        actions['windowClose'] = QtGui.QAction(
-            trs('C&lose', 'Windows -> Close'), self, 
-            triggered=self.windowClose, 
-            statusTip=trs('Close the active view', 
-                'Status bar text for the Windows -> Close action'))
-        actions['windowClose'].setObjectName('windowClose')
-
-        actions['windowCloseAll'] = QtGui.QAction(
-            trs('Close &All', 'Windows -> Close All'), self, 
-            triggered=self.windowCloseAll, 
-            statusTip=trs('Close all views', 
-                'Status bar text for the Windows -> Close All action'))
-        actions['windowCloseAll'].setObjectName('windowCloseAll')
-
-        actions['windowSeparator'] = QtGui.QAction(
-            trs('Current View', 'Windows -> separator'), self)
-        actions['windowSeparator'].setSeparator(True)
-
-        actions['mdiTabbed'] = QtGui.QAction(
-            trs('Change view mode', 'MDI -> Tabbed'), self, 
-            triggered=self.changeMDIViewMode, 
-            statusTip=trs('Change the workspace view mode', 
-                'Status bar text for the MDI -> Tabbed action'))
-        actions['mdiTabbed'].setObjectName('mdiTabbed')
-
-        actions['helpUsersGuide'] = QtGui.QAction(
-            trs("&User's Guide", 'Help -> Users Guide'), self, 
-            shortcut=QtGui.QKeySequence.HelpContents, 
-            triggered=self.helpBrowser, 
-            icon=self.icons_dictionary['help-contents'], 
-            statusTip=trs("Open the ViTables User's Guide",
-                    'Status bar text for the Help -> Users Guide action'))
-        actions['helpUsersGuide'].setObjectName('helpUsersGuide')
-
-        actions['helpAbout'] = QtGui.QAction(
-            trs('&About ViTables', 'Help -> About'), self, 
-            triggered=self.helpAbout, 
-            icon=self.icons_dictionary['vitables_wm'], 
-            statusTip=trs('Display information about ViTables',
-                    'Status bar text for the Help -> About action'))
-        actions['helpAbout'].setObjectName('helpAbout')
-
-        actions['helpAboutQt'] = QtGui.QAction(
-            trs('About &Qt', 'Help -> About Qt'), self, 
-            triggered=self.helpAboutQt, 
-            statusTip=trs('Display information about the Qt library',
-                    'Status bar text for the Help -> About Qt action'))
-        actions['helpAboutQt'].setObjectName('helpAboutQt')
-
-        actions['helpVersions'] = QtGui.QAction(
-            trs('Show &Versions', 'Help -> Show Versions'), self, 
-            triggered=self.helpVersions, 
-            statusTip=trs('Show the versions of the libraries used by ViTables',
-                    'Status bar text for the Help -> Show Versions action'))
-        actions['helpVersions'].setObjectName('helpVersions')
-
-        return actions
-
-
-    def setupToolBars(self):
-        """
-        Set up the main window toolbars.
-
-        Toolbars are made of actions.
-        """
-
-        # File toolbar
-        self.file_toolbar = self.addToolBar(trs('File operations', 
-            'Toolbar title'))
-        # Warning! Do NOT use 'File toolbar' as a object name or it will
-        # show an strange behaviour (a Qt bug I think): it will always
-        # be added to the left and will expand the whole top area
-        self.file_toolbar.setObjectName('File')
-        actions = ['fileNew', 'fileOpen', 'fileClose', 'fileSaveAs', 
-                   'fileExit']
-        vitables.utils.addActions(self.file_toolbar, actions, self.gui_actions)
-
-        # Reset the tooltip of the File -> Open... button
-        file_open_button = self.file_toolbar.widgetForAction(
-            self.gui_actions['fileOpen'])
-        file_open_button.setToolTip(trs("""Click to open a """
-            """file\nClick and hold to open a recent file""",
-            'File toolbar -> Open Recent Files'))
-
-        # Node toolbar
-        self.node_toolbar = self.addToolBar(trs('Node operations', 
-            'Toolbar title'))
-        self.node_toolbar.setObjectName('Node toolbar')
-        actions = ['nodeNew', 'nodeCut', 'nodeCopy', 'nodePaste', 'nodeDelete']
-        vitables.utils.addActions(self.node_toolbar, actions, self.gui_actions)
-
-        # Query toolbar
-        self.query_toolbar = self.addToolBar(trs('Queries on tables', 
-            'Toolbar title'))
-        self.query_toolbar.setObjectName('Query toolbar')
-        actions = ['queryNew', 'queryDeleteAll']
-        vitables.utils.addActions(self.query_toolbar, actions, 
-                                    self.gui_actions)
-
-        # Help toolbar
-        self.help_toolbar = self.addToolBar(trs('Help system', 
-            'Toolbar title'))
-        self.help_toolbar.setObjectName('Help toolbar')
-        actions = ['helpUsersGuide']
-        vitables.utils.addActions(self.help_toolbar, actions, self.gui_actions)
-        whatis = QtGui.QWhatsThis.createAction(self.help_toolbar)
-        whatis.setStatusTip(trs('Contextual help',
-                    'Status bar text for the Help -> Whats This action'))
-        self.help_toolbar.addAction(whatis)
-
-
-    def initStatusBar(self):
-        """Init status bar."""
-
-        status_bar = self.statusBar()
-        self.sb_node_info = QtGui.QLabel(status_bar)
-        self.sb_node_info.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, \
-                                        QtGui.QSizePolicy.Minimum)
-        status_bar.addPermanentWidget(self.sb_node_info)
-        self.sb_node_info.setToolTip(trs(
-            'The node currently selected in the Tree of databases pane',
-            'The Selected node box startup message'))
-        status_bar.showMessage(trs('Ready...',
-            'The status bar startup message'))
-
-
-    def setupMenus(self):
-        """
-        Set up the main window menus.
-
-        Popus are made of actions, items and separators.
-        The Window menu is a special case due to its dynamic nature. Its
-        contents depend on the number of existing views.
-        In order to track changes and keep updated the menu, it is reloaded
-        every time it is about to be displayed. This goal is achieved using
-        signal/slot mechanism (see code below).
-        """
-
-        # Create the File menu and add actions/submenus/separators to it
-        self.file_menu = self.menuBar().addMenu(trs("&File", 
-            'The File menu entry'))
-        self.file_menu.setObjectName('file_menu')
-        self.open_recent_submenu = QtGui.QMenu(trs('Open R&ecent Files',
-            'File -> Open Recent Files'))
-        self.open_recent_submenu.setObjectName('open_recent_submenu')
-        self.open_recent_submenu.setSeparatorsCollapsible(False)
-        self.open_recent_submenu.setIcon(\
-            self.icons_dictionary['document-open-recent'])
-        file_actions = ['fileNew', 'fileOpen', 'fileOpenRO', 
-            self.open_recent_submenu, None, 'fileClose', 'fileCloseAll', None, 
-            'fileSaveAs', None, 'fileExit']
-        vitables.utils.addActions(self.file_menu, file_actions, 
-            self.gui_actions)
-
-        file_open_button = self.file_toolbar.widgetForAction(
-            self.gui_actions['fileOpen'])
-        file_open_button.setMenu(self.open_recent_submenu)
-        self.open_recent_submenu.aboutToShow.connect(\
-            self.updateRecentSubmenu)
-
-        # Create the Node menu and add actions/submenus/separators to it
-        node_menu = self.menuBar().addMenu(trs("&Node", 
-            'The Node menu entry'))
-        node_menu.setObjectName('node_menu')
-        node_actions = ['nodeOpen', 'nodeClose', 'nodeProperties', None, 
-            'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy', 'nodePaste', 
-            'nodeDelete']
-        vitables.utils.addActions(node_menu, node_actions, self.gui_actions)
-
-        # Create the Dataset menu and add actions/submenus/separators to it
-        self.dataset_menu = self.menuBar().addMenu(trs("&Dataset", 
-            'The Dataset menu entry'))
-        self.dataset_menu.setObjectName('dataset_menu')
-        dataset_actions = ['queryNew', None]
-        vitables.utils.addActions(self.dataset_menu, dataset_actions, 
-            self.gui_actions)
-
-        # Create the Settings menu and add actions/submenus/separators to it
-        settings_menu = self.menuBar().addMenu(trs("&Settings", 
-            'The Settings menu entry'))
-        settings_menu.setObjectName('settings-menu')
-        self.hide_toolbar_submenu = self.createPopupMenu()
-        self.hide_toolbar_submenu.menuAction().setText(trs('ToolBars', 
-                                                'Tools -> ToolBars action'))
-        settings_actions = ['settingsPreferences', None, 
-            self.hide_toolbar_submenu]
-        vitables.utils.addActions(settings_menu, settings_actions, 
-            self.gui_actions)
-
-        # Create the Window menu and add actions/menus/separators to it
-        self.windows_menu = self.menuBar().addMenu(trs("&Window", 
-            'The Windows menu entry'))
-        self.windows_menu.setObjectName('windows_menu')
-        windows_actions = ['windowCascade', 'windowTile', 
-                           'windowRestoreAll', 'windowMinimizeAll', 
-                           'windowClose', 'windowCloseAll', 'windowSeparator']
-        vitables.utils.addActions(self.windows_menu, windows_actions, 
-                                    self.gui_actions)
-        self.windows_menu.setSeparatorsCollapsible(True)
-        action_group = QtGui.QActionGroup(self.windows_menu)
-        self.windows_menu.action_group = action_group
-        self.windows_menu.aboutToShow.connect(self.updateWindowMenu)
-
-        # Create the Help menu and add actions/menus/separators to it
-        help_menu = self.menuBar().addMenu(trs("&Help", 
-            'The Help menu entry'))
-        help_menu.setObjectName('help_menu')
-        help_actions = ['helpUsersGuide', None, 'helpAbout', 'helpAboutQt', 
-            'helpVersions', None]
-        vitables.utils.addActions(help_menu, help_actions, self.gui_actions)
-        whatis = QtGui.QWhatsThis.createAction(help_menu)
-        whatis.setStatusTip(trs('Context help',
-                    'Status bar text for the Help -> Whats This action'))
-        help_menu.addAction(whatis)
-
-        #########################################################
-        #
-        # 				Context menus
-        #
-        #########################################################
-
-        self.view_cm = QtGui.QMenu()
-        actions = ['fileNew', 'fileOpen', 'fileOpenRO', 
-            self.open_recent_submenu, None, 'fileClose', 'fileCloseAll', None, 
-            'fileSaveAs', None, 'fileExit']
-        vitables.utils.addActions(self.view_cm, actions, self.gui_actions)
-
-        self.root_node_cm = QtGui.QMenu()
-        actions = ['fileClose', 'fileSaveAs', None, 'nodeProperties', None, 
-            'nodeNew', 'nodeCopy', 'nodePaste', None, 'queryDeleteAll']
-        vitables.utils.addActions(self.root_node_cm, actions, self.gui_actions)
-
-        self.group_node_cm = QtGui.QMenu()
-        actions = ['nodeProperties', None, 'nodeNew', 'nodeRename', 'nodeCut', 
-            'nodeCopy', 'nodePaste', 'nodeDelete']
-        vitables.utils.addActions(self.group_node_cm, actions, 
-                                    self.gui_actions)
-
-        self.leaf_node_cm = QtGui.QMenu()
-        actions = ['nodeOpen', 'nodeClose', None, 'nodeProperties', None, 
-            'nodeRename', 'nodeCut', 'nodeCopy', 'nodePaste', 'nodeDelete', 
-            None, 'queryNew']
-        vitables.utils.addActions(self.leaf_node_cm, actions, self.gui_actions)
-
-        self.mdi_cm = QtGui.QMenu()
-        actions = ['mdiTabbed', None, 
-            self.windows_menu]
-        vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
 
     # Databases are automatically opened at startup when:
     # 
@@ -706,7 +215,6 @@ class VTApp(QtGui.QMainWindow):
             'mode#@#filepath2#@#nodepath1#@#nodepath2, ...', ...]
         """
 
-        expanded_signal = QtCore.SIGNAL("expanded(QModelIndex)")
         for file_data in self.config.session_files_nodes:
             item = unicode(file_data).split('#@#')
             # item looks like [mode, filepath1, nodepath1, nodepath2, ...]
@@ -714,8 +222,8 @@ class VTApp(QtGui.QMainWindow):
             filepath = item.pop(0)
             filepath = vitables.utils.forwardPath(filepath)
             # Open the database --> add the root group to the tree view.
-            self.dbs_tree_model.openDBDoc(filepath, mode)
-            db_doc = self.dbs_tree_model.getDBDoc(filepath)
+            self.gui.dbs_tree_model.openDBDoc(filepath, mode)
+            db_doc = self.gui.dbs_tree_model.getDBDoc(filepath)
             if db_doc is None:
                 continue
             # Update the history file
@@ -734,9 +242,10 @@ class VTApp(QtGui.QMainWindow):
                 # Expands the top level group, i.e., the root group.
                 # It happens to be the last root node added to model
                 # so its row is 0
-                group = self.dbs_tree_model.root.childAtRow(0)
-                index = self.dbs_tree_model.index(0, 0, QtCore.QModelIndex())
-                self.dbs_tree_view.expanded.emit(index)
+                group = self.gui.dbs_tree_model.root.childAtRow(0)
+                index = self.gui.dbs_tree_model.index(\
+                    0, 0, QtCore.QModelIndex())
+                self.gui.dbs_tree_view.expanded.emit(index)
                 groups.pop(0)
                 # Expand the rest of groups of the nodepath
                 while groups != []:
@@ -744,15 +253,15 @@ class VTApp(QtGui.QMainWindow):
                     parent_index = index
                     group = parent_group.findChild(groups[0])
                     row = group.row()
-                    index = self.dbs_tree_model.index(row, 0, parent_index)
-                    self.dbs_tree_view.expanded.emit(index)
+                    index = self.gui.dbs_tree_model.index(row, 0, parent_index)
+                    self.gui.dbs_tree_view.expanded.emit(index)
                     groups.pop(0)
                 # Finally we open the leaf
                 leaf_name = nodepath.split('/')[-1]
                 leaf = group.findChild(leaf_name)
                 row = leaf.row()
-                leaf_index = self.dbs_tree_model.index(row, 0, index)
-                self.dbs_tree_view.setCurrentIndex(leaf_index)
+                leaf_index = self.gui.dbs_tree_model.index(row, 0, index)
+                self.gui.dbs_tree_view.setCurrentIndex(leaf_index)
                 self.nodeOpen(leaf_index)
 
 
@@ -765,7 +274,7 @@ class VTApp(QtGui.QMainWindow):
         if isinstance(h5files, list):
             for filepath in h5files:
                 filepath = vitables.utils.forwardPath(filepath)
-                self.dbs_tree_model.openDBDoc(filepath, mode)
+                self.gui.dbs_tree_model.openDBDoc(filepath, mode)
                 self.updateRecentFiles(filepath, mode)
 
         # If a list of files is passed then parse the list and open the files
@@ -783,143 +292,11 @@ class VTApp(QtGui.QMainWindow):
                     if not mode in ['r', 'a']:
                         print bad_line % line
                         continue
-                    self.dbs_tree_model.openDBDoc(filepath, mode)
+                    self.gui.dbs_tree_model.openDBDoc(filepath, mode)
                     self.updateRecentFiles(filepath, mode)
             except IOError:
                 print trs("""\nError: list of HDF5 files not read""",
                                 'File not updated error')
-
-
-    def closeEvent(self, event):
-        """
-        Handle close events.
-
-        Clicking the close button of the main window titlebar causes
-        the application quitting immediately, leaving things in a non
-        consistent state. This event handler ensures that the needed
-        tidy up is done before to quit.
-        """
-
-        # Main window close button clicked
-        self.fileExit()
-
-
-    def makeCopy(self):
-        """Copy text/leaf depending on which widget has focus.
-        """
-
-        if self.dbs_tree_view.hasFocus():
-            self.nodeCopy()
-        elif self.logger.hasFocus():
-            self.logger.copy()
-
-    # Updating appearance means:
-    # 
-    #     * changing the toolbar buttons look when their tied QActions are
-    #       enabled/disabled
-    #     * updating content of menus and submenus
-    # 
-    # Updating state means:
-    # 
-    #     * toggling state of QActions i.e. enabling/disabling QActions
-    # 
-
-    def updateActions(self):
-        """
-        Update the state of the actions tied to menu items and toolbars.
-
-        Every time that the selected item changes in the tree viewer the
-        state of the actions must be updated because it depends on the
-        type of selected item (leaf or group, opening mode etc.).
-        The following events trigger a call to this slot:
-
-            * insertion/deletion of rows in the tree of databases model
-              (see VTApp.slotUpdateCurrent method)
-            * changes in the selection state of the tree of databases view
-              (see DBsTreeView.currentChanged method)
-
-        The slot should be manually called when a new view is activated in
-        the workspace (for instance by methods nodeOpen, nodeClose).
-
-        .. _Warning:
-
-        Warning! Don\'t call this method until the GUI initialisation finishes.
-        It will fail if it is invoqued before the required database is open.
-        This is the reason why connectSignals() is called as late as possible
-        in the constructor.
-
-        :Parameter current: the model index of the current item
-        """
-
-        # The following actions are always active:
-        # fileNew, fileOpen, fileOpenRO, fileExit and the Help menu actions
-
-        # The set of actions that can be enabled or disabled
-        actions = frozenset(['fileClose', 'fileCloseAll', 'fileSaveAs', 
-                            'nodeOpen', 'nodeClose', 'nodeProperties', 
-                            'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy', 
-                            'nodePaste', 'nodeDelete', 
-                            'queryNew', 'queryDeleteAll'])
-        enabled = set([])
-
-        model_rows = self.dbs_tree_model.rowCount(QtCore.QModelIndex())
-        if model_rows <= 0:
-            return
-
-        # If there are open files aside the temporary DB
-        if model_rows > 1:
-            enabled = enabled.union(['fileCloseAll'])
-
-        # if there are filtered tables --> queryDeleteAll is enabled
-        tmp_index = self.dbs_tree_model.index(model_rows - 1, 0, 
-            QtCore.QModelIndex())
-        ftables = self.dbs_tree_model.rowCount(tmp_index)
-        if ftables > 0:
-            enabled = enabled.union(['queryDeleteAll'])
-
-        current = self.dbs_tree_view.currentIndex()
-        node = self.dbs_tree_model.nodeFromIndex(current)
-        if node != self.dbs_tree_model.root:
-            # Actions always enabled for every node
-            enabled = enabled.union(['nodeProperties', 
-                                     'nodeCopy'])
-
-            # If the selected file is not the temporary DB
-            if node.filepath != self.dbs_tree_model.tmp_filepath:
-                enabled = enabled.union(['fileSaveAs', 'fileClose'])
-
-            kind = node.node_kind
-            # If the node is a table --> queryNew is enabled
-            if kind == 'table':
-                enabled = enabled.union(['queryNew'])
-
-            # If the file is not open in read-only mode
-            mode = self.dbs_tree_model.getDBDoc(node.filepath).mode
-            if mode != 'r':
-                if kind == 'root group':
-                    enabled = enabled.union(['nodeNew', 'nodePaste'])
-                elif kind == 'group':
-                    enabled = enabled.union(['nodeNew', 'nodeRename', 
-                                            'nodeCut', 'nodePaste', 
-                                            'nodeDelete'])
-                elif kind == 'table':
-                    enabled = enabled.union(['nodeRename', 'nodeCut', 
-                                            'nodeDelete'])
-                else:
-                    enabled = enabled.union(['nodeRename', 'nodeCut', 
-                                            'nodeDelete'])
-
-            if kind not in ('group', 'root group'):
-                if node.has_view:
-                    enabled = enabled.union(['nodeClose'])
-                else:
-                    enabled = enabled.union(['nodeOpen'])
-
-        disabled = actions.difference(enabled)
-        for action in enabled:
-            self.gui_actions[action].setEnabled(True)
-        for action in disabled:
-            self.gui_actions[action].setDisabled(True)
 
 
     def updateRecentFiles(self, filepath, mode):
@@ -945,160 +322,6 @@ class VTApp(QtGui.QMainWindow):
             recent_files.insert(0, item)
         while recent_files.count() > self.number_of_recent_files:
             recent_files.takeLast()
-
-
-    def updateRecentSubmenu(self):
-        """Update the content of the Open Recent File submenu."""
-
-        index = 0
-        self.open_recent_submenu.clear()
-        iconset = vitables.utils.getIcons()
-        for item in self.config.recent_files:
-            index += 1
-            (mode, filepath) = item.split('#@#')
-            action = QtGui.QAction(u'%s. ' % index + filepath, self)
-            action.setData(QtCore.QVariant(item))
-            action.triggered.connect(self.openRecentFile)
-            if mode == 'r':
-                action.setIcon(iconset['file_ro'])
-            else:
-                action.setIcon(iconset['file_rw'])
-            self.open_recent_submenu.addAction(action)
-
-        # Always add a separator and a clear QAction. So if the menu is empty
-        # the user still will know what's going on
-        self.open_recent_submenu.addSeparator()
-        action = QtGui.QAction(trs('&Clear',
-            'A recent submenu command'), self)
-        action.triggered.connect(self.clearRecentFiles)
-        self.open_recent_submenu.addAction(action)
-
-
-    def updateWindowMenu(self):
-        """
-        Update the Windows menu.
-
-        The Windows menu is dynamic because its content is determined
-        by the currently open views. Because the number of these views or
-        its contents may vary at any moment we must update the Windows
-        menu every time it is open. For simplicity we don't keep track
-        of changes in the menu content. Instead, we clean and create it
-        from scratch every time it is about to show.
-        """
-
-        menu = self.windows_menu
-        windows_list = self.workspace.subWindowList()
-        if not windows_list:
-            return
-
-        # Clear the existing views from the Window menu
-        for action in menu.action_group.actions():
-            menu.action_group.removeAction(action)
-            menu.removeAction(action)
-
-        # Reload the existing views
-        counter = 1
-        for window in windows_list:
-            title = window.windowTitle()
-            if counter == 10:
-                menu.addSeparator()
-                menu = menu.addMenu(trs("&More", 'A Windows submenu'))
-            accel = ""
-            if counter < 10:
-                accel = "&%d " % counter
-            elif counter < 36:
-                accel = "&%c " % chr(counter + ord("@") - 9)
-            action = menu.addAction("%s%s" % (accel, title))
-            menu.action_group.addAction(action)
-            action.setCheckable(True)
-            if self.workspace.activeSubWindow() == window:
-                action.setChecked(True)
-            action.triggered.connect(self.window_mapper.map)
-            self.window_mapper.setMapping(action, window)
-            counter = counter + 1
-
-
-    def updateStatusBar(self):
-        """Update the permanent message of the status bar.
-        """
-
-        current = self.dbs_tree_view.currentIndex()
-        if current.isValid():
-            tip = self.dbs_tree_model.data(current, QtCore.Qt.StatusTipRole)
-            message = tip.toString()
-        else:
-            message = ''
-        self.sb_node_info.setText(message)
-
-
-    def popupContextualMenu(self, kind, pos):
-        """
-        Popup a contextual menu in the tree of databases view.
-
-        When a point of the tree view is right clicked, a contextual
-        popup is displayed. The content of the popup depends on the
-        kind of node pointed: no node, root group, group or leaf.
-
-        :Parameters:
-
-            - `kind`: defines the content of the menu
-            - `pos`: the clicked point in global coordinates
-        """
-
-        if kind == 'view':
-            menu = self.view_cm
-        elif kind == 'root group':
-            menu = self.root_node_cm
-        elif kind == 'group':
-            menu = self.group_node_cm
-        else:
-            menu = self.leaf_node_cm
-        menu.popup(pos)
-
-
-    def closeChildrenViews(self, nodepath, filepath):
-        """Close views being overwritten during node editing.
-
-        :Parameters:
-
-            - `nodepath`: the full path of the node that is overwrting other nodes
-            - `filepath`: the full path of the file where that node lives
-        """
-
-        for window in self.workspace.subWindowList():
-            wnodepath = window.dbt_leaf.nodepath
-            wfilepath = window.dbt_leaf.filepath
-            if not wfilepath == filepath:
-                continue
-            if wnodepath[0:len(nodepath)] == nodepath:
-                window.close()
-
-
-    def changeMDIViewMode(self):
-        """Toggle the view mode of the workspace.
-        """
-
-        if self.workspace.viewMode() == QtGui.QMdiArea.SubWindowView:
-            self.workspace.setViewMode(QtGui.QMdiArea.TabbedView)
-        else:
-            self.workspace.setViewMode(QtGui.QMdiArea.SubWindowView)
-
-
-    def eventFilter(self, widget, event):
-        """Event filter used to provide the MDI area with a context menu.
-
-        :Parameters:
-            -`widget`: the widget that receives the event
-            -`event`: the event being processed
-        """
-
-        if widget == self.workspace:
-            if event.type() == QtCore.QEvent.ContextMenu:
-                pos = event.globalPos()
-                self.mdi_cm.popup(pos)
-            return QtGui.QMdiArea.eventFilter(widget, widget, event)
-        else:
-            return QtGui.QMainWindow.eventFilter(self, widget, event)
 
 
     def updateFSHistory(self, working_dir):
@@ -1143,7 +366,7 @@ class VTApp(QtGui.QMainWindow):
             'history': self.file_selector_history, 
             'label': trs('Create', 'Accept button text for QFileDialog')}
         filepath, working_dir = vitables.utils.getFilepath(
-            self, 
+            self.gui, 
             trs('Creating a new file...', 
                 'Caption of the File New... dialog'), 
             dfilter=trs("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
@@ -1169,7 +392,7 @@ class VTApp(QtGui.QMainWindow):
             return
 
         # Create the pytables file and close it.
-        db_doc = self.dbs_tree_model.createDBDoc(filepath)
+        db_doc = self.gui.dbs_tree_model.createDBDoc(filepath)
         if db_doc:
             # The write mode must be replaced by append mode or the file
             # will be created from scratch in the next ViTables session
@@ -1185,11 +408,11 @@ class VTApp(QtGui.QMainWindow):
         """
 
         overwrite = False
-        current_index = self.dbs_tree_view.currentIndex()
+        current_index = self.gui.dbs_tree_view.currentIndex()
 
         # The file being saved
         initial_filepath = \
-            self.dbs_tree_model.nodeFromIndex(current_index).filepath
+            self.gui.dbs_tree_model.nodeFromIndex(current_index).filepath
 
         # Launch the file selector
         fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave, 
@@ -1197,7 +420,7 @@ class VTApp(QtGui.QMainWindow):
             'history': self.file_selector_history, 
             'label': trs('Create', 'Accept button text for QFileDialog')}
         trier_filepath, working_dir = vitables.utils.getFilepath(
-            self, 
+            self.gui, 
             trs('Copying a file...', 
                       'Caption of the File Save as... dialog'), 
             dfilter = trs("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
@@ -1223,7 +446,8 @@ class VTApp(QtGui.QMainWindow):
         trier_dirname, trier_filename = os.path.split(trier_filepath)
         sibling = os.listdir(trier_dirname)
         filename_in_sibling = trier_filename in sibling
-        is_tmp_filepath = trier_filepath == self.dbs_tree_model.tmp_filepath
+        is_tmp_filepath = \
+            trier_filepath == self.gui.dbs_tree_model.tmp_filepath
         is_initial_filepath = trier_filepath == initial_filepath
 
         # If the suggested filepath is not valid ask for a new filepath
@@ -1262,7 +486,7 @@ class VTApp(QtGui.QMainWindow):
                 # Update the error conditions
                 is_initial_filepath = trier_filepath == initial_filepath
                 is_tmp_filepath = \
-                    trier_filepath == self.dbs_tree_model.tmp_filepath
+                    trier_filepath == self.gui.dbs_tree_model.tmp_filepath
                 filename_in_sibling = trier_filename in sibling
                 del dialog
                 if (overwrite == True) and (not is_initial_filepath) and \
@@ -1275,25 +499,25 @@ class VTApp(QtGui.QMainWindow):
         filepath = self.checkFileExtension(trier_filepath)
 
         # If an open file is overwritten then close it
-        if overwrite and self.dbs_tree_model.getDBDoc(filepath):
-            for row, child in enumerate(self.dbs_tree_model.root.children):
+        if overwrite and self.gui.dbs_tree_model.getDBDoc(filepath):
+            for row, child in enumerate(self.gui.dbs_tree_model.root.children):
                 if child.filepath == filepath:
-                    self.fileClose(self.dbs_tree_model.index(row, 0, 
+                    self.fileClose(self.gui.dbs_tree_model.index(row, 0, 
                                                         QtCore.QModelIndex()))
             # The current index could have changed when overwriting
             # so we update it
             for row in range(0, 
-                self.dbs_tree_model.rowCount(QtCore.QModelIndex())):
+                self.gui.dbs_tree_model.rowCount(QtCore.QModelIndex())):
                 index = QtCore.QModelIndex().child(row, 0)
-                node = self.dbs_tree_model.nodeFromIndex(index)
+                node = self.gui.dbs_tree_model.nodeFromIndex(index)
                 if node.filepath == initial_filepath:
                     current_index = index
-            self.dbs_tree_view.setCurrentIndex(current_index)
+            self.gui.dbs_tree_view.setCurrentIndex(current_index)
 
         # Make a copy of the selected file
         try:
             QtGui.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
-            dbdoc = self.dbs_tree_model.getDBDoc(initial_filepath)
+            dbdoc = self.gui.dbs_tree_model.getDBDoc(initial_filepath)
             dbdoc.copyFile(filepath)
         finally:
             QtGui.qApp.restoreOverrideCursor()
@@ -1302,9 +526,9 @@ class VTApp(QtGui.QMainWindow):
         # the tree view because closing an overwritten file can change
         # the selected item) and open the new copy in read-write mode.
         # The position in the tree is kept
-        for row, child in enumerate(self.dbs_tree_model.root.children):
+        for row, child in enumerate(self.gui.dbs_tree_model.root.children):
             if child.filepath == initial_filepath:
-                self.fileClose(self.dbs_tree_model.index(row, 0, 
+                self.fileClose(self.gui.dbs_tree_model.index(row, 0, 
                                                         QtCore.QModelIndex()))
                 self.fileOpen(filepath, 'a', row) 
 
@@ -1361,7 +585,7 @@ class VTApp(QtGui.QMainWindow):
                 'history': self.file_selector_history, 
                 'label': trs('Open', 'Accept text for QFileDialog')}
             filepath, working_dir = vitables.utils.getFilepath(\
-                self, 
+                self.gui, 
                 trs('Select a file for opening', 
                 'Caption of the File Open... dialog'), 
                 dfilter = trs("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
@@ -1380,11 +604,12 @@ class VTApp(QtGui.QMainWindow):
             filepath = unicode(QtCore.QDir.fromNativeSeparators(filepath))
 
         # Open the database and select it in the tree view
-        self.dbs_tree_model.openDBDoc(filepath, mode, position)
-        database = self.dbs_tree_model.getDBDoc(filepath)
-        if database:
-            self.dbs_tree_view.setCurrentIndex(\
-                self.dbs_tree_model.index(position, 0, QtCore.QModelIndex()))
+        is_open = self.gui.dbs_tree_model.openDBDoc(filepath, mode, position)
+        if is_open:
+            self.gui.dbs_tree_model.getDBDoc(filepath)
+            self.gui.dbs_tree_view.setCurrentIndex(\
+                self.gui.dbs_tree_model.index(\
+                position, 0, QtCore.QModelIndex()))
             self.updateRecentFiles(filepath, mode)
 
 
@@ -1401,20 +626,20 @@ class VTApp(QtGui.QMainWindow):
         """
 
         if current is False:
-            current = self.dbs_tree_view.currentIndex()
-        filepath = self.dbs_tree_model.nodeFromIndex(current).filepath
+            current = self.gui.dbs_tree_view.currentIndex()
+        filepath = self.gui.dbs_tree_model.nodeFromIndex(current).filepath
 
         # If some leaf of this database has an open view then close it
-        for window in self.workspace.subWindowList():
+        for window in self.gui.workspace.subWindowList():
             if window.dbt_leaf.filepath == filepath:
                 window.close()
 
         # The tree model closes the file and delete its root item
         # from the tree view
-        dbdoc = self.dbs_tree_model.getDBDoc(filepath)
+        dbdoc = self.gui.dbs_tree_model.getDBDoc(filepath)
         if dbdoc.hidden_group is not None:
             dbdoc.h5file.removeNode(dbdoc.hidden_group, recursive=True)
-        self.dbs_tree_model.closeDBDoc(filepath)
+        self.gui.dbs_tree_model.closeDBDoc(filepath)
 
 
     def fileCloseAll(self):
@@ -1422,13 +647,13 @@ class VTApp(QtGui.QMainWindow):
 
         # The list of top level items to be removed.
         # The temporary database should be closed at quit time only
-        open_files = len(self.dbs_tree_model.root.children) - 1
+        open_files = len(self.gui.dbs_tree_model.root.children) - 1
         rows_range = range(0, open_files)
         # Reversing is a must because, if we start from 0, row positions
         # change as we delete rows
         rows_range.reverse()
         for row in rows_range:
-            index = self.dbs_tree_model.index(row, 0, QtCore.QModelIndex())
+            index = self.gui.dbs_tree_model.index(row, 0, QtCore.QModelIndex())
             self.fileClose(index)
 
 
@@ -1441,16 +666,14 @@ class VTApp(QtGui.QMainWindow):
 
         # Close all browsers
         if self.doc_browser:
-            self.doc_browser.slotExitBrowser()
+            self.doc_browser.exitBrowser()
         # Save current configuration
         self.config.saveConfiguration()
         # Close every user opened file
         self.fileCloseAll()
         # Close the temporary database
-        index = self.dbs_tree_model.index(0, 0, QtCore.QModelIndex())
+        index = self.gui.dbs_tree_model.index(0, 0, QtCore.QModelIndex())
         self.fileClose(index)
-        # Application quit
-        QtGui.qApp.quit()
 
 
     def nodeOpen(self, current=False):
@@ -1462,11 +685,11 @@ class VTApp(QtGui.QMainWindow):
 
         if current is False:
             # Open the node currently selected in the tree of databases
-            index = self.dbs_tree_view.currentIndex()
+            index = self.gui.dbs_tree_view.currentIndex()
         else:
             # When restoring the previous session explicit indexes are passed
             index = current
-        dbs_tree_leaf = self.dbs_tree_model.nodeFromIndex(index)
+        dbs_tree_leaf = self.gui.dbs_tree_model.nodeFromIndex(index)
         leaf = dbs_tree_leaf.node # A PyTables node
 
         # tables.UnImplemented datasets cannot be read so are not opened
@@ -1512,10 +735,10 @@ class VTApp(QtGui.QMainWindow):
         :Parameter current: the tree view item to be closed
         """
 
-        current = self.dbs_tree_view.currentIndex()
+        current = self.gui.dbs_tree_view.currentIndex()
         pcurrent = QtCore.QPersistentModelIndex(current)
         # Find out the subwindow tied to the selected node and close it
-        for data_sheet in self.workspace.subWindowList():
+        for data_sheet in self.gui.workspace.subWindowList():
             if pcurrent == data_sheet.pindex:
                 data_sheet.close()
                 break
@@ -1524,8 +747,8 @@ class VTApp(QtGui.QMainWindow):
     def nodeNewGroup(self):
         """Create a new group node."""
 
-        current = self.dbs_tree_view.currentIndex()
-        parent = self.dbs_tree_model.nodeFromIndex(current)
+        current = self.gui.dbs_tree_view.currentIndex()
+        parent = self.gui.dbs_tree_model.nodeFromIndex(current)
 
         # Get the new group name
         dialog = inputNodeName.InputNodeName(\
@@ -1560,9 +783,9 @@ class VTApp(QtGui.QMainWindow):
         # views are closed before the renaming is done
         if overwrite:
             nodepath = tables.path.joinPath(parent.nodepath, nodename)
-            self.closeChildrenViews(nodepath, parent.filepath)
+            self.gui.closeChildrenViews(nodepath, parent.filepath)
 
-        self.dbs_tree_model.createGroup(current, nodename, overwrite)
+        self.gui.dbs_tree_model.createGroup(current, nodename, overwrite)
 
 
     def nodeRename(self):
@@ -1575,8 +798,8 @@ class VTApp(QtGui.QMainWindow):
         - rename the node
         """
 
-        index = self.dbs_tree_view.currentIndex()
-        child = self.dbs_tree_model.nodeFromIndex(index)
+        index = self.gui.dbs_tree_view.currentIndex()
+        child = self.gui.dbs_tree_model.nodeFromIndex(index)
         parent = child.parent
 
         # Get the new nodename
@@ -1616,29 +839,29 @@ class VTApp(QtGui.QMainWindow):
         # views are closed before the renaming is done
         if overwrite:
             nodepath = tables.path.joinPath(parent.nodepath, nodename)
-            self.closeChildrenViews(nodepath, child.filepath)
+            self.gui.closeChildrenViews(nodepath, child.filepath)
 
         # Rename the node
-        self.dbs_tree_model.renameNode(index, nodename, overwrite)
+        self.gui.dbs_tree_model.renameNode(index, nodename, overwrite)
 
         # Update the Selected node indicator of the status bar
-        self.updateStatusBar()
+        self.gui.updateStatusBar()
 
 
     def nodeCut(self):
         """Cut the selected node."""
 
-        current = self.dbs_tree_view.currentIndex()
+        current = self.gui.dbs_tree_view.currentIndex()
 
         # If the cut node has attached views then these views are closed
         # before the cutting is done. This behavior can be inconvenient
         # for users but get rid of potential problems that arise if, for
         # any reason, the user doesn't paste the cut node.
-        node = self.dbs_tree_model.nodeFromIndex(current)
-        self.closeChildrenViews(node.nodepath, node.filepath)
+        node = self.gui.dbs_tree_model.nodeFromIndex(current)
+        self.gui.closeChildrenViews(node.nodepath, node.filepath)
 
         # Cut the node
-        self.dbs_tree_model.cutNode(current)
+        self.gui.dbs_tree_model.cutNode(current)
 
 
     def nodeCopy(self):
@@ -1646,10 +869,10 @@ class VTApp(QtGui.QMainWindow):
         Copy the selected node.
         """
 
-        current = self.dbs_tree_view.currentIndex()
+        current = self.gui.dbs_tree_view.currentIndex()
 
         # Non readable leaves should not be copied
-        dbs_tree_node = self.dbs_tree_model.nodeFromIndex(current)
+        dbs_tree_node = self.gui.dbs_tree_model.nodeFromIndex(current)
         if not (dbs_tree_node.node_kind in ('root group', 'group')):
             leaf = dbs_tree_node.node # A PyTables node
             leaf_buffer = rbuffer.Buffer(leaf)
@@ -1663,7 +886,7 @@ class VTApp(QtGui.QMainWindow):
                 return
 
         # Copy the node
-        self.dbs_tree_model.copyNode(current)
+        self.gui.dbs_tree_model.copyNode(current)
 
 
     def nodePaste(self):
@@ -1671,10 +894,10 @@ class VTApp(QtGui.QMainWindow):
         Paste the currently copied/cut node under the selected node.
         """
 
-        current = self.dbs_tree_view.currentIndex()
-        parent = self.dbs_tree_model.nodeFromIndex(current)
+        current = self.gui.dbs_tree_view.currentIndex()
+        parent = self.gui.dbs_tree_model.nodeFromIndex(current)
 
-        copied_node_info = self.dbs_tree_model.copied_node_info
+        copied_node_info = self.gui.dbs_tree_model.copied_node_info
         if copied_node_info == {}:
             return
 
@@ -1687,8 +910,8 @@ class VTApp(QtGui.QMainWindow):
         else:
             nodename = src_node.name
 
-        dbdoc = \
-            self.dbs_tree_model.getDBDoc(copied_node_info['initial_filepath'])
+        dbdoc = self.gui.dbs_tree_model.getDBDoc(\
+            copied_node_info['initial_filepath'])
         if not dbdoc:
             # The database where the copied/cut node lived has been closed
             return
@@ -1740,10 +963,10 @@ class VTApp(QtGui.QMainWindow):
         # views are closed before the pasting is done
         if overwrite:
             nodepath = tables.path.joinPath(parent.nodepath, nodename)
-            self.closeChildrenViews(nodepath, parent.filepath)
+            self.gui.closeChildrenViews(nodepath, parent.filepath)
 
         # Paste the node
-        self.dbs_tree_model.pasteNode(current, nodename, overwrite)
+        self.gui.dbs_tree_model.pasteNode(current, nodename, overwrite)
 
 
     def nodeDelete(self, current=False, force=None):
@@ -1756,8 +979,8 @@ class VTApp(QtGui.QMainWindow):
         """
 
         if current is False:
-            current = self.dbs_tree_view.currentIndex()
-        node = self.dbs_tree_model.nodeFromIndex(current)
+            current = self.gui.dbs_tree_view.currentIndex()
+        node = self.gui.dbs_tree_model.nodeFromIndex(current)
 
         # Confirm deletion dialog
         if not force:
@@ -1785,15 +1008,15 @@ class VTApp(QtGui.QMainWindow):
 
         # If the deletion involves a node with attached views then these
         # views are closed before the deletion is done
-        self.closeChildrenViews(node.nodepath, node.filepath)
+        self.gui.closeChildrenViews(node.nodepath, node.filepath)
 
         # Delete the node
-        self.dbs_tree_model.deleteNode(current)
+        self.gui.dbs_tree_model.deleteNode(current)
 
         # Synchronise the workspace with the tree of databases pane i.e.
         # ensure that the new current node (if any) gets selected
-        select_model = self.dbs_tree_view.selectionModel()
-        new_current = self.dbs_tree_view.currentIndex()
+        select_model = self.gui.dbs_tree_view.selectionModel()
+        new_current = self.gui.dbs_tree_view.currentIndex()
         select_model.select(new_current, QtGui.QItemSelectionModel.Select)
 
 
@@ -1804,10 +1027,20 @@ class VTApp(QtGui.QMainWindow):
         The method is called by activating Node --> Properties.
         """
 
-        current = self.dbs_tree_view.currentIndex()
-        node = self.dbs_tree_model.nodeFromIndex(current)
+        current = self.gui.dbs_tree_view.currentIndex()
+        node = self.gui.dbs_tree_model.nodeFromIndex(current)
         info = nodeInfo.NodeInfo(node)
         nodePropDlg.NodePropDlg(info)
+
+
+    def newQuery(self):
+        """Slot for querying tables."""
+        self.queries_mgr.newQuery()
+
+
+    def deleteAllQueries(self):
+        """Slot for emptying the Query results node."""
+        self.queries_mgr.deleteAllQueries()
 
 
     def settingsPreferences(self):
@@ -1828,27 +1061,27 @@ class VTApp(QtGui.QMainWindow):
 
     def windowClose(self):
         """Close the window currently active in the workspace."""
-        self.workspace.activeSubWindow().close()
+        self.gui.workspace.activeSubWindow().close()
 
 
     def windowCloseAll(self):
         """Close all open windows."""
 
-        for window in self.workspace.subWindowList():
+        for window in self.gui.workspace.subWindowList():
             window.close()
 
 
     def windowRestoreAll(self):
         """Restore every window in the workspace to its normal size."""
 
-        for window in self.workspace.subWindowList():
+        for window in self.gui.workspace.subWindowList():
             window.showNormal()
 
 
     def windowMinimizeAll(self):
         """Restore every window in the workspace to its normal size."""
 
-        for window in self.workspace.subWindowList():
+        for window in self.gui.workspace.subWindowList():
             window.showMinimized()
 
 
@@ -1896,7 +1129,7 @@ class VTApp(QtGui.QMainWindow):
         license_text = vitables.utils.getLicense()
 
         # Construct the dialog
-        about_dlg = QtGui.QDialog(self)
+        about_dlg = QtGui.QDialog(self.gui)
         about_dlg.setWindowTitle(trs('About ViTables %s',
             'Caption of the About ViTables dialog') % vtconfig.getVersion())
         layout = QtGui.QVBoxLayout(about_dlg)
@@ -1949,7 +1182,7 @@ class VTApp(QtGui.QMainWindow):
         Help --> About Qt
         """
 
-        QtGui.QMessageBox.aboutQt(self, trs('About Qt',
+        QtGui.QMessageBox.aboutQt(self.gui, trs('About Qt',
             'Caption of the About Qt dialog'))
 
 
@@ -1985,7 +1218,7 @@ class VTApp(QtGui.QMainWindow):
                     'Part of the library not found text')
 
         # Construct the dialog
-        versions_dlg = QtGui.QDialog(self)
+        versions_dlg = QtGui.QDialog(self.gui)
         versions_dlg.setWindowTitle(trs('Version Numbers', 
                                              'Caption of the Versions dialog'))
         layout = QtGui.QVBoxLayout(versions_dlg)

@@ -54,10 +54,8 @@ import locale
 from optparse import OptionParser
 import sys
 import os.path
-from vitables.vtSite import *
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtGui
 
 def main(args):
     """The application launcher.
@@ -66,7 +64,7 @@ def main(args):
     loop is started.
     """
 
-    app = QApplication(args)
+    app = QtGui.QApplication(args)
     # These imports must be done after the QApplication has been instantiated
     from vitables.vtapp import VTApp
     from vitables.preferences import vtconfig
@@ -111,8 +109,8 @@ def main(args):
 
     # Start the application
     del config
-    main_window = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
-    main_window.show()
+    vtapp = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
+    vtapp.gui.show()
     app.exec_()
 
 if __name__ == '__main__':

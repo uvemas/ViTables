@@ -97,8 +97,9 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         self.vtapp = vitables.utils.getVTApp()
+        self.vtgui = self.vtapp.gui
         # Create the Settings dialog and customise it
-        QtGui.QDialog.__init__(self, self.vtapp)
+        QtGui.QDialog.__init__(self, self.vtgui)
         self.setupUi(self)
 
         self.config = self.vtapp.config
@@ -126,13 +127,13 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         # The dictionary of current ViTables preferences
         self.initial_prefs = {}
-        style_sheet = self.vtapp.logger.styleSheet()
+        style_sheet = self.vtgui.logger.styleSheet()
         paper = style_sheet[-7:]
         self.initial_prefs['Logger/Paper'] = QtGui.QColor(paper)
-        self.initial_prefs['Logger/Text'] = self.vtapp.logger.textColor()
-        self.initial_prefs['Logger/Font'] = self.vtapp.logger.font()
+        self.initial_prefs['Logger/Text'] = self.vtgui.logger.textColor()
+        self.initial_prefs['Logger/Font'] = self.vtgui.logger.font()
         self.initial_prefs['Workspace/Background'] = \
-            self.vtapp.workspace.background()
+            self.vtgui.workspace.background()
         self.initial_prefs['Look/currentStyle'] = self.config.current_style
         self.initial_prefs['Startup/startupWorkingDir'] = \
             self.config.startup_working_directory
@@ -220,9 +221,12 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.loadButton.setEnabled(False)
 
         # The visual update done above is not enough, we must reset the
-        # new preferences dictionary too
+        # new preferences dictionary and the lists of plugins paths and
+        # enabled plugins
         self.new_prefs.clear()
         self.new_prefs.update(self.initial_prefs)
+        self.plugins_paths = self.pg_loader.plugins_paths[:]
+        self.enabled_plugins = self.pg_loader.enabled_plugins[:]
 
 
     def setupList(self, uid, seq, split=False):
@@ -264,11 +268,12 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             QtGui.QWhatsThis.enterWhatsThisMode)
 
         # Plugins page
-        current_changed = \
-            QtCore.SIGNAL('selectionChanged(QItemSelection, QItemSelection)')
-        self.disabledLV.selectionModel().selectionChanged.connect(self.updateButton)
-        self.enabledLV.selectionModel().selectionChanged.connect(self.updateButton)
-        self.pathsLV.selectionModel().selectionChanged.connect(self.updateButton)
+        self.disabledLV.selectionModel().selectionChanged.connect(\
+            self.updateButton)
+        self.enabledLV.selectionModel().selectionChanged.connect(\
+            self.updateButton)
+        self.pathsLV.selectionModel().selectionChanged.connect(\
+            self.updateButton)
 
 
 
@@ -378,7 +383,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     def setLoggerFont(self):
         """Slot for setting the logger font."""
 
-        new_font, is_ok = QtGui.QFontDialog.getFont(self.sampleTE.currentFont())
+        new_font, is_ok = \
+            QtGui.QFontDialog.getFont(self.sampleTE.currentFont())
         # The selected font is applied to the sample text
         if is_ok:
             self.new_prefs['Logger/Font'] = new_font

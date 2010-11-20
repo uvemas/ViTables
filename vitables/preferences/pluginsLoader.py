@@ -140,7 +140,6 @@ class PluginsLoader(object):
         - enabled_plugins: a QStringList with the UIDs of the enabled plugins
         """
 
-        vtapp = vitables.utils.getVTApp()
         # Move from PyQt QStringLists to python lists
         self.plugins_paths = [unicode(item) for item in plugins_paths]
         self.enabled_plugins = [unicode(item) for item in enabled_plugins]

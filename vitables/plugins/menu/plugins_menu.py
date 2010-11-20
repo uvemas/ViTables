@@ -69,13 +69,14 @@ class PluginsMenu(QtCore.QObject):
         self.vtapp = vitables.utils.getVTApp()
         if self.vtapp is None:
             return
+        self.vtgui = self.vtapp.gui
 
         # Create the Plugins menu and insert it before the Help menu
         self.plugins_menu = QtGui.QMenu(trs("&Plugins", 
             'The Plugins menu entry'))
-        for menu in self.vtapp.menuBar().findChildren(QtGui.QMenu):
+        for menu in self.vtgui.menuBar().findChildren(QtGui.QMenu):
             if menu.objectName() == 'help_menu':
-                self.vtapp.menuBar().insertMenu(menu.menuAction(), 
+                self.vtgui.menuBar().insertMenu(menu.menuAction(), 
                     self.plugins_menu)
 
         # The Plugins menu cannot be populated without knowing which 
@@ -147,7 +148,7 @@ class PluginsMenu(QtCore.QObject):
         title = trs('About plugin', 
             'Title for an About plugin message box')
 
-        QtGui.QMessageBox.about(self.vtapp, title, about_text)
+        QtGui.QMessageBox.about(self.vtgui, title, about_text)
 
 
     def showInfo(self):
@@ -159,7 +160,7 @@ class PluginsMenu(QtCore.QObject):
         action = self.sender()
         action_name = unicode(action.objectName())
         descr = self.vtapp.plugins_mgr.loaded_plugins[action_name].helpAbout()
-        info_dlg = QtGui.QDialog(self.vtapp)
+        info_dlg = QtGui.QDialog(self.vtgui)
         info_dlg.setWindowTitle(trs('About plugin', 'A dialog title'))
 
         label1 = QtGui.QLabel(trs('Module name:', 'Label text'), info_dlg)

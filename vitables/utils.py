@@ -77,8 +77,8 @@ def getVTApp():
 
     vtapp = None
     for widget in QtGui.qApp.topLevelWidgets():
-        if widget.objectName() == u'VTApp':
-            vtapp = widget
+        if widget.objectName() == u'VTGUI':
+            vtapp = widget.vtapp
             break
 
     return vtapp

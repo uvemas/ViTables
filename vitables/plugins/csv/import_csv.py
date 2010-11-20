@@ -435,11 +435,12 @@ class ImportCSV(QtCore.QObject):
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
+        self.vtgui = self.vtapp.gui
 
         if self.vtapp is None:
             return
 
-        self.dbt_model = self.vtapp.dbs_tree_model
+        self.dbt_model = self.vtgui.dbs_tree_model
 
         # Add an entry under the File menu
         self.addEntry()
@@ -495,13 +496,13 @@ class ImportCSV(QtCore.QObject):
         vitables.utils.addActions(self.import_submenu, keys, actions)
 
         # Add submenu to file menu before the Close File action
-        for item in self.vtapp.file_menu.actions():
+        for item in self.vtgui.file_menu.actions():
             if item.objectName() == 'fileClose':
-                self.vtapp.file_menu.insertMenu(item, self.import_submenu)
-                self.vtapp.file_menu.insertSeparator(item)
+                self.vtgui.file_menu.insertMenu(item, self.import_submenu)
+                self.vtgui.file_menu.insertSeparator(item)
 
         # Add submenu to file context menu before the Close File action
-        cmenu = self.vtapp.view_cm
+        cmenu = self.vtgui.view_cm
         for item in cmenu.actions():
             if item.objectName() == 'fileClose':
                 cmenu.insertMenu(item, self.import_submenu)
@@ -540,7 +541,7 @@ class ImportCSV(QtCore.QObject):
 
         # Call the file selector (and, if needed, customise it)
         filepath, working_dir = vitables.utils.getFilepath(\
-            self.vtapp, 
+            self.vtgui, 
             trs('Importing CSV file into %s',
                 'Caption of the Import from CSV dialog') % leaf_kind, 
             dfilter=trs("""CSV Files (*.csv);;"""
