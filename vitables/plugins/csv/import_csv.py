@@ -44,18 +44,21 @@ Other aspects to take into account:
 
 - creation of tables.CArray datasets requires an additional parsing of the
   whole CSV file in order to find out its number of rows (it is a required
-  argument of the CArray constructor)
+  argument of the CArray constructor).
 
 - there is a penalty performance when string dtypes are involved. The reason
   is that string fields use to have variable length so, before the numpy
   array is created, we need to find out the minimum itemsize required for
   storing those string fields with no lose of data. This step requires an
   additional parsing of the whole CSV file.
+
+- CSV files containing N-dimensional fields are always imported with str dtype.
+  This is a limitation of numpy.genfromtxt.
 """
 
 __docformat__ = 'restructuredtext'
 _context = 'ImportCSV'
-__version__ = '0.8'
+__version__ = '0.9'
 plugin_class = 'ImportCSV'
 
 import os
@@ -102,7 +105,7 @@ def tableInfo(input_handler):
     """
 
     # Inspect the CSV file reading its second line
-    # (reading the first line is not safe as it could be a header)
+    # (reading the first line is not safe enough as it could be a header)
     input_handler.seek(0)
     first_line = getArray(input_handler.readline())
     try:
@@ -431,15 +434,14 @@ class ImportCSV(QtCore.QObject):
         """The class constructor.
         """
 
-        QtCore.QObject.__init__(self)
+        super(ImportCSV, self).__init__()
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
-        self.vtgui = self.vtapp.gui
-
         if self.vtapp is None:
             return
 
+        self.vtgui = self.vtapp.gui
         self.dbt_model = self.vtgui.dbs_tree_model
 
         # Add an entry under the File menu
@@ -447,7 +449,7 @@ class ImportCSV(QtCore.QObject):
 
 
     def addEntry(self):
-        """Add the Import CSV... entry to the menus.
+        """Add the Import CSV... entry to the File menu.
         """
 
         icon = QtGui.QIcon()
@@ -463,30 +465,30 @@ class ImportCSV(QtCore.QObject):
         # Create the actions
         actions = {}
         actions['import_table'] = QtGui.QAction(
-            trs("Import T&able...", "Import table from CSV file"), self, 
+            trs("Import &Table...", "Import table from CSV file"), self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
-            triggered=self.importTable, 
+            triggered=self.csv2Table, 
             statusTip=trs("Import Table from plain CSV file", 
             "Status bar text for the File -> Import CSV... -> Import Table"))
 
         actions['import_array'] = QtGui.QAction(
-            trs("Import A&rray...", "Import array from CSV file"), self, 
+            trs("Import &Array...", "Import array from CSV file"), self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
-            triggered=self.importArray, 
+            triggered=self.csv2Array, 
             statusTip=trs("Import Array from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import Array"))
 
         actions['import_carray'] = QtGui.QAction(
-            trs("Import C&Array...", "Import carray from CSV file"), self, 
+            trs("Import &CArray...", "Import carray from CSV file"), self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
-            triggered=self.importCArray, 
+            triggered=self.csv2CArray, 
             statusTip=trs("Import CArray from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import CArray"))
 
         actions['import_earray'] = QtGui.QAction(
-            trs("Import E&Array...", "Import earray from CSV file"), self, 
+            trs("Import &EArray...", "Import earray from CSV file"), self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
-            triggered=self.importEArray,
+            triggered=self.csv2EArray,
             statusTip=trs("Import EArray from plain CSV file",
             "Status bar text for the File -> Import CSV... -> Import EArray"))
 
@@ -562,10 +564,25 @@ class ImportCSV(QtCore.QObject):
         return filepath
 
 
-    def importTable(self):
-        """Import a plain CSV file into a tables.Array object.
+    def updateTree(self, filepath):
+        """Update the databases tree once the CSV file has been imported.
 
-        :Parameter `kind`: the kind of array to be created (EArray, CArray)
+        When the destination h5 file is created and added to the databases tree
+        it has no nodes. Once the CSV file has been imported into a PyTables
+        container we update the representation of the h5 file in the tree so
+        that users can see that the file has a leaf.
+
+        :Parameter filepath: the filepath of the destination h5 file
+        """
+
+        for row, child in enumerate(self.dbt_model.root.children):
+            if child.filepath == filepath:
+                self.dbt_model.lazyAddChildren(self.dbt_model.index(row, 0, 
+                                                    QtCore.QModelIndex()))
+
+
+    def csv2Table(self):
+        """Import a plain CSV file into a tables.Array object.
         """
 
         kind = 'Table'
@@ -591,7 +608,7 @@ class ImportCSV(QtCore.QObject):
             dataset = dbdoc.h5file.createTable('/', dataset_name, descr, 
                 title=atitle, filters=io_filters, expectedrows=nrows)
 
-            # Fill the dataset in a memory effcient way
+            # Fill the dataset in a memory efficient way
             input_handler.seek(0)
             if has_header:
                 # Skip the header line
@@ -608,6 +625,7 @@ class ImportCSV(QtCore.QObject):
                 del idata
                 buf = read_fh(buf_size)
             dbdoc.h5file.flush()
+            self.updateTree(dbdoc.filepath)
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -615,7 +633,7 @@ class ImportCSV(QtCore.QObject):
             input_handler.close()
 
 
-    def importEArray(self):
+    def csv2EArray(self):
         """Import a plain CSV file into a tables.EArray object.
 
         This is a slot method. See `addEntry` method for details.
@@ -660,6 +678,7 @@ class ImportCSV(QtCore.QObject):
                 del idata
                 buf = read_fh(buf_size)
             dbdoc.h5file.flush()
+            self.updateTree(dbdoc.filepath)
         except ValueError:
             print trs("""\nError: please, make sure that you are """\
                 """importing a homogeneous dataset.""",
@@ -671,7 +690,7 @@ class ImportCSV(QtCore.QObject):
             input_handler.close()
 
 
-    def importCArray(self):
+    def csv2CArray(self):
         """Import a plain CSV file into a tables.CArray object.
 
         This is a slot method. See `addEntry` method for details.
@@ -718,6 +737,7 @@ class ImportCSV(QtCore.QObject):
                 start = stop
                 buf = read_fh(buf_size)
             dbdoc.h5file.flush()
+            self.updateTree(dbdoc.filepath)
         except ValueError:
             print trs("""\nError: please, make sure that you are """\
                 """importing a homogeneous dataset.""",
@@ -729,7 +749,7 @@ class ImportCSV(QtCore.QObject):
             input_handler.close()
 
 
-    def importArray(self):
+    def csv2Array(self):
         """Import a plain CSV file into a tables.Array object.
 
         This is a slot method. See `addEntry` method for details.
@@ -757,6 +777,7 @@ class ImportCSV(QtCore.QObject):
                 os.path.basename(filepath)
             dbdoc.h5file.createArray('/', array_name, data, title=title)
             dbdoc.h5file.flush()
+            self.updateTree(dbdoc.filepath)
         except TypeError:
             print trs("""\nError: please, make sure that you are """\
                 """importing a homogeneous dataset.""",

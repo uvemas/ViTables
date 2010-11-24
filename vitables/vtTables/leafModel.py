@@ -62,7 +62,7 @@ class LeafModel(QtCore.QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        QtCore.QAbstractTableModel.__init__(self, parent)
+        super(LeafModel, self).__init__(parent)
 
         # The model data source (a PyTables/HDF5 leaf) and its access buffer
         self.data_source = rbuffer.data_source
@@ -138,7 +138,8 @@ class LeafModel(QtCore.QAbstractTableModel):
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
             if hasattr(self.data_source, 'description'):
-                return QtCore.QVariant(self.data_source.colnames[section])
+                return QtCore.QVariant(\
+                    unicode(self.data_source.colnames[section]))
             return QtCore.QVariant(unicode(section + 1))
         # The section label for vertical header
         return QtCore.QVariant(unicode(self.rbuffer.start + section + 1))

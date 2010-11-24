@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 24, 2010 **
+The csv plugin has been debugged and refactored.
+
 ** November 20, 2010 **
 The module vtapp.py has been split into 2 modules.
 

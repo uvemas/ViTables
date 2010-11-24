@@ -56,13 +56,12 @@ class DataSheet(QtGui.QMdiSubWindow):
     The widget containing the displayed data of a given dataset.
     """
 
-    def __init__(self, index, parent=None):
+    def __init__(self, index):
         """Display a given dataset in the MDI area.
 
         :Parameters:
 
             - `index`: the index of the displayed *tree* model item
-            - `parent`: the parent of the widget
         """
 
         # The main application window
@@ -73,11 +72,11 @@ class DataSheet(QtGui.QMdiSubWindow):
         self.dbt_leaf = dbt_model.nodeFromIndex(index)
         leaf = self.dbt_leaf.node
         rbuffer = readBuffer.Buffer(leaf)
-        leaf_model = leafModel.LeafModel(rbuffer)
-        leaf_view = leafView.LeafView(leaf_model)
+        self.leaf_model = leafModel.LeafModel(rbuffer)
+        self.leaf_view = leafView.LeafView(self.leaf_model)
 
-        QtGui.QMdiSubWindow.__init__(self, self.vtgui.workspace)
-        self.setWidget(leaf_view)
+        super(DataSheet, self).__init__(self.vtgui.workspace)
+        self.setWidget(self.leaf_view)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         # Customise the title bar
@@ -97,7 +96,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # Connect signals to slots
         self.aboutToActivate.connect(self.syncTreeView)
-        leaf_view.doubleClicked.connect(self.zoomCell)
+        self.leaf_view.doubleClicked.connect(self.zoomCell)
 
 
     def closeEvent(self, event):
