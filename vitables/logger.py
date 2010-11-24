@@ -75,7 +75,7 @@ class Logger(QtGui.QTextEdit):
         :Parameter parent: the parent widget of the Logger
         """
 
-        QtGui.QTextEdit.__init__(self, parent)
+        super(Logger, self).__init__(parent)
         self.setAcceptRichText(True)
         self.setReadOnly(1)
         self.setMinimumHeight(50)

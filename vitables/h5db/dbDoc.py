@@ -97,7 +97,7 @@ class DBDoc(QtCore.QObject):
         - `is_tmp_dbdoc`: True if this object represents the temporary database
         """
 
-        QtCore.QObject.__init__(self)
+        super(DBDoc, self).__init__()
 
         # The opening mode
         self.mode = mode

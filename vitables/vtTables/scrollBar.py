@@ -65,7 +65,7 @@ class ScrollBar(QtGui.QScrollBar):
 
         # Cheat the user hidding a scrollbar and displaying other one
         # that looks exactly the same
-        QtGui.QScrollBar.__init__(self, scrollbar.parent())
+        super(ScrollBar, self).__init__(scrollbar.parent())
         scrollbar.setVisible(False)
         scrollbar.parent().layout().addWidget(self)
         self.setOrientation(QtCore.Qt.Vertical)

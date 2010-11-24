@@ -83,7 +83,7 @@ class DBsTreeView(QtGui.QTreeView):
             - `model`: the model for this view
         """
 
-        QtGui.QTreeView.__init__(self, parent=None)
+        super(DBsTreeView, self).__init__(parent=None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         self.vtapp = vtapp

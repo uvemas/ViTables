@@ -63,7 +63,7 @@ class PluginsMenu(QtCore.QObject):
         """The class constructor.
         """
 
-        QtCore.QObject.__init__(self)
+        super(PluginsMenu, self).__init__()
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()

@@ -156,7 +156,7 @@ class Config(QtCore.QSettings):
         else:
             arg1 = product
             arg2 = version
-        QtCore.QSettings.__init__(self, arg1, arg2)
+        super(Config, self).__init__(arg1, arg2)
 
         # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback

@@ -138,7 +138,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         #
         # Create the dialog and customise the content of some widgets
         #
-        QtGui.QDialog.__init__(self, QtGui.qApp.activeWindow())
+        super(QueryDlg, self).__init__(QtGui.qApp.activeWindow())
         self.setupUi(self)
 
         self.setWindowTitle(trs('New query on table: %s',

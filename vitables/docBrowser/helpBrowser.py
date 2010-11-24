@@ -97,7 +97,7 @@ class HelpBrowser(QtCore.QObject) :
         Restore history and bookmarks from disk and makes the browser window.
         """
 
-        QtCore.QObject.__init__(self)
+        super(HelpBrowser, self).__init__()
 
         self.vtapp = vitables.utils.getVTApp()
 

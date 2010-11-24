@@ -115,7 +115,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Parameters vtapp: the VTAPP instance
         """
 
-        QtCore.QAbstractItemModel.__init__(self, parent=None)
+        super(DBsTreeModel, self).__init__(parent=None)
 
         # The underlying data structure used to populate the model
         self.root = rootGroupNode.RootGroupNode()

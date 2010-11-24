@@ -106,7 +106,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # the widget is hiden AND destroyed --> the workspace
         # updates automatically its list of open windows --> the
         # Windows menu content is automatically updated
-        QtGui.QMdiSubWindow.__init__(self, workspace)
+        super(ZoomCell, self).__init__(workspace)
         self.pindex = None
         self.dbt_leaf = leaf
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)

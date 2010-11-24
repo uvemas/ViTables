@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** November 24, 2010 **
+super() is used now in the ctor of all classes derived from PyQt4.
+
 The csv plugin has been debugged and refactored.
 
 ** November 20, 2010 **

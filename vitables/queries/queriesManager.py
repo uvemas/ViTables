@@ -162,7 +162,7 @@ class QueriesManager(QtCore.QObject):
         name in the New Query dialog.
         """
 
-        QtCore.QObject.__init__(self, parent)
+        super(QueriesManager, self).__init__(parent)
 
         # Description of the last query made
         self.last_query = [None, None, None]

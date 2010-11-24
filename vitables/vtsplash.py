@@ -57,7 +57,7 @@ class VTSplash(QtGui.QSplashScreen):
         :Parameter png: the pixmap image displayed as a splash screen.
         """
 
-        QtGui.QSplashScreen.__init__(self, png)
+        super(VTSplash, self).__init__(png)
 
 
     def drawContents(self, painter):

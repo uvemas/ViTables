@@ -68,7 +68,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         Creates the custom delegate.
         """
 
-        QtGui.QItemDelegate.__init__(self, parent)
+        super(NodeItemDelegate, self).__init__(parent)
         self.current_name = None
         self.vtgui = vitables.utils.getVTApp().gui
 

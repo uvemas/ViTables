@@ -104,7 +104,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
 
         vtapp = vitables.utils.getVTApp()
         # Makes the dialog and gives it a layout
-        QtGui.QDialog.__init__(self, vtapp.gui)
+        super(RenameDlg, self).__init__(vtapp.gui)
         self.setupUi(self)
 
         # Sets dialog caption

@@ -72,7 +72,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         - `parent`: the parent widget.
         """
 
-        QtGui.QMainWindow.__init__(self, parent)
+        super(HelpBrowserGUI, self).__init__(parent)
 
         self.setIconSize(QtCore.QSize(22, 22))
         self.setWindowTitle(trs('Documentation browser', 

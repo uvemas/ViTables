@@ -46,7 +46,7 @@ class VTGUI(QtGui.QMainWindow):
     def __init__(self, vtapp, version):
         """Initialize the application main window."""
 
-        QtGui.QMainWindow.__init__(self, None)
+        super(VTGUI, self).__init__(None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle(trs('ViTables %s' % version, 'Main window title'))
         self.vtapp = vtapp
@@ -717,9 +717,9 @@ class VTGUI(QtGui.QMainWindow):
         for item in self.vtapp.config.recent_files:
             index += 1
             (mode, filepath) = item.split('#@#')
-            action = QtGui.QAction(u'%s. ' % index + filepath, self)
+            action = QtGui.QAction(u'%s. ' % index + filepath, self, 
+                triggered=self.vtapp.openRecentFile)
             action.setData(QtCore.QVariant(item))
-            action.triggered.connect(self.vtapp.openRecentFile)
             if mode == 'r':
                 action.setIcon(iconset['file_ro'])
             else:
@@ -729,9 +729,8 @@ class VTGUI(QtGui.QMainWindow):
         # Always add a separator and a clear QAction. So if the menu is empty
         # the user still will know what's going on
         self.open_recent_submenu.addSeparator()
-        action = QtGui.QAction(trs('&Clear',
-            'A recent submenu command'), self)
-        action.triggered.connect(self.vtapp.clearRecentFiles)
+        action = QtGui.QAction(trs('&Clear', 'Recent File submenu entry'), 
+            self, triggered=self.vtapp.clearRecentFiles)
         self.open_recent_submenu.addAction(action)
 
 

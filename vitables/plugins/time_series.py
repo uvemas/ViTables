@@ -220,7 +220,7 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        QtCore.QAbstractTableModel.__init__(self, parent)
+        super(ArrayTSModel, self).__init__(parent)
         self.numrows = model.numrows
         self.rbuffer = model.rbuffer
 
@@ -276,7 +276,7 @@ class TableTSModel(QtCore.QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        QtCore.QAbstractTableModel.__init__(self, parent)
+        super(TableTSModel, self).__init__(parent)
         self.numrows = model.numrows
         self.rbuffer = model.rbuffer
         self.time_cols = model.time_cols

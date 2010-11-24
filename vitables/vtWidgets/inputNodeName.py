@@ -84,7 +84,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
 
         vtapp = vitables.utils.getVTApp()
         # Makes the dialog and gives it a layout
-        QtGui.QDialog.__init__(self, vtapp.gui)
+        super(InputNodeName, self).__init__(vtapp.gui)
         self.setupUi(self)
 
         # Set dialog caption and label with general info

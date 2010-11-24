@@ -99,7 +99,7 @@ class VTApp(QtCore.QObject):
         - `dblist`: a file that contains a list of files to be open at startup
         """
 
-        QtCore.QObject.__init__(self)
+        super(VTApp, self).__init__()
 
         # Make the main window easily accessible for external modules
         self.setObjectName('VTApp')

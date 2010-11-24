@@ -82,7 +82,7 @@ class BookmarksDlg(QtGui.QDialog):
         """
 
         # The HelpBrowser GUI instance from which this dialog has been opened
-        QtGui.QDialog.__init__(self, hbgui)
+        super(BookmarksDlg, self).__init__(hbgui)
 
         self.setWindowTitle(trs('Bookmarks editor', 'Dialog caption'))
         dlg_layout = QtGui.QVBoxLayout(self)

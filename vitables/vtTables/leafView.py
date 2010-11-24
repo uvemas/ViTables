@@ -61,7 +61,7 @@ class LeafView(QtGui.QTableView):
             - `parent`: the parent of this widget
         """
 
-        QtGui.QTableView.__init__(self, parent)
+        super(LeafView, self).__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setModel(tmodel)
         self.tmodel = tmodel  # This is a MUST

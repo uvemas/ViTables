@@ -83,7 +83,7 @@ class Query(QtCore.QObject):
         - `qdescr`: dictionary description of the query
         """
 
-        QtCore.QObject.__init__(self)
+        super(Query, self).__init__()
 
         self.completed = False
         self.tmp_h5file = tmp_h5file
