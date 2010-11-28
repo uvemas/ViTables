@@ -20,22 +20,15 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the ScrollBar class.
+This (too much) minimal module makes a QScrollBar that will be used for browsing huge datasets.
 
-Classes:
-
-* ScrollBar(QtGui.QScrollBar)
-
-Methods:
-
-* __init__(self, scrollbar)
-
-Functions:
-
-Misc variables:
-
-* __docformat__
-
+The use of this scrollbar is very tricky. It will be painted over the scrollbar
+of views bound to huge datasets so the view will look as usual but will have 2 
+scrollbars. The hidden scrollbar is not useful for browsing huge datasets (it 
+is tightly bound to the dimensions (number of rows) of the view widget. But the
+visible scrollbar is independent of the dimensions of the view widget and can 
+be used for customising the view in a way that makes it useful for browsing 
+datasets with a larger number of rows than that provided by the view widget.
 """
 
 __docformat__ = 'restructuredtext'
@@ -46,8 +39,7 @@ class ScrollBar(QtGui.QScrollBar):
     """
     A specialised scrollbar for views of huge datasets.
 
-    The behavior of this scrollbar is customised in a way that makes it
-    suitable for dealing with huge datasets.
+    :Parameter scrollbar: the scrollbar being hidden
     """
 
     def __init__(self, scrollbar=None):
@@ -57,10 +49,6 @@ class ScrollBar(QtGui.QScrollBar):
         exactly the same, but the visible scrollbar is not currently
         useful for navigating the data displayed in the ancestor widgets
         because it is not tied to that data in anyway.
-
-        :Parameters:
-
-            - `scrollbar`: the scrollbar being hidden
         """
 
         # Cheat the user hidding a scrollbar and displaying other one

@@ -20,21 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the configException module.
-
-Classes:
-
-* ConfigFileIOException(Exception)
-
-Methods:
-
-* ConfigFileIOException.__init__(self, key)
-* ConfigFileIOException.__tr(self, source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+This module defines an Exception to be used when there is a problem 
+reading/writting the ``ViTables`` configuration.
 """
 
 __docformat__ = 'restructuredtext'
@@ -49,12 +36,14 @@ def trs(source, comment=None):
 
 
 class ConfigFileIOException(Exception):
-    """Exception class for IO errors in the configuration file."""
+    """Exception class for IO errors in the configuration file.
+
+    :Parameter key:
+        the configuration file key that cannot be read/written
+    """
 
     def __init__(self, key):
-        """
-        :Parameter key:
-            the configuration file key that cannot be read/written
+        """Setup the configuration error messages that will be shown to user.
         """
 
         Exception.__init__(self)

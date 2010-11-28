@@ -20,22 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the InputNodeName class.
+This module provides a dialog for renaming nodes of the tree of databases view.
 
-Classes:
-
-* InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog)
-
-Methods:
-
-* __init__(self, title, info, action)
-* checkName(self, current)
-* saveName(self)
-
-Misc variables:
-
-* __docformat__
-
+The dialog is raised when a new group node is created and when an existing node
+is being renamed.
 """
 
 __docformat__ = 'restructuredtext'
@@ -70,16 +58,16 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
 
     Regular Qt class QInputDialog is not used because, at least apparently, 
     it doesn't provide a way for customizing buttons text.
+
+    :Parameters:
+
+    - `title`: the dialog title
+    - `info`: information to be displayed in the dialog
+    - `action`: string with the editing action to be done, Create or Rename
     """
 
     def __init__(self, title, info, action):
-        """A customised QInputDialog.
-
-        :Parameters:
-
-        - `title`: the dialog title
-        - `info`: information to be displayed in the dialog
-        - `action`: string with the editing action to be done, Create or Rename
+        """A customised `QInputDialog`.
         """
 
         vtapp = vitables.utils.getVTApp()
@@ -110,8 +98,8 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
         """
         Check the current name value.
 
-        The state of the Create button depends on the passed string. If
-        it is empty then the button is disabled. Otherwhise it is enabled.
+        The state of the `Create` button depends on the passed string. If
+        it is empty then the button is disabled. Otherwise it is enabled.
 
         :Parameter current: the value currently displayed in the text box
         """
@@ -124,7 +112,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
 
     @QtCore.pyqtSlot(name="on_buttonsBox_accepted")
     def saveName(self):
-        """Slot for saving the entered name and hide the dialog.
+        """Slot for saving the entered name and closing the dialog.
         """
 
         self.node_name = unicode(self.valueLE.text())

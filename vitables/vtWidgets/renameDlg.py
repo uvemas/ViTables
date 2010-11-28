@@ -20,24 +20,25 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the RenameDlg class.
+This module provides a dialog for solving node renaming issues on the tree of 
+databases view.
 
-Classes:
+Some times naming problems appear when the tree is being edited:
 
-* RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog)
+  - when a file is being saved as a different one and its name is
+    already being used by another file in the same directory
+  - when a new group is being created and its name is already being
+    used by other node in the destination group
+  - when a node is being renamed and its new name is already being
+    used by other node in the same group
+  - when a node is being pasted/dropped and its name is already being
+    used by other node in the destination group
 
-Methods:
+This dialog allows the user to solve the problem. Available options are:
 
-* __init__(self, name, pattern, info)
-* trs(source, comment=None)
-* checkNewName(self, new_name)
-* executeAction(self, button)
-* overwriteNode(self)
-* renameNode(self)
-
-Misc variables:
-
-* __docformat__
+  - rename the object in trouble
+  - overwrite the existing object
+  - cancel the editing action
 
 """
 
@@ -73,33 +74,26 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         - create user interfaces at runtime (without using pyuic)
         - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
-    Some times naming problems appear when during file editing:
 
-    - when a file is being saved as a different one and its name is
-      already being used by another file in the same directory
-    - when a new group is being created and its name is already being
-      used by other node in the destination group
-    - when a node is being renamed and its new name is already being
-      used by other node in the same group
-    - when a node is being pasted/dropped and its name is already being
-      used by other node in the destination group
+    Regular Qt class `QInputDialog` is not used because, at least apparently, 
+    it doesn't provide a way for customizing buttons text.
 
-    This dialog allows the user to solve the problem. Available options
+    This dialog allows the user to solve naming issues. Available options
     are:
 
-    - rename the object in trouble
-    - overwrite the existing object
-    - cancel the editing action
+      - rename the object in trouble
+      - overwrite the existing object
+      - cancel the editing action
+
+    :Parameters:
+
+    - `name`: the troubled name
+    - `pattern`: a regular expression pattern that the name must match
+    - `info`: dialog title and label
     """
 
     def __init__(self, name, pattern, info):
-        """A customised QInputDialog.
-
-        :Parameters:
-
-        - `name`: the troubled name
-        - `pattern`: a regular expression pattern that the name must match
-        - `info`: dialog title and label
+        """A customised `QInputDialog`.
         """
 
         vtapp = vitables.utils.getVTApp()
@@ -150,22 +144,23 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
 
         Every time that the text box content changes, this method is 
         asked to check if the new name and the original name differ.
-        Four cases can arise:
+        Four cases can occur:
 
             1) the new name is empty
             2) the new name and the current nodename are the same
             3) the new name and the current name differ and the new name
-              is not being used by a sibling node
+               is not being used by a sibling node
             4) the new name and the current name differ and the new name
-              is being used by a sibling node
+               is being used by a sibling node
 
-        In cases 1) and 2) the new name is not valid, the Rename and Overwrite
-        buttons are both disabled.
-        In case 3) the Rename button is enabled and the Overwrite one is not.
-        In case 4) the Overwrite button is enabled but the Rename one is not.
+        In cases 1) and 2) the new name is not valid, the `Rename` and 
+        `Overwrite` buttons are both disabled.
+        In case 3) the `Rename` button is enabled and the `Overwrite` one is 
+        not. In case 4) the `Overwrite` button is enabled but the `Rename` one 
+        is not.
 
         Beware that case 2) can appear only during a node renaming operation or
-        during a file Save As operation (not when creating a new group or
+        during a file `Save As...` operation (not when creating a new group or
         pasting/dropping a node)
 
         :Parameter new_name: the value currently displayed in the text box
@@ -193,7 +188,10 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
 
     @QtCore.pyqtSlot("QAbstractButton *", name="on_buttonsBox_clicked")
     def executeAction(self, button):
-        """Execute the action specified by the clicked button."""
+        """Execute the action specified by the clicked button.
+
+        :Parameter button: the clicked button (`Rename` or `Overwrite`)
+        """
 
         if button == self.rename_button:
             self.renameNode()
@@ -205,7 +203,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         """
         Set the new name and exit.
 
-        When the Overwrite button is clicked the new name is saved and
+        When the `Overwrite` button is clicked the new name is saved and
         the dialog finishes.
         """
 
@@ -218,7 +216,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         """
         Set the new name and exit.
 
-        When the Rename button is clicked the new name is saved and
+        When the `Rename` button is clicked the new name is saved and
         the dialog finishes.
         """
 

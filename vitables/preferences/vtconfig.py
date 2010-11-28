@@ -20,92 +20,79 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the Config class.
+This module manages the ``ViTables`` configuration.
 
-Classes:
+The module provides methods for reading and writting settings. Whether the 
+settings are stored in a plain text file or in a Windows registry is
+transparent for this module because it deals with settings via 
+`QtCore.QSettings`.
 
-* Config(QtCore.QSettings)
+Every access to the config settings is done via a `QSettings` instance that, 
+in turn, will access the config file and return the read setting to the 
+application. Saving settings works in a similar way, the application passes 
+the setting to the `QSetting` instance and it (the instance) will write the 
+setting into the config file.
 
-Methods:
+.. Note:: *About the config file location*.
+  If format is NativeFormat then the default search path will be:
 
+  - Unix
 
-Functions:
+    - UserScope
 
-* getVersion()
+      - ``$HOME/.config/MyCompany/ViTables.conf``
+      - ``$HOME/.config/MyCompany.conf``
 
-Misc variables:
+    - SystemScope
 
-* __docformat__
+      - ``/etc/xdg/MyCompany/ViTables.conf``
+      - ``/etc/xdg/MyCompany.conf``
 
+  - MacOSX
 
-Every access to the config settings is done via a
-`QSettings` instance that, in turn, will access the config file and return the
-read setting to the application. Saving settings works in a similar way,
-the application passes the setting to the `QSetting` instance and it (the
-instance) will write the setting into the config file.
+    - UserScope
 
-About the config file location
-------------------------------
-If format is NativeFormat then the default search path will be:
+      - ``$HOME/Library/Preferences/org.vitables.ViTables.plist``
+      - ``$HOME/Library/Preferences/org.vitables.plist``
 
-- Unix
+    - SystemScope
 
-  - UserScope
+      - ``/Library/Preferences/org.vitables.ViTables.plist``
+      - ``/Library/Preferences/org.vitables.plist``
 
-    - ``$HOME/.config/MyCompany/ViTables.conf``
-    - ``$HOME/.config/MyCompany.conf``
+  - Windows
 
-  - SystemScope
+    - UserScope
 
-    - ``/etc/xdg/MyCompany/ViTables.conf``
-    - ``/etc/xdg/MyCompany.conf``
+      - ``HKEY_CURRENT_USER/Software/MyCompany/ViTables``
+      - ``HKEY_CURRENT_USER/Software/MyCompany/``
 
-- MacOSX
+    - SystemScope
 
-  - UserScope
+      - ``HKEY_LOCAL_MACHINE/Software/MyCompany/ViTables``
+      - ``HKEY_LOCAL_MACHINE/Software/MyCompany/``
 
-    - ``$HOME/Library/Preferences/org.vitables.ViTables.plist``
-    - ``$HOME/Library/Preferences/org.vitables.plist``
+  If format is NativeFormat and platform is Unix the path can be set via
+  QSettings.setPath static method.
 
-  - SystemScope
+.. Note:: *About the config file name*.
+  If format is NativeFormat:
 
-    - ``/Library/Preferences/org.vitables.ViTables.plist``
-    - ``/Library/Preferences/org.vitables.plist``
+  - under Unix, Product Name -> Product Name.conf so the product name
+    ``ViTables`` will match a configuration file named ``ViTables.conf``
+  - under MacOSX, Internet Domain and Product Name ->
+    reversed Internet Domain.Product Name.plist so the domain
+    ``vitables.org`` and the product ``ViTables`` become
+    ``org.vitables.ViTables.plist``
 
-- Windows
+  Before to read/write a property value we must provide the product
+  name as the first subkey of the property key.
+  This can be done in two different ways:
 
-  - UserScope
-
-    - ``HKEY_CURRENT_USER/Software/MyCompany/ViTables``
-    - ``HKEY_CURRENT_USER/Software/MyCompany/``
-
-  - SystemScope
-
-    - ``HKEY_LOCAL_MACHINE/Software/MyCompany/ViTables``
-    - ``HKEY_LOCAL_MACHINE/Software/MyCompany/``
-
-If format is NativeFormat and platform is Unix the path can be set via
-QSettings.setPath static method.
-
-About the config file name
---------------------------
-If format is NativeFormat:
-
-- under Unix, Product Name -> Product Name.conf so the product name
-  ``ViTables`` will match a configuration file named ``ViTables.conf``
-- under MacOSX, Internet Domain and Product Name ->
-  reversed Internet Domain.Product Name.plist so the domain
-  ``vitables.org`` and the product ``ViTables`` become
-  ``org.vitables.ViTables.plist``
-
-Before to read/write a property value we must provide the product
-name as the first subkey of the property key.
-This can be done in two different ways:
-
-a)  including the product name every time we read/write settings, e.g.
-    `readEntry(/ViTables/Logger/Font)`
-b)  using `setPath` method once before we read/write settings, so
-    the preceding example becomes `readEntry(/Logger/Font)`
+  a)  including the product name every time we read/write settings, e.g.
+      `readEntry(/ViTables/Logger/Font)`
+  b)  using `setPath` method once before we read/write settings, so
+      the preceding example becomes `readEntry(/Logger/Font)`
 """
 
 __docformat__ = 'restructuredtext'
@@ -130,7 +117,7 @@ class Config(QtCore.QSettings):
     Manages the application configuration dynamically.
 
     This class defines accessor methods that allow the application (a
-    VTApp instance) to read the configuration file/registry/plist.
+    :meth:`vitables.vtapp.VTApp` instance) to read the configuration file/registry/plist.
     The class also provides a method to save the current configuration
     in the configuration file/registry/plist.
     """
@@ -312,7 +299,7 @@ class Config(QtCore.QSettings):
 
     def startupLastSession(self):
         """
-        Returns the restore last session setting.
+        Returns the `Restore last session` setting.
         """
 
         key = 'Startup/restoreLastSession'
@@ -324,7 +311,7 @@ class Config(QtCore.QSettings):
             return default_value
     def startupWorkingDir(self):
         """
-        Returns the startup working directory setting.
+        Returns the `Startup working directory` setting.
         """
 
         key = 'Startup/startupWorkingDir'
@@ -338,7 +325,7 @@ class Config(QtCore.QSettings):
 
     def lastWorkingDir(self):
         """
-        Returns the last working directory setting.
+        Returns the `Last working directory` setting.
         """
 
         key = 'Startup/lastWorkingDir'
@@ -380,7 +367,7 @@ class Config(QtCore.QSettings):
 
     def helpHistory(self):
         """
-        Returns the navigation history of the HelpBrowser.
+        Returns the navigation history of the docs browser.
         """
 
         key = 'HelpBrowser/History'
@@ -394,7 +381,7 @@ class Config(QtCore.QSettings):
 
     def helpBookmarks(self):
         """
-        Returns the bookmarks of the HelpBrowser.
+        Returns the bookmarks of the docs browser.
         """
 
         key = 'HelpBrowser/Bookmarks'
@@ -547,8 +534,6 @@ class Config(QtCore.QSettings):
         """
         The list of files and nodes currently open.
 
-        The current session state is grabbed from the tracking
-        dictionaries managed by the leaves manager and the db manager.
         The list looks like::
 
             ['mode#@#filepath1#@#nodepath1#@#nodepath2, ...',

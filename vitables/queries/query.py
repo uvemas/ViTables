@@ -20,22 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the Query class.
+This module executes `tables.Table` queries at low level.
 
-Classes:
-
-* Query
-
-Methods:
-
-
-Functions:
-
-
-Misc variables:
-
-* __docformat__
-
+It collects information from the `New Query` dialog, processes it and then
+executes the query.
 """
 
 __docformat__ = 'restructuredtext'
@@ -53,10 +41,10 @@ import vitables.utils
 class Query(QtCore.QObject):
     """Class implementing a tables.Table query.
 
-    Queries SHOULD be sequentially executed in a secondary thread for keeping
-    the GUI responsive (i.e. not frozen) while a query (a potentially
+    Ideally queries SHOULD be sequentially executed in a secondary thread for 
+    keeping the GUI responsive (i.e. not frozen) while a query (a potentially
     long-running operation) is taking place. Unfortunately this goal has
-    proven difficult to achieve because PyTables is not thread-safe. So one
+    proven difficult to achieve because `PyTables` is not thread-safe. So one
     more task to the TO DO list :-)
 
     The query is implemented in a clever way that doesn't interfer with the
@@ -67,6 +55,12 @@ class Query(QtCore.QObject):
     is not seen by the lazy population algorithm so it is not added to the
     tree of databases view and neither the user nor ViTables will try to read
     it. So no problems can occur trying to read a partially filled table.
+
+    :Parameters:
+
+    - `table_uid`: UID of the tables.Table instance being queried
+    - `table`: the table being queried
+    - `qdescr`: dictionary description of the query
     """
 
 
@@ -74,14 +68,7 @@ class Query(QtCore.QObject):
 
 
     def __init__(self, tmp_h5file, table_uid, table, qdescr):
-        """Initialises the thread.
-
-        :Parameters:
-
-        - `table_uid`: UID of the tables.Table instance being queried
-        - `table`: the table being queried
-        - `qdescr`: dictionary description of the query
-        """
+        """Initialises the query."""
 
         super(Query, self).__init__()
 
@@ -118,7 +105,7 @@ class Query(QtCore.QObject):
 
 
     def queryWithIndex(self, src_dict):
-        """Do the query (PyTables level).
+        """Do the query (`PyTables` level).
         """
 
         # The query range is made of numpy scalars with dtype int64
@@ -181,7 +168,7 @@ class Query(QtCore.QObject):
 
 
     def queryWithNoIndex(self, src_dict):
-        """Do the query (PyTables level).
+        """Do the query (`PyTables` level).
         """
 
         # The query range is made of numpy scalars with dtype int64
@@ -223,7 +210,7 @@ class Query(QtCore.QObject):
 
 
     def queryTable(self):
-        """Do the query (PyTables level).
+        """Do the query (`PyTables` level).
         """
 
         try:

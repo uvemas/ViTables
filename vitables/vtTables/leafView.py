@@ -20,20 +20,15 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the LeafView class.
+This module defines a view for the model bound to a `tables.Leaf` node.
 
-Classes:
+This view is used to display the real data stored in a `tables.Leaf` node in a
+tabular way:
 
-* LeafView(QtGui.QTreeView)
-
-Methods:
-
-
-Functions:
-
-Misc variables:
-
-* __docformat__
+    - scalar arrays are displayed in a 1x1 table.
+    - 1D arrays are displayed in a Mx1 table.
+    - KD arrays are displayed in a MxN table.
+    - tables are displayed in a MxN table with one field per column
 
 """
 
@@ -50,15 +45,15 @@ class LeafView(QtGui.QTableView):
     A view for real data contained in leaves.
 
     This is a customised view intended to deal with huge datasets.
+
+    :Parameters:
+
+    - `tmodel`: the leaf model to be tied to this view
+    - `parent`: the parent of this widget
     """
 
     def __init__(self, tmodel, parent=None):
         """Create the view.
-
-        :Parameters:
-
-            - `tmodel`: the leaf model to be tied to this view
-            - `parent`: the parent of this widget
         """
 
         super(LeafView, self).__init__(parent)
@@ -111,7 +106,7 @@ class LeafView(QtGui.QTableView):
 
 
     def syncView(self):
-        """Syncronize the displayed data and the position of the visible
+        """Synchronize the displayed data and the position of the visible
         vertical scrollbar.
         """
 
@@ -124,12 +119,12 @@ class LeafView(QtGui.QTableView):
 
 
     def eventFilter(self, widget, event):
-        """Event handler that customises the LeafView behavior for some events.
+        """Event handler that customises the view behavior for some events.
 
         :Parameters:
 
-            - `widget`: the widget that receives the event
-            - `event`: the received event
+        - `widget`: the widget that receives the event
+        - `event`: the received event
         """
 
         if event.type() in (QtCore.QEvent.MouseButtonRelease, 
@@ -142,7 +137,7 @@ class LeafView(QtGui.QTableView):
 
 
     def navigateWithMouse(self, action):
-        """Navigate the table with the mouse.
+        """Navigate the view with the mouse.
 
         This slot is called after the `action` has set the slider position 
         but before the display has been updated (see documentation of the 
@@ -237,11 +232,11 @@ class LeafView(QtGui.QTableView):
         that cannot be reached with the scrollbar.
 
         The relationship between the scrollbar value and the row in the
-        dataset can be expressed in several ways
+        dataset can be expressed in several ways::
 
-        (max_value - value)/value = (numrows - row)/row
-        row = (value * numrows)/max_value
-        value = (row * max_value)/numrows
+            (max_value - value)/value = (numrows - row)/row
+            row = (value * numrows)/max_value
+            value = (row * max_value)/numrows
         """
 
         table_size = self.tmodel.numrows
@@ -276,7 +271,7 @@ class LeafView(QtGui.QTableView):
     def keyPressEvent(self, event):
         """Handle basic cursor movement for key events.
 
-        :Parameter event: the key event being processed.
+        :Parameter event: the key event being processed
         """
 
         if self.tmodel.numrows < self.leaf_numrows:
@@ -300,7 +295,7 @@ class LeafView(QtGui.QTableView):
 
 
     def homeKeyPressEvent(self):
-        """Specialised handler for the Home key press event.
+        """Specialised handler for the `Home` key press event.
         """
 
         current_column = self.vheader.currentIndex().column()
@@ -321,7 +316,7 @@ class LeafView(QtGui.QTableView):
 
 
     def endKeyPressEvent(self):
-        """Specialised handler for the End key press event.
+        """Specialised handler for the `End` key press event.
         """
 
         current_column = self.vheader.currentIndex().column()
@@ -346,7 +341,7 @@ class LeafView(QtGui.QTableView):
     def upKeyPressEvent(self, event):
         """Specialised handler for the cursor up key press event.
 
-        :Parameter event: the key event being processed.
+        :Parameter event: the key event being processed
         """
 
         table_size = self.tmodel.numrows
@@ -385,9 +380,9 @@ class LeafView(QtGui.QTableView):
 
 
     def pageUpKeyPressEvent(self, event):
-        """Specialised handler for the PageUp key press event.
+        """Specialised handler for the `PageUp` key press event.
 
-        :Parameter event: the key event being processed.
+        :Parameter event: the key event being processed
         """
 
         table_size = self.tmodel.numrows
@@ -428,7 +423,7 @@ class LeafView(QtGui.QTableView):
     def downKeyPressEvent(self, event):
         """Specialised handler for the cursor down key press event.
 
-        :Parameter event: the key event being processed.
+        :Parameter event: the key event being processed
         """
 
         table_size = self.tmodel.numrows
@@ -468,9 +463,9 @@ class LeafView(QtGui.QTableView):
 
 
     def pageDownKeyPressEvent(self, event):
-        """Specialised handler for the PageDown key press event.
+        """Specialised handler for the `PageDown` key press event.
 
-        :Parameter event: the key event being processed.
+        :Parameter event: the key event being processed
         """
 
         table_size = self.tmodel.rbuffer.chunk_size
@@ -510,6 +505,8 @@ class LeafView(QtGui.QTableView):
     def wheelEvent(self, event):
         """Send the wheel events received by the viewport to the visible
         vertical scrollbar.
+
+        :Parameter event: the event being processed
         """
 
         if self.tmodel.rbuffer.leaf_numrows > self.tmodel.numrows:
@@ -536,8 +533,8 @@ class LeafView(QtGui.QTableView):
 
         :Parameters:
 
-            -`current`: the model index of the new current cell
-            -`previous`: the model index of the previous current cell
+        - `current`: the model index of the new current cell
+        - `previous`: the model index of the previous current cell
         """
 
         self.current_cell = (self.tmodel.rbuffer.start + current.row() + 1, 
@@ -552,9 +549,7 @@ class LeafView(QtGui.QTableView):
         this method is used to repaint the current cell every time the
         buffer is reloaded.
 
-        :Parameters:
-
-            -`unused`: a tuple containing info passed by the signal
+        :Parameter unused: a tuple containing info passed by the sender signal
         """
 
         current_index = self.currentIndex()

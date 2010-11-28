@@ -21,24 +21,6 @@
 
 """
 Here is defined the NodeItemDelegate class.
-
-Classes:
-
-* NodeItemDelegate(QItemDelegate)
-
-Methods:
-
-* __init__(self, parent=None)
-* __tr(self, source, comment=None)
-* setEditorData(self, editor, index)
-* setModelData(self, editor, model, index)
-
-Functions:
-
-Misc variables:
-
-* __docformat__
-
 """
 
 __docformat__ = 'restructuredtext'
@@ -78,7 +60,8 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         Edits the data of an item with a given index.
 
         This method is automatically called when an editor is created,
-        i.e., when the user double click an item.
+        i.e., when the user double click an item while the `Shift` key is
+        pressed.
 
         :Parameters:
 

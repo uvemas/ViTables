@@ -20,39 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the Preferences class.
+This module provides a dialog for changing ``ViTables`` settings at runtime.
 
-Classes:
-
-* Preferences(QtGui.QDialog, Ui_SettingsDialog)
-
-Methods:
-
-* __init__(self)
-* setupIcons(self)
-* resetPreferences(self)
-* setupList(self, uid, seq, split=False)
-* makeConnections(self)
-* changeSettingsPage(self, current, previous)
-* executeButtonAction(self, button)
-* applySettings(self)
-* setInitialWorkingDirectory(self, cb_on)
-* setRestoreSession(self, cb_on)
-* setLoggerFont(self)
-* setLoggerTextColor(self)
-* setLoggerBackgroundColor(self)
-* setWorkspaceColor(self)
-* setGlobalStyle(self, style_name)
-* addSearchablePath(self)
-* removeSearchablePath(self)
-* enablePlugin(self)
-* disablePlugin(self)
-* updateButton(self, selected, deselected)
-
-Misc variables:
-
-* __docformat__
-
+The dialog has 3 pages managed via QtGui.QStackedWidget: General settings 
+page, Look&Feel settings page and Plugins settings page.
 """
 
 __docformat__ = 'restructuredtext'
@@ -92,7 +63,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
         Initialize the preferences dialog.
 
-        * initializes the GUI appearance according to current preferences
+        * initializes the dialog appearance according to current preferences
         * connects dialog widgets to slots that provide them functionality
         """
 
@@ -184,7 +155,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
     def resetPreferences(self):
         """
-        Apply the current ViTables configuration to the Preferences dialog.
+        Apply the current ``ViTables`` configuration to the Preferences dialog.
         """
 
         # Startup page
@@ -230,7 +201,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
 
     def setupList(self, uid, seq, split=False):
-        """Setup the list shown in the dialog.
+        """Setup the plugins-related lists shown in the dialog.
 
         :Parameters:
 
@@ -260,8 +231,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     def makeConnections(self):
         """Connect signals to slots.
 
-        The connections that cannot be done by name (i.e. automatically by
-        setupUi) are setup here.
+        The connections that cannot be done automatically by name are setup 
+        here.
         """
 
         self.buttonsBox.helpRequested.connect(\
@@ -297,7 +268,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     def executeButtonAction(self, button):
         """Slot that manages button box clicks in the Preferences dialog.
 
-        Whenever one of the Help, Reset, Cancel or OK buttons is
+        Whenever one of the `Help`, `Reset`, `Cancel` or `OK` buttons is
         clicked in the Preferences dialog this slot is called.
 
         :Parameter button: the clicked button.
@@ -336,17 +307,17 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     @QtCore.pyqtSlot("bool", name="on_lastDirCB_toggled")
     def setInitialWorkingDirectory(self, cb_on):
         """
-        Set startup behavior of the application.
+        Configure startup behavior of the application.
 
         If the `Start in last opened directory` check box is checked
         then when the user opens a file *for the very first time* the
         current directory of the file selector dialog (CDFSD) will be
-        the last directory accessed in the previous ViTables session. If
-        it is not checked then ViTables follows the standard behavior:
+        the last directory accessed in the previous ``ViTables session``. If
+        it is not checked then ``ViTables`` follows the standard behavior:
         if it has been started from a console session then the CDFSD
         will be the current working directory of the session, if it has
         been started from a menu/desktop-icon/run-command-applet the
-        CDFSD will be the users home.
+        CDFSD will be the users' home.
 
         This is a slot method.
 
@@ -362,9 +333,9 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
     @QtCore.pyqtSlot("bool", name="on_restoreCB_toggled")
     def setRestoreSession(self, cb_on):
         """
-        Set startup behavior of the application.
+        Configure startup behavior of the application.
 
-        If the Restore last session checkbox is checked then, at the
+        If the `Restore last session` checkbox is checked then, at the
         next startup, the application will atempt to restore the last
         working session.
 
@@ -447,7 +418,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
     @QtCore.pyqtSlot(name="on_newButton_clicked")
     def addSearchablePath(self):
-        """Slot for adding a new searchable path if New button is clicked."""
+        """Slot for adding a new searchable path if `New` button is clicked."""
 
         folder = QtGui.QFileDialog.getExistingDirectory()
         folder = unicode(folder)
@@ -466,7 +437,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
     @QtCore.pyqtSlot(name="on_removeButton_clicked")
     def removeSearchablePath(self):
-        """Slot for removing a searchable path if Remove button clicked."""
+        """Slot for removing a searchable path if `Remove` button clicked."""
 
         current = self.pathsLV.currentIndex()
         model = self.pathsLV.model()
@@ -477,7 +448,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
     @QtCore.pyqtSlot(name="on_loadButton_clicked")
     def enablePlugin(self):
-        """Slot for enabling a plugin if Load button clicked."""
+        """Slot for enabling a plugin if `Load` button clicked."""
 
         enabled_model = self.enabledLV.model()
         disabled_model = self.disabledLV.model()
@@ -499,7 +470,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
     @QtCore.pyqtSlot(name="on_unloadButton_clicked")
     def disablePlugin(self):
-        """Slot for diabling plugins if Unload button clicked."""
+        """Slot for disabling a plugin if `Unload` button clicked."""
 
         enabled_model = self.enabledLV.model()
         disabled_model = self.disabledLV.model()
@@ -526,8 +497,9 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         disabled plugins list) and updates the actions tied to that list.
 
         :Parameters:
-        - `current`: the new current model index
-        - `previous`: the previous current model index
+
+        - `selected`: the item selection of selected items
+        - `deselected`: the item selection of deselected items
         """
 
         selection_model = self.sender()

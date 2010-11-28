@@ -20,34 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the DBsTreeView class.
+This module defines a view for the tree of databases model.
 
-Classes:
-
-* DBsTreeView(QtGui.QTreeView)
-
-Methods:
-
-* __init__(self, vtapp)
-* updateColumnWidth(self)
-* mouseDoubleClickEvent(self, event)
-* updateCollapsedGroup(self, index)
-* updateExpandedGroup(self, index)
-* activateNode(self, index)
-* createCustomContextMenu(self, pos)
-* currentChanged(self, current, previous)
-* dropEvent(self, event)
-* dragEnterEvent(self, event)
-* dragMoveEvent(self, event)
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+This view is used to display the tree of open databases. Each top level
+node of the tree contains the object tree of a `PyTables`/`HDF5` database.
 """
 
 __docformat__ = 'restructuredtext'
@@ -65,11 +41,11 @@ def trs(source, comment=None):
 
 class DBsTreeView(QtGui.QTreeView):
     """
-    The tree of DBs view.
+    A view for the databases tree model.
 
-    This is one of the views of the tree of databases model.
-    This view is used to display the tree of open databases. Each top level
-    node of the tree contains the object tree of a database.
+    :Parameters:
+        - `vtapp`: the VTAPP instance
+        - `model`: the model for this view
     """
 
 
@@ -77,10 +53,6 @@ class DBsTreeView(QtGui.QTreeView):
 
     def __init__(self, vtapp, model):
         """Create the view.
-
-        :Parameter:
-            - `vtapp`: the VTAPP instance
-            - `model`: the model for this view
         """
 
         super(DBsTreeView, self).__init__(parent=None)
@@ -149,12 +121,12 @@ class DBsTreeView(QtGui.QTreeView):
 
 
     def activateNode(self, index):
-        """Expands an item via Enter/Return key or mouse double click.
+        """Expand an item via `Enter`/`Return` key or mouse double click.
 
-        When the user activates a collapsed item (by pressing Enter, Return
+        When the user activates a collapsed item (by pressing `Enter`, `Return`
         or by double clicking the item) then it is expanded. If the user
-        activates the node by double clicking on it while the Shift key is
-         pressed, the item is edited (if editing is enabled).
+        activates the node by double clicking on it while the `Shift` key is
+        pressed, the item is edited (if editing is enabled).
 
         Lazy population of the model is partially implemented in this
         method. Expanded items are updated so that children items are added if
@@ -178,7 +150,7 @@ class DBsTreeView(QtGui.QTreeView):
     def updateCollapsedGroup(self, index):
         """After collapsing a group update its icon.
 
-        This method is a slot connected to the collapsed(QModelIndex) signal
+        This method is a slot connected to the `collapsed(QModelIndex)` signal
         in the ctor.
 
         :Parameter index: the index of the collapsed group
@@ -202,7 +174,7 @@ class DBsTreeView(QtGui.QTreeView):
         needed. This fact reduces enormously the opening times for files
         whit a large number of nodes and also saves memory.
 
-        This method is a slot connected to the expanded(QModelIndex) signal
+        This method is a slot connected to the `expanded(QModelIndex)` signal
         in the ctor.
 
         :Parameter index: the index of the expanded item
@@ -246,10 +218,15 @@ class DBsTreeView(QtGui.QTreeView):
     def currentChanged(self, current, previous):
         """This slot is automatically called when the current item changes.
 
+        When the current item changes the menus, toolbars and statusbar have
+        to be updated. Probably some QActions will be enabled and other will
+        be disabled. Also the databases tree and the workspace have to be
+        synchronised again (if possible).
+
         :Parameters:
 
-        -`current`: the index model of the new current item
-        -`previous`: the index model of the previous current item
+          - `current`: the index model of the new current item
+          - `previous`: the index model of the previous current item
         """
 
         QtGui.QTreeView.currentChanged(self, current, previous)
@@ -281,12 +258,16 @@ class DBsTreeView(QtGui.QTreeView):
         """Specialised handler for mouse double click events.
 
         When a node is double clicked in the tree of databases pane:
-        - if the node can be renamed and the Shift key is pressed then
+
+        - if the node can be renamed and the `Shift` key is pressed then
           rename the node
-        - if the node is a leaf with no view and the Shift key is not pressed
+        - if the node is a leaf with no view and the `Shift` key is not pressed
           then open the node
-        - if the node is a collpased group and the Shift key is not pressed
+        - if the node is a collpased group and the `Shift` key is not pressed
           then expand the group
+
+        :Parameter event: the event being processed
+
         """
 
         modifier = event.modifiers()
@@ -303,8 +284,8 @@ class DBsTreeView(QtGui.QTreeView):
         Event handler for `QDropEvent` events.
 
         If an icon is dropped on a free area of the tree view then the
-        icon URL is converted to a path (which we assume to be an HDF5
-        file path) and ViTables tries to open it.
+        icon URL is converted to a path (which we assume to be an `HDF5`
+        file path) and ``ViTables`` tries to open it.
 
         :Parameter event: the event being processed.
         """
@@ -324,7 +305,7 @@ class DBsTreeView(QtGui.QTreeView):
         """
         Event handler for `QDragEnterEvent` events.
 
-        Dragging files on the tree view is supported.
+        Dragging files from the Desktop onto the tree view is supported.
 
         :Parameter event: the event being processed.
         """
@@ -341,9 +322,9 @@ class DBsTreeView(QtGui.QTreeView):
         """
         Event handler for `QDragMoveEvent` events.
 
-        Dragging files on the tree view is supported. If the icon being
-        dragged is placed over a tree view item then drop operations are
-        not allowed (dragging icon is a slashed circle).
+        Dragging files from the Desktop onto the tree view is supported. If the 
+        icon being dragged is placed over a tree view item then drop operations 
+        are not allowed (dragging icon is a slashed circle).
 
         :Parameter event: the event being processed.
         """
@@ -359,6 +340,9 @@ class DBsTreeView(QtGui.QTreeView):
     def focusInEvent(self, event):
         """Specialised handler for focus events.
 
+        Repaint differently the databases tree view frame when it gets the keyboard
+        focus so that users can realize easily about this focus change.
+
         :Parameter event: the event being processed
         """
 
@@ -372,6 +356,10 @@ class DBsTreeView(QtGui.QTreeView):
 
     def focusOutEvent(self, event):
         """Specialised handler for focus events.
+
+        Repaint differently the databases tree view frame when it looses the 
+        keyboard focus so that users can realize easily about this focus 
+        change.
 
         :Parameter event: the event being processed
         """

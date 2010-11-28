@@ -20,35 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the NodePropDlg class.
+This module displays in a dialog the node information collected by the :mod:`vitables.nodeProperties.nodeInfo` module.
 
-Classes:
-
-* NodePropDlg(QDialog)
-
-Methods:
-
-* __init__(self, info)
-* cleanGeneralPage(self, info)
-* databaseGB(self, info)
-* groupGB(self, info)
-* leafGB(self, info)
-* fillGeneralPage(self, info)
-* fillSysAttrsPage(self, info)
-* fillUserAttrsPage(self, info)
-* displaySelectedCell(self, index)
-* addAttribute(self)
-* delAttribute(self)
-* accept(self)
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+Users' attributes can be edited if the database has been opened in read-write 
+mode. Otherwise all shown information is read-only.
 """
 
 __docformat__ = 'restructuredtext'
@@ -90,19 +65,19 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
     name, path, type etc. The second and third tabs show the system and
     user attributes in a tabular way.
 
-    Beware that data types shown in the General page are PyTables data
-    types so we can deal with enum, time64 and pseudoatoms (none of them
-    are supported by numpy).
+    Beware that data types shown in the General page are `PyTables` data
+    types so we can deal with `enum`, `time64` and `pseudoatoms` (none of them
+    are supported by ``numpy``).
     However data types shown in the System and User attributes pages are
-    numpy data types because PyTables attributes are stored as numpy
+    ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
+
+    :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+      describing a given node
     """
 
     def __init__(self, info):
-        """:Parameters:
-
-        - `info`: a NodeInfo instance describing a given node
-        """
+        """Setup the Properties dialog."""
 
         vtapp = vitables.utils.getVTApp()
         super(NodePropDlg, self).__init__(vtapp.gui)
@@ -137,7 +112,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
     def cleanGeneralPage(self, node_type):
         """Remove unneeded components from the General page.
 
-        :Parameter `node_type`: the type of node (root group, group, array...)
+        The General page is a kind of template generated via Qt-Designer and
+        it is used for any kind of node so its content has to be reorganised
+        depending on the type of node being reported.
+
+        :Parameter node_type: the type of node (root group, group, array...)
         """
 
         if node_type.count('group'):
@@ -166,6 +145,9 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """Make the General page of the Properties dialog.
 
         The page contains two groupboxes that are laid out vertically.
+
+        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+          describing a given node
         """
 
         self.databaseGB(info)
@@ -176,7 +158,10 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
 
 
     def databaseGB(self, info):
-        """Fill the Database groupbox o fthe General page.
+        """Fill the Database groupbox of the General page.
+
+        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+          describing a given node
         """
 
         if info.node_type == u'root group':
@@ -193,7 +178,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
 
 
     def groupGB(self, info):
-        """Fill the Group groupbox of the General page for File/Group nodes."""
+        """Fill the Group groupbox of the General page for File/Group nodes.
+
+        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+          describing a given node
+        """
 
         if info.node_type == u'root group':
             self.bottomGB.setTitle(trs('Root group', 'Title of a groupbox'))
@@ -225,60 +214,12 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             self.children_model.appendRow([name_item, type_item])
 
 
-    def leafGB(self, info):
-        """Fill the Dataspace groupbox of the General page for Leaf nodes."""
-
-        self.dimLE.setText(unicode(len(info.shape)))
-        self.shapeLE.setText(unicode(info.shape))
-        self.dtypeLE.setText(info.type)
-        if info.filters.complib is None:
-            self.compressionLE.setText(unicode('uncompressed', 'utf_8'))
-        else:
-            self.compressionLE.setText(unicode(info.filters.complib, 
-                'utf_8'))
-
-        # Information about the fields of Table instances
-        if info.node_type == 'table':
-            table = self.recordsTable
-            # The Table's fields description
-            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-            background = table.palette().brush(QtGui.QPalette.Window).color()
-            table.setStyleSheet("background-color: %s" % background.name())
-            self.fields_model = QtGui.QStandardItemModel()
-            self.fields_model.setHorizontalHeaderLabels([
-                trs('Field name', 
-                'First column header of the table'), 
-                trs('Type', 
-                'Second column header of the table'), 
-                trs('Shape', 
-                'Third column header of the table')])
-            table.setModel(self.fields_model)
-
-            # Fill the table. Nested fields will appear as (colname, nested, -)
-            seen_paths = []
-            for pathname in info.columns_pathnames:
-                if pathname.count('/'):
-                    field_name = pathname.split('/')[0]
-                    if field_name in seen_paths:
-                        continue
-                    else:
-                        seen_paths.append(field_name)
-                    pathname_item = QtGui.QStandardItem(field_name)
-                    type_item = QtGui.QStandardItem(trs('nested'))
-                    shape_item = QtGui.QStandardItem(trs('-'))
-                else:
-                    pathname_item = QtGui.QStandardItem(unicode(pathname, 
-                                                                'utf_8'))
-                    type_item = QtGui.QStandardItem(\
-                            unicode(info.columns_types[pathname], 'utf_8'))
-                    shape_item = QtGui.QStandardItem(\
-                                        unicode(info.columns_shapes[pathname]))
-                self.fields_model.appendRow([pathname_item, type_item, 
-                                            shape_item])
-
-
     def fillSysAttrsPage(self, info):
-        """Fill the page of system attributes."""
+        """Fill the page of system attributes.
+
+        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+          describing a given node
+        """
 
         # Number of attributes label
         self.sattrLE.setText(\
@@ -349,8 +290,68 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
 
 
+    def leafGB(self, info):
+        """Fill the Dataspace groupbox of the General page for Leaf nodes.
+
+        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+          describing a given node
+        """
+
+        self.dimLE.setText(unicode(len(info.shape)))
+        self.shapeLE.setText(unicode(info.shape))
+        self.dtypeLE.setText(info.type)
+        if info.filters.complib is None:
+            self.compressionLE.setText(unicode('uncompressed', 'utf_8'))
+        else:
+            self.compressionLE.setText(unicode(info.filters.complib, 
+                'utf_8'))
+
+        # Information about the fields of Table instances
+        if info.node_type == 'table':
+            table = self.recordsTable
+            # The Table's fields description
+            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+            background = table.palette().brush(QtGui.QPalette.Window).color()
+            table.setStyleSheet("background-color: %s" % background.name())
+            self.fields_model = QtGui.QStandardItemModel()
+            self.fields_model.setHorizontalHeaderLabels([
+                trs('Field name', 
+                'First column header of the table'), 
+                trs('Type', 
+                'Second column header of the table'), 
+                trs('Shape', 
+                'Third column header of the table')])
+            table.setModel(self.fields_model)
+
+            # Fill the table. Nested fields will appear as (colname, nested, -)
+            seen_paths = []
+            for pathname in info.columns_pathnames:
+                if pathname.count('/'):
+                    field_name = pathname.split('/')[0]
+                    if field_name in seen_paths:
+                        continue
+                    else:
+                        seen_paths.append(field_name)
+                    pathname_item = QtGui.QStandardItem(field_name)
+                    type_item = QtGui.QStandardItem(trs('nested'))
+                    shape_item = QtGui.QStandardItem(trs('-'))
+                else:
+                    pathname_item = QtGui.QStandardItem(unicode(pathname, 
+                                                                'utf_8'))
+                    type_item = QtGui.QStandardItem(\
+                            unicode(info.columns_types[pathname], 'utf_8'))
+                    shape_item = QtGui.QStandardItem(\
+                                        unicode(info.columns_shapes[pathname]))
+                self.fields_model.appendRow([pathname_item, type_item, 
+                                            shape_item])
+
+
     def fillUserAttrsPage(self, info):
-        """Fill the page of user attributes."""
+        """Fill the page of user attributes.
+
+        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+          describing a given node
+        """
 
         self.user_attrs_before = []
 
@@ -493,10 +494,10 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """
         Remove an attribute from the user's attributes table.
 
-        This slot is connected to the clicked signal of the Delete button.
+        This slot is connected to the clicked signal of the `Delete` button.
         An attribute is marked for deletion by giving focus to any cell
         of the row describing it (i.e. clicking a cell or selecting its
-        contents.
+        contents).
         """
 
         # If there is not a selected attribute then return
@@ -572,11 +573,10 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
     @QtCore.pyqtSlot(name="on_buttonsBox_accepted")
     def accept(self):
         """
-        Customised slot for accepted dialogs.
+        Overwritten slot for accepted dialogs.
 
-        This is an overwritten method.
-        This slot is always the last called method whenever the
-        apply/ok buttons are pressed.
+        This slot is always the last called method whenever the Apply/Ok 
+        buttons are pressed.
         """
 
         # If the file is in read-only mode or the Attribute Set Instance

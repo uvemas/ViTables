@@ -20,21 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the LeafModel class.
-
-Classes:
-
-* LeafModel(QAbstractItemModel)
-
-Methods:
-
-
-Functions:
-
-Misc variables:
-
-* __docformat__
-
+This module implements a model (in the `MVC` sense) for the real data stored in a `tables.Leaf`.
 """
 
 __docformat__ = 'restructuredtext'
@@ -49,17 +35,17 @@ class LeafModel(QtCore.QAbstractTableModel):
     """
     The model for real data contained in leaves.
 
-    The data is read from data sources (i.e., HDF5/PyTables nodes) by
+    The data is read from data sources (i.e., `HDF5/PyTables` nodes) by
     the model.
+
+    :Parameters:
+
+        - `rbuffer`: a buffer used for optimizing read access to data
+        - `parent`: the parent of the model
     """
 
     def __init__(self, rbuffer, parent=None):
         """Create the model.
-
-        :Parameters:
-
-            - `rbuffer`: a buffer used for optimizing read access to data
-            - `parent`: the parent of the model
         """
 
         super(LeafModel, self).__init__(parent)
@@ -122,6 +108,14 @@ class LeafModel(QtCore.QAbstractTableModel):
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
         with the specified orientation.
+
+        This is an overwritten method.
+
+        :Parameters:
+
+        - `section`: the header section being inspected
+        - `orientation`: the header orientation (horizontal or vertical)
+        - `role`: the role of the header section being inspected
         """
 
         # The section alignment
@@ -149,6 +143,8 @@ class LeafModel(QtCore.QAbstractTableModel):
         """Returns the data stored under the given role for the item
         referred to by the index.
 
+        This is an overwritten method.
+
         :Parameters:
 
         - `index`: the index of a data item
@@ -171,6 +167,9 @@ class LeafModel(QtCore.QAbstractTableModel):
     def columnCount(self, index=QtCore.QModelIndex()):
         """The number of columns of the table.
 
+        This is an overwritten method. The `index` argument makes no sense in 
+        this case.
+
         :Parameter index: the index of the node being inspected.
         """
         return self.numcols
@@ -178,6 +177,9 @@ class LeafModel(QtCore.QAbstractTableModel):
 
     def rowCount(self, index=QtCore.QModelIndex()):
         """The number of rows of the table.
+
+        This is an overwritten method. The `index` argument makes no sense in 
+        this case.
 
         :Parameter index: the index of the node being inspected.
         """
@@ -189,8 +191,8 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         :Parameters:
 
-            - `start`: the row where the buffer starts
-            - `chunk_size`: the size of the buffer
+        - `start`: the row where the buffer starts
+        - `chunk_size`: the size of the buffer
         """
 
         self.rbuffer.readBuffer(start, chunk_size)

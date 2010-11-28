@@ -20,28 +20,9 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the GroupNode class.
-
-Classes:
-
-* GroupNode(object)
-
-Methods:
-
-* __init__(self, parent, name)
-* __len__(self)
-* findChild(self, childname)
-* insertChild(self, child)
-* childAtRow(self, row)
-* rowOfChild(self, child)
-* row(self)
-
-Functions:
-
-Misc variables:
-
-* __docformat__
-
+This module defines a data structure to be used for the model of the databases 
+tree. The data structure is equivalent to a (non root) group node in a 
+`PyTables` file.
 """
 
 __docformat__ = 'restructuredtext'
@@ -51,19 +32,19 @@ import vitables.utils
 class GroupNode(object):
     """
     A group node in the tree of databases model.
+
+    :Parameters:
+
+    - `parent`: the parent of the node.
+    - `name`: the name of the node
     """
 
     def __init__(self, parent, name):
         """Create a group node for the tree of databases model.
 
-        A GroupNode represents a (non root) group of a HDF5 file and has
+        A GroupNode represents a (non root) group of a `HDF5` file and has
         a parent (another group node of the tree of databases model) and
         a name.
-
-        :Parameters:
-
-        - `parent`: the parent of the node.
-        - `name`: the name of the node
         """
 
         self.updated = False
@@ -93,13 +74,17 @@ class GroupNode(object):
 
 
     def __len__(self):
+        """The number of children of this grup."""
         return len(self.children)
 
 
     def insertChild(self, child, position=0):
         """Insert a child in a group node.
 
-        :Parameter child: the child being inserted.
+        :Parameters:
+
+            - `child`: the node being inserted
+            - `position`: the insertion position
         """
         self.children.insert(position, child)
 
@@ -107,7 +92,7 @@ class GroupNode(object):
     def childAtRow(self, row):
         """The row-th child of this node.
 
-        :Parameter child: the child being inserted.
+        :Parameter row: the position of the retrieved child
         """
 
         assert 0 <= row <= len(self.children)

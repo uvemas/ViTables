@@ -19,7 +19,11 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""Here is defined the VTApp class."""
+"""
+This module is the core of the application: it
+controls the managers for specific tasks and contains the logic for reacting
+to user's input i.e. the slots connected to every menu entry are defined here.
+"""
 
 __docformat__ = 'restructuredtext'
 _context = 'VTApp'
@@ -65,16 +69,15 @@ def trs(source, comment=None):
     return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
-#class VTApp(QtGui.QMainWindow):
 class VTApp(QtCore.QObject):
     """
     The application core.
 
-    It handles the user input and controls both views and documents.
-    VTApp methods can be grouped as:
+    :Parameters:
 
-    * GUI initialization and configuration methods
-    * slots that handle user input
+    - `mode`: the opening mode for files passed in the command line
+    - `h5files`: a list of files to be open at startup
+    - `dblist`: a file that contains a list of files to be open at startup
     """
 
 
@@ -91,12 +94,6 @@ class VTApp(QtCore.QObject):
         This method starts the application: makes the GUI, configure the
         app, instantiates managers needed to control the app. and connect
         signals to slots.
-
-        :Parameters:
-
-        - `mode`: the opening mode for files passed in the command line
-        - `h5files`: a list of files to be open at startup
-        - `dblist`: a file that contains a list of files to be open at startup
         """
 
         super(VTApp, self).__init__()
@@ -207,8 +204,9 @@ class VTApp(QtCore.QObject):
         Recover the last session.
 
         This method will attempt to open those files and leaf views that
-        were opened the last time the user closed ViTables.
-        The lists of files and leaves is read from the configuration.
+        were opened the last time the user closed ``ViTables``.
+        The lists of files and leaves is read from the configuration 
+        file.
         The format is::
 
             ['mode#@#filepath1#@#nodepath1#@#nodepath2, ...',
@@ -266,7 +264,15 @@ class VTApp(QtCore.QObject):
 
 
     def processCommandLineArgs(self, mode='', h5files=None, dblist=''):
-        """Open files passed in the command line."""
+        """
+        Open files passed in the command line.
+
+        :Parameters:
+
+        - `mode`: the opening mode for files passed in the command line
+        - `h5files`: a list of files to be open at startup
+        - `dblist`: a file that contains a list of files to be open at startup
+        """
 
         bad_line = trs("""Opening failed: wrong mode or path in %s""", 
                             'Bad line format')
@@ -303,8 +309,8 @@ class VTApp(QtCore.QObject):
         """
         Add a new path to the list of most recently open files.
 
-        ``processCommandLineArgs``, ``recoverLastSession``, ``fileNew``,
-        and ``fileOpen`` call this method.
+        :meth:`processCommandLineArgs`, :meth:`recoverLastSession`, 
+        :meth:`fileNew` and :meth:`fileOpen` call this method.
 
         :Parameters:
 
@@ -327,7 +333,7 @@ class VTApp(QtCore.QObject):
     def updateFSHistory(self, working_dir):
         """Update the navigation history of the file selector widget.
 
-        :Parameter `working_dir`: the last visited directory
+        :Parameter working_dir: the last visited directory
         """
 
         self.config.last_working_directory = working_dir
@@ -342,13 +348,13 @@ class VTApp(QtCore.QObject):
         """
         Check the filename extension of a given file.
 
-        If the filename has no extension this method adds .h5
+        If the filename has no extension this method adds `.h5`
         extension to it. This is useful when a file is being created or
         saved.
 
-        :Parameter filepath: the full path of the file (a QString)
+        :Parameter filepath: the full path of the file (a QString).
 
-        :Returns: the filepath with the proper extension (a Python string)
+        :Returns: the filepath with the proper extension (a Python string).
         """
 
         if not re.search('\.(.+)$', os.path.basename(filepath)):
@@ -544,7 +550,7 @@ class VTApp(QtCore.QObject):
 
     def openRecentFile(self):
         """
-        Opens the file whose path appears in the activated menu item text.
+        Open the file selected in the `Open Recent...` submenu.
         """
 
         action = self.sender()
@@ -568,7 +574,8 @@ class VTApp(QtCore.QObject):
 
         If this method is invoqued via ``File -> Open`` then no filepath
         is passed and a dialog is raised. When the method is invoqued
-        via slotRecentSubmenuActivated or fileSaveAs methods then
+        passing arguments to the command line or via 
+        :meth:`openRecentFile` or :meth:`fileSaveAs` methods then
         filepath is passed and the dialog is not raised.
 
         :Parameters:
@@ -617,12 +624,14 @@ class VTApp(QtCore.QObject):
         """
         Close a file.
 
-        First of all this method finds out which database it has to close.
+        First of all this method finds out which database has to be closed.
         Afterwards all views belonging to that database are closed, then
-        the object tree is removed from the QListView and, finally, the
+        the object tree is removed from the databases tree and, finally, the
         database is closed.
 
-        current: the index of a node living in the file being closed
+        :Parameter current: 
+            the index in the databases tree of a node living in the file being 
+            closed
         """
 
         if current is False:
@@ -643,7 +652,7 @@ class VTApp(QtCore.QObject):
 
 
     def fileCloseAll(self):
-        """Close every file opened by user."""
+        """Close every open file."""
 
         # The list of top level items to be removed.
         # The temporary database should be closed at quit time only
@@ -659,9 +668,9 @@ class VTApp(QtCore.QObject):
 
     def fileExit(self):
         """
-        Safely closes the application.
+        Safely close the application.
 
-        Save current configuration on disk, closes opened files and exits.
+        Saves current configuration on disk, closes opened files and exits.
         """
 
         # Close all browsers
@@ -678,9 +687,10 @@ class VTApp(QtCore.QObject):
 
     def nodeOpen(self, current=False):
         """
-        Opens a leaf node for viewing.
+        Open a leaf node for viewing.
 
-        :Parameter current: the model index of the item to be opened
+        :Parameter current: the index in the databases tree of the node being 
+            opened
         """
 
         if current is False:
@@ -722,17 +732,18 @@ class VTApp(QtCore.QObject):
 
     def nodeClose(self, current=False):
         """
-        Closes the view of the selected node.
+        Close the view of the selected node.
 
         The method is called by activating ``Node --> Close`` (what passes
-        no argument) or programatically by the ``VTApp.fileClose()``
+        no argument) or programatically by the :meth:`fileClose`
         method (what does pass argument).
         If the target is an open leaf this method closes its view, delete
         its model and updates the controller tracking system.
         If the target node is a root group the method looks for opened
         children and closes them as described above.
 
-        :Parameter current: the tree view item to be closed
+        :Parameter current: the index in the databases tree of the node being 
+            closed
         """
 
         current = self.gui.dbs_tree_view.currentIndex()
@@ -793,7 +804,7 @@ class VTApp(QtCore.QObject):
         Rename the selected node.
 
         - ask for the node name
-        - check the node name. If it is already in use ask what to<br>
+        - check the node name. If it is already in use ask what to
           do (possibilities are rename, overwrite and cancel creation)
         - rename the node
         """
@@ -973,8 +984,10 @@ class VTApp(QtCore.QObject):
         """
         Delete a given node.
 
-        :Parameters;
+        :Parameters:
 
+            - `current`: the index in the databases tree of the node being 
+              deleted
             - `force`: ask/do not ask for confirmation before deletion
         """
 
@@ -1024,7 +1037,7 @@ class VTApp(QtCore.QObject):
         """
         Display the properties dialog for the currently selected node.
 
-        The method is called by activating Node --> Properties.
+        The method is called by activating ``Node --> Properties``.
         """
 
         current = self.gui.dbs_tree_view.currentIndex()
@@ -1039,7 +1052,7 @@ class VTApp(QtCore.QObject):
 
 
     def deleteAllQueries(self):
-        """Slot for emptying the Query results node."""
+        """Slot for emptying the `Query results` node."""
         self.queries_mgr.deleteAllQueries()
 
 
@@ -1087,19 +1100,14 @@ class VTApp(QtCore.QObject):
 
     def helpBrowser(self):
         """
-        Open the documentation browser
-
-        Help --> UsersGuide
+        Open the documentation browser.
         """
-
         self.doc_browser = helpBrowser.HelpBrowser()
 
 
     def helpAbout(self):
         """
         Show a tabbed dialog with the application About and License info.
-
-        Help --> About
         """
 
         # Text to be displayed
@@ -1177,11 +1185,8 @@ class VTApp(QtCore.QObject):
 
     def helpAboutQt(self):
         """
-        Shows a message box with the Qt About info.
-
-        Help --> About Qt
+        Show a message box with the Qt About info.
         """
-
         QtGui.QMessageBox.aboutQt(self.gui, trs('About Qt',
             'Caption of the About Qt dialog'))
 
@@ -1189,9 +1194,7 @@ class VTApp(QtCore.QObject):
     def helpVersions(self):
         """
         Message box with info about versions of libraries used by
-        ViTables.
-
-        Help --> Show Versions
+        ``ViTables``.
         """
 
         # The libraries versions dictionary

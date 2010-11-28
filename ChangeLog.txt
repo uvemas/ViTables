@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 28, 2010 **
+The docstrings of the whole package have been updated.
+
 ** November 24, 2010 **
 super() is used now in the ctor of all classes derived from PyQt4.
 

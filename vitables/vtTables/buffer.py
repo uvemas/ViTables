@@ -20,27 +20,9 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the Buffer class.
+This module implements a buffer used to access the real data contained in `PyTables` datasets.
 
-Classes:
-
-* Buffer
-
-Methods:
-
-* __init__(self, leaf)
-* leafNumberOfRows(self)
-* getReadParameters(self, start, buffer_size)
-* isDataSourceReadable(self)
-* readBuffer(self, start, buffer_size)
-* scalarCell(self, row, col)
-* vectorCell(self, row, col)
-* arrayCell(self, row, col)
-
-Misc variables:
-
-* __docformat__
-
+By using this buffer we speed up the access to the stored data. As a consequence, views (widgets showing a tabular representation of the dataset) are painted much faster too.
 """
 
 __docformat__ = 'restructuredtext'
@@ -64,12 +46,11 @@ warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
 
 class Buffer(object):
     """
-    Buffer used to access the real data contained in PyTables datasets.
+    Buffer used to access the real data contained in `PyTables` datasets.
 
-    By using this buffer the leaf view drawing speed increases sensibly.
     Note that the buffer number of rows **must** be at least equal to the number
     of rows of the table widget it is going to fill. This way we avoid to have
-    partially full tables.
+    partially filled tables.
     Also note that rows in buffer are numbered from 0 to N (as it happens with
     the data source).
 
@@ -84,15 +65,15 @@ class Buffer(object):
     at document creation time which method will be used. It works
     *much* faster than a global reader method that has to decide
     which block of code must be executed at every cell painting time.
+
+    :Parameter leaf:
+        the data source (`tables.Leaf` instance) from which data are
+        going to be read.
     """
 
     def __init__(self, leaf):
         """
         Initializes the buffer.
-
-        :Parameter leaf:
-            the data source (`tables.Leaf` instance) from which data are
-            going to be read.
         """
 
         self.data_source = leaf
@@ -128,7 +109,7 @@ class Buffer(object):
 
 
     def __del__(self):
-        """Release resources before being destroyed.
+        """Release resources before destroying the buffer.
         """
         self.chunk = []
 
@@ -136,13 +117,13 @@ class Buffer(object):
     def leafNumberOfRows(self):
         """The number of rows of the dataset being read.
 
-        We don't use the Leaf.nrows attribute because it is not always
+        We don't use the `Leaf.nrows` attribute because it is not always
         suitable for displaying the data in a 2D grid. Instead we use the
-        Leaf.shape attribute and map it to a number of rows useful for our
+        `Leaf.shape` attribute and map it to a number of rows useful for our
         purposes.
 
         The returned number of rows may differ from that returned by the
-        ``nrows`` attribute in scalar arrays and EArrays.
+        `nrows` attribute in scalar arrays and `EArrays`.
 
         :Returns: the size of the first dimension of the document
         """
@@ -226,8 +207,8 @@ class Buffer(object):
         be smaller than the requested one if the beginning/end of the
         document is reached when reading.
 
-        Data read from VLArrays are returned as a Python list. Any
-        other kind of Leaf returns a numpy array (see comments on
+        Data read from `VLArrays` are returned as a Python list. Any
+        other kind of `tables.Leaf` returns a ``numpy`` array (see comments on
         restricted_flavors above)
 
         :Parameters:

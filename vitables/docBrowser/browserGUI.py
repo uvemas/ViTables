@@ -22,27 +22,7 @@
 """
 Here is defined the HelpBrowserGUI class.
 
-Classes:
-
-* HelpBrowserGUI(QMainWindow) 
-
-Methods:
-
-* __init__(self, browser, parent=None) 
-* setupActions(self)
-* initPopups(self) 
-* setupHistoryCombo(self)
-* connectSignals(self)
-* closeEvent(self, event) 
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+This module creates the main window for the documentation browser.
 """
 
 __docformat__ = 'restructuredtext'
@@ -60,16 +40,19 @@ def trs(source, comment=None):
 
 
 class HelpBrowserGUI(QtGui.QMainWindow) :
-    """Very simple documentation browser."""
+    """
+    The main window of the documentation browser.
+
+    :Parameters:
+
+    - `browser`: an instance of the docs browser controller
+      :meth:`vitables.docBrowser.helpBrowser.HelpBrowser`
+    - `parent`: the parent widget.
+    """
 
     def __init__(self, browser, parent=None) :
         """
         Initializes the browser.
-
-        :Parameters:
-
-        - `browser`: is an instance of `HelpBrowser`
-        - `parent`: the parent widget.
         """
 
         super(HelpBrowserGUI, self).__init__(parent)
@@ -209,12 +192,11 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
 
     def initPopups(self) :
         """
-        GUI components are: menu bar, tool bar and status bar.
+        Setup the menubar and the toolbar of the main window.
 
-        Menu bar menus: File, Go, Bookmarks, Help
-        Tool bar buttons: home, backward, forward, combobox, clear history
-        For every menu the `QMenuItems` are added from `QActions`, except for
-        the Bookmarks menu, where we use also the `insertItem` method.
+        The menubar contains the menus `File`, `Go`, `Bookmarks` and `Help`.
+        The toolbar contains the buttons: `home`, `backward`, `forward`, 
+        `combobox` and `clear history`.
         """
 
         # Create the File menu and add actions/submenus/separators to it
@@ -285,8 +267,8 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         """
         Connect signals to slots.
 
-        Signals coming from GUI are connected to slots in the docs 
-        browser controller (`HelpBrowser`).
+        Signals coming from GUI are connected to slots in the docs browser
+        controller, :meth:`vitables.docBrowser.helpBrowser.HelpBrowser`.
         """
 
         self.combo_history.activated[unicode].connect(\

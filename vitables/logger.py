@@ -19,29 +19,16 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""Here is defined the logger module.
+"""This module provides a console (named Logger) to ``ViTables``.
 
-Classes:
+Warning and error messages delivered to users by the application are
+displayed in this console. Also some messages about the result of the
+operations requested by users are shown in the console. This is a read-only
+console, its main purpose is to feed users with important information
+regarding its working session (so it is called Logger). Users can't enter
+commands in the Logger.
 
-* Logger(QtGui.QTextEdit)
-
-Methods:
-
-* __init__(self, parent=None)
-* write(self, text)
-* createCustomContextMenu(self, pos)
-* updateEditMenu(self)
-* focusInEvent(self, e)
-* focusOutEvent(self, e)
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+    :Parameter parent: the parent widget of the Logger
 """
 
 __docformat__ = 'restructuredtext'
@@ -59,20 +46,18 @@ def trs(source, comment=None):
 
 class Logger(QtGui.QTextEdit):
     """
-    Logger that receives all informational application messages.
+    Console that receives all informational application messages.
 
     All messages delivered by application to user are displayed in the
-    logger area. This messages include the status of user requested
+    Logger. This messages include the status of user requested
     operations, the result of this operations, and also error messages.
     This is possible because the class reimplement the write() method,
-    so it can be used to catch both, sys.stdout an sys.stderr, just by
+    so it can be used to catch both, ``sys.stdout`` and ``sys.stderr``, just by
     redirecting them to an instance of this class.
     """
 
     def __init__(self, parent=None):
         """Create the Logger widget and configure it.
-
-        :Parameter parent: the parent widget of the Logger
         """
 
         super(Logger, self).__init__(parent)
@@ -106,9 +91,9 @@ class Logger(QtGui.QTextEdit):
 
     def write(self, text):
         """
-        The standard output and the standard error are redirected to an
-        instance of Logger so we must implement a write method in order
-        to display the catched messages.
+        Catch the messages sent to the standard output and the standard error.
+
+        The caught messages are displayed in the `Logger` using this method.
 
         The implementation is done via QTextEdit.append method because
         this method adds the text at the end of the console so, even if
@@ -137,7 +122,7 @@ class Logger(QtGui.QTextEdit):
 
     def createCustomContextMenu(self, pos):
         """
-        Popup the contextual logger menu.
+        Popup the context logger menu.
 
         :Parameter pos: the local position at which the menu will popup
         """
@@ -189,6 +174,9 @@ class Logger(QtGui.QTextEdit):
     def focusInEvent(self, event):
         """Specialised handler for focus events.
 
+        Repaint differently the `Logger` frame when it gets the keyboard focus 
+        so that users can realize easily about this focus change.
+
         :Parameter event: the event being processed
         """
 
@@ -201,11 +189,10 @@ class Logger(QtGui.QTextEdit):
 
 
     def focusOutEvent(self, event):
-        """Update the ``Node --> Copy`` action in accordance with the keyboard
-        focus.
+        """Specialised handler for focus events.
 
-        If the logger losts keyboard focus the ``Node --> Copy`` action
-        is updated.
+        Repaint differently the `Logger` frame when it looses the keyboard 
+        focus so that users can realize easily about this focus change.
 
         :Parameter event: the event being processed
         """

@@ -20,22 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the NodeInfo class.
-
-Classes:
-
-* NodeInfo
-
-Methods:
-
-
-Functions:
-
-
-Misc variables:
-
-* __docformat__
-
+This module collects information about a given node of a `PyTables` database.
 """
 
 __docformat__ = 'restructuredtext'
@@ -48,7 +33,8 @@ class NodeInfo(object):
     """Collects information about a given node.
 
     The following data and metadata can be collected:
-    * format of the database (generic HDF5 or PyTables)
+
+    * format of the database (generic `HDF5` or `PyTables`)
     * filename of the database
     * filepath of the database
     * opening mode of the database
@@ -56,23 +42,31 @@ class NodeInfo(object):
     * node type
     * node name
     * node path
-    * for Group nodes:
+    * for `tables.Group` nodes:
+
         - attributes set instance and related info
         - dictionary of nodes hanging from a group
         - dictionary of groups hanging from a group
         - dictionary of leaves hanging from a group
-    * for Table nodes:
+
+    * for `tables.Table` nodes:
+
         - columns names, datatypes and shapes
         - number of rows and columns
         - filters
         - shape
         - flavor
-    * for XArray nodes:
+
+    * for `tables.XArray` nodes:
+
         - number of rows
         - datatype
         - filters
         - shape
         - flavor
+
+    :Parameter node_item: an instance of :meth:`RootGroupNode`, 
+      :meth:`GroupNode` or :meth:`LeafNode`.
     """
 
     def __init__(self, node_item):
@@ -80,8 +74,6 @@ class NodeInfo(object):
 
         Some PyTables string attributes are regular Python strings instead
         of unicode strings and have to be explicitely converted to unicode.
-
-        node_item is an instance of RootGroupNode, GroupNode or LeafNode.
         """
 
         self.node = node_item.node
@@ -118,7 +110,7 @@ class NodeInfo(object):
     # Properties for File instances
 
     def _format(self):
-        """The format of the hosting File instance"""
+        """The format of the hosting `tables.File` instance"""
 
         if self.h5file._isPTFile:
             return u'PyTables file'
@@ -129,7 +121,7 @@ class NodeInfo(object):
 
 
     def _size(self):
-        """The size of the hosting File instance"""
+        """The size of the hosting `tables.File` instance"""
 
         bytes = os.path.getsize(self.filepath) *1.0
         kbytes = bytes/1024
@@ -153,7 +145,7 @@ class NodeInfo(object):
     # Properties for Group instances
 
     def _hangingNodes(self):
-        """The dictionary of nodes hanging from this group."""
+        """The dictionary of nodes hanging from this node."""
 
         try:
             return self.node._v_children
@@ -164,7 +156,7 @@ class NodeInfo(object):
 
 
     def _hangingGroups(self):
-        """The dictionary of groups hanging from this group."""
+        """The dictionary of groups hanging from this node."""
 
         try:
             return self.node._v_groups
@@ -175,7 +167,7 @@ class NodeInfo(object):
 
 
     def _hangingLeaves(self):
-        """The dictionary of leaves hanging from this group."""
+        """The dictionary of leaves hanging from this node."""
 
         try:
             return self.node._v_leaves
@@ -188,7 +180,7 @@ class NodeInfo(object):
     # Properties for Leaf instances
 
     def _type(self):
-        """The PyTables data type of the atom."""
+        """The `PyTables` data type of the atom for `tables.Leaf` nodes."""
 
         if self.node_type.count(u'array'):
             try:
@@ -202,7 +194,7 @@ class NodeInfo(object):
 
 
     def _nrows(self):
-        """The current number of rows in the table/array node."""
+        """The current number of rows in the `tables.Leaf` node."""
 
         try:
             return self.node.shape[0]
@@ -215,7 +207,7 @@ class NodeInfo(object):
 
 
     def _shape(self):
-        """The shape of data in the table/array node."""
+        """The shape of data in the `tables.Leaf` node."""
 
         try:
             return self.node.shape
@@ -226,7 +218,7 @@ class NodeInfo(object):
 
 
     def _flavor(self):
-        """The type of data object read from the table/array node."""
+        """The type of data object read from the `tables.Leaf` node."""
 
         try:
             return vitables.utils.toUnicode(self.node.flavor)
@@ -237,7 +229,7 @@ class NodeInfo(object):
 
 
     def _filters(self):
-        """Filters property for this table/array node."""
+        """Filters property for this `tables.Leaf` node."""
 
         try:
             return self.node.filters
@@ -249,7 +241,7 @@ class NodeInfo(object):
     # Properties for Table instances
 
     def _colNames(self):
-        """A list containing the names of top-level columns in the table."""
+        """The list of names of top-level columns in a `tables.Table` node."""
 
         try:
             return self.node.colnames
@@ -260,7 +252,7 @@ class NodeInfo(object):
 
 
     def _colPathNames(self):
-        """A list containing the paths of top-level columns in the table."""
+        """The list of paths of top-level columns in a `tables.Table` node."""
 
         try:
             return self.node.colpathnames
@@ -271,7 +263,8 @@ class NodeInfo(object):
 
 
     def _colTypes(self):
-        """Mapping the column names of a table to its PyTables datatypes.
+        """
+        Mapping with `tables.Table` field names and their `PyTables` datatypes.
         """
 
         try:
@@ -283,7 +276,8 @@ class NodeInfo(object):
 
 
     def _colShapes(self):
-        """A mapping between the shape of the table columns and their names.
+        """
+        Mapping with the `tables.Table` field names and their shapes.
         """
 
         try:
@@ -296,7 +290,7 @@ class NodeInfo(object):
 
 
     def _ncolumns(self):
-        """The current number of columns in the table node."""
+        """The current number of columns in the `tables.Table` node."""
 
         try:
             return len(self.node.columns_names)

@@ -19,28 +19,8 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""Here is defined the ZoomCell class.
-
-Classes:
-
-* ZoomCell(QtGui.QMDISubwindow)
-
-Methods:
-
-* __init__(self, data, title, workspace, leaf)
-* hasShape(self)
-* getGridDimensions(self)
-* getPyObjectDimensions(self)
-* getArrayDimensions(self, shape)
-* getNestedFieldDimensions(self)
-* zoomTable(self)
-* zoomArray(self)
-* zoomView(self, row, col)
-
-Misc variables:
-
-* __docformat__
-
+"""
+Display recursively the content of a given cell of a view.
 """
 
 __docformat__ = 'restructuredtext'
@@ -60,17 +40,24 @@ class ZoomCell(QtGui.QMdiSubWindow):
     The cell content depends on the kind of leaf and the shape of its
     atom. Cells of `Table` views and `E/C/Array` views can be:
 
-    - a `numpy` scalar. `Atom` shape is ()
-    - a `numpy` array. `Atom` shape is not ()
+    - a ``numpy`` scalar. `Atom` shape is ()
+    - a ``numpy`` array. `Atom` shape is not ()
 
     In addition, cells of `VLArray` views can be:
 
-    - a serialized `Python` object. `Atom` kind is ``object``, shape is ()
-    - a `Python` string. `Atom` kind is ``vlstring``, shape is ()
+    - a serialized `Python` object. `Atom` kind is `object`, shape is ()
+    - a `Python` string. `Atom` kind is `vlstring`, shape is ()
 
     Finally, cells of `Table` views also can be:
 
     - a `numpy.void` object when the cell corresponds to nested field of the record
+
+    :Parameters:
+
+        - `data`: the value stored in the cell being zoomed
+        - `title`: the base string for the zoomed view title
+        - `workspace`: the parent of the zoomed view
+        - `leaf`: a LeafNode instance
     """
 
     def __init__(self, data, title, workspace, leaf):
@@ -80,13 +67,6 @@ class ZoomCell(QtGui.QMdiSubWindow):
         The passed cell is an element of a given dataset. It is always
         a (potentially nested) `numpy` array. See cell accessor methods
         in the `Buffer` class for details.
-
-        :Parameters:
-
-            - `data`: the value stored in the cell being zoomed
-            - `title`: the base string for the zoomed view title
-            - `workspace`: the parent of the zoomed view
-            - `leaf`: a LeafNode instance
         """
 
         self.data = data
@@ -305,8 +285,8 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
         :Parameters:
 
-            - `row`: the row of the clicked cell
-            - `col`: the column of the clicked cell
+        - `row`: the row of the clicked cell
+        - `col`: the column of the clicked cell
         """
 
         # Check if the zoom has to be done

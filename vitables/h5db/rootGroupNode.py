@@ -20,28 +20,9 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the RootGroupNode class.
-
-Classes:
-
-* RootGroupNode(object)
-
-Methods:
-
-* __init__(self, data_source=None, parent=None, tmp_db=False)
-* __len__(self)
-* findChild(self, childname)
-* insertChild(self, child)
-* childAtRow(self, row)
-* rowOfChild(self, child)
-* row(self)
-
-Functions:
-
-Misc variables:
-
-* __docformat__
-
+This module defines a data structure to be used for the model of the databases 
+tree. The data structure is equivalent to a root group node in a `PyTables` 
+file.
 """
 
 __docformat__ = 'restructuredtext'
@@ -53,6 +34,12 @@ class RootGroupNode(object):
     A root group node in the tree of databases model.
 
     Root group nodes are top level nodes (i.e., they have no parent).
+
+    :Parameters:
+
+    - `data_source`: the data source of the node.
+    - `parent`: the parent of the node.
+    - `tmp_db`: True if the node is tied to the temporary database
     """
 
     def __init__(self, data_source=None, parent=None, tmp_db=False):
@@ -62,12 +49,6 @@ class RootGroupNode(object):
         no parent and no data source. Any other RootGroupNode represents
         a root group of a HDF5 file and has a parent (the root of the
         tree of databases model) and a data source (the HDF5 file).
-
-        :Parameters:
-
-        - `data_source`: the data source of the node.
-        - `parent`: the parent of the node.
-        - `tmp_db`: True if the node is tied to the temporary database
         """
 
         self.updated = False
@@ -104,21 +85,25 @@ class RootGroupNode(object):
 
 
     def __len__(self):
+        """The number of children of this grup."""
         return len(self.children)
 
 
     def insertChild(self, child, position=0):
         """Insert a child in a group node.
 
-        :Parameter child: the child being inserted.
+        :Parameters:
+
+            - `child`: the node being inserted
+            - `position`: the insertion position
         """
         self.children.insert(position, child)
 
 
     def childAtRow(self, row):
-        """Insert a child in a group node.
+        """The row-th child of this node.
 
-        :Parameter child: the child being inserted.
+        :Parameter row: the position of the retrieved child
         """
 
         assert 0 <= row <= len(self.children)

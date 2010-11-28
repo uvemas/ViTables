@@ -19,7 +19,10 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""Here is defined the VTGUI class."""
+"""
+This module provides de `ViTables` GUI: main window, menus, context menus, 
+toolbars, statusbars and `QActions` bound to both menus and toolbars.
+"""
 
 __docformat__ = 'restructuredtext'
 _context = 'VTGUI'
@@ -40,6 +43,10 @@ def trs(source, comment=None):
 class VTGUI(QtGui.QMainWindow):
     """
     The application GUI.
+
+    :Parameters:
+        - `vtapp`: an instance of the :meth:`vitables.vtapp.VTApp` class
+        - `version`: the `ViTables` version
     """
 
 
@@ -79,7 +86,11 @@ class VTGUI(QtGui.QMainWindow):
 
 
     def addComponents(self):
-        """Add widgets to the main window."""
+        """Add widgets to the main window.
+
+        The main window contains a databases tree view, a workspace and a 
+        console.
+        """
 
         self.setIconSize(QtCore.QSize(22, 22))
         self.setWindowIcon(self.icons_dictionary['vitables_wm'])
@@ -434,7 +445,7 @@ class VTGUI(QtGui.QMainWindow):
 
 
     def initStatusBar(self):
-        """Init status bar."""
+        """Initialise the status bar."""
 
         status_bar = self.statusBar()
         self.sb_node_info = QtGui.QLabel(status_bar)
@@ -453,11 +464,10 @@ class VTGUI(QtGui.QMainWindow):
         Set up the main window menus.
 
         Popus are made of actions, items and separators.
-        The Window menu is a special case due to its dynamic nature. Its
+        The `Window` menu is a special case due to its dynamic nature. Its
         contents depend on the number of existing views.
         In order to track changes and keep updated the menu, it is reloaded
-        every time it is about to be displayed. This goal is achieved using
-        signal/slot mechanism (see code below).
+        every time it is about to be displayed.
         """
 
         # Create the File menu and add actions/submenus/separators to it
@@ -580,6 +590,8 @@ class VTGUI(QtGui.QMainWindow):
         the application quitting immediately, leaving things in a non
         consistent state. This event handler ensures that the needed
         tidy up is done before quitting.
+
+        :Parameter event: the close event being handled
         """
 
         # Do the required tidy up
@@ -592,6 +604,10 @@ class VTGUI(QtGui.QMainWindow):
 
     def makeCopy(self):
         """Copy text/leaf depending on which widget has focus.
+
+        This methos disambiguates the ``Ctrl+C`` shortcut. If the console has focus
+        then ``Ctrl+C`` will copy the console selected text. If the databases tree
+        view has focus then the selected node (if any) will be copied.
         """
 
         if self.dbs_tree_view.hasFocus():
@@ -620,21 +636,16 @@ class VTGUI(QtGui.QMainWindow):
         The following events trigger a call to this slot:
 
             * insertion/deletion of rows in the tree of databases model
-              (see VTApp.slotUpdateCurrent method)
             * changes in the selection state of the tree of databases view
-              (see DBsTreeView.currentChanged method)
 
         The slot should be manually called when a new view is activated in
-        the workspace (for instance by methods nodeOpen, nodeClose).
+        the workspace (for instance by methods 
+        :meth:`vitables.vtapp.VTApp.nodeOpen`, 
+        :meth:`vitables.vtapp.VTApp.nodeClose`).
 
         .. _Warning:
 
         Warning! Don\'t call this method until the GUI initialisation finishes.
-        It will fail if it is invoqued before the required database is open.
-        This is the reason why connectSignals() is called as late as possible
-        in the constructor.
-
-        :Parameter current: the model index of the current item
         """
 
         # The following actions are always active:
@@ -709,7 +720,7 @@ class VTGUI(QtGui.QMainWindow):
 
 
     def updateRecentSubmenu(self):
-        """Update the content of the Open Recent File submenu."""
+        """Update the content of the `Open Recent File...` submenu."""
 
         index = 0
         self.open_recent_submenu.clear()
@@ -736,11 +747,11 @@ class VTGUI(QtGui.QMainWindow):
 
     def updateWindowMenu(self):
         """
-        Update the Windows menu.
+        Update the `Window` menu.
 
-        The Windows menu is dynamic because its content is determined
+        The `Window` menu is dynamic because its content is determined
         by the currently open views. Because the number of these views or
-        its contents may vary at any moment we must update the Windows
+        its contents may vary at any moment we must update the `Window`
         menu every time it is open. For simplicity we don't keep track
         of changes in the menu content. Instead, we clean and create it
         from scratch every time it is about to show.
@@ -793,9 +804,9 @@ class VTGUI(QtGui.QMainWindow):
 
     def popupContextualMenu(self, kind, pos):
         """
-        Popup a contextual menu in the tree of databases view.
+        Popup a context menu in the tree of databases view.
 
-        When a point of the tree view is right clicked, a contextual
+        When a point of the tree view is right clicked, a context
         popup is displayed. The content of the popup depends on the
         kind of node pointed: no node, root group, group or leaf.
 
@@ -845,11 +856,12 @@ class VTGUI(QtGui.QMainWindow):
 
 
     def eventFilter(self, widget, event):
-        """Event filter used to provide the MDI area with a context menu.
+        """Event filter used to provide the workspace with a context menu.
 
         :Parameters:
-            -`widget`: the widget that receives the event
-            -`event`: the event being processed
+
+            - `widget`: the widget that receives the event
+            - `event`: the event being processed
         """
 
         if widget == self.workspace:

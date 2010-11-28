@@ -21,8 +21,8 @@
 
 """Plugin that provides nice string formatting for time fields.
 
-It supports not only native PyTables time data types but also the time 
-series contained in PyTables tables generated via scikits.timeseries.
+It supports not only native `PyTables` time datatypes but also the time 
+series contained in `PyTables` tables generated via ``scikits.timeseries``.
 """
 
 __docformat__ = 'restructuredtext'
@@ -55,7 +55,7 @@ def findTS(datasheet):
 
     **Existing time fields that cannot be formatted are skipped**:
 
-        - time series created via scikits.timeseries module are
+        - time series created via ``scikits.timeseries`` module are
           ignored if that module is not available
         - time fields that are displayed in a multidimensional cell 
           are ignored
@@ -63,12 +63,13 @@ def findTS(datasheet):
     The last restriction includes the following cases:
 
         - time fields that are part of a nested field
-        - time fields in VLArrays
+        - time fields in `VLArrays`
         - time fields in arrays with more than 2 dimensions
         - time fields in arrays with atom shape other than ()
 
-    :Parameter `datasheet`: the DataSheet instance being inspected.
-    :Return `ts_kind`: a flag indicating the kind of time series found
+    :Parameter datasheet: the :meth:`vitables.vtTables.dataSheet.DataSheet`
+      instance being inspected.
+    :Return ts_kind: a flag indicating the kind of time series found
     """
 
     leaf = datasheet.dbt_leaf.node
@@ -95,12 +96,13 @@ def tsPositions(ts_kind, leaf):
     """Return the position of the time field going to be formatted.
 
     The following cases can occur:
-    - leaf is a TimeSeriesTable instance. It contains just one time field,
+
+    - leaf is a `TimeSeriesTable` instance. It contains just one time field,
       in a column labeled as _dates.
-    - leaf is a regular Table instance. Every column can contain a time
-      data type so we must inspect every column
-    - leaf is an Array instance. As it is a homogeneous data container if
-      a column contains a time data type then every column contains a time
+    - leaf is a regular `tables.Table` instance. Every column can contain a
+      time data type so we must inspect every column
+    - leaf is an `tables.Array` instance. As it is a homogeneous data container
+      if a column contains a time data type then every column contains a time
       data type. Specific positions are not required
     """
 
@@ -120,7 +122,7 @@ def tsPositions(ts_kind, leaf):
 def tsFrequency(ts_kind, leaf):
     """Return the frequency (if any) of the time series.
 
-    Only time series created via scikits.timeseries module have
+    Only time series created via ``scikits.timeseries`` module have
     this attribute.
     """
 
@@ -134,14 +136,17 @@ def tsFrequency(ts_kind, leaf):
 
 
 class TSFormatter(object):
-    """An inspector class intended for finding out if a Leaf instance contains
+    """Look for suitable time series in a dataset.
+
+    An inspector class intended for finding out if a `tables.Leaf` instance contains
     a time series suitable to be formatted in a user friendly way.
     """
 
     def __init__(self):
         """Class constructor.
 
-        Dinamically finds new instances of LeafModel and customises them if
+        Dinamically finds new instances of 
+        :meth:`vitables.vtTables.leafModel.LeafModel` and customises them if
         they contain time fields.
         """
 
@@ -152,7 +157,8 @@ class TSFormatter(object):
     def customiseModel(self, datasheet):
         """Inspect a leaf model and customise it if a time field is found.
 
-        :Parameter subwindow: the DataSheet instance being inspected
+        :Parameter subwindow: the :meth:`vitables.vtTables.dataSheet.DataSheet`
+          instance being inspected
         """
 
         # Look for formattable time fields in the dataset
@@ -205,9 +211,9 @@ class TSFormatter(object):
 
 class ArrayTSModel(QtCore.QAbstractTableModel):
     """
-    A model for array datasets containing time series.
+    A model (in the `MVC` sense) for array datasets containing time series.
 
-    The data is read from data sources (i.e., HDF5/PyTables nodes) by
+    The data is read from data sources (i.e., `HDF5/PyTables` nodes) by
     the model.
     """
 
@@ -229,7 +235,7 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
         """
         Nicely format the contents of a table widget cell using UTC times.
 
-        Used when the content atom is TimeAtom.
+        Used when the content atom is `TimeAtom`.
         """
         return time.asctime(time.gmtime(content))
 
@@ -259,9 +265,9 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
 
 class TableTSModel(QtCore.QAbstractTableModel):
     """
-    A model for table datasets containing time series.
+    A model (in the `MVC` sense) for table datasets containing time series.
 
-    The data is read from data sources (i.e., HDF5/PyTables nodes) by
+    The data is read from data sources (i.e., `HDF5/PyTables` nodes) by
     the model.
     """
 
@@ -300,7 +306,7 @@ class TableTSModel(QtCore.QAbstractTableModel):
         """
         Nicely format the contents of a table widget cell using UTC times.
 
-        Used when the content atom is TimeAtom.
+        Used when the content atom is `TimeAtom`.
         """
         return time.asctime(time.gmtime(content))
 
@@ -308,7 +314,7 @@ class TableTSModel(QtCore.QAbstractTableModel):
     def formatScikitsTS(self, value):
         """Format a given date in a user friendly way.
 
-        Only Date instances (generated via scikits.timeseries module) are
+        Only Date instances (generated via ``scikits.timeseries`` module) are
         formatted with this method.
 
         :Parameter value: the content of the table cell being formatted

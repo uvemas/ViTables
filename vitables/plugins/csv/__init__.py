@@ -18,4 +18,4 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 __all__ = ['export_csv', 'import_csv']
-__path__ = ['vitables/plugins/csv']
+#__path__ = ['vitables/plugins/csv']

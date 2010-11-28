@@ -22,27 +22,7 @@
 """
 Here is defined the BookmarksDlg class.
 
-Classes:
-
-* BookmarksDlg(QDialog)
-
-Methods:
-
-* __init__(self, blist, hbgui)
-* fillBookmarksTable(self)
-* slotDisplayBookmark(self, index)
-* slotCheckDeleteButton(self, item)
-* slotButtonClicked(self, button)
-* deleteBookmarks(self)
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+This module provides a dialog for deleting bookmarks from the bookmarks list.
 """
 
 __docformat__ = 'restructuredtext'
@@ -61,24 +41,25 @@ def trs(source, comment=None):
 
 class BookmarksDlg(QtGui.QDialog):
     """
-    The dialog for editing bookmarks.
+    The dialog for deleting bookmarks.
 
     The class defines a modal dialog used to delete entries from the
-    bookmarks list.
-    Bookmarks are displayed in a tree view with `QTreeView`. Bookmarks
-    can be visited by double clicking them. At the bottom there is a group of
-    buttons with ``Delete``, ``OK`` and ``Cancel`` buttons. ``Delete``
-    removes checked items from the bookmarks list. 
+    bookmarks list. Bookmarks are displayed in a tree view. As a bonus, they 
+    can be visited directly from this dialog by double clicking them in the 
+    tree. At the bottom there is a group of buttons made of the ``Delete``, 
+    ``OK`` and ``Cancel`` buttons.
+    ``Delete`` removes checked items from the bookmarks list. 
+
+    :Parameters:
+
+    - `blist`: the bookmarks list
+    - `hbgui`: an instance of 
+      :meth:`vitables.docBrowser.browserGUI.HelpBrowserGUI` (the parent widget)
     """
 
     def __init__(self, blist, hbgui):
         """
         Dialog constructor.
-
-        :Parameters:
-
-        `blist`: the bookmarks list
-        `hbgui`: an instance of HelpBrowserGUI (the parent widget)
         """
 
         # The HelpBrowser GUI instance from which this dialog has been opened
@@ -152,6 +133,9 @@ class BookmarksDlg(QtGui.QDialog):
 
         When a bookmark is double clicked the `HelpBrowser` window is
         updated and displays that bookmark.
+
+        :Parameter index: the index in the bookmarks tree view of the selected
+          bookmark
         """
 
         # Get the bookmark UID
@@ -166,7 +150,10 @@ class BookmarksDlg(QtGui.QDialog):
 
         The state of the ``Delete`` button depends on the presence/abscence
         of checked items in the bookmarks list. Every time an item is
-        clicked the ``Delete`` button state is updated.
+        clicked the whole bookmarks tree is traversed looking for checked 
+        items. The``Delete`` button state is updated accordingly.
+
+        :Parameter item: the bookmarks tree item checked/unchecked
         """
 
         parent_item = self.tmodel.invisibleRootItem()
@@ -190,6 +177,8 @@ class BookmarksDlg(QtGui.QDialog):
 
         Depending on the button clicked in the button group the
         appropriate method is called.
+
+        :Parameter button: the clicked button
         """
 
         role = self.button_group.buttonRole(button)

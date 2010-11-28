@@ -23,14 +23,14 @@
 # Plugin initial draft author: Jorge Ibanez jorge.ibannez@uam.es
 #
 
-"""Plugin that provides import of arrays and tables from CSV files.
+"""Plugin that provides import `CSV` files into `PyTables` arrays and tables.
 
-The pipeline for importing a CSV file is:
+The pipeline for importing a `CSV` file is::
 
-CSV file --> numpy array --> tables.Leaf
+    CSV file --> numpy array --> tables.Leaf
 
-The numpy array is created via numpy.genfromtxt. The tables.Leaf instance
-is created using the apropriate constructors.
+The ``numpy`` array is created via `numpy.genfromtxt`. The `tables.Leaf` 
+instance is created using the appropriate constructors.
 
 Beware that importing big files is a slow process because the whole file
 has to be read from disk, transformed and write back to disk again so
@@ -38,22 +38,22 @@ there is a lot of disk IO.
 
 Other aspects to take into account:
 
-- creation of tables.Array datasets requires the numpy array containing the
-  whole CSV file to be loaded in memory. If the file is large enough you can
-  run out of memory.
+  - creation of `tables.Array` datasets requires the ``numpy`` array containing
+    the whole `CSV` file to be loaded in memory. If the file is large enough 
+    you can run out of memory.
 
-- creation of tables.CArray datasets requires an additional parsing of the
-  whole CSV file in order to find out its number of rows (it is a required
-  argument of the CArray constructor).
+  - creation of `tables.CArray` datasets requires an additional parsing of the
+    whole `CSV` file in order to find out its number of rows (it is a required
+    argument of the `tables.CArray` constructor).
 
-- there is a penalty performance when string dtypes are involved. The reason
-  is that string fields use to have variable length so, before the numpy
-  array is created, we need to find out the minimum itemsize required for
-  storing those string fields with no lose of data. This step requires an
-  additional parsing of the whole CSV file.
+  - there is a penalty performance when string dtypes are involved. The reason
+    is that string fields use to have variable length so, before the ``numpy``
+    array is created, we need to find out the minimum itemsize required for
+    storing those string fields with no lose of data. This step requires an
+    additional parsing of the whole `CSV` file.
 
-- CSV files containing N-dimensional fields are always imported with str dtype.
-  This is a limitation of numpy.genfromtxt.
+  - `CSV` files containing N-dimensional fields are always imported with `str` 
+    dtype. This is a limitation of `numpy.genfromtxt`.
 """
 
 __docformat__ = 'restructuredtext'
@@ -79,12 +79,12 @@ def trs(source, comment=None):
 
 
 def getArray(buf):
-    """Fill an intermediate numpy array with data read from the CSV file.
+    """Fill an intermediate ``numpy`` array with data read from the `CSV` file.
 
     The dtypes are determined by the contents of each column.
     Multidimensional columns will have string datatype.
 
-    :Parameter `buf`: the data buffer
+    :Parameter buf: the data buffer
     """
 
     # The dtypes are determined by the contents of each column
@@ -98,10 +98,9 @@ def getArray(buf):
 
 
 def tableInfo(input_handler):
-    """Return the useful information about the Table being created.
+    """Return useful information about the `tables.Table` being created.
 
-    :Parameters:
-    - `input_handler`: the file handler of the inspected file    
+    :Parameter input_handler: the file handler of the inspected file    
     """
 
     # Inspect the CSV file reading its second line
@@ -133,16 +132,17 @@ def tableInfo(input_handler):
 
 
 def heterogeneousTableInfo(input_handler, first_line, data):
-    """Return the useful information about the table being created.
+    """Return useful information about the `tables.Table` being created.
 
     The `data` array is heterogenous, i.e. not all fields have the same
     dtype.
 
     :Parameters:
-    - `input_handler`: the file handler of the inspected CSV file
-    - `first_line`: a numpy array which contains the first line of the CSV 
-                    file
-    - `data`: a numpy array which contains the second line of the CSV file
+
+    - `input_handler`: the file handler of the inspected `CSV` file
+    - `first_line`: a numpy array which contains the first line of the `CSV` 
+      file
+    - `data`: a numpy array which contains the second line of the `CSV` file
     """
 
     has_header = False
@@ -194,15 +194,16 @@ def heterogeneousTableInfo(input_handler, first_line, data):
 
 
 def homogeneousTableInfo(input_handler, first_line, data):
-    """Return the useful information about the table being created.
+    """Return useful information about the `tables.Table` being created.
 
     The `data` array is homegenous, i.e. all fields have the same dtype.
 
     :Parameters:
-    - `input_handler`: the file handler of the inspected CSV file
-    - `first_line`: a numpy array which contains the first line of the CSV 
-                    file
-    - `data`: a numpy array which contains the second line of the CSV file
+
+    - `input_handler`: the file handler of the inspected `CSV` file
+    - `first_line`: a ``numpy`` array which contains the first line of the 
+      `CSV` file
+    - `data`: a numpy array which contains the second line of the `CSV` file
     """
 
     has_header = False
@@ -262,8 +263,8 @@ def homogeneousTableInfo(input_handler, first_line, data):
 def askForHelp(first_line):
     """Ask to user if the first row is a header.
 
-    :Parameter `first_line`: a numpy array which contains the first line of 
-                             the CSVfile
+    :Parameter first_line: a numpy array which contains the first line of 
+      the `CSV` file
     """
 
     title = trs('Resolving first line role', 'Message box title')
@@ -283,10 +284,9 @@ def askForHelp(first_line):
 
 
 def earrayInfo(input_handler):
-    """Return the useful information about the EArray being created.
+    """Return useful information about the `tables.EArray` being created.
 
-    :Parameters:
-    - `input_handler`: the file handler of the inspected file
+    :Parameter input_handler: the file handler of the inspected file
     """
 
     # Inspect the CSV file reading its first line
@@ -337,10 +337,9 @@ def earrayInfo(input_handler):
 
 
 def carrayInfo(input_handler):
-    """Return the useful information about the CArray being created.
+    """Return useful information about the `tables.CArray` being created.
 
-    :Parameters:
-    - `input_handler`: the file handler of the inspected file
+    :Parameter input_handler: the file handler of the inspected file
     """
 
     # Inspect the CSV file reading its first line
@@ -401,7 +400,7 @@ def carrayInfo(input_handler):
 def isValidFilepath(filepath):
     """Check the filepath of the destination file.
 
-    :Parameter `filepath`: the filepath where the imported dataset will live
+    :Parameter filepath: the filepath where the imported dataset will live
     """
 
 
@@ -449,7 +448,7 @@ class ImportCSV(QtCore.QObject):
 
 
     def addEntry(self):
-        """Add the Import CSV... entry to the File menu.
+        """Add the `Import CSV...` entry to the `File` menu.
         """
 
         icon = QtGui.QIcon()
@@ -512,9 +511,9 @@ class ImportCSV(QtCore.QObject):
 
 
     def createDestFile(self, filepath):
-        """Create the PyTables file where the CSV file will be imported.
+        """Create the `PyTables` file where the `CSV` file will be imported.
 
-        :Parameter `filepath`: the PyTables file filepath
+        :Parameter filepath: the `PyTables` file filepath
         """
 
 
@@ -536,9 +535,9 @@ class ImportCSV(QtCore.QObject):
 
 
     def csvFilepath(self, leaf_kind):
-        """Get the filepath of the source CSV file.
+        """Get the filepath of the source `CSV` file.
 
-        :Parameter `leaf_kind`: the kind of container where data will be stored
+        :Parameter leaf_kind: the kind of container where data will be stored
         """
 
         # Call the file selector (and, if needed, customise it)
@@ -565,12 +564,12 @@ class ImportCSV(QtCore.QObject):
 
 
     def updateTree(self, filepath):
-        """Update the databases tree once the CSV file has been imported.
+        """Update the databases tree once the `CSV` file has been imported.
 
         When the destination h5 file is created and added to the databases tree
-        it has no nodes. Once the CSV file has been imported into a PyTables
-        container we update the representation of the h5 file in the tree so
-        that users can see that the file has a leaf.
+        it has no nodes. Once the `CSV` file has been imported into a 
+        `PyTables` container we update the representation of the h5 file in the
+        tree so that users can see that the file has a leaf.
 
         :Parameter filepath: the filepath of the destination h5 file
         """
@@ -582,7 +581,7 @@ class ImportCSV(QtCore.QObject):
 
 
     def csv2Table(self):
-        """Import a plain CSV file into a tables.Array object.
+        """Import a plain `CSV` file into a `tables.Array` object.
         """
 
         kind = 'Table'
@@ -634,9 +633,9 @@ class ImportCSV(QtCore.QObject):
 
 
     def csv2EArray(self):
-        """Import a plain CSV file into a tables.EArray object.
+        """Import a plain `CSV` file into a `tables.EArray` object.
 
-        This is a slot method. See `addEntry` method for details.
+        This is a slot method. See :meth:`addEntry` method for details.
         """
 
         kind = 'EArray'
@@ -691,9 +690,9 @@ class ImportCSV(QtCore.QObject):
 
 
     def csv2CArray(self):
-        """Import a plain CSV file into a tables.CArray object.
+        """Import a plain `CSV` file into a `tables.CArray` object.
 
-        This is a slot method. See `addEntry` method for details.
+        This is a slot method. See :meth:`addEntry` method for details.
         """
 
         kind = 'CArray'
@@ -750,9 +749,9 @@ class ImportCSV(QtCore.QObject):
 
 
     def csv2Array(self):
-        """Import a plain CSV file into a tables.Array object.
+        """Import a plain `CSV` file into a `tables.Array` object.
 
-        This is a slot method. See `addEntry` method for details.
+        This is a slot method. See :meth:`addEntry` method for details.
         """
 
         kind = 'Array'

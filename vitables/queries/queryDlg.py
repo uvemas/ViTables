@@ -20,32 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the QueryDlg class.
-
-Classes:
-
-* QueryDlg(QDialog)
-
-Methods:
-
-* __init__(self, info, ft_names, counter, initial_query, table)
-* __tr(self,  source, comment=None)
-* slotEnableIndicesColumn(self, cb_on)
-* slotInsertOperator(self, operator)
-* slotInsertField(self, field_id)
-* slotInsertFunction(self, text)
-* slotUpdateOKState(self)
-* checkConditionSyntax(self, condition)
-* slotAccept(self)
-
-Functions:
-
-* slotEnterHelpMode()
-
-Misc variables:
-
-* __docformat__
-
+This module provides a dialog for querying (filtering) `tables.Table` nodes.
+The result of the query is stored in other `tables.Table` node, referred as a 
+filtered table, which will live in the temporary database (labeled as `Query 
+results` in the databases tree).
 """
 
 __docformat__ = 'restructuredtext'
@@ -74,7 +52,7 @@ def trs(source, comment=None):
 
 class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
     """
-    A dialog for filter creation .
+    A dialog for filtering `tables.Table` nodes.
 
     By loading UI files at runtime we can:
 
@@ -96,19 +74,19 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
     A text box is used to enter the condition to be applied. Combos
     are used to enter operators, functions and field names. Textboxes
     are used to enter the range of the query.
+
+    :Parameters:
+
+    - `info`: a dictionary with information about the table being queried
+    - `ft_names`: the list of filtered tables names currently in use
+    - `counter`: a counter used to give a unique ID to the query
+    - `initial_query`: the dialog will be setup with this query (if any)
+    - `table`: the table being queried
     """
 
     def __init__(self, info, ft_names, counter, initial_query, table):
         """
-        Ctor.
-
-        :Parameters:
-
-        - `info`: a dictionary with information about the table being queried
-        - `ft_names`: the list of filtered tables names currently in use
-        - `counter`: a counter used to give a unique ID to the query
-        - `initial_query`: the dialog will be setup with this query (if any)
-        - `table`: the table being queried
+        Initialise the dialog.
         """
 
         #
@@ -192,7 +170,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         """
         Enable/disable the indices column name field.
 
-        If the checkbox in the global options groupbox is down then
+        If the checkbox in the global options groupbox is checked then
         a column with the indices of the filtered rows will be added
         to the table produced by the filtering process. Moreover the
         user can set the name of this column.
@@ -235,7 +213,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
     @QtCore.pyqtSlot("QString", name="on_functionsComboBox_activated")
     def insertFunction(self, text):
         """
-        Update  the contents of the query line editor.
+        Insert a function in the query line editor.
 
         When the functions combobox is activated the selected value is
         inserted in the query line editor.
@@ -277,23 +255,24 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
     @QtCore.pyqtSlot("QString", name="on_rstopLE_textChanged")
     def updateOKState(self):
         """
-        Update the activation state of the OK button.
+        Update the activation state of the `OK` button.
 
         Every time that the table name text box changes the new
-        content is checked. If it is empty, then the OK button is
+        content is checked. If it is empty, then the `OK` button is
         disabled.
-        Every time that the indices column name text box changes the
-        new content is checked. If it is empty, then the OK button
+        If the indices checkbox is checked, every time that the indices column 
+        name text box changes the
+        new content is checked. If it is empty, then the `OK` button
         is disabled.
         Every time that the lower/upper limit text box change the
         new content is checked. If the new values don't make a legal
-        condition, then the OK button is disabled.
+        condition, then the `OK` button is disabled.
         Every time the column name combobox changes the datatype
         of limit values is checked. If there is a mismatch, then the
-        OK button is disabled.
+        `OK` button is disabled.
         Every time that the spinboxes content change the new content
         is checked. If the combination of the start/stop/step boxes
-        makes a not legal selection range, then the OK button is
+        makes a not legal selection range, then the `OK` button is
         disabled.
         """
 
@@ -365,7 +344,10 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
 
     def checkConditionSyntax(self, condition):
-        """Check the condition syntax."""
+        """Check the condition syntax.
+
+        :Parameter condition: the query condition used for filtering the table
+        """
 
         syntax_ok = True
         try:

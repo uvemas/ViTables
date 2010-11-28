@@ -19,9 +19,9 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""This plugin creates a Plugins menu and adds an item to it for each 
-active plugin. Selecting these menu items will bring up a short About 
-Plugin dialog with the details of the plugin.
+"""This plugin creates a `Plugins` menu and adds an item to it for each 
+active plugin. Selecting these menu items will bring up a short 
+`About Plugin` dialog with the details of the plugin.
 """
 
 __docformat__ = 'restructuredtext'
@@ -43,7 +43,14 @@ def trs(source, comment=None):
 
 
 def setupTextWidget(parent, palette, kind='line'):
-    """Create and setup a QLineEdit widget.
+    """Create and setup a text editor widget.
+
+    :Parameters:
+
+    - `parent`: the parent widget of the widget being created
+    - `palette`: the `QPalette` used by the editor widget being created
+    - `kind`: the kind of editor widget being created (single-line editor or
+      multiline editor)
     """
 
     if kind == 'line':
@@ -56,7 +63,7 @@ def setupTextWidget(parent, palette, kind='line'):
 
 
 class PluginsMenu(QtCore.QObject):
-    """Add a Plugins menu to the ViTables menubar.
+    """Add a `Plugins` menu to the ``ViTables`` menubar.
     """
 
     def __init__(self):
@@ -86,7 +93,7 @@ class PluginsMenu(QtCore.QObject):
 
 
     def populateMenu(self):
-        """Populate the Plugins menu.
+        """Populate the `Plugins` menu.
         """
 
         loaded_plugins = self.vtapp.plugins_mgr.loaded_plugins
@@ -137,7 +144,8 @@ class PluginsMenu(QtCore.QObject):
         """
         Message box with a 'No information available' message.
 
-        This slot can called if an entry from the Plugins menu is activated.
+        This slot is called if an entry from the `Plugins` menu is activated
+        but the referred plugin doesn't provide a `helpAbout` method.
         """
 
         # Text to be displayed
@@ -152,9 +160,9 @@ class PluginsMenu(QtCore.QObject):
 
 
     def showInfo(self):
-        """Show a dialog with info about a plugin.
+        """Show a dialog with info about the active `Plugins` menu entry.
 
-        This slot can be called if an entry from the Plugins menu is activated.
+        This slot is called if an entry from the `Plugins` menu is activated.
         """
 
         action = self.sender()

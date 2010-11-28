@@ -20,22 +20,13 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the QueriesManager class.
+This module implements a controller for managing the queries.
 
-Classes:
-
-* QueriesManager
-
-Methods:
-
-
-Functions:
-
-
-Misc variables:
-
-* __docformat__
-
+The manager tracks the existing filtered tables and their names, launches the 
+Query dialog and executes the queries at low level (i.e. `PyTables` level).
+It also keeps a description of the last executed query and tracks the tables
+currently being queried, in order to ensure that no more than 1 query at a time
+is executed on a given table.
 """
 
 __docformat__ = 'restructuredtext'
@@ -56,7 +47,7 @@ def trs(source, comment=None):
 def getTableInfo(table):
     """Retrieves table info required for querying it.
 
-    :Parameter table: the tables.Table instance being queried.
+    :Parameter table: the `tables.Table` instance being queried.
     """
     info = {}
     info[u'nrows'] = table.nrows
@@ -126,31 +117,20 @@ def getTableInfo(table):
 
 
 class QueriesManager(QtCore.QObject):
-    """This is the class in charge of threading the execution of queries.
+    """This is the class in charge of the execution of queries.
 
-    PyTables doesn't support threaded queries. So when several queries are
-    requested to ViTables they will be executed sequentially. However the
-    queries will not be executed in the ViTables main thread but in a
-    secondary one. This way we ensure that queries (that are potentially
-    long-running operations) will not freeze the user interface and ViTables
-    will remain usable while queries are running (unless the queried table is
-    so large or the query so complex that the query it eats all the available
-    computer resources, CPU and memory).
+    `PyTables` doesn't support threaded queries. So when several queries are
+    requested to ``ViTables`` they will be executed sequentially.
 
     Also no more than one query can be made at the same time on a given table.
     This goal is achieved in a very simple way: tracking the tables currently
     being queried in a data structure (a dictionary at present).
+
+    :Parameter parent: the parent of the `QueriesManager` object
     """
 
     def __init__(self, parent=None):
         """Setup the queries manager.
-
-        The manager is in charge of:
-
-        - keep a description of the last query made
-        - automatically generate names for new queries
-        - track the query names already in use
-        - track the tables that are currently being queried
 
         The last query description has three components: the filepath of
         the file where the queried table lives, the nodepath of the queried
@@ -264,7 +244,9 @@ class QueriesManager(QtCore.QObject):
 
 
     def deleteAllQueries(self):
-        """Delete all nodes from the query results tree."""
+        """
+        Delete all nodes under the `Query results` node of the databases tree.
+        """
 
         title = trs('Cleaning the Query results file', 
             'Caption of the QueryDeleteAll dialog')
@@ -305,7 +287,10 @@ class QueriesManager(QtCore.QObject):
         Add the result of the query to the tree of databases view and open
         the new filtered table.
 
-        :Parameter table_uid: the UID of the table just queried
+        :Parameters:
+
+        - `completed`: whether the query has been succesful or not
+        - `table_uid`: the UID of the table just queried
         """
 
         QtGui.qApp.restoreOverrideCursor()

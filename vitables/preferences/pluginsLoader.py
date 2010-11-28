@@ -34,16 +34,16 @@ Syntax of a) is simpler (see below) but b) seems to be more general and
 powerful as it can deal with packages too. So *at the moment* I'll use the
 approach b). In the future a better defined plugins infrastructure may be used.
 
-FYI, approach a) looks like:
+FYI, approach a) looks like::
 
-from vitables.plugins import __all__ as plugins
-for plugin in plugins:
-    try:
-        module_name = 'vitables.plugins.' + plugin
-        __import__(module_name)
-        module = sys.modules[module_name]
-    except ImportError:
-        print "Error: module %s cannot be loaded" % module_name
+    from vitables.plugins import __all__ as plugins
+    for plugin in plugins:
+        try:
+            module_name = 'vitables.plugins.' + plugin
+            __import__(module_name)
+            module = sys.modules[module_name]
+        except ImportError:
+            print "Error: module %s cannot be loaded" % module_name
 """
 
 __docformat__ = 'restructuredtext'
@@ -111,8 +111,7 @@ def scanFolder(folder):
     This is a non recursive method. It scans only the top level of
     the package.
 
-    :Parameters:
-        - folder: the folder being scanned
+    :Parameter folder: the folder being scanned
     """
 
     pkg_plugins = []
@@ -129,15 +128,15 @@ class PluginsLoader(object):
     moment packages can contain module plugins only at top level because
     the plugins manager doesn't iterate recursively over the package looking
     for plugins.
+
+    :Parameters:
+
+    - plugins_paths: a QStringList with the paths where plugins live
+    - enabled_plugins: a QStringList with the UIDs of the enabled plugins
     """
 
     def __init__(self, plugins_paths, enabled_plugins):
         """Dynamically load and instantiate the available plugins.
-
-        :Parameters:
-
-        - plugins_paths: a QStringList with the paths where plugins live
-        - enabled_plugins: a QStringList with the UIDs of the enabled plugins
         """
 
         # Move from PyQt QStringLists to python lists
@@ -205,8 +204,7 @@ class PluginsLoader(object):
     def load(self, plugin):
         """Load a given plugin.
 
-        :Parameters:
-            - plugin: th UID of the plugin being loaded
+        :Parameters plugin: th UID of the plugin being loaded
         """
 
         # Load the module where the plugin lives
@@ -257,7 +255,7 @@ class PluginsLoader(object):
 
         Plugins that cannot be loaded should be removed using this method.
 
-        :Parameter `plugin`: the plugin being removed
+        :Parameter plugin: the plugin being removed
         """
 
         try:

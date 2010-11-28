@@ -20,43 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the HelpBrowser class.
+The controller of the ``ViTables`` documentation browser is implemented in this module.
 
-Classes:
-
-* HelpBrowser(QtCore.QObject) 
-
-Methods:
-
-* __init__(self, vtapp) 
-* displaySrc(self, src=None)
-* slotNewBrowser(self)
-* slotOpenFile(self, filepath=None)
-* slotCloseWindow(self)
-* exitBrowser(self)
-* zoomIn(self) 
-* zoomOut(self) 
-* updateHome(self) 
-* updateForward(self, available)
-* updateBackward(self, available)
-* slotRecentSubmenuAboutToShow(self)
-* slotOpenBookmark(self, bmark_id)
-* addBookmark(self)
-* editBookmarks(self)
-* clearBookmarks(self)
-* clearHistory(self)
-* updateHistory(self, src) 
-* aboutBrowser(self)
-* aboutQt(self)
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+The documentation browser is used for browsing the `ViTables User's Guide` in 
+HTML format. It is distributed along the source code in every supported platform.
 """
 
 __docformat__ = 'restructuredtext'
@@ -76,17 +43,17 @@ def trs(source, comment=None):
 
 class HelpBrowser(QtCore.QObject) :
     """
-    Very simple documentation browser.
-
-    ViTables uses this class to navigate help docs.
+    This is the controller of the ``ViTables`` documentation browser.
     Features:
 
     * reasonably good understanding of ``HTML`` format
     * navigation toolbar
     * session capable
+
       - filenames of files opened during the session are available at
           any moment
       - last session can be restored next time we open the `HelpBrowser`
+
     * basic bookmarks management
     """
 
@@ -123,10 +90,9 @@ class HelpBrowser(QtCore.QObject) :
 
         This slot is called when:
 
-            - HelpBrowser.slotOpenFile is launched
-            - BookmarksDlg.slotDisplayBookmark is launched
-            - a new item is activated in the History combo
-            - an entry is selected in the Bookmarks menu
+            - :meth:`vitables.docBrowser.bookmarksDlg.BookmarksDlg.displayBookmark` is launched
+            - a new item is activated in the `History` combo
+            - an entry is selected in the `Bookmarks` menu
 
         :Parameter src: the path of the file being displayed
         """
@@ -148,9 +114,7 @@ class HelpBrowser(QtCore.QObject) :
 
     def exitBrowser(self) :
         """
-        Quit the HelpBrowser.
-
-        File --> Exit
+        Quit the `HelpBrowser`.
 
         Before quitting this slot saves session and bookmarks. Then all browser
         windows are closed. The saved state corresponds to the window on which 
@@ -186,7 +150,7 @@ class HelpBrowser(QtCore.QObject) :
 
     def updateHome(self) :
         """
-        Enables/disables the Go --> Home menu item.
+        Enables/disables the ``Go --> Home`` menu item.
 
         If the history list is empty the menu item is disabled. Otherwise
         it is enabled.
@@ -199,17 +163,17 @@ class HelpBrowser(QtCore.QObject) :
 
 
     def updateForward(self, available) :
-        """Enables/disables the Go --> Forward menu item.
+        """Enables/disables the ``Go --> Forward`` menu item.
 
-        :Parameter available: a boolean
+        :Parameter available: a boolean. Indicates if a Next page is available.
         """
         self.gui.actions['goForward'].setEnabled(available)
 
 
     def updateBackward(self, available) :
-        """Enables/disables the Go --> Backward menu item.
+        """Enables/disables the ``Go --> Backward`` menu item.
 
-        :Parameter available: a boolean
+        :Parameter available: a boolean. Indicates if a Previous page is available
         """
         self.gui.actions['goBackward'].setEnabled(available)
 
@@ -222,8 +186,6 @@ class HelpBrowser(QtCore.QObject) :
     def addBookmark(self) :
         """
         Add the current page to the bookmarks menu.
-
-        Bookmarks --> Add bookmark
         """
 
         src = self.gui.text_browser.source().toString()
@@ -239,9 +201,7 @@ class HelpBrowser(QtCore.QObject) :
 
     def editBookmarks(self) :
         """
-        Edit bookmarks.
-
-        Bookmarks --> Edit bookmarks
+        Raise the dialog for editing bookmarks.
         """
 
         # update bookmarks list
@@ -261,9 +221,7 @@ class HelpBrowser(QtCore.QObject) :
 
     def clearHistory(self) :
         """
-        Clear the history of visited documents.
-
-        Toolbar --> Clear History
+        Clear the history of visited pages.
         """
 
         self.history.clear()
@@ -281,9 +239,8 @@ class HelpBrowser(QtCore.QObject) :
         - a link is clicked in the current document
         - a bookmark is opened
 
-        The history combobox is a visual representation of the history
-        list, so entries will occupy the same position in both, the
-        list and the combo.
+        The history combobox is a visual representation of the `history list`, 
+        so entries will occupy the same position in both, the list and the combo.
 
         :Parameter src: the path being added to the combo
         """
@@ -306,9 +263,7 @@ class HelpBrowser(QtCore.QObject) :
 
     def aboutBrowser(self) :
         """
-        Shows a message box with the application ``About`` info.
-
-        Help --> About HelpBrowser
+        Shows a message box with the application `About` info.
         """
 
         QtGui.QMessageBox.information(self.gui, \
@@ -324,9 +279,7 @@ class HelpBrowser(QtCore.QObject) :
 
     def aboutQt(self) :
         """
-        Shows a message box with the ``Qt About`` info.
-
-        Help --> About Qt
+        Shows a message box with the `Qt About` info.
         """
 
         caption = trs('About Qt', 'A dialog caption')

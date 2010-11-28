@@ -20,23 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the LeafNode class.
-
-Classes:
-
-* LeafNode(object)
-
-Methods:
-
-* __init__(self, parent, name)
-* row(self)
-
-Functions:
-
-Misc variables:
-
-* __docformat__
-
+This module defines a data structure to be used for the model of the databases 
+tree. The data structure is equivalent to a leaf node in a `PyTables` file.
 """
 
 __docformat__ = 'restructuredtext'
@@ -48,19 +33,19 @@ import vitables.utils
 class LeafNode(object):
     """
     A leaf node in the tree of databases model.
+
+    :Parameters:
+
+    - `parent`: the parent of the node.
+    - `name`: the name of the node
     """
 
     def __init__(self, parent, name):
         """Create a leaf node for the tree of databases model.
 
-        A LeafNode represents a leaf of a HDF5 file and has
+        A LeafNode represents a leaf of a `HDF5` file and has
         a parent (a group node of the tree of databases model) and
         a name.
-
-        :Parameters:
-
-        - `parent`: the parent of the node.
-        - `name`: the name of the node
         """
 
         self.parent = parent

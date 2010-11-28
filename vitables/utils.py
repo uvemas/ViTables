@@ -20,7 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the utilities module. It contains functions that perform
+This is the utilities module. It contains functions that perform
 tasks that are required at several parts of the application.
 """
 
@@ -70,7 +70,7 @@ def toUnicode(thing):
 
 
 def getVTApp():
-    """Get a reference to the application instance.
+    """Get a reference to the `VTApp` instance.
 
     This is useful namely for plugins.
     """
@@ -85,7 +85,7 @@ def getVTApp():
 
 
 def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
-    """Raise a file selector dialog.
+    """Raise a customised file selector dialog.
 
     :Parameters:
 
@@ -227,7 +227,7 @@ def getIcons():
 
 
 def getHBIcons():
-    """Return the icons dictionary to be used by the Help Browser."""
+    """Return the icons dictionary to be used by the `Help Browser`."""
 
     if not HB_ICONS_DICT:
         large_icons = frozenset([
@@ -251,16 +251,18 @@ def getHBIcons():
 
 
 def addActions(target, actions, actions_dict):
-    """Add a list of actions to a menu or a toolbar.
+    """Add a list of QActions to a menu or a toolbar.
 
-    This is a helper function which make easier to add actions to a
+    This is a helper function which make easier to add QActions to a
     menu or a toolbar. Separators and submenus are also handled by this
     method.
 
     :Parameters:
 
     - `target`: the menu or toolbar where actions will be added
-    - `actions`: the sequence of actions to be added
+    - `actions`: a sequence of keywords used to get actions from a mapping
+    - `actions_dict`: a mapping of actions
+
     """
 
     for action in actions:
@@ -274,28 +276,32 @@ def addActions(target, actions, actions_dict):
 
 def formatArrayContent(content):
     """
-    Nicely format the contents of a table widget cell.
+    Nicely format the contents of a view (table widget) cell.
 
-    Used when the cell contains a numpy array.
+    Used when the cell contains a ``numpy`` array.
+
+    :Parameter content: the ``numpy`` array contained in the view cell
     """
     return numpy.array2string(content, separator=',')
 
 
 def formatObjectContent(content):
     """
-    Nicely format the contents of a table widget cell.
+    Nicely format the contents of a view (table widget) cell.
 
-    Used in VLArrays with ``object`` pseudo atoms.
+    Used in `VLArrays` with `object` pseudo atoms.
 
-    Reading a VLArray with ``object`` pseudo atom returns a list of
+    Reading a `VLArray` with `object` pseudo atom returns a list of
     Python objects. This method formats that objects as unicode strings.
-    str(content) will return an ``ASCII`` string so it can be converted
-    into a unicode string via ``unicode(str(content), 'latin-1')``.
+    str(content) will return an `ASCII` string so it can be converted
+    into a unicode string via `unicode(str(content), 'latin-1')`.
     This will fail only if content is a unicode string with some ordinal
-    not in ``range(128)`` (raising a UnicodeEncodeError) but no problem
+    not in `range(128)` (raising a UnicodeEncodeError) but no problem
     because in that case content is already a unicode string and will be
     returned as is. So this method always returns the read object as a
     unicode string.
+
+    :Parameter content: the Python list contained in the view cell
     """
 
     try:
@@ -307,11 +313,13 @@ def formatObjectContent(content):
 
 def formatStringContent(content):
     """
-    Nicely format the contents of a table widget cell.
+    Nicely format the contents of a view (table widget) cell.
 
-    Used in VLArrays with ``vlstring`` or ``vlunicode`` pseudo atoms.
-    If the pseudo atom is ``vlstring`` the method return a string. If
-    the pseudo atom is ``vlunicode`` then a unicode string is returned.
+    Used in `VLArrays` with `vlstring` or `vlunicode` pseudo atoms.
+    If the pseudo atom is `vlstring` the method return a string. If
+    the pseudo atom is `vlunicode` then a unicode string is returned.
+
+    :Parameter content: the Python list contained in the view cell
     """
 
     return content
@@ -321,7 +329,7 @@ def formatExceptionInfo(limit=1):
     """
     Format conveniently the catched exceptions.
 
-    Takes the three-element tuple returned by `sys.exc_info()` and transforms
+    Takes the three-element tuple returned by ``sys.exc_info()`` and transforms
     each element into a more convenient form.
 
     :Parameter limit: the number of stack trace entries to be printed
@@ -350,7 +358,10 @@ def getHomeDir():
 
 
 def forwardPath(path):
-    """Replace backslashes with slashes in a given path."""
+    """Replace backslashes with slashes in a given path.
+
+    :Parameter path: the path being transformed
+    """
 
     while path.count(chr(92)):
         path = path.replace(chr(92), '/')
@@ -361,11 +372,13 @@ def questionBox(title='', text='', info='', detail='', buttons_def=''):
     """The value returned by a question message box with customised buttons.
 
     :Parameters:
+
     - `title`: the window title
     - `text`: the primary text
     - `info`: additional informative text
     - `detail`: a detailed text
     - `buttons_def`: mapping with buttons definitions
+
     """
 
     qmbox = QtGui.QMessageBox()
@@ -437,7 +450,7 @@ def getFinalName(nodename, sibling, pattern, info):
 
 
 def getLicense():
-    """The ViTables license in Rich Text format."""
+    """The ``ViTables`` license in Rich Text format."""
 
     input_file = QtCore.QFile(os.path.join(DOCDIR, 'LICENSE.html'))
     input_file.open(QtCore.QIODevice.ReadOnly)

@@ -20,29 +20,11 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the AttrEditor class.
-
-Classes:
-
-* AttrEditor(object)
-
-Methods:
-
-* __init__(self, asi, title, user_table)
-* checkAttributes(self)
-* setAttributes(self)
-
-Functions:
-
-* trs(source, comment=None)
-* checkOverflow(dtype, str_value)
-* checkSyntax(value)
-* formatStrValue(dtype, str_value)
-
-Misc variables:
-
-* __docformat__
-
+When a user edits the attributes of a node using the Properties dialog and 
+presses `OK` the attributes correctness is checked by this module. Datatypes 
+and overflow conditions are checked. If no errors are detected the new set of
+attributes is stored in the `PyTables` node. Otherwise the user is reported
+about the error and the dialog remains open so the user can fix her mistake.
 """
 
 __docformat__ = 'restructuredtext'
@@ -79,7 +61,7 @@ def checkSyntax(value):
 
 def formatStrValue(dtype, str_value):
     """
-    Format the string representation of a value accordingly to its data type.
+    Format the string representation of a value accordingly to its datatype.
 
     :Parameters:
 
@@ -114,8 +96,8 @@ def checkOverflow(dtype, str_value):
     """
     Check for overflows in integer and float values.
 
-    By default, when overflow occurs in the creation of a numpy array,
-    it is silently converted to the desired data type:
+    By default, when overflow occurs in the creation of a ``numpy`` array,
+    it is silently converted to the desired datatype:
 
     >>> numpy.array(-4).astype(numpy.uint8)
     array(252, dtype=uint8)
@@ -123,11 +105,11 @@ def checkOverflow(dtype, str_value):
     array(-116, dtype=int8)
 
     This behavior can be acceptable for a library, but not for an end
-    user application as ViTables so we have to catch such cases.
+    user application as ``ViTables`` so we have to catch such cases.
 
     :Parameters:
 
-    - dtype: the value data type
+    - dtype: the value datatype
     - str_value: the string representation of a value
     """
 
@@ -161,21 +143,22 @@ class AttrEditor(object):
     """
     Setup the attributes entered in the Properties dialog.
 
-    When the user edits the Attributes Set Instance (see PyTables manual
-    for details) of a given node via the Properties dialog and presses OK
-    the validity of the new set of attributes is checked. If it is OK
-    then the old ASI is replaced by the new one and the dialog is closed.
+    When the user edits the Attributes Set Instance (see `PyTables` manual
+    for details) of a given node via the Properties dialog and presses `OK`
+    the validity of the new set of attributes is checked. If it is fine
+    then the old `ASI` is replaced by the new one and the dialog is closed.
     If an error is found in the new set of attributes then the dialog
     remains opened until the user fixes the mistake.
+
+    :Parameters:
+
+    - `asi`: the Attributes Set Instance being updated
+    - `title`: the TITLE attribute entered by the user in the Properties dialog
+    - `user_table`: the table of user attributes edited by the user in the Properties dialog
     """
 
     def __init__(self, asi, title, user_table):
-        """:Parameters:
-
-        - `asi`: the Attributes Set Instance being updated
-        - `title`: the TITLE attribute entered by the user in the Properties dialog
-        - `user_table`: the table of user attributes edited by the user in the Properties dialog
-        """
+        """Initialise the attributes checker."""
 
         self.asi = asi
 
@@ -209,8 +192,8 @@ class AttrEditor(object):
         Check the user attributes table.
 
         If empty or repeated names, values mismatching the
-        attribute type or out of range values are found then nothing
-        is done. If the table is OK the node `ASI` is updated and the
+        attribute type or out of range values are found then an error is
+        reported. If the table is OK the node `ASI` is updated and the
         Properties dialog is closed.
         """
 
@@ -289,8 +272,9 @@ class AttrEditor(object):
         """
         Update edited attributes.
 
-        If the user attributes have been edited the attribute set instance
-        of the node being inspected must be updated.
+        This method is called when the user has succesfuly edited some
+        attribute in the Properties dialog. If it happens then this method
+        updates the `ASI` of the inspected `PyTables` node.
         """
 
         # Get rid of deleted attributes

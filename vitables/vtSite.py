@@ -22,7 +22,9 @@
 """
 Site configuration module.
 
-This module indicates the full install path to vitables top level module
+This module indicates the full install path of the ``ViTables`` package to the
+running :meth:`vitables.vtapp.VTApp` instance.
+
 Mac OS X boxes use the module as is.
 
 Misc variables:

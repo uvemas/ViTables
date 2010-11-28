@@ -19,7 +19,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""Plugin that provides export of datasets to files with CSV format.
+"""Plugin that provides export of `tables.Leaf` nodes into `CSV` files.
 
 When exporting tables, a header with the field names can be inserted.
 """
@@ -66,10 +66,10 @@ def checkFilenameExtension(filepath):
 
 
 class ExportToCSV(QtCore.QObject):
-    """Provides CSV export capabilities for arrays.
+    """Provides `CSV` export capabilities for arrays.
 
-    Some minor flaws: vlarrays with content other than ascii text cannot
-    be exported. Exporting numoy scalar arrays fails too.
+    Some minor flaws: `tables.VLArray` nodes can't be exported. Neither can 
+    ``numpy`` scalar arrays.
     """
 
     def __init__(self):
@@ -93,7 +93,7 @@ class ExportToCSV(QtCore.QObject):
 
 
     def addEntry(self):
-        """Add the Export to CSV... entry to menus.
+        """Add the `Export to CSV..`. entry to `Dataset` menu.
         """
 
         export_icon = QtGui.QIcon()
@@ -120,7 +120,7 @@ class ExportToCSV(QtCore.QObject):
 
 
     def updateDatasetMenu(self):
-        """Update the export QAction when the user pulls down the Dataset menu.
+        """Update the `export` QAction when the user pulls down the Dataset menu.
 
         This method is a slot. See class ctor for details.
         """
@@ -141,7 +141,8 @@ class ExportToCSV(QtCore.QObject):
         The retrieved info is the filepath and whether or not a header
         must be added.
 
-        :Parameter `is_table`: is the exported dataset a tables.Table instance?
+        :Parameter is_table: True if the exported dataset is a tables.Table 
+          instance
         """
 
         # Call the file selector (and, if needed, customise it)
@@ -212,10 +213,10 @@ class ExportToCSV(QtCore.QObject):
 
 
     def export(self):
-        """Export a given dataset to CSV format.
+        """Export a given dataset to a `CSV` file.
 
         This method is a slot connected to the `export` QAction. See the
-        addEntry method for details.
+        :meth:`addEntry` method for details.
         """
 
         # The PyTables node tied to the current leaf of the databases tree

@@ -20,22 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the VTSplash class.
-
-Classes:
-
-* VTSplash(QSplashScreen)
-
-Methods:
-
-* __init__(self, png)
-* drawContents(self, painter)
-* drawMessage(self, msg)
-
-Misc variables:
-
-* __docformat__
-
+Here is defined the VTSplash class. It displays the splash screen during the 
+``ViTables`` startup and shows the advance of the startup sequence.
 """
 
 __docformat__ = 'restructuredtext'
@@ -45,7 +31,11 @@ import time
 from PyQt4 import QtCore, QtGui
 
 class VTSplash(QtGui.QSplashScreen):
-    """The application splash screen."""
+    """
+    The application splash screen.
+
+    :Parameter png: the pixmap image displayed as a splash screen.
+    """
 
     def __init__(self, png):
         """
@@ -53,15 +43,13 @@ class VTSplash(QtGui.QSplashScreen):
 
         Create a splash screen and ties it to a painter which will
         be in charge of displaying the needed messages.
-
-        :Parameter png: the pixmap image displayed as a splash screen.
         """
 
         super(VTSplash, self).__init__(png)
 
 
     def drawContents(self, painter):
-        """Draw the contents of the splash screen using a given painter.
+        """Draw the contents of the splash screen using the given painter.
 
         This is an overloaded method. It draws contents with the origin
         translated by a certain offset.
@@ -78,7 +66,7 @@ class VTSplash(QtGui.QSplashScreen):
 
     def drawMessage(self, msg):
         """
-        Draws the message text onto the splash screen.
+        Draw the message text onto the splash screen.
 
         :Parameter msg: the message to be displayed
         """

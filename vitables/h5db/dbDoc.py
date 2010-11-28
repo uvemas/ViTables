@@ -20,36 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the DBDoc class.
+This module provides a thin wrapper to the `tables.File` class.
 
-Classes:
-
-* DBDoc(QObject)
-
-Methods:
-
-* __init__(self, filepath, mode, tmp_dbdoc=None)
-* openH5File(self)
-* closeH5File(self)
-* getFileFormat(self)
-* getNode(self, where)
-* listNodes(self)
-* copyFile(self, dst_filepath)
-* deleteNode(self, nodepath)
-* createHiddenGroup(self)
-* cutNode(self, nodepath)
-* pasteNode(self, src_nodepath, parent, childname)
-* renameNode(self, nodepath, new_name)
-* createGroup(self, where, final_name)
-* moveNode(self, childpath, dst_dbdoc, parentpath, childname)
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
+The module provides methods for opening and closing PyTables databases. It also
+contains methods for editing nodes (but not data stored in nodes).
 
 """
 
@@ -74,8 +48,12 @@ class DBDoc(QtCore.QObject):
     """
     A database contained in an hdf5/PyTables file.
 
-    This class exposes methods for reading/writing database nodes. It is
-    a thin wrapper to the tables.File class
+    :Parameters:
+
+    - `filePath`: full path of the DB
+    - `mode`: indicate the open mode of the database file. It can be 
+      'r'ead-only or 'a'ppend
+    - `is_tmp_dbdoc`: True if this object represents the temporary database
     """
 
     def __init__(self, filepath, mode, is_tmp_dbdoc=False):
@@ -88,13 +66,6 @@ class DBDoc(QtCore.QObject):
         - filename
         - mode
         - h5file, the File instance returned when filePath is opened
-
-        :Parameters:
-
-        - `filePath`: full path of the DB
-        - `mode`: indicate the open mode of the database file. It
-            can be 'r'ead-only or 'a'ppend
-        - `is_tmp_dbdoc`: True if this object represents the temporary database
         """
 
         super(DBDoc, self).__init__()
@@ -212,18 +183,16 @@ class DBDoc(QtCore.QObject):
         """
         Copy the contents of this file to another one.
 
+        .. Note:: Given two open files in a ``ViTables`` session, overwriting 
+          one of them via ``File --> Save As...`` command may work or not. It 
+          depends on the operating system. On Unices it works because a process
+          can delete or truncate a file open by a different process (unless
+          file is blocked). On Windows it seems to work fine too.
+
+        If the overwriting is not done via ``ViTables`` but in an interactive
+        session it fails, due (probably) to `HDF5` memory protection.
+
         :Parameter dst_filepath: the full path of the destination file
-
-        Remarks
-        -------
-        Given two open files in a ViTables session, overwriting one of them
-        via File --> Save As... command may work or not. It depends on the
-        operating system. On Unices it works because a process
-        can delete or truncate a file open by a different process (unless
-        file is blocked). On Windows it seems to work fine too.
-
-        If the overwriting is not done via ViTables but in an interactive
-        session it fails, due (probably) to HDF5 memory protection.
         """
 
         try:
@@ -273,7 +242,7 @@ class DBDoc(QtCore.QObject):
 
         :Parameters:
 
-        - `nodepath`: the path of the node being copied
+        - `nodepath`: the path of the node being cut
         """
 
         if not self.hidden_group:
@@ -349,7 +318,7 @@ class DBDoc(QtCore.QObject):
         :Parameters:
 
         - `childpath`: the full path of the node being moved
-        - `dst_dbdoc`: the destination database (a DBDoc instance)
+        - `dst_dbdoc`: the destination database (a :meth:`DBDoc` instance)
         - `parentpath`: the full path of the new parent node
         - `childname`: the name of the node in its final location
         """

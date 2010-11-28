@@ -20,24 +20,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the DataSheet class.
+This module defines a widget that wraps the view widget of leaves.
 
-Classes:
-
-* DataSheet(QMdiSubWindow)
-
-Methods:
-
-* __init__(self, leaf, view, pindex, parent=None)
-* closeEvent(self)
-* syncTreeView(self) 
-
-Functions:
-
-Misc variables:
-
-* __docformat__
-
+When a leaf node is opened in the tree of databases view the data stored in that
+leaf will be displayed in the workspace using this wrapper widget.
 """
 
 __docformat__ = 'restructuredtext'
@@ -54,14 +40,13 @@ import vitables.vtTables.buffer as readBuffer
 class DataSheet(QtGui.QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
+
+    :Parameter index: the index (in the tree of databases model) of the leaf 
+      whose data will be displayed
     """
 
     def __init__(self, index):
         """Display a given dataset in the MDI area.
-
-        :Parameters:
-
-            - `index`: the index of the displayed *tree* model item
         """
 
         # The main application window
@@ -100,7 +85,10 @@ class DataSheet(QtGui.QMdiSubWindow):
 
 
     def closeEvent(self, event):
-        """Close the window cleanly with the close button of the title bar."""
+        """Close the window cleanly with the close button of the title bar.
+
+        :Parameter event: the event being processed
+        """
 
         # Ensure that Node menu actions are properly updated
         self.dbt_leaf.has_view = False
@@ -116,7 +104,8 @@ class DataSheet(QtGui.QMdiSubWindow):
 
 
     def syncTreeView(self):
-        """When the view becomes active select its leaf in the tree view.
+        """
+        When the view gets focus select its leaf in the tree of databases view.
 
         See bug 016548 in the issues tracker for further information on
         this method.
@@ -134,7 +123,7 @@ class DataSheet(QtGui.QMdiSubWindow):
     def zoomCell(self, index):
         """Display the inner dimensions of a cell.
 
-        :Parameter index: the *leaf* model index of the cell being zoomed
+        :Parameter index: the index (in the leaf model) of the cell being zoomed
         """
 
         row = index.row()

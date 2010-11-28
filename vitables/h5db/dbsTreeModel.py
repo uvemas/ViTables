@@ -20,61 +20,11 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the DBsTreeModel class.
+This module defines a model (in the `MVC` sense) representing the tree of databases.
 
-Classes:
-
-* DBsTreeModel(QtCore.QAbstractItemModel)
-
-Methods:
-
-* __init__(self, parent=None)
-* mapDB(self, filepath, db_doc)
-* removeMappedDB(self, filepath)
-* getDBDoc(self, filepath)
-* getDBList(self)
-* checkOpening(self, filepath)
-* openDBDoc(self, filepath, mode='a', position=0)
-* closeDBDoc(self, filepath)
-* createDBDoc(self, filepath, tmp_db=False)
-* __createTempDB(self)
-* columnCount(self, parent)
-* deleteNode(self,index)
-* copyNode(self,index)
-* cutNode(self, index)
-* pasteNode(self, index, childname, overwrite=False)
-* createGroup(self, index, childname, overwrite=False)
-* renameNode(self, index, new_name, overwrite=False)
-* walkTreeView(self, index)
-* moveNode(self, src_filepath, childpath, parent_index, overwrite=False)
-* overwriteNode(self, parent_node, parent_index, nodename)
-* lazyAddChildren(self, index)
-* flags(self, index)
-* data(self, index, role)
-* setData(self, index, value, role=Qt.EditRole)
-* headerData(self, section, orientation, role)
-* columnCount(self, parent)
-* rowCount(self, parent)
-* hasChildren(self, index)
-* index(self, row, column, parent)
-* nodeFromIndex(self, index)
-* parent(self, child)
-* insertRows(self, position=0, count=1, parent=QtCore.QModelIndex())
-* removeRows(self, position, count=1, parent=QtCore.QModelIndex())
-* closeViews(self, parent, start, end)
-* supportedDropActions(self)
-* mimeTypes(self)
-* mimeData(self, indexes)
-* dropMimeData(self, data, action, row, column, parent)
-
-Functions:
-
-* trs(source, comment=None)
-
-Misc variables:
-
-* __docformat__
-
+The model is populated using data structures defined in the 
+:mod:`vitables.h5db.rootGroupNode`, :mod:`vitables.h5db.groupNode` and
+:mod:`vitables.h5db.leafNode` modules.
 """
 
 __docformat__ = 'restructuredtext'
@@ -107,12 +57,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
     The data is read and written from and to data sources (i.e., HDF5/PyTables
     files) by the model.
+
+    :Parameters vtapp: the VTAPP instance
     """
 
     def __init__(self, vtapp):
         """Create the model.
-
-        :Parameters vtapp: the VTAPP instance
         """
 
         super(DBsTreeModel, self).__init__(parent=None)
@@ -134,20 +84,20 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
 
     def mapDB(self, filepath, db_doc):
-        """Maps a file path with a DBDoc instance.
+        """Maps a file path with a :meth:`dbDoc.DBDoc` instance.
 
         :Parameters:
 
         - `filepath`: the full path of an open database.
-        - `db_doc`: a DBDoc instance.
+        - `db_doc`: a :meth:`dbDoc.DBDoc` instance.
         """
         self.__openDBs[filepath] = db_doc
 
 
     def removeMappedDB(self, filepath):
-        """Removes the DBDoc instance tied to a given file path.
+        """Remove a :meth:`dbDoc.DBDoc` instance from the tracking dict.
 
-        :Parameter filepath: the full path of an open database.
+        :Parameter filepath: the full path of the database being untracked
         """
         del self.__openDBs[filepath]
 
@@ -233,8 +183,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Parameters:
 
         - `filepath`: full path of the database file we wish to open.
-        - `mode`: the opening mode of the database file. It can be 'r'ead-only
-            'w'rite or 'a'ppend
+        - `mode`: the opening mode of the database file. It can be 'r'ead-only 
+          'w'rite or 'a'ppend
         """
 
 
@@ -257,7 +207,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
         Close the hdf5 file with the given file path.
 
-        The temporary database shouldn't be closed by the user. It is
+        The temporary database can't be closed by the user. It is
         automatically closed when the application exits.
 
         :Parameter filepath: the full path of the file being closed
@@ -280,12 +230,13 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
     def createDBDoc(self, filepath, is_tmp_db=False):
         """
-        Create a new, empty database (DBDoc instance).
+        Create a new, empty database (:meth:`vitables.h5db.dbDoc.DBDoc` 
+        instance).
 
         :Parameters:
 
         - `filepath`: the full path of the file being created.
-        - `is_tmp_db`: True if the DBDoc is tied to the temporary database
+        - `is_tmp_db`: True if the `DBDoc` is tied to the temporary database
         """
 
         try:
@@ -373,7 +324,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
 
     def cutNode(self, index):
-        """Cut a tables.Node.
+        """Cut a `tables.Node`.
 
         The cut node is stored in a hidden group of its database.
 
@@ -438,7 +389,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
 
     def createGroup(self, index, childname, overwrite=False):
-        """Create a tables.Group under the given parent.
+        """Create a `tables.Group` under the given parent.
 
         :Parameters:
 
@@ -512,14 +463,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
 
     def moveNode(self, src_filepath, childpath, parent_index, overwrite=False):
-        """Move a tables.Node to a different location.
+        """Move a `tables.Node` to a different location.
 
         :Parameters:
 
-        - `src_filepath': the full path of the source database
-        - `childpath`: the full path of the node being moved
-        - `parent_index`: the model index of the new parent group
-        - `overwrite`: True if a node is being overwritten
+          - `src_filepath`: the full path of the source database
+          - `childpath`: the full path of the node being moved
+          - `parent_index`: the model index of the new parent group
+          - `overwrite`: True if a node is being overwritten
         """
 
         try:
@@ -569,13 +520,13 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
 
     def overwriteNode(self, parent_node, parent_index, nodename):
-        """Delete from the tree of databases view a node being overwritten.
+        """Delete from the tree of databases a node being overwritten.
 
         :Parameters:
 
-        - `parent_node': the parent of the overwritten node
-        - `parent_index`: the model index of the new parent group
-        - `nodename`: the name of the node being deleted
+          - `parent_node`: the parent of the overwritten node
+          - `parent_index`: the model index of the new parent group
+          - `nodename`: the name of the node being deleted
         """
 
         child = parent_node.findChild(nodename)
@@ -734,6 +685,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
         with the specified orientation.
+
+        :Parameters:
+
+        - `section`: the header section being inspected
+        - `orientation`: the header orientation (horizontal or vertical)
+        - `role`: the role of the header section being inspected
         """
 
         if (orientation, role) == (QtCore.Qt.Horizontal, \
@@ -776,12 +733,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         The decoration (if any) consists in the small +/- symbols used
         for expanding/collpasing the node. In principle, it is painted
         only if the node's children have been added.
-        As we populate our model in a lazy way (see `lazyAddChildren`
-        method below and `DBsTreeView.expandNode` method) we want the
-        decoration to be painted whenever the node has children, *even if
-        the children have not been added to the model yet (so we cannot
-        use the underlying data store, we must use the data source). So
-        the user will know that the node has children*.
+        As we populate our model in a lazy way (see :meth:`lazyAddChildren`
+        and :meth:`vitables.h5db.dbsTreeView.DBsTreeView.updateExpandedGroup` 
+        methods) we want the decoration to be painted whenever the node has 
+        children, *even if the children have not been added to the model yet 
+        (so we can't use the underlying data store, we must use the data 
+        source). This way the user will know that the node has children*.
 
         :Parameter index: the index of the node being inspected.
         """
@@ -799,8 +756,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """Creates an index in the model for a given node and returns it.
 
         This is a reimplementation of the index method. It creates an
-        index for a tree node (i.e. RootGroupNode, GroupNode and LeafNode
-        instances) specified by a row, a column and a parent index.
+        index for a tree node (i.e. :meth:`RootGroupNode`, :meth:`GroupNode` 
+        and :meth:`LeafNode` instances) specified by a row, a column and a 
+        parent index.
 
         Every node except the root one will be tied to an index by this
         method.
@@ -998,6 +956,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         When a node is dragged the information required to drop it later
         on is encoded by this method and returned as a QMimeData object.
+
+        :Parameter indexes: a list of indexes
         """
 
         mime_data = QtCore.QMimeData()
