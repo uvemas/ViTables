@@ -20,7 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module defines a model (in the `MVC` sense) representing the tree of databases.
+This module defines a model (in the `MVC` sense) representing the tree of 
+databases.
 
 The model is populated using data structures defined in the 
 :mod:`vitables.h5db.rootGroupNode`, :mod:`vitables.h5db.groupNode` and
@@ -65,10 +66,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """Create the model.
         """
 
-        super(DBsTreeModel, self).__init__(parent=None)
-
         # The underlying data structure used to populate the model
         self.root = rootGroupNode.RootGroupNode()
+
+        super(DBsTreeModel, self).__init__(parent=None)
+
         # The dictionary of open databases
         self.__openDBs = {}
 
@@ -620,6 +622,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         if not index.isValid():
             data = QtCore.QVariant()
+            return data
+
         node = self.nodeFromIndex(index)
         if role == QtCore.Qt.DisplayRole:
             data = QtCore.QVariant(node.name)
@@ -701,8 +705,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         return QtCore.QVariant()
 
 
-    def columnCount(self, parent):
+    def columnCount(self, index):
         """The number of columns for the children of the given index.
+
+        :Parameter index: the model index being inspected.
         """
         return 1
 
@@ -710,7 +716,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
     def rowCount(self, index):
         """The number of rows of the given model index.
 
-        :Parameter `index`: the model index being inspected.
+        :Parameter index: the model index being inspected.
         """
 
         node = self.nodeFromIndex(index)

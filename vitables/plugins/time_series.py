@@ -226,9 +226,11 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        super(ArrayTSModel, self).__init__(parent)
         self.numrows = model.numrows
+        self.numcols = model.numcols
         self.rbuffer = model.rbuffer
+
+        super(ArrayTSModel, self).__init__(parent)
 
 
     def formatTimeContent(self, content):
@@ -263,6 +265,40 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
             return QtCore.QVariant()
 
 
+    def rowCount(self, index):
+        """The number of rows under the given index.
+
+        When implementing a table based model this method has to be overriden
+        -because it is an abstract method- and should return 0 for valid
+        indices (because they have no children). If the index is not valid the 
+        method  should return the number of rows exposed by the model.
+
+        :Parameter index: the model index being inspected.
+        """
+
+        if not index.isValid():
+            return self.numrows
+        else:
+            return 0
+
+
+    def columnCount(self, index):
+        """The number of columns for the children of the given index.
+
+        When implementing a table based model this method has to be overriden
+        -because it is an abstract method- and should return 0 for valid
+        indices (because they have no children). If the index is not valid the 
+        method  should return the number of columns exposed by the model.
+
+        :Parameter index: the model index being inspected.
+        """
+
+        if not index.isValid():
+            return self.numcols
+        else:
+            return 0
+
+
 class TableTSModel(QtCore.QAbstractTableModel):
     """
     A model (in the `MVC` sense) for table datasets containing time series.
@@ -282,12 +318,15 @@ class TableTSModel(QtCore.QAbstractTableModel):
             - `parent`: the parent of the model
         """
 
-        super(TableTSModel, self).__init__(parent)
         self.numrows = model.numrows
+        self.numcols = model.numcols
         self.rbuffer = model.rbuffer
         self.time_cols = model.time_cols
         self.freq = freq
         self.formatTime = self.timeFormatter(ts_kind)
+
+        super(TableTSModel, self).__init__(parent)
+
 
 
     def timeFormatter(self, ts_kind):
@@ -350,3 +389,37 @@ class TableTSModel(QtCore.QAbstractTableModel):
             return QtCore.QVariant(int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop))
         else:
             return QtCore.QVariant()
+
+
+    def rowCount(self, index):
+        """The number of rows under the given index.
+
+        When implementing a table based model this method has to be overriden
+        -because it is an abstract method- and should return 0 for valid
+        indices (because they have no children). If the index is not valid the 
+        method  should return the number of rows exposed by the model.
+
+        :Parameter index: the model index being inspected.
+        """
+
+        if not index.isValid():
+            return self.numrows
+        else:
+            return 0
+
+
+    def columnCount(self, index):
+        """The number of columns of the given model index.
+
+        When implementing a table based model this method has to be overriden
+        -because it is an abstract method- and should return 0 for valid
+        indices (because they have no children). If the index is not valid the 
+        method  should return the number of columns exposed by the model.
+
+        :Parameter index: the model index being inspected.
+        """
+
+        if not index.isValid():
+            return self.numcols
+        else:
+            return 0

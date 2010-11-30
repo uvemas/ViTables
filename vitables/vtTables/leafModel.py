@@ -20,7 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module implements a model (in the `MVC` sense) for the real data stored in a `tables.Leaf`.
+This module implements a model (in the `MVC` sense) for the real data stored 
+in a `tables.Leaf`.
 """
 
 __docformat__ = 'restructuredtext'
@@ -47,8 +48,6 @@ class LeafModel(QtCore.QAbstractTableModel):
     def __init__(self, rbuffer, parent=None):
         """Create the model.
         """
-
-        super(LeafModel, self).__init__(parent)
 
         # The model data source (a PyTables/HDF5 leaf) and its access buffer
         self.data_source = rbuffer.data_source
@@ -103,6 +102,8 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         # Populate the model with the first chunk of data
         self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)
+
+        super(LeafModel, self).__init__(parent)
 
 
     def headerData(self, section, orientation, role):
@@ -165,25 +166,37 @@ class LeafModel(QtCore.QAbstractTableModel):
 
 
     def columnCount(self, index=QtCore.QModelIndex()):
-        """The number of columns of the table.
+        """The number of columns of the given model index.
 
-        This is an overwritten method. The `index` argument makes no sense in 
-        this case.
+        When implementing a table based model this method has to be overriden
+        -because it is an abstract method- and should return 0 for valid
+        indices (because they have no children). If the index is not valid the 
+        method  should return the number of columns exposed by the model.
 
-        :Parameter index: the index of the node being inspected.
+        :Parameter index: the model index being inspected.
         """
-        return self.numcols
+
+        if not index.isValid():
+            return self.numcols
+        else:
+            return 0
 
 
     def rowCount(self, index=QtCore.QModelIndex()):
-        """The number of rows of the table.
+        """The number of columns for the children of the given index.
 
-        This is an overwritten method. The `index` argument makes no sense in 
-        this case.
+        When implementing a table based model this method has to be overriden
+        -because it is an abstract method- and should return 0 for valid
+        indices (because they have no children). If the index is not valid the 
+        method  should return the number of columns exposed by the model.
 
-        :Parameter index: the index of the node being inspected.
+        :Parameter index: the model index being inspected.
         """
-        return self.numrows
+
+        if not index.isValid():
+            return self.numrows
+        else:
+            return 0
 
 
     def loadData(self, start, chunk_size):
@@ -194,6 +207,4 @@ class LeafModel(QtCore.QAbstractTableModel):
         - `start`: the row where the buffer starts
         - `chunk_size`: the size of the buffer
         """
-
         self.rbuffer.readBuffer(start, chunk_size)
-        self.headerDataChanged.emit(QtCore.Qt.Vertical, 0, self.numrows - 1)

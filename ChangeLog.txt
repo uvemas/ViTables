@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 30, 2010 **
+Customised models have been debugged and fine tuned using modtest.py.
+
 ** November 28, 2010 **
 The docstrings of the whole package have been updated.
 
