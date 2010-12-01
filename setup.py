@@ -1,8 +1,8 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
 
-#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008-2010 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -19,8 +19,9 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-#----------------------------------------------------------------------
-# Setup script for the vitables package
+"""
+Setup script for the vitables package.
+"""
 
 import sys
 import os
@@ -36,10 +37,15 @@ from distutils.spawn import find_executable, spawn
 from distutils.dir_util import copy_tree
 from distutils.file_util import copy_file
 
+
+
 class DocbookDistribution(Distribution):
+    """The distclass of this setup file.
+    """
     def __init__(self, attrs=None):
         self.docbooks = None
         Distribution.__init__(self, attrs)
+
 
 class BuildDocbook(Command):
     """BuildDocbook documentation and copy HTML data files.
@@ -48,15 +54,18 @@ class BuildDocbook(Command):
     description = "Build Docbook documentation"
 
     user_options = [('xsltproc-path=', None, "Path to the XSLT processor"),
-                    ('fop-path=', None, "Path to FOP"),
-                    ('xsl-style=', None, "Catalogue URI to the XSL style sheet"),
-                    ('fop-style=', None, "Catalogue URI for the FOP style sheet")]
+        ('fop-path=', None, "Path to FOP"),
+        ('xsl-style=', None, "Catalogue URI to the XSL style sheet"),
+        ('fop-style=', None, "Catalogue URI for the FOP style sheet")]
+
+
 
     def initialize_options(self):
         self.xsltproc_path = None
         self.fop_path = None
         self.xsl_style = None
         self.fop_style = None
+
 
     def finalize_options(self):
         if self.xsltproc_path is None:
@@ -74,6 +83,7 @@ class BuildDocbook(Command):
 
     def get_command_name(self):
         return 'build_doc'
+
 
     def run(self):
 
@@ -95,39 +105,49 @@ class BuildDocbook(Command):
         """
 
         if self.xsltproc_path is None:
-                print """Unable to find 'xsltproc', needed to generate """\
-                    """Docbook documentation."""
-                return
+            print """Unable to find 'xsltproc', needed to generate """\
+                """Docbook documentation."""
+            return
 
         if self.fop_path is None:
-                print """Unable to find 'fop', needed to generate Docbook"""\
-                    """documentation in PDF format."""
-                return
+            print """Unable to find 'fop', needed to generate Docbook"""\
+                """documentation in PDF format."""
+            return
 
         for input_file in self.distribution.docbooks:
-            self.announce("Building Docbook documentation from %s." % input_file)
+            self.announce("Building Docbook documentation from %s." \
+                % input_file)
 
             if not os.path.exists(input_file):
                 raise SystemExit, "File %s is missing." % input_file
 
             input_file_name = os.path.splitext(input_file)[0]
-            output_dir = os.path.join("vitables","htmldocs","")
+            output_dir = os.path.join("vitables", "htmldocs","")
 
             if not os.access(output_dir, os.F_OK):
-                spawn([self.xsltproc_path, "--nonet", "-o", output_dir, self.xsl_style, input_file])
-                spawn([self.xsltproc_path, "--nonet", "-o", input_file_name+".fo", self.fop_style, input_file])
-                spawn([self.fop_path, "-q", input_file_name+".fo", input_file_name+".pdf"])
-                copy_tree(os.path.join(os.path.dirname(input_file),"images"),os.path.join(output_dir,"images"))
+                spawn([self.xsltproc_path, "--nonet", "-o", output_dir, 
+                    self.xsl_style, input_file])
+                spawn([self.xsltproc_path, "--nonet", "-o", 
+                    input_file_name+".fo", self.fop_style, input_file])
+                spawn([self.fop_path, "-q", input_file_name+".fo", 
+                    input_file_name+".pdf"])
+                copy_tree(os.path.join(os.path.dirname(input_file),"images"), 
+                    os.path.join(output_dir,"images"))
                 copy_file('LICENSE.html', output_dir)
                 copy_file("./doc/custom_layer/html/usersguide_style.css", 
                     output_dir)
 
 
-def has_docbook(build):
-    return (build.distribution.docbooks is not None and
-            build.distribution.docbooks != [])
+def has_docbook(dbuild):
+    """Return True if the `docbooks` attribute has been set.
+    """
+    return (dbuild.distribution.docbooks is not None and
+            dbuild.distribution.docbooks != [])
+
 
 class Build(build):
+    """Make the commands that will build the documentation.
+    """
     sub_commands = build.sub_commands[:]
     sub_commands.insert(0,('build_doc', has_docbook))
 
@@ -142,12 +162,12 @@ if use_py2app:
     setup_args['options'] = dict(
         py2app=dict(
             argv_emulation=True,
-            iconfile='macosxapp/ViTables.icns',
+            iconfile='macosxapp/ViTables.icns', 
             # Do not include system or vendor Python.
-            semi_standalone=True,
+            semi_standalone=True, 
             # Use system PyTables and NumPy, do not include them.
-            site_packages=True,
-            excludes=['tables', 'numpy'],
+            site_packages=True, 
+            excludes=['tables', 'numpy'], 
             )
         )
     # Now some fixes to py2app:
@@ -172,63 +192,65 @@ vt_version = f.readline()[:-1]
 f.close()
 
 setup(name = 'ViTables', # The name of the distribution
-    version = "%s" % vt_version,
-    distclass=DocbookDistribution,
-    description = 'A viewer for pytables package',
+    version = "%s" % vt_version, 
+    distclass=DocbookDistribution, 
+    description = 'A viewer for PyTables package', 
     long_description = \
         """
         ViTables is a GUI for PyTables (a hierarchical database
         package designed to efficently manage very large amounts of
         data) . It allows to open arbitrarely large PyTables and HDF5
-        files and browse its data and metadata in a variety of ways.
+        files and browse their data and metadata in a variety of ways.
 
-        """,
+        """, 
 
-    author = 'Vicent Mas',
-    author_email = 'uvemas@gmail.com',
-    maintainer = 'Vicent Mas',
-    maintainer_email = 'uvemas@gmail.com',
-    url = 'http://www.vitables.org',
-    license = 'GPLv3, see the LICENSE.txt file for detailed info',
-    platforms = 'Unix, MacOSX, Windows',
-    classifiers = ['Development Status :: 2.0',
-    'Environment :: Desktop',
-    'Operating System :: POSIX',
-    'Programming Language :: Python'],
-    packages = ['vitables', 'vitables.docBrowser',
-    'vitables.h5db', 'vitables.nodeProperties', 'vitables.queries', 
-    'vitables.preferences', 'vitables.pluginsManager', 
-    'vitables.plugins', 
-    'vitables.vtTables', 'vitables.vtWidgets'],
-    scripts = ['scripts/vitables'],
+    author = 'Vicent Mas', 
+    author_email = 'uvemas@gmail.com', 
+    maintainer = 'Vicent Mas', 
+    maintainer_email = 'uvemas@gmail.com', 
+    url = 'http://www.vitables.org', 
+    license = 'GPLv3, see the LICENSE.txt file for detailed info', 
+    platforms = 'Unix, MacOSX, Windows', 
+    classifiers = ['Development Status :: 2.1', 
+    'Environment :: Desktop', 
+    'Operating System :: POSIX', 
+    'Programming Language :: Python'], 
+    packages = ['vitables', 'vitables.docBrowser', 'vitables.h5db', 
+        'vitables.nodeProperties', 'vitables.queries', 'vitables.preferences', 
+        'vitables.vtTables', 'vitables.vtWidgets', 'vitables.plugins', 
+        'vitables.plugins.csv', 'vitables.plugins.menu'], 
+    scripts = ['scripts/vitables'], 
     package_data = {
-          'vitables.nodeProperties':['*.ui'],
-          'vitables.preferences':['*.ui'],
-          'vitables.queries':['*.ui'],
-          'vitables.pluginsManager':['*.ui'],
-          'vitables':['icons/*.*','icons/*/*.*','htmldocs/*.*','htmldocs/*/*.*']
-          },
+        'vitables.nodeProperties': ['*.ui'], 
+        'vitables.preferences': ['*.ui'], 
+        'vitables.queries': ['*.ui'], 
+        'vitables.vtWidgets': ['*.ui'], 
+        'vitables': ['icons/*.*', 'icons/*/*.*', 'htmldocs/*.*', 
+            'htmldocs/*/*.*'], 
+        'vitables.plugins.csv': ['icons/*.*'], 
+    }, 
     cmdclass = {
-          'build': Build,
-          'build_doc': BuildDocbook,
+          'build': Build, 
+          'build_doc': BuildDocbook, 
           },
-    docbooks=['doc/usersguide.xml'],
+    docbooks=['doc/usersguide.xml'], 
     data_files = [
-    ('examples', glob.glob('examples/*.h5')),
-    ('examples/arrays', glob.glob('examples/arrays/*.h5')),
-    ('examples/misc', glob.glob('examples/misc/*.h5')),
-    ('examples/scripts', glob.glob('examples/scripts/*.py')),
-    ('examples/tables', glob.glob('examples/tables/*.h5')),
-    ('examples/timeseries', glob.glob('examples/timeseries/*.h5')),
-    ('doc', ['doc/usersguide.xml']),
-    ('doc', ['doc/usersguide.pdf']),
-    ('', ['LICENSE.txt', 'LICENSE.html']),
-    ],
+        ('examples', glob.glob('examples/*.h5')), 
+        ('examples/arrays', glob.glob('examples/arrays/*.h5')), 
+        ('examples/misc', glob.glob('examples/misc/*.h5')), 
+        ('examples/scripts', glob.glob('examples/scripts/*.py')), 
+        ('examples/tables', glob.glob('examples/tables/*.h5')), 
+        ('examples/timeseries', glob.glob('examples/timeseries/*.h5')), 
+        ('doc', ['doc/usersguide.xml']), 
+        ('doc', ['doc/usersguide.pdf']), 
+        ('', ['LICENSE.txt', 'LICENSE.html']), 
+        ('plugins/csv/examples', glob.glob('plugins/csv/examples/*.csv')), 
+    ], 
 
     **setup_args
 )
 
-# Says goodbye after building/installing IF the user didn't asked for help
+# Says goodbye after building/installing IF the user didn't ask for help
 # $ python setup.py install --help
 # $ python setup.py sdist --help
 # $ python setup.py sdist --help-formats
@@ -251,5 +273,3 @@ if len(sys.argv) > 1 and not helpAsked:
         print """\n
 Installation completed successfully!
 Enjoy Data with ViTables, the troll of the PyTables family."""
-
-

@@ -9,6 +9,8 @@ include scripts/vitables
 recursive-include vitables/* *.ui
 recursive-include vitables/icons *.* */*.*
 recursive-include vitables/htmldocs *.* */*.*
+recursive-include vitables/plugins/csv/icons *.*
+recursive-include vitables/plugins/csv/examples *.csv
 exclude doc/images/title_page_plain.svg
 exclude vitables/icons/vitables_logo.svg
 exclude examples/timeseries/test_series.csv

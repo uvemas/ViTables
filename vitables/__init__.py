@@ -17,7 +17,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__version__ = '2.0'
-__all__ = ["docBrowser", "h5db", "logger", "nodeProperties", "nodes",
-    "plugins", "pluginsManager", "preferences", "vtTables", "vtWidgets",
-    "utils", "vtSite", "vtapp", "vtsplash"]
+__version__ = '2.1'
+__all__ = ["docBrowser", "h5db", "logger", "nodeProperties", 
+    "plugins", "queries", "preferences", "vtTables", "vtWidgets",
+    "utils", "vtSite", "vtapp", "vtGUI", "vtsplash"]

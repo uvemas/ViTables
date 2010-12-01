@@ -18,9 +18,9 @@ memory efficiency.
 In this release you will find some bug fixes and usability enhancements. New 
 features include:
 
-- queries have been improved. They are faster and eat much less memory
-- a plugins framework has been added
-- human friendly format of times and dates for PyTables native Time fields
+- improved queries. They are faster and eat much less memory
+- a simple but flexible plugins framework
+- human friendly formatting of times and dates for PyTables native Time fields
   and also for time series created via scikits.timeseries package
 - datasets can be imported/exported from/to files with CSV format
 
@@ -33,9 +33,9 @@ Unices.
 
 How to get it
 -------------
-Go to:
+Visit:
 
-http://www.vitables.org
+http://www.vitables.org/download
 
 and click the link 'downloads area' to find the available packages.
 
