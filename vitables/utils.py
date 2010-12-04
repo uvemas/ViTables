@@ -33,7 +33,8 @@ import locale
 
 import numpy
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 import vitables.vtWidgets.renameDlg as renameDlg
 from vitables.vtSite import ICONDIR, DOCDIR
@@ -100,9 +101,6 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     file_selector = QtGui.QFileDialog(parent, caption, '', dfilter)
     # Misc. setup
     file_selector.setDirectory(settings['history'][-1])
-    if settings['label'] != '':
-        file_selector.setLabelText(QtGui.QFileDialog.Accept, 
-            settings['label'])
     file_selector.setAcceptMode(settings['accept_mode'])
     if settings['accept_mode'] == QtGui.QFileDialog.AcceptSave:
         file_selector.setConfirmOverwrite(False)
@@ -110,6 +108,9 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     file_selector.setHistory(settings['history'])
     if filepath:
         file_selector.selectFile(filepath)
+    if settings['label'] != '':
+        file_selector.setLabelText(QtGui.QFileDialog.Accept, 
+            settings['label'])
 
     return file_selector
 

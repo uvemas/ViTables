@@ -442,6 +442,7 @@ class ImportCSV(QtCore.QObject):
 
         self.vtgui = self.vtapp.gui
         self.dbt_model = self.vtgui.dbs_tree_model
+        self.dbt_view = self.vtgui.dbs_tree_view
 
         # Add an entry under the File menu
         self.addEntry()
@@ -569,15 +570,18 @@ class ImportCSV(QtCore.QObject):
         When the destination h5 file is created and added to the databases tree
         it has no nodes. Once the `CSV` file has been imported into a 
         `PyTables` container we update the representation of the h5 file in the
-        tree so that users can see that the file has a leaf.
+        tree so that users can see that the file has a leaf. Eventually, the 
+        root node of the imported file is selected so that users can locate it
+        immediately.
 
         :Parameter filepath: the filepath of the destination h5 file
         """
 
         for row, child in enumerate(self.dbt_model.root.children):
             if child.filepath == filepath:
-                self.dbt_model.lazyAddChildren(self.dbt_model.index(row, 0, 
-                                                    QtCore.QModelIndex()))
+                index = self.dbt_model.index(row, 0, QtCore.QModelIndex())
+                self.dbt_model.lazyAddChildren(index)
+                self.dbt_view.setCurrentIndex(index)
 
 
     def csv2Table(self):

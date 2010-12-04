@@ -220,7 +220,10 @@ class VTApp(QtCore.QObject):
             filepath = item.pop(0)
             filepath = vitables.utils.forwardPath(filepath)
             # Open the database --> add the root group to the tree view.
-            self.gui.dbs_tree_model.openDBDoc(filepath, mode)
+            if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
+                self.gui.dbs_tree_view.setCurrentIndex(\
+                    self.gui.dbs_tree_model.index(\
+                    0, 0, QtCore.QModelIndex()))
             db_doc = self.gui.dbs_tree_model.getDBDoc(filepath)
             if db_doc is None:
                 continue
@@ -280,8 +283,11 @@ class VTApp(QtCore.QObject):
         if isinstance(h5files, list):
             for filepath in h5files:
                 filepath = vitables.utils.forwardPath(filepath)
-                self.gui.dbs_tree_model.openDBDoc(filepath, mode)
-                self.updateRecentFiles(filepath, mode)
+                if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
+                    self.gui.dbs_tree_view.setCurrentIndex(\
+                        self.gui.dbs_tree_model.index(\
+                        0, 0, QtCore.QModelIndex()))
+                    self.updateRecentFiles(filepath, mode)
 
         # If a list of files is passed then parse the list and open the files
         if dblist:
@@ -298,8 +304,12 @@ class VTApp(QtCore.QObject):
                     if not mode in ['r', 'a']:
                         print bad_line % line
                         continue
-                    self.gui.dbs_tree_model.openDBDoc(filepath, mode)
-                    self.updateRecentFiles(filepath, mode)
+                    if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
+                        self.gui.dbs_tree_view.setCurrentIndex(\
+                            self.gui.dbs_tree_model.index(\
+                            0, 0, QtCore.QModelIndex()))
+                        self.updateRecentFiles(filepath, mode)
+
             except IOError:
                 print trs("""\nError: list of HDF5 files not read""",
                                 'File not updated error')
@@ -397,11 +407,14 @@ class VTApp(QtCore.QObject):
                 'A file creation error')
             return
 
-        # Create the pytables file and close it.
+        # Open the database and select it in the tree view
         db_doc = self.gui.dbs_tree_model.createDBDoc(filepath)
         if db_doc:
             # The write mode must be replaced by append mode or the file
             # will be created from scratch in the next ViTables session
+            self.gui.dbs_tree_view.setCurrentIndex(\
+                self.gui.dbs_tree_model.index(\
+                0, 0, QtCore.QModelIndex()))
             self.updateRecentFiles(filepath, 'a')
 
 
@@ -611,9 +624,7 @@ class VTApp(QtCore.QObject):
             filepath = unicode(QtCore.QDir.fromNativeSeparators(filepath))
 
         # Open the database and select it in the tree view
-        is_open = self.gui.dbs_tree_model.openDBDoc(filepath, mode, position)
-        if is_open:
-            self.gui.dbs_tree_model.getDBDoc(filepath)
+        if self.gui.dbs_tree_model.openDBDoc(filepath, mode, position):
             self.gui.dbs_tree_view.setCurrentIndex(\
                 self.gui.dbs_tree_model.index(\
                 position, 0, QtCore.QModelIndex()))
@@ -636,7 +647,14 @@ class VTApp(QtCore.QObject):
 
         if current is False:
             current = self.gui.dbs_tree_view.currentIndex()
-        filepath = self.gui.dbs_tree_model.nodeFromIndex(current).filepath
+        node = self.gui.dbs_tree_model.nodeFromIndex(current)
+        filepath = node.filepath
+
+        # The position of this database in the tree view
+        last_row = len(self.gui.dbs_tree_model.root.children) - 1
+        for row, child in enumerate(self.gui.dbs_tree_model.root.children):
+            if child.filepath == filepath:
+                break
 
         # If some leaf of this database has an open view then close it
         for window in self.gui.workspace.subWindowList():
@@ -649,6 +667,11 @@ class VTApp(QtCore.QObject):
         if dbdoc.hidden_group is not None:
             dbdoc.h5file.removeNode(dbdoc.hidden_group, recursive=True)
         self.gui.dbs_tree_model.closeDBDoc(filepath)
+
+        # The root node immediately below the closed node becomes selected
+        if row <= last_row:
+            index = self.gui.dbs_tree_model.index(row, 0, QtCore.QModelIndex())
+            self.gui.dbs_tree_view.setCurrentIndex(index)
 
 
     def fileCloseAll(self):
