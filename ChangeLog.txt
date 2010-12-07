@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 07, 2010 **
+The project documentation has been updated. And now it is built via Sphinx.
+
 ** December 03, 2010 **
 The node selection behavior of the tree of databases has been improved.
 

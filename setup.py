@@ -25,131 +25,69 @@ Setup script for the vitables package.
 
 import sys
 import os
+import shutil
 import glob
 
-from distutils.core import setup, Command
-from distutils.command.build import build
-from distutils.command.install import install
-from distutils.command.install_data import install_data
-from distutils.command.clean import clean
-from distutils.dist import Distribution
-from distutils.spawn import find_executable, spawn
+from distutils.core import setup
+from distutils.spawn import find_executable
+from distutils.spawn import spawn
 from distutils.dir_util import copy_tree
 from distutils.file_util import copy_file
 
+try:
+    from sphinx.setup_command import BuildDoc
+except ImportError:
+    pass
 
 
-class DocbookDistribution(Distribution):
-    """The distclass of this setup file.
-    """
-    def __init__(self, attrs=None):
-        self.docbooks = None
-        Distribution.__init__(self, attrs)
-
-
-class BuildDocbook(Command):
-    """BuildDocbook documentation and copy HTML data files.
-    """
-
-    description = "Build Docbook documentation"
-
-    user_options = [('xsltproc-path=', None, "Path to the XSLT processor"),
-        ('fop-path=', None, "Path to FOP"),
-        ('xsl-style=', None, "Catalogue URI to the XSL style sheet"),
-        ('fop-style=', None, "Catalogue URI for the FOP style sheet")]
+sphinx_found = True
 
 
 
-    def initialize_options(self):
-        self.xsltproc_path = None
-        self.fop_path = None
-        self.xsl_style = None
-        self.fop_style = None
-
-
-    def finalize_options(self):
-        if self.xsltproc_path is None:
-            self.xsltproc_path = find_executable("xsltproc")
-
-        if self.fop_path is None:
-            self.fop_path = find_executable("fop")
-
-        if self.xsl_style is None:
-            self.xsl_style = "./doc/custom_layer/html/custom_html.xsl"
-
-        if self.fop_style is None:
-            self.fop_style = "./doc/custom_layer/fo/custom_fo.xsl"
-
-
-    def get_command_name(self):
-        return 'build_doc'
-
-
-    def run(self):
-
-        """ Execute the build_doc command.
-
-        The HTML and PDF docs are included in the tarball. So even if fop or
-        xsltproc are not installed the user will be able to install ViTables
-        in the usual way::
-
-            # python setup.py install
-
-        because the build_doc command will not abort. In a tarball installation
-        the docs will never be generated, just copied to the apropriate folder.
-
-        If user is installing a debian/ubuntu package (which will not include
-        the docs, I think), in order to ensure that she will always end up with
-        the docs being installed, the package should depend on the xsltproc and
-        fop packages.
+if sphinx_found:
+    class BuildSphinx(BuildDoc):
+        """Customise the BuilDoc provided by the sphinx module setup_command.py
         """
 
-        if self.xsltproc_path is None:
-            print """Unable to find 'xsltproc', needed to generate """\
-                """Docbook documentation."""
-            return
 
-        if self.fop_path is None:
-            print """Unable to find 'fop', needed to generate Docbook"""\
-                """documentation in PDF format."""
-            return
+        def run(self):
 
-        for input_file in self.distribution.docbooks:
-            self.announce("Building Docbook documentation from %s." \
-                % input_file)
+            """ Execute the build_sphinx command.
 
-            if not os.path.exists(input_file):
-                raise SystemExit, "File %s is missing." % input_file
+            The HTML and PDF docs are included in the tarball. So even if 
+            sphinx or pdflatex are not installed on the user's system she will 
+            get the full documentation installed when installing ViTables in 
+            the usual way::
 
-            input_file_name = os.path.splitext(input_file)[0]
-            output_dir = os.path.join("vitables", "htmldocs","")
+                # python setup.py install
 
+            because the build_sphinx command will not be executed by default.
+
+            If user is installing from a binary package (which will not include
+            the docs, I think), in order to ensure that she will always end up with
+            the docs being installed, the package should depend on the sphinx and
+            pdflatex packages and the `sphinx_found` variable should be set to 
+            True.
+            """
+
+            for builder in ('html', 'latex'):
+                self.builder = builder
+                self.builder_target_dir = os.path.join(self.build_dir, 
+                    self.builder)
+                self.mkpath(self.builder_target_dir)
+                BuildDoc.run(self)
+
+            output_dir = os.path.join("vitables", "htmldocs")
             if not os.access(output_dir, os.F_OK):
-                spawn([self.xsltproc_path, "--nonet", "-o", output_dir, 
-                    self.xsl_style, input_file])
-                spawn([self.xsltproc_path, "--nonet", "-o", 
-                    input_file_name+".fo", self.fop_style, input_file])
-                spawn([self.fop_path, "-q", input_file_name+".fo", 
-                    input_file_name+".pdf"])
-                copy_tree(os.path.join(os.path.dirname(input_file),"images"), 
-                    os.path.join(output_dir,"images"))
+                # Include the HTML guide and the license in the package
+                copy_tree(os.path.join(self.build_dir,"html"), output_dir)
+                shutil.rmtree(os.path.join(output_dir,"_sources"))
                 copy_file('LICENSE.html', output_dir)
-                copy_file("./doc/custom_layer/html/usersguide_style.css", 
-                    output_dir)
-
-
-def has_docbook(dbuild):
-    """Return True if the `docbooks` attribute has been set.
-    """
-    return (dbuild.distribution.docbooks is not None and
-            dbuild.distribution.docbooks != [])
-
-
-class Build(build):
-    """Make the commands that will build the documentation.
-    """
-    sub_commands = build.sub_commands[:]
-    sub_commands.insert(0,('build_doc', has_docbook))
+                # Include the PDF guide in the package
+                make_path = find_executable("make")
+                spawn([make_path, "-C", self.builder_target_dir, "all-pdf"])
+                copy_file(os.path.join(self.build_dir, "latex", 
+                    "ViTablesUsersGuide.pdf"), "doc")
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:
@@ -191,9 +129,13 @@ f = open('VERSION', 'r')
 vt_version = f.readline()[:-1]
 f.close()
 
+if sphinx_found:
+    command_class = {'build_sphinx': BuildSphinx}
+else:
+    command_class = {}
+
 setup(name = 'ViTables', # The name of the distribution
     version = "%s" % vt_version, 
-    distclass=DocbookDistribution, 
     description = 'A viewer for PyTables package', 
     long_description = \
         """
@@ -215,11 +157,11 @@ setup(name = 'ViTables', # The name of the distribution
     'Environment :: Desktop', 
     'Operating System :: POSIX', 
     'Programming Language :: Python'], 
+    scripts = ['scripts/vitables'], 
     packages = ['vitables', 'vitables.docBrowser', 'vitables.h5db', 
         'vitables.nodeProperties', 'vitables.queries', 'vitables.preferences', 
         'vitables.vtTables', 'vitables.vtWidgets', 'vitables.plugins', 
         'vitables.plugins.csv', 'vitables.plugins.menu'], 
-    scripts = ['scripts/vitables'], 
     package_data = {
         'vitables.nodeProperties': ['*.ui'], 
         'vitables.preferences': ['*.ui'], 
@@ -229,22 +171,17 @@ setup(name = 'ViTables', # The name of the distribution
             'htmldocs/*/*.*'], 
         'vitables.plugins.csv': ['icons/*.*'], 
     }, 
-    cmdclass = {
-          'build': Build, 
-          'build_doc': BuildDocbook, 
-          },
-    docbooks=['doc/usersguide.xml'], 
+    cmdclass = command_class,
     data_files = [
         ('examples', glob.glob('examples/*.h5')), 
+        ('examples/scripts', glob.glob('examples/scripts/*.py')), 
         ('examples/arrays', glob.glob('examples/arrays/*.h5')), 
         ('examples/misc', glob.glob('examples/misc/*.h5')), 
         ('examples/scripts', glob.glob('examples/scripts/*.py')), 
         ('examples/tables', glob.glob('examples/tables/*.h5')), 
         ('examples/timeseries', glob.glob('examples/timeseries/*.h5')), 
-        ('doc', ['doc/usersguide.xml']), 
-        ('doc', ['doc/usersguide.pdf']), 
         ('', ['LICENSE.txt', 'LICENSE.html']), 
-        ('plugins/csv/examples', glob.glob('plugins/csv/examples/*.csv')), 
+        ('examples/csv', glob.glob('plugins/csv/examples/*.csv')), 
     ], 
 
     **setup_args
