@@ -642,18 +642,18 @@ class Config(QtCore.QSettings):
         # settings will need to be reloaded. So for every user setting
         # we have to check if it needs to be reloaded or not
         key = 'Startup/restoreLastSession'
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             self.restore_last_session = value.toBool()
 
         key = 'Startup/startupWorkingDir'
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             self.startup_working_directory = unicode(value.toString())
 
         key = 'Logger/Paper'
         logger = self.vtapp.gui.logger
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             paper = unicode(QtGui.QColor(value).name())
             stylesheet = logger.styleSheet()
@@ -662,37 +662,37 @@ class Config(QtCore.QSettings):
             logger.setStyleSheet(stylesheet)
 
         key = 'Logger/Text'
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             text_color = QtGui.QColor(value)
             logger.moveCursor(QtGui.QTextCursor.End)
             logger.setTextColor(text_color)
 
         key = 'Logger/Font'
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             logger.setFont(QtGui.QFont(value))
 
         key = 'Workspace/Background'
         workspace = self.vtapp.gui.workspace
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             workspace.setBackground(QtGui.QBrush(value))
             workspace.viewport().update()
 
         key = 'Look/currentStyle'
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             self.current_style = unicode(value.toString())
             # Default style is provided by the underlying window manager
             QtGui.qApp.setStyle(self.current_style)
 
         key = 'Plugins/Paths'
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             self.plugins_paths = value.toStringList()
 
         key = 'Plugins/Enabled'
-        if config.has_key(key):
+        if key in config:
             value = config[key]
             self.enabled_plugins = value.toStringList()

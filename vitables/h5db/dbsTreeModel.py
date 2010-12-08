@@ -110,7 +110,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Parameter filepath: the full path of an open database.
         """
 
-        if self.__openDBs.has_key(filepath):
+        if filepath in self.__openDBs:
             return self.__openDBs[filepath]
         else:
             return None

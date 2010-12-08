@@ -81,7 +81,7 @@ def findTS(datasheet):
             and ts:
             return 'scikits_ts'
         for name in leaf.colnames:
-            if coltypes.has_key(name) and coltypes[name] in time_types: 
+            if name in coltypes and coltypes[name] in time_types: 
                 return 'pytables_ts'
     elif leaf.atom.type in time_types and \
         len(leaf.shape) < 3 and \

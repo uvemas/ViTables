@@ -27,6 +27,8 @@ toolbars, statusbars and `QActions` bound to both menus and toolbars.
 __docformat__ = 'restructuredtext'
 _context = 'VTGUI'
 
+import sys
+
 from PyQt4 import QtCore, QtGui
 
 import vitables.utils
@@ -81,8 +83,8 @@ class VTGUI(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-    #    sys.stdout = self.logger
-    #    sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
 
     def addComponents(self):
@@ -141,7 +143,7 @@ class VTGUI(QtGui.QMainWindow):
         # from plugins
         actions = {}
         actions['fileNew'] = QtGui.QAction(
-            trs('&New', 'File -> New'), self, 
+            trs('&New...', 'File -> New'), self, 
             shortcut=QtGui.QKeySequence.New, 
             triggered=self.vtapp.fileNew, 
             icon=self.icons_dictionary['document-new'], 
