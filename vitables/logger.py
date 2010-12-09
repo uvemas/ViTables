@@ -130,7 +130,8 @@ class Logger(QtGui.QTextEdit):
         vtapp = vitables.utils.getVTApp()
         # Make the menu
         edit_menu = QtGui.QMenu(self)
-        edit_menu.setStyleSheet("background-color: %s" % QtGui.QPalette.Window)
+        # QtGui.Qpalette.Window constant is 10
+        edit_menu.setStyleSheet("background-color: {0}".format(10))
 
         self.copy_action = QtGui.QAction(
             trs("&Copy", 'Logger menu entry'), self, 

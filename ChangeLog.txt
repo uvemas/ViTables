@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 09, 2010 **
+String formatting is done via .format() method now.
+
 ** December 08, 2010 **
 Moved to Python 2.6 :-) and preparing the migration path to Python 3.0.
 

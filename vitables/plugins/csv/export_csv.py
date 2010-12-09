@@ -266,7 +266,8 @@ class ExportToCSV(QtCore.QObject):
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             out_handler = open(filepath, 'w')
             if add_header:
-                header = reduce(lambda x, y: '%s, %s' % (x, y), leaf.colnames)
+                header = \
+                    reduce(lambda x, y: '{0}, {1}'.format(x, y), leaf.colnames)
                 # Ensure consistency with numpy.savetxt i.e. use \n line breaks
                 out_handler.write(header + '\n')
             chunk_size = 10000

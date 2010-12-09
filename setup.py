@@ -111,7 +111,8 @@ if use_py2app:
     # Now some fixes to py2app:
     py2app_opts = setup_args['options']['py2app']
     # Fix the path to included Python extensions.
-    extra_paths = ['lib/python%d.%d/lib-dynload' % sys.version_info[:2]]
+    extra_paths = \
+        ['lib/python{0[0]}.{0[1]}/lib-dynload'.format(sys.version_info[:2])]
     py2app_opts['plist'] = {'PyResourcePackages': extra_paths}
     # Module dependency detection doesn't find these modules.
     py2app_opts['includes'] = ['sip']
@@ -135,7 +136,7 @@ else:
     command_class = {}
 
 setup(name = 'ViTables', # The name of the distribution
-    version = "%s" % vt_version, 
+    version = "{0}".format(vt_version), 
     description = 'A viewer for PyTables package', 
     long_description = \
         """

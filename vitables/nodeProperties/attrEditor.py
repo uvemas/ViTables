@@ -63,38 +63,37 @@ def formatStrValue(dtype, str_value):
     """
     Format the string representation of a value accordingly to its datatype.
 
+    This function catches datatype errors for boolean values.
+
     :Parameters:
 
     - dtype: the value data type
     - str_value: the string representation of a value
     """
 
-    try:
-        if dtype == u'bool':
-            # Every listed value is valid but none of them would
-            # pass the out of range test later so we use a fake
-            # valid value.
-            # Beware that numpy.array(True).astype('bool')[()] fails
-            # with a TypeError so we use '1' as a fake value
-            if str_value in [u'1', u'TRUE', u'True', u'true']:
-                str_value = u'1'
-            elif str_value in [u'0', u'FALSE', u'False', u'false']:
-                str_value = u'0'
-            else:
-                raise TypeError
-        elif dtype.startswith(u'complex'):
-            # Valid complex literal strings do not have parenthesis
-            if str_value.startswith(u'(') and str_value.endswith(u')'):
-                str_value = str_value[1:-1]
-    except TypeError:
-        return None
-    else:
-        return str_value
+    if dtype == u'bool':
+        # Every listed value is valid but none of them would
+        # pass the out of range test later so we use a fake
+        # valid value.
+        # Beware that numpy.array(True).astype('bool')[()] fails
+        # with a TypeError so we use '1' as a fake value
+        if str_value in [u'1', u'TRUE', u'True', u'true']:
+            str_value = u'1'
+        elif str_value in [u'0', u'FALSE', u'False', u'false']:
+            str_value = u'0'
+        else:
+            raise ValueError
+    elif dtype.startswith(u'complex'):
+        # Valid complex literal strings do not have parenthesis
+        if str_value.startswith(u'(') and str_value.endswith(u')'):
+            str_value = str_value[1:-1]
+
+    return str_value
 
 
-def checkOverflow(dtype, str_value):
+def checkValue(dtype, str_value):
     """
-    Check for overflows in integer and float values.
+    Check for overflow errors and dtype errors on integer and float values.
 
     By default, when overflow occurs in the creation of a ``numpy`` array,
     it is silently converted to the desired datatype:
@@ -121,22 +120,20 @@ def checkOverflow(dtype, str_value):
         u'float32': numpy.float32, u'float64': numpy.float64,
         }
 
+    # For Python objects and strings no overflow can occur
     if dtype not in dtypes_map:
         return str_value
 
-    if dtype.startswith(u'float'):
-        max_value = numpy.finfo(dtypes_map[dtype]).max
-        min_value = numpy.finfo(dtypes_map[dtype]).min
-        value = float(str_value)
-    else:
-        max_value = numpy.iinfo(dtypes_map[dtype]).max
-        min_value = numpy.iinfo(dtypes_map[dtype]).min
-        value = long(str_value)
-
-    if value < min_value or value > max_value:
-        raise ValueError
-    else:
-        return str_value
+    # astype() doesn't support unicode arguments
+    dtype_enc = dtype.encode('utf_8')
+    new_array = numpy.array(str_value).astype(dtype_enc)
+    # Catches unexpected results from conversions
+    # Examples: numpy.array('-23').astype('unint8') -> mismatch dtype
+    # or numpy.array('99999').astype('int8') -> overflow
+    if unicode(new_array[()]) != str_value:
+        raise RuntimeWarning
+    # If no errors are found return the original value
+    return str_value
 
 
 class AttrEditor(object):
@@ -198,17 +195,23 @@ class AttrEditor(object):
         """
 
         # Error message for mismatching value/type pairs
-        dtype_error = trs("""\nError: "%s" value """
+        dtype_error = trs("""\nError: "{0}" value """
             """mismatches its data type.""",
             'User attributes table editing error')
 
-        # Error message for out of range values
-        range_error = trs("""\nError: "%s" value """
+        # Error message for overflow values
+        range_error = trs("""\nError: "{0}" value """
             """is out of range.""",
             'User attributes table editing error')
 
+        # Some times it's difficult to find out if the error
+        # is due to a mismatch or to an overflow
+        conversion_error = trs("""\nError: "{0}" value """
+            """is out of range or mismatches its data type.""",
+            'User attributes table editing error')
+
         # Error message for syntax errors in Python attributes
-        syntax_error = trs("""\nError: "%s" """
+        syntax_error = trs("""\nError: "{0}" """
             """cannot be converted to a Python object.""",
             'User attributes table editing error')
 
@@ -221,8 +224,8 @@ class AttrEditor(object):
             # but empty Name cells are invalid
             if name == u'':
                 return (False, 
-                        trs("\nError: empty field Name in the row %i", 
-                        'User attributes table editing error') % int(row + 1))
+                        trs("\nError: empty field Name in the row {0:d}", 
+                        'User attributes editing error').format(int(row + 1)))
 
         # Check for repeated names
         names_list = []
@@ -232,8 +235,8 @@ class AttrEditor(object):
                 names_list.append(name)
             else:
                 return (False, 
-                        trs('\nError: attribute name "%s" is repeated.', 
-                        'User attributes table editing error') % name)
+                        trs('\nError: attribute name "{0}" is repeated.', 
+                        'User attributes table editing error').format(name))
 
         # Check for dtype, range and syntax correctness of scalar attributes
         for row in rows_range:
@@ -243,23 +246,19 @@ class AttrEditor(object):
             if dtype == 'python':
                 # Check the syntax of the Python expression
                 if not checkSyntax(value):
-                    return (False, syntax_error % name)
+                    return (False, syntax_error.format(name))
             else:
                 # Format properly the string representation of value
-                value = formatStrValue(dtype, value)
-                if value is None :
-                    return (False, dtype_error % name)
-                # Check if values are out of range
-                else:
-                    try:
-                        value = checkOverflow(dtype, value)
-                        # astype() doesn't support unicode arguments
-                        dtype_enc = dtype.encode('utf_8')
-                        numpy.array(value).astype(dtype_enc)[()]
-                    except IndexError:
-                        return (False, range_error % name)
-                    except ValueError:
-                        return (False, dtype_error % name)
+                # and check for dtype and overflow errors
+                try:
+                    value = formatStrValue(dtype, value)
+                    value = checkValue(dtype, value)
+                except OverflowError:
+                    return (False, range_error.format(name))
+                except ValueError:
+                    return (False, dtype_error.format(name))
+                except RuntimeWarning:
+                    return (False, conversion_error.format(name))
 
             # If the attribute passes every test then its entry in the
             # dictionary of edited attributes is updated
@@ -298,7 +297,7 @@ class AttrEditor(object):
                 continue
 
             if dtype == u'python':
-                value = eval(u'%s' % value)
+                value = eval(u'{0}'.format(value))
             else:
                 dtype_enc = dtype.encode('utf_8')
                 value = numpy.array(value).astype(dtype_enc)[()]

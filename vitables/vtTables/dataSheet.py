@@ -69,7 +69,7 @@ class DataSheet(QtGui.QMdiSubWindow):
             title = unicode(leaf.title, 'utf_8')
         else:
             title = leaf.title
-        wtitle = u"%s\t%s" % (self.dbt_leaf.name, title)
+        wtitle = u"{0}\t{1}".format(self.dbt_leaf.name, title)
         self.setWindowTitle(wtitle)
         self.setWindowIcon(self.dbt_leaf.icon)
 
@@ -136,10 +136,10 @@ class DataSheet(QtGui.QMdiSubWindow):
         info = nodeInfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
-            title = '%s: %s[%s]' % (node.name, col, 
+            title = '{0}: {1}[{2}]'.format(node.name, col, 
                 tmodel.rbuffer.start + row + 1)
         else:
-            title = '%s: (%s,%s)' % (node.name, 
+            title = '{0}: ({1},{2})'.format(node.name, 
                 tmodel.rbuffer.start + row + 1, column + 1)
 
         zoomCell.ZoomCell(data, title, self.vtgui.workspace, 

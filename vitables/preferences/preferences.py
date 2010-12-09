@@ -172,11 +172,11 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.sampleTE.setCurrentFont(self.initial_prefs['Logger/Font'])
         self.sampleTE.setTextColor(self.initial_prefs['Logger/Text'])
         self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
-        self.sampleTE.setStyleSheet("""background-color: %s""" % 
-            self.initial_prefs['Logger/Paper'].name())
+        self.sampleTE.setStyleSheet("background-color: {0}".
+            format(self.initial_prefs['Logger/Paper'].name()))
 
-        self.workspaceLabel.setStyleSheet('background-color: %s' % 
-            self.initial_prefs['Workspace/Background'].color().name())
+        self.workspaceLabel.setStyleSheet('background-color: {0}'.
+            format(self.initial_prefs['Workspace/Background'].color().name()))
 
         index = self.stylesCB.findText(\
             self.initial_prefs['Look/currentStyle'])
@@ -465,7 +465,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             item = enabled_model.item(row)
             name = unicode(item.text())
             folder = unicode(item.data().toString())
-            self.enabled_plugins.append('%s#@#%s' % (folder, name))
+            self.enabled_plugins.append('{0}#@#{1}'.format(folder, name))
 
 
     @QtCore.pyqtSlot(name="on_unloadButton_clicked")
@@ -486,7 +486,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             item = enabled_model.item(row)
             name = unicode(item.text())
             folder = unicode(item.data().toString())
-            self.enabled_plugins.append('%s#@#%s' % (folder, name))
+            self.enabled_plugins.append('{0}#@#{1}'.format(folder, name))
 
 
     def updateButton(self, selected, deselected):

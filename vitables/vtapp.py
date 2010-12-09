@@ -131,9 +131,9 @@ class VTApp(QtCore.QObject):
         self.config.loadConfiguration(self.config.readConfiguration())
 
         # Print the welcome message
-        print trs('''ViTables %s\nCopyright (c) 2008-2010 Vicent Mas.'''
-            '''\nAll rights reserved.''' % vtconfig.getVersion(),
-            'Application startup message')
+        print trs('''ViTables {0}\nCopyright (c) 2008-2010 Vicent Mas.'''
+            '''\nAll rights reserved.''', 
+            'Application startup message').format(vtconfig.getVersion())
 
         # The list of most recently open DBs
         self.number_of_recent_files = 10
@@ -277,8 +277,8 @@ class VTApp(QtCore.QObject):
         - `dblist`: a file that contains a list of files to be open at startup
         """
 
-        bad_line = trs("""Opening failed: wrong mode or path in %s""", 
-                            'Bad line format')
+        bad_line = trs("""Opening failed: wrong {0} in line {1} of {2}""", 
+            'Bad line format')
         # The database manager opens the files (if any)
         if isinstance(h5files, list):
             for filepath in h5files:
@@ -293,16 +293,16 @@ class VTApp(QtCore.QObject):
         if dblist:
             try:
                 input_file = open(dblist, 'r')
-                lines = [l[:-1].split('#@#') for l in input_file.readlines()]
+                lines = [i[:-1].split('#@#') for i in input_file.readlines()]
                 input_file.close()
                 for line in lines:
-                    if len(line) !=2:
-                        print bad_line % line
+                    if len(line) != 2:
+                        print bad_line.format('format', line, dblist)
                         continue
-                    mode, filepath = line
+                    [mode, filepath] = line
                     filepath = vitables.utils.forwardPath(filepath)
                     if not mode in ['r', 'a']:
-                        print bad_line % line
+                        print bad_line.format('mode', line, dblist)
                         continue
                     if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
                         self.gui.dbs_tree_view.setCurrentIndex(\
@@ -475,23 +475,23 @@ class VTApp(QtCore.QObject):
         # we must check all error conditions every time a new name is tried
         while is_tmp_filepath or is_initial_filepath or filename_in_sibling:
             if is_tmp_filepath:
-                info[1] = trs("""Target directory: %s\n\nThe Query """
-                                """results database cannot be overwritten.""", 
-                                'Overwrite file dialog label') % trier_dirname
-                pattern = \
-                    "(^%s$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$" \
-                    % trier_filename
+                info[1] = trs("""Target directory: {0}\n\nThe Query results"""
+                    """ database cannot be overwritten.""", 
+                    'Overwrite file dialog label').format(trier_dirname)
+                template = \
+                    "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
+                pattern = template.format(trier_filename)
             elif is_initial_filepath:
-                info[1] = trs("""Target directory: %s\n\nThe file """
-                                """being saved cannot overwrite itself.""", 
-                                'Overwrite file dialog label') % trier_dirname
-                pattern = \
-                    "(^%s$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$" \
-                    % trier_filename
+                info[1] = trs("""Target directory: {0}\n\nThe file being """
+                    """saved cannot overwrite itself.""", 
+                    'Overwrite file dialog label').format(trier_dirname)
+                template = \
+                    "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
+                pattern = template.format(trier_filename)
             elif filename_in_sibling:
-                info[1] = trs("""Target directory: %s\n\nFile name """
-                    """'%s' already in use in that directory.\n""", 
-                    'Overwrite file dialog label') % (trier_dirname, 
+                info[1] = trs("""Target directory: {0}\n\nFile name {1}"""
+                    """ already in use in that directory.\n""", 
+                    'Overwrite file dialog label').format(trier_dirname, 
                     trier_filename)
                 pattern = "[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
 
@@ -787,8 +787,8 @@ class VTApp(QtCore.QObject):
         # Get the new group name
         dialog = inputNodeName.InputNodeName(\
             trs('Creating a new group', 'A dialog caption'), 
-            trs('Source file: %s\nParent group: %s\n\n ', 
-                'A dialog label') % (parent.filepath, parent.nodepath), 
+            trs('Source file: {0}\nParent group: {1}\n\n ', 
+                'A dialog label').format(parent.filepath, parent.nodepath), 
             trs('Create', 'A button label'))
         if dialog.exec_():
             suggested_nodename = dialog.node_name
@@ -804,9 +804,9 @@ class VTApp(QtCore.QObject):
         pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
         info = [trs('Creating a new group: name already in use', 
                 'A dialog caption'), 
-                trs("""Source file: %s\nParent group: %s\n\nThere is """
-                          """already a node named '%s' in that parent group"""
-                          """.\n""", 'A dialog label') % \
+                trs("""Source file: {0}\nParent group: {1}\n\nThere is """
+                    """already a node named '{2}' in that parent group.\n""", 
+                    'A dialog label').format\
                     (parent.filepath, parent.nodepath, suggested_nodename)]
         nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
             sibling, pattern, info)
@@ -839,8 +839,8 @@ class VTApp(QtCore.QObject):
         # Get the new nodename
         dialog = inputNodeName.InputNodeName(\
             trs('Renaming a node', 'A dialog caption'),
-            trs('Source file: %s\nParent group: %s\n\n', 
-                    'A dialog label') % (parent.filepath, parent.nodepath), 
+            trs('Source file: {0}\nParent group: {1}\n\n', 
+                'A dialog label').format(parent.filepath, parent.nodepath), 
             trs('Rename', 'A button label'))
         if dialog.exec_():
             suggested_nodename = dialog.node_name
@@ -856,13 +856,13 @@ class VTApp(QtCore.QObject):
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
-        pattern = """(^%s$)|""" \
-            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""" % child.name
+        pattern = """(^{0}$)|""" \
+            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(child.name)
         info = [trs('Renaming a node: name already in use', 
                 'A dialog caption'), 
-                trs("""Source file: %s\nParent group: %s\n\nThere is """
-                          """already a node named '%s' in that parent """
-                          """group.\n""", 'A dialog label') % \
+                trs("""Source file: {0}\nParent group: {1}\n\nThere is """
+                    """already a node named '{2}' in that parent """
+                    """group.\n""", 'A dialog label').format\
                     (parent.filepath, parent.nodepath, suggested_nodename)]
         nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
             sibling, pattern, info)
@@ -939,8 +939,8 @@ class VTApp(QtCore.QObject):
         src_filepath = src_node.filepath
         src_nodepath = src_node.nodepath
         if src_nodepath == '/':
-            nodename = 'root_group_of_%s' \
-                        % os.path.basename(src_filepath)
+            nodename = \
+                'root_group_of_{0}'.format(os.path.basename(src_filepath))
         else:
             nodename = src_node.name
 
@@ -980,12 +980,12 @@ class VTApp(QtCore.QObject):
         # Bad nodename conditions
         info = [trs('Node paste: nodename already exists', 
                 'A dialog caption'), 
-                trs("""Source file: %s\nCopied node: %s\n"""
-                    """Destination file: %s\nParent group: %s\n\n"""
-                    """Node name '%s' already in use in that group.\n""", 
-                    'A dialog label') % \
-                    (src_filepath, src_nodepath,
-                    parent.filepath, parent.nodepath, nodename), 
+                trs("""Source file: {0}\nCopied node: {1}\n"""
+                    """Destination file: {2}\nParent group: {3}\n\n"""
+                    """Node name '{4}' already in use in that group.\n""", 
+                    'A dialog label').format\
+                    (src_filepath, src_nodepath, parent.filepath, 
+                    parent.nodepath, nodename), 
                 trs('Paste', 'A button label')]
         # Validate the nodename
         nodename, overwrite = vitables.utils.getFinalName(nodename, sibling, 
@@ -1021,8 +1021,8 @@ class VTApp(QtCore.QObject):
         # Confirm deletion dialog
         if not force:
             title = trs('Node deletion', 'Caption of the node deletion dialog')
-            text = trs("""\nYou are about to delete the node:\n%s\n""", 
-                'Ask for confirmation') % node.nodepath
+            text = trs("""\nYou are about to delete the node:\n{0}\n""", 
+                'Ask for confirmation').format(node.nodepath)
             itext = ''
             dtext = ''
             buttons = {\
@@ -1136,7 +1136,7 @@ class VTApp(QtCore.QObject):
         # Text to be displayed
         about_text = trs(
             """<qt>
-            <h3>ViTables %s</h3>
+            <h3>ViTables {0}</h3>
             ViTables is a graphical tool for displaying datasets
             stored in PyTables and HDF5 files. It is written using PyQt
             , the Python bindings for the Qt GUI toolkit.<p>
@@ -1148,7 +1148,7 @@ class VTApp(QtCore.QObject):
             its respective copyright holder. For details see the
             copyright notice of the individual packages.
             </qt>""",
-            'Text of the About ViTables dialog')  % vtconfig.getVersion()
+            'Text of the About ViTables dialog').format(vtconfig.getVersion())
         thanks_text = trs(
             """<qt>
             Dmitrijs Ledkovs for contributing the new and greatly enhanced
@@ -1161,8 +1161,8 @@ class VTApp(QtCore.QObject):
 
         # Construct the dialog
         about_dlg = QtGui.QDialog(self.gui)
-        about_dlg.setWindowTitle(trs('About ViTables %s',
-            'Caption of the About ViTables dialog') % vtconfig.getVersion())
+        about_dlg.setWindowTitle(trs('About ViTables {0}',
+            'Caption of the About ViTables dialog').format(vtconfig.getVersion()))
         layout = QtGui.QVBoxLayout(about_dlg)
         tab_widget = QtGui.QTabWidget(about_dlg)
         buttons_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
@@ -1259,20 +1259,32 @@ class VTApp(QtCore.QObject):
         versions_edit.setText(\
             """
             <qt>
-            <h3>%(title)s</h3><br>
+            <h3>{title}</h3>
             <table>
-            <tr><td><b>Python</b></td><td>%(Python)s</td></tr>
-            <tr><td><b>PyTables</b></td><td>%(PyTables)s</td></tr>
-            <tr><td><b>NumPy</b></td><td>%(NumPy)s</td></tr>
-            <tr><td><b>HDF5</b></td><td>%(HDF5)s</td></tr>
-            <tr><td><b>Zlib</b></td><td>%(Zlib)s</td></tr>
-            <tr><td><b>LZO</b></td><td>%(LZO)s</td></tr>
-            <tr><td><b>BZIP2</b></td><td>%(BZIP2)s</td></tr>
-            <tr><td><b>Qt</b></td><td>%(Qt)s</td></tr>
-            <tr><td><b>PyQt</b></td><td>%(PyQt)s</td></tr>
-            <tr><td><b>ViTables</b></td><td>%(ViTables)s</td></tr>
+            <tr><td><b>Python</b></td><td>{Python}</td></tr>
+            <tr><td><b>PyTables</b></td><td>{PyTables}</td></tr>
+            <tr><td><b>NumPy</b></td><td>{NumPy}</td></tr>
+            <tr><td><b>HDF5</b></td><td>{HDF5}</td></tr>
+            <tr><td><b>Zlib</b></td><td>{Zlib}</td></tr>
+            <tr><td><b>LZO</b></td><td>{LZO}</td></tr>
+            <tr><td><b>BZIP2</b></td><td>{BZIP2}</td></tr>
+            <tr><td><b>Qt</b></td><td>{Qt}</td></tr>
+            <tr><td><b>PyQt</b></td><td>{PyQt}</td></tr>
+            <tr><td><b>ViTables</b></td><td>{ViTables}</td></tr>
             </table>
-            </qt>""" % libs_versions)
+            </qt>""".format(
+                title=libs_versions['title'], 
+                Python=libs_versions['Python'], 
+                PyTables=libs_versions['PyTables'], 
+                NumPy=libs_versions['NumPy'], 
+                Qt=libs_versions['Qt'], 
+                PyQt=libs_versions['PyQt'], 
+                ViTables=libs_versions['ViTables'], 
+                HDF5=libs_versions['HDF5'], 
+                Zlib=libs_versions['Zlib'], 
+                LZO=libs_versions['LZO'], 
+                BZIP2=libs_versions['BZIP2'], 
+                ))
 
         # Show the dialog
         versions_dlg.exec_()

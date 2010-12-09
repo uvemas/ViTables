@@ -171,12 +171,12 @@ def createIcons(large_icons, small_icons, icons_dict):
         icon = QtGui.QIcon()
         if name in large_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR, '22x22','%s.png') % name)
+                os.path.join(ICONDIR, '22x22','{0}.png').format(name))
             pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR,'16x16', '%s.png') % name)
+                os.path.join(ICONDIR,'16x16', '{0}.png').format(name))
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 
@@ -336,7 +336,7 @@ def formatExceptionInfo(limit=1):
     :Parameter limit: the number of stack trace entries to be printed
     """
 
-    print '\n%s\n' % traceback.format_exc(limit)
+    print '\n{0}\n'.format(traceback.format_exc(limit))
 
 #
 # Path related functions

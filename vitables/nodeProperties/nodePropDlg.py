@@ -196,7 +196,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         table = self.nchildrenTable
         table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
-        table.setStyleSheet("background-color: %s" % background.name())
+        table.setStyleSheet("background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()
         self.children_model.setHorizontalHeaderLabels([
             trs('Child name', 
@@ -311,8 +311,9 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             table = self.recordsTable
             # The Table's fields description
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-            background = table.palette().brush(QtGui.QPalette.Window).color()
-            table.setStyleSheet("background-color: %s" % background.name())
+            # QtGui.QPalette.Window constant is 10
+            bg_name = table.palette().brush(10).color().name()
+            table.setStyleSheet("background-color: {0}".format(bg_name))
             self.fields_model = QtGui.QStandardItemModel()
             self.fields_model.setHorizontalHeaderLabels([
                 trs('Field name', 
@@ -517,8 +518,8 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         # Delete the marked attribute
         title = trs('User attribute deletion',
             'Caption of the attr deletion dialog')
-        text = trs("""\n\nYou are about to delete the attribute:\n%s\n\n""",
-            'Ask for confirmation') % unicode(name)
+        text = trs("""\n\nYou are about to delete the attribute:\n{0}\n\n""",
+            'Ask for confirmation').format(unicode(name))
         itext = ''
         dtext = ''
         buttons = {\

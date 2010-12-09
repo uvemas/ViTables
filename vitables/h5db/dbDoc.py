@@ -115,8 +115,7 @@ class DBDoc(QtCore.QObject):
         try:
             h5file = tables.openFile(self.filepath, self.mode)
         except IOError, inst:
-            print trs("""\nError: %s.""",
-                'A logger error message') % inst
+            print trs("\nError: {0}.", 'A logger error message').format(inst)
         except:
             vitables.utils.formatExceptionInfo()
             print trs("""Please, if you think this is a bug, report """
@@ -165,8 +164,8 @@ class DBDoc(QtCore.QObject):
             node = self.h5file.getNode(where)
             return node
         except tables.exceptions.NoSuchNodeError:
-            print trs("""\nError: cannot open node %s in file %s """,
-                'Error message') % (where, self.filepath)
+            print trs("""\nError: cannot open node {0} in file {1} """,
+                'Error message').format(where, self.filepath)
             vitables.utils.formatExceptionInfo()
             return None
 
@@ -198,10 +197,10 @@ class DBDoc(QtCore.QObject):
         try:
             self.h5file.copyFile(dst_filepath.encode('utf_8'), overwrite=True)
         except tables.exceptions.HDF5ExtError:
-            print trs("""\nError: unable to save the file %s as """\
-                """%s. Beware that only closed files can be safely """\
+            print trs("""\nError: unable to save the file {0} as """\
+                """{1}. Beware that only closed files can be safely """\
                 """overwritten via Save As...""",
-                'A logger error message') % (self.filepath, dst_filepath)
+                'A logger error message').format(self.filepath, dst_filepath)
             vitables.utils.formatExceptionInfo()
 
 

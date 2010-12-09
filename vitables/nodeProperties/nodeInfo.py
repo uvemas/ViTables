@@ -129,15 +129,15 @@ class NodeInfo(object):
         gbytes = mbytes/1024
         tbytes = gbytes/1024
         if kbytes < 1:
-            size = u'%d bytes' % bytes
+            size = u'{0:d} bytes'.format(bytes)
         elif mbytes < 1:
-            size = u'%.0f KB' % kbytes
+            size = u'{0:.0f} KB'.format(kbytes)
         elif gbytes < 1:
-            size = u'%.0f MB' % mbytes
+            size = u'{0:.0f} MB'.format(mbytes)
         elif tbytes < 1:
-            size = u'%.0f GB' % gbytes
+            size = u'{0:.0f} GB'.format(gbytes)
         else:
-            size = u'%.0f TB' % tbytes
+            size = u'{0:.0f} TB'.format(tbytes)
         return size
 
     size = property(fget=_size)

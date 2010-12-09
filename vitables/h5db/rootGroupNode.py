@@ -73,7 +73,7 @@ class RootGroupNode(object):
                 self.name = data_source.filename
             self.nodepath = u'/'
             self.filepath = data_source.filepath
-            self.as_record = u'%s->%s' % (self.filepath, self.nodepath)
+            self.as_record = u'{0}->{1}'.format(self.filepath, self.nodepath)
             self.mode = data_source.mode
             icons = vitables.utils.getIcons()
             if tmp_db:

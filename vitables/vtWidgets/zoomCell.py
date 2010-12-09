@@ -126,7 +126,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         else:
             for section in range(0, ncols):
                 item = QtGui.QTableWidgetItem()
-                item.setText(u'%s' % (section + 1))
+                item.setText(u'{0}'.format(section + 1))
                 self.grid.setHorizontalHeaderItem(section, item)
 
         # Fill the grid
@@ -311,8 +311,8 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
         # Get caption
         if self.field_names:
-            caption = '%s: %s[%s]' % (self.title,
+            caption = '{0}: {1}[{2}]'.format(self.title,
                 self.field_names[col], row + 1)
         else:
-            caption = '%s: (%s, %s)' % (self.title, row + 1, col + 1)
+            caption = '{0}: ({1}, {2})'.format(self.title, row + 1, col + 1)
         ZoomCell(cell, caption, self.workspace, self.dbt_leaf)

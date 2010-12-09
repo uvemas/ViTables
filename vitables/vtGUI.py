@@ -57,7 +57,8 @@ class VTGUI(QtGui.QMainWindow):
 
         super(VTGUI, self).__init__(None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle(trs('ViTables %s' % version, 'Main window title'))
+        self.setWindowTitle(trs('ViTables {0}', 
+            'Main window title').format(version))
         self.vtapp = vtapp
 
         # Make the main window easily accessible for external modules
@@ -83,8 +84,8 @@ class VTGUI(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+    #    sys.stdout = self.logger
+    #    sys.stderr = self.logger
 
 
     def addComponents(self):
@@ -127,7 +128,6 @@ class VTGUI(QtGui.QMainWindow):
 
         # The signal mapper used to keep the the Window menu updated
         self.window_mapper = QtCore.QSignalMapper(self)
-    #    self.window_mapper.mapped[QtGui.QWidget].connect(\
         self.window_mapper.mapped[QtGui.QWidget].connect(\
             self.workspace.setActiveSubWindow)
 
@@ -351,6 +351,7 @@ class VTGUI(QtGui.QMainWindow):
         actions['windowSeparator'] = QtGui.QAction(
             trs('Current View', 'Windows -> separator'), self)
         actions['windowSeparator'].setSeparator(True)
+        actions['windowSeparator'].setObjectName('windowSeparator')
 
         actions['mdiTabbed'] = QtGui.QAction(
             trs('Change view mode', 'MDI -> Tabbed'), self, 
@@ -524,18 +525,16 @@ class VTGUI(QtGui.QMainWindow):
             self.gui_actions)
 
         # Create the Window menu and add actions/menus/separators to it
-        self.windows_menu = self.menuBar().addMenu(trs("&Window", 
+        self.window_menu = self.menuBar().addMenu(trs("&Window", 
             'The Windows menu entry'))
-        self.windows_menu.setObjectName('windows_menu')
+        self.window_menu.setObjectName('window_menu')
         windows_actions = ['windowCascade', 'windowTile', 
                            'windowRestoreAll', 'windowMinimizeAll', 
                            'windowClose', 'windowCloseAll', 'windowSeparator']
-        vitables.utils.addActions(self.windows_menu, windows_actions, 
+        vitables.utils.addActions(self.window_menu, windows_actions, 
                                     self.gui_actions)
-        self.windows_menu.setSeparatorsCollapsible(True)
-        action_group = QtGui.QActionGroup(self.windows_menu)
-        self.windows_menu.action_group = action_group
-        self.windows_menu.aboutToShow.connect(self.updateWindowMenu)
+        self.window_menu.setSeparatorsCollapsible(True)
+        self.window_menu.aboutToShow.connect(self.updateWindowMenu)
 
         # Create the Help menu and add actions/menus/separators to it
         help_menu = self.menuBar().addMenu(trs("&Help", 
@@ -580,7 +579,7 @@ class VTGUI(QtGui.QMainWindow):
 
         self.mdi_cm = QtGui.QMenu()
         actions = ['mdiTabbed', None, 
-            self.windows_menu]
+            self.window_menu]
         vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
 
 
@@ -730,8 +729,8 @@ class VTGUI(QtGui.QMainWindow):
         for item in self.vtapp.config.recent_files:
             index += 1
             (mode, filepath) = item.split('#@#')
-            action = QtGui.QAction(u'%s. ' % index + filepath, self, 
-                triggered=self.vtapp.openRecentFile)
+            action = QtGui.QAction(u'{0:>2} {1}.'.format(index, filepath), 
+                self, triggered=self.vtapp.openRecentFile)
             action.setData(QtCore.QVariant(item))
             if mode == 'r':
                 action.setIcon(iconset['file_ro'])
@@ -759,30 +758,36 @@ class VTGUI(QtGui.QMainWindow):
         from scratch every time it is about to show.
         """
 
-        menu = self.windows_menu
+        # Clear the menu and rebuild it from scratch
+        wmenu = self.window_menu
+        wmenu.clear()
+        window_actions = ['windowCascade', 'windowTile', 'windowRestoreAll', 
+            'windowMinimizeAll', 'windowClose', 'windowCloseAll', 
+            'windowSeparator']
+        vitables.utils.addActions(wmenu, window_actions, self.gui_actions)
+        action_group = QtGui.QActionGroup(wmenu)
+        wmenu.action_group = action_group
+
         windows_list = self.workspace.subWindowList()
         if not windows_list:
             return
 
-        # Clear the existing views from the Window menu
-        for action in menu.action_group.actions():
-            menu.action_group.removeAction(action)
-            menu.removeAction(action)
-
-        # Reload the existing views
+        # Create actions for the existing views
         counter = 1
         for window in windows_list:
             title = window.windowTitle()
-            if counter == 10:
-                menu.addSeparator()
-                menu = menu.addMenu(trs("&More", 'A Windows submenu'))
-            accel = ""
             if counter < 10:
-                accel = "&%d " % counter
+                action = wmenu.addAction("&{0:d} {1}".format(counter, title))
+                wmenu.action_group.addAction(action)
+            elif counter == 10:
+                wmenu.addSeparator()
+                submenu = wmenu.addMenu(trs("&More", 'A Windows submenu'))
+                action_group = QtGui.QActionGroup(submenu)
             elif counter < 36:
-                accel = "&%c " % chr(counter + ord("@") - 9)
-            action = menu.addAction("%s%s" % (accel, title))
-            menu.action_group.addAction(action)
+                atext = "&{0} {1}".format(chr(counter + ord("@") - 10), title)
+                action = submenu.addAction(atext)
+                action_group.addAction(action)
+
             action.setCheckable(True)
             if self.workspace.activeSubWindow() == window:
                 action.setChecked(True)

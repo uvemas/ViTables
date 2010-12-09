@@ -140,19 +140,19 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         try:
             # Check if file doesn't exist
             if os.path.isdir(filepath):
-                error = trs('Openning cancelled: %s is a folder.',
-                    'A logger error message') % filepath
+                error = trs('Openning cancelled: {0} is a folder.',
+                    'A logger error message').format(filepath)
                 raise ValueError
 
             elif not os.path.isfile(filepath):
-                error = trs('Opening failed: file %s cannot be found.',
-                    'A logger error message') % filepath
+                error = trs('Opening failed: file {0} cannot be found.',
+                    'A logger error message').format(filepath)
                 raise ValueError
 
             # Check if file is already open.
             elif self.getDBDoc(filepath) is not None:
-                error = trs('Opening cancelled: file %s already open.',
-                    'A logger error message') % filepath
+                error = trs('Opening cancelled: file {0} already open.',
+                    'A logger error message').format(filepath)
 
                 raise ValueError
 
@@ -164,14 +164,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         try:
             if not tables.isHDF5File(filepath):
                 error = trs(\
-                    'Opening cancelled: %s has not HDF5 format.', 
-                    'A logger error message') % filepath
+                    'Opening cancelled: file {0} has not HDF5 format.', 
+                    'A logger error message').format(filepath)
                 print error
                 return False
         except Exception:
             error = trs("""Opening failed: I cannot find """
-                """out if %s has HDF5 format.""", 
-                'A logger error message') % filepath
+                """out if file {0} has HDF5 format.""", 
+                'A logger error message').format(filepath)
             print error
             return False
         else:
@@ -377,7 +377,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             else:
                 dirname = self.getDBDoc(src_filepath).hidden_group
                 basename = self.copied_node_info['node'].name
-                src_nodepath = '%s/%s' % (dirname, basename)
+                src_nodepath = '{0}/{1}'.format(dirname, basename)
             self.getDBDoc(src_filepath).pasteNode(src_nodepath, 
                                                     parent.node, childname)
             # Paste the node in the view
@@ -444,22 +444,26 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             self.getDBDoc(node.filepath).renameNode(node.nodepath, 
                 new_name)
 
-            # Rename the node in the view
+            # Rename the node in the databases tree view
             # The renamed node's children must be updated too
             self.setData(index, new_name, QtCore.Qt.DisplayRole)
             old_nodepath = node.nodepath
             dirname = os.path.split(old_nodepath)[0]
-            new_nodepath = ('%s/%s' % (dirname, new_name)).replace('//', '/')
+            new_nodepath = \
+                ('{0}/{1}'.format(dirname, new_name)).replace('//', '/')
             self.setData(index, new_nodepath, QtCore.Qt.UserRole+1)
-            self.setData(index, '%s->%s' % (node.filepath, node.nodepath), 
+            self.setData(index, 
+                        '{0}->{1}'.format(node.filepath, node.nodepath), 
                         QtCore.Qt.StatusTipRole)
             for child_index in self.walkTreeView(index):
                 child_node = self.nodeFromIndex(child_index)
                 child_nodepath = child_node.nodepath.replace(old_nodepath, 
                                                             new_nodepath, 1)
                 self.setData(child_index, child_nodepath, QtCore.Qt.UserRole+1)
-                self.setData(child_index, '%s->%s' % (child_node.filepath, 
-                            child_node.nodepath), QtCore.Qt.StatusTipRole)
+                self.setData(child_index, 
+                            '{0}->{1}'.format\
+                            (child_node.filepath, child_node.nodepath), 
+                            QtCore.Qt.StatusTipRole)
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -493,10 +497,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
             info = [trs('Node move: nodename already exists', 
                     'A dialog caption'), 
-                    trs("""Source file: %s\nMoved node: %s\n"""
-                        """Destination file: %s\nParent group: %s\n\n"""
-                        """Node name '%s' already in use in that group.\n""", 
-                        'A dialog label') % \
+                    trs("""Source file: {0}\nMoved node: {1}\n"""
+                        """Destination file: {2}\nParent group: {3}\n\n"""
+                        """Node name '{4}' already in use in that group.\n""", 
+                        'A dialog label').format\
                         (src_filepath, childpath, dst_filepath, 
                         parentpath, nodename), 
                     trs('Rename', 'A button label')]
@@ -628,7 +632,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if role == QtCore.Qt.DisplayRole:
             data = QtCore.QVariant(node.name)
         elif role == QtCore.Qt.ToolTipRole:
-            data = QtCore.QVariant('%s: %s' % (node.node_kind, node.name))
+            data = QtCore.QVariant('{0}: {1}'.format(node.node_kind, node.name))
         elif role == QtCore.Qt.StatusTipRole:
             data = QtCore.QVariant(node.as_record)
         elif role == QtCore.Qt.DecorationRole:

@@ -64,8 +64,8 @@ def getTableInfo(table):
     info[u'valid_fields'] = []
 
     if info[u'nrows'] <= 0:
-        print trs("""Caveat: table %s is empty. Nothing to query.""",
-            'Warning message for users') % info[u'name']
+        print trs("""Caveat: table {0} is empty. Nothing to query.""",
+            'Warning message for users').format(info[u'name'])
         return None
 
     # Find out the valid (i.e. searchable) fields and condition variables.
@@ -89,21 +89,21 @@ def getTableInfo(table):
     index = 0
     for name in valid_fields.copy():
         if name.count(' '):
-            while (u'col%s' % index) in valid_fields:
+            while (u'col{0}'.format(index)) in valid_fields:
                 index = index + 1
-            info[u'condvars'][u'col%s' % index] = \
+            info[u'condvars'][u'col{0}'.format(index)] = \
                 table.cols._f_col(name)
             valid_fields.remove(name)
-            valid_fields.add(u'col%s (%s)' % (index, name))
+            valid_fields.add(u'col{0} ({1})'.format(index, name))
             index = index + 1
     info[u'valid_fields'] = valid_fields
 
     # If table has not columns suitable to be filtered does nothing
     if not info[u'valid_fields']:
-        print trs("""\nError: table %s has no """
+        print trs("""\nError: table {0} has no """
         """columns suitable to be queried. All columns are nested, """
         """multidimensional or have a Complex data type.""",
-        'An error when trying to query a table') % info['name']
+        'An error when trying to query a table').format(info['name'])
         return None
     elif len(info[u'valid_fields']) != len(info[u'col_names']):
     # Log a message if non selectable fields exist
@@ -236,7 +236,7 @@ class QueriesManager(QtCore.QObject):
             # be used as separator
             components = name.split(u' (')
             if len(components) > 1:
-                fieldname = u'(%s' % components[-1]
+                fieldname = u'({0}'.format(components[-1])
                 title = title.replace(components[0], fieldname)
         query_description[u'title'] = title
 
@@ -295,8 +295,8 @@ class QueriesManager(QtCore.QObject):
 
         QtGui.qApp.restoreOverrideCursor()
         if not completed:
-            print trs('Query on table %s failed!' % table_uid, 
-                'Warning log message about a failed query')
+            print trs('Query on table {0} failed!', 
+                'Warning log message about a failed query').format(table_uid)
             return
 
         # Update temporary database view i.e. call lazyAddChildren

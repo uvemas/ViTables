@@ -189,12 +189,11 @@ class Buffer(object):
             self.data_source.read(start, stop)
         except tables.HDF5ExtError:
             readable = False
-            print  trs("""\nError: problems reading records. """\
-                """The dataset seems to be compressed with """\
-                """the %s library. Check that it is installed"""\
-                """ in your system, please.""" % \
-                self.data_source.filters.complib,
-                'A dataset readability error')
+            print  trs("""\nError: problems reading records. """
+                """The dataset seems to be compressed with """
+                """the {0} library. Check that it is installed"""
+                """ in your system, please.""", 'A dataset readability error').\
+                format(self.data_source.filters.complib)
 
         return readable
 
@@ -251,8 +250,8 @@ class Buffer(object):
         try:
             return self.chunk[()]
         except IndexError:
-            print 'IndexError! buffer start: %s row, column: %s, %s' % \
-                (self.start, row, col)
+            print 'IndexError! buffer start: {0} row, column: {1}, {2}'.\
+                format(self.start, row, col)
 
 
     def vectorCell(self, row, col):
@@ -279,8 +278,8 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)]
         except IndexError:
-            print 'IndexError! buffer start: %s row, column: %s, %s' % \
-                (self.start, row, col)
+            print 'IndexError! buffer start: {0} row, column: {1}, {2}'.\
+                format(self.start, row, col)
 
 
     def arrayCell(self, row, col):
@@ -311,5 +310,5 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)][col]
         except IndexError:
-            print 'IndexError! buffer start: %s row, column: %s, %s' % \
-                (self.start, row, col)
+            print 'IndexError! buffer start: {0} row, column: {1}, {2}'.\
+                format(self.start, row, col)

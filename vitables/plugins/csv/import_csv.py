@@ -180,7 +180,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
     if has_header:
         descr = {}
         for i in range(0, first_line.size):
-            dtype = data.dtype.fields['f%s'%i][0]
+            dtype = data.dtype.fields['f{0}'.format(i)][0]
             descr[first_line[i]] = tables.Col.from_dtype(dtype, pos=i)
         for i in itemsizes:
             descr[first_line[i]] = tables.StringCol(itemsizes[i], pos=i)
@@ -188,7 +188,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
         descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in 
             data.dtype.fields.items()])
         for i in itemsizes:
-            descr['f%s'%i] = tables.StringCol(itemsizes[i])
+            descr['f{0}'.format(i)] = tables.StringCol(itemsizes[i])
 
     return descr, has_header
 
@@ -251,10 +251,12 @@ def homogeneousTableInfo(input_handler, first_line, data):
                 tables.Col.from_dtype(data.dtype, pos=i)) for i in indices])
     else:
         if data.dtype.name.startswith('string'):
-            descr = dict([('f%s' % field, tables.StringCol(itemsize)) \
+            descr = dict(
+                [('f{0}'.format(field), tables.StringCol(itemsize)) \
                 for field in indices])
         else:
-            descr = dict([('f%s' % field, tables.Col.from_dtype(data.dtype)) \
+            descr = dict(
+                [('f{0}'.format(field), tables.Col.from_dtype(data.dtype)) \
                 for field in indices])
 
     return descr, has_header
@@ -272,7 +274,7 @@ def askForHelp(first_line):
         """a table header or regular data?""", 'Message box text')
     itext = ''
     try:
-        dtext = reduce(lambda x, y: '%s, %s' % (x, y), first_line)
+        dtext = reduce(lambda x, y: '{0}, {1}'.format(x, y), first_line)
     except TypeError:
         # If first_line has only one field reduce raises a TypeError
         dtext = first_line.tostring()
@@ -522,7 +524,7 @@ class ImportCSV(QtCore.QObject):
         try:
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
-            dest_filepath = os.path.join(dirname, '%s.h5' % root)
+            dest_filepath = os.path.join(dirname, '{0}.h5'.format(root))
             if isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
@@ -544,8 +546,8 @@ class ImportCSV(QtCore.QObject):
         # Call the file selector (and, if needed, customise it)
         filepath, working_dir = vitables.utils.getFilepath(\
             self.vtgui, 
-            trs('Importing CSV file into %s',
-                'Caption of the Import from CSV dialog') % leaf_kind, 
+            trs('Importing CSV file into {0}',
+                'Caption of the Import from CSV dialog').format(leaf_kind), 
             dfilter=trs("""CSV Files (*.csv);;"""
                 """All Files (*)""", 'Filter for the Import from CSV dialog'), 
             settings={'accept_mode': QtGui.QFileDialog.AcceptOpen, 
@@ -605,9 +607,9 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = "imported_%s" % kind
-            atitle = 'Source CSV file %s' % \
-                os.path.basename(filepath)
+            dataset_name = "imported_{0}".format(kind)
+            atitle = \
+                'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createTable('/', dataset_name, descr, 
                 title=atitle, filters=io_filters, expectedrows=nrows)
 
@@ -660,9 +662,9 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = "imported_%s" % kind
-            atitle = 'Source CSV file %s' % \
-                os.path.basename(filepath)
+            dataset_name = "imported_{0}".format(kind)
+            atitle = \
+                'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createEArray('/', dataset_name, atom, 
                 array_shape, title=atitle, filters=io_filters, 
                 expectedrows=nrows)
@@ -717,9 +719,9 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = "imported_%s" % kind
-            atitle = 'Source CSV file %s' % \
-                os.path.basename(filepath)
+            dataset_name = "imported_{0}".format(kind)
+            atitle = \
+                'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createCArray('/', dataset_name, atom, 
                 array_shape, title=atitle, filters=io_filters)
 
@@ -775,9 +777,9 @@ class ImportCSV(QtCore.QObject):
             dbdoc = self.createDestFile(filepath)
             if dbdoc is None:
                 return
-            array_name = "imported_%s" % kind
-            title = 'Imported from CSV file %s' % \
-                os.path.basename(filepath)
+            array_name = "imported_{0}".format(kind)
+            title = \
+                'Imported from CSV file {0}'.format(os.path.basename(filepath))
             dbdoc.h5file.createArray('/', array_name, data, title=title)
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)

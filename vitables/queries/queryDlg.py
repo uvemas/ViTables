@@ -119,10 +119,10 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         super(QueryDlg, self).__init__(QtGui.qApp.activeWindow())
         self.setupUi(self)
 
-        self.setWindowTitle(trs('New query on table: %s',
-            'A dialog caption') % info[u'name'])
+        self.setWindowTitle(trs('New query on table: {0}',
+            'A dialog caption').format(info[u'name']))
 
-        self.nameLE.setText('FilteredTable_%s' % counter)
+        self.nameLE.setText('FilteredTable_{0}'.format(counter))
 
         self.indicesColumnLE.setEnabled(0)
 
@@ -143,7 +143,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         sorted_fields = [field for field in info[u'valid_fields']]
         sorted_fields.sort()
         self.columnsComboBox.insertItems(0, QtCore.QStringList(sorted_fields))
-        self.rstopLE.setText(u'%s' % info[u'nrows'])
+        self.rstopLE.setText(u'{0}'.format(info[u'nrows']))
 
         whatsthis_button = self.buttonBox.button(QtGui.QDialogButtonBox.Help)
         whatsthis_button.setText("&What's this")
@@ -191,7 +191,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         :Parameter operator: is the operator in the combobox current item
         """
-        self.queryLE.insert(u' %s ' % operator)
+        self.queryLE.insert(u' {0} '.format(operator))
 
 
     @QtCore.pyqtSlot("QString", name="on_columnsComboBox_activated")
@@ -354,23 +354,23 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             self.source_table.willQueryUseIndexing(condition, self.condvars)
         except SyntaxError, error:
             syntax_ok = False
-            print trs("""\nError: %s""",
-                'A logger info message') % error.__doc__
+            print trs("""\nError: {0}""",
+                'A logger info message').format(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except NameError, error:
             syntax_ok = False
-            print trs("""\nError: %s""",
-                'A logger info message') % error.__doc__
+            print trs("""\nError: {0}""",
+                'A logger info message').format(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except ValueError, error:
             syntax_ok = False
-            print trs("""\nError: %s""",
-                'A logger info message') % error.__doc__
+            print trs("""\nError: {0}""",
+                'A logger info message').format(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except TypeError, error:
             syntax_ok = False
-            print trs("""\nError: %s""",
-                'A logger info message') % error.__doc__
+            print trs("""\nError: {0}""",
+                'A logger info message').format(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except:
             syntax_ok = False

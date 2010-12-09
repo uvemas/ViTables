@@ -305,8 +305,8 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         for item in self.browser.bookmarks:
             index += 1
             filepath = unicode(item)
-            action = QtGui.QAction('%s. %s' % (index, filepath), 
-                                               self.bookmarks_menu)
+            action = QtGui.QAction('{0:>2}. {1}'.format(index, filepath), 
+                                    self.bookmarks_menu)
             action.setData(QtCore.QVariant(item))
             self.bookmarks_menu.addAction(action)
             action.triggered.connect(self.browser.displaySrc)

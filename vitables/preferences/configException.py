@@ -53,10 +53,10 @@ class ConfigFileIOException(Exception):
             setting = key.split('=')[0]
             self.error_message = trs(\
                 """\nConfiguration error: the application setting """\
-                """%s cannot be saved.""",
-                'A logger error message')  % setting
+                """{0} cannot be saved.""",
+                'A logger error message').format(setting)
         else:
             self.error_message = trs(\
                 """\nConfiguration warning: the application setting """\
-                """%s cannot be read. Its default value will be used.""",
-                'A logger error message')  % key
+                """{0} cannot be read. Its default value will be used.""",
+                'A logger error message').format(key)

@@ -100,14 +100,13 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
-        pattern = """(^%s$)|""" \
-            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""" % unicode(self.current_name)
+        pattern = """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)|"""\
+            """(^{0}$)""".format(unicode(self.current_name))
         info = [trs('Renaming a node: name already in use', 
                 'A dialog caption'), 
-                trs("""Source file: %s\nParent group: %s\n\nThere is """
-                          """already a node named '%s' in that parent """
-                          """group.\n""", 
-                          'A dialog label') % \
+                trs("""Source file: {0}\nParent group: {1}\n\nThere is """
+                    """already a node named '{2}' in that parent group.\n""", 
+                    'A dialog label').format\
                     (parent.filepath, parent.nodepath, suggested_nodename)]
         # Validate the nodename
         nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
