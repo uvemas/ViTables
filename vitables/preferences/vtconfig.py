@@ -100,12 +100,14 @@ __version__ = '2.1'
 
 import sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 from vitables.preferences import configException
 import vitables.utils
 import vitables.vtTables.dataSheet as dataSheet
 
+translate = QtGui.QApplication.translate
 
 def getVersion():
     """The application version."""
@@ -139,7 +141,7 @@ class Config(QtCore.QSettings):
         if (not sys.platform.startswith('win')) and \
         (not sys.platform.startswith('darwin')):
             arg1 = organization
-            arg2 = product.append('-').append(version)
+            arg2 = '-'.join((product, version))
         else:
             arg1 = product
             arg2 = version
@@ -157,7 +159,7 @@ class Config(QtCore.QSettings):
         if not (self.vtapp is None):
             style_name = self.vtapp.gui.style().objectName()
             for item in styles:
-                if item.toLower() == style_name:
+                if item.lower() == style_name:
                     self.default_style = item
                     break
 
@@ -232,7 +234,7 @@ class Config(QtCore.QSettings):
         styles = QtGui.QStyleFactory.keys()
         if not entry.canConvert(QtCore.QVariant.String):
             return default_value
-        elif not styles.contains(entry.toString()):
+        elif entry not in styles:
             return default_value
         else:
             return entry
@@ -435,7 +437,7 @@ class Config(QtCore.QSettings):
                 raise configException.ConfigFileIOException, \
                     '{0}={1}'.format(key, value)
         except configException.ConfigFileIOException, inst:
-            print inst.error_message
+            print(inst.error_message)
 
 
     def readConfiguration(self):
@@ -447,7 +449,7 @@ class Config(QtCore.QSettings):
         installed) then its default value is returned.
         Geometry and Recent settings are returned as lists, color
         settings as QColor instances. The rest of settings are returned
-        as QStrings or integers.
+        as strings or integers.
 
         :Returns: a dictionary with the configuration stored on disk
         """
@@ -522,11 +524,10 @@ class Config(QtCore.QSettings):
         # The Help Browser bookmarks
         self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
         # The directories where plugins live
-        self.writeValue('Plugins/Paths', 
-            QtCore.QStringList(self.vtapp.plugins_mgr.plugins_paths))
+        self.writeValue('Plugins/Paths', self.vtapp.plugins_mgr.plugins_paths)
         # The list of enabled plugins
         self.writeValue('Plugins/Enabled', 
-            QtCore.QStringList(self.vtapp.plugins_mgr.enabled_plugins))
+            self.vtapp.plugins_mgr.enabled_plugins)
         self.sync()
 
 
@@ -547,7 +548,7 @@ class Config(QtCore.QSettings):
 
         # Get the list of open files (temporary database is not included)
         dbt_model = self.vtapp.gui.dbs_tree_model
-        session_files_nodes = QtCore.QStringList([])
+        session_files_nodes = []
         filepaths = dbt_model.getDBList()
         for path in filepaths:
             mode = dbt_model.getDBDoc(path).mode
@@ -611,7 +612,7 @@ class Config(QtCore.QSettings):
 
             key = 'Startup/lastWorkingDir'
             value = config[key]
-            self.last_working_directory = unicode(value.toString())
+            self.last_working_directory = value.toString()
 
             key = 'Recent/Files'
             value = config[key]
@@ -649,17 +650,17 @@ class Config(QtCore.QSettings):
         key = 'Startup/startupWorkingDir'
         if key in config:
             value = config[key]
-            self.startup_working_directory = unicode(value.toString())
+            self.startup_working_directory = value.toString()
 
         key = 'Logger/Paper'
         logger = self.vtapp.gui.logger
         if key in config:
             value = config[key]
-            paper = unicode(QtGui.QColor(value).name())
+            paper = QtGui.QColor(value).name()
             stylesheet = logger.styleSheet()
             old_paper = stylesheet[-7:]
-            stylesheet.replace(old_paper, paper)
-            logger.setStyleSheet(stylesheet)
+            new_stylesheet = stylesheet.replace(old_paper, paper)
+            logger.setStyleSheet(new_stylesheet)
 
         key = 'Logger/Text'
         if key in config:
@@ -683,7 +684,7 @@ class Config(QtCore.QSettings):
         key = 'Look/currentStyle'
         if key in config:
             value = config[key]
-            self.current_style = unicode(value.toString())
+            self.current_style = value.toString()
             # Default style is provided by the underlying window manager
             QtGui.qApp.setStyle(self.current_style)
 

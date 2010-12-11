@@ -20,14 +20,19 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module implements a buffer used to access the real data contained in `PyTables` datasets.
+This module implements a buffer used to access the real data contained in 
+`PyTables` datasets.
 
-By using this buffer we speed up the access to the stored data. As a consequence, views (widgets showing a tabular representation of the dataset) are painted much faster too.
+By using this buffer we speed up the access to the stored data. As a 
+consequence, views (widgets showing a tabular representation of the dataset) 
+are painted much faster too.
 """
 
 __docformat__ = 'restructuredtext'
 
 import warnings
+
+from PyQt4 import QtGui
 
 import numpy
 import tables
@@ -35,6 +40,7 @@ import tables
 import vitables.utils
 
 
+translate = QtGui.QApplication.translate
 # Restrict the available flavors to 'numpy' so that reading a leaf
 # always return a numpy array instead of an object of the kind indicated
 # by the leaf flavor. For VLArrays the read data is returned as a list whose
@@ -189,11 +195,12 @@ class Buffer(object):
             self.data_source.read(start, stop)
         except tables.HDF5ExtError:
             readable = False
-            print  trs("""\nError: problems reading records. """
-                """The dataset seems to be compressed with """
-                """the {0} library. Check that it is installed"""
-                """ in your system, please.""", 'A dataset readability error').\
-                format(self.data_source.filters.complib)
+            print(translate('Buffer', 
+                """\nError: problems reading records. The dataset seems """
+                """to be compressed with the {0} library. Check that it """
+                """is installed in your system, please.""", 
+                'A dataset readability error').\
+                format(self.data_source.filters.complib))
 
         return readable
 
@@ -221,9 +228,10 @@ class Buffer(object):
         try:
             data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
-            print  trs("""\nError: problems reading records. """\
-                """The dataset maybe corrupted.""",
-                'A dataset readability error')
+            print(translate('Buffer', 
+                """\nError: problems reading records. The dataset maybe """
+                """corrupted.""", 
+                'A dataset readability error'))
         except:
             vitables.utils.formatExceptionInfo()
         else:
@@ -250,8 +258,8 @@ class Buffer(object):
         try:
             return self.chunk[()]
         except IndexError:
-            print 'IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                format(self.start, row, col)
+            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
+                format(self.start, row, col))
 
 
     def vectorCell(self, row, col):
@@ -278,8 +286,8 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)]
         except IndexError:
-            print 'IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                format(self.start, row, col)
+            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
+                format(self.start, row, col))
 
 
     def arrayCell(self, row, col):
@@ -310,5 +318,5 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)][col]
         except IndexError:
-            print 'IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                format(self.start, row, col)
+            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
+                format(self.start, row, col))

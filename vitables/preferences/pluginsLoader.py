@@ -53,10 +53,13 @@ import os
 import pkgutil
 import imp
 
+from PyQt4 import QtGui
+
 import vitables.utils
 import vitables.plugins
 from vitables.vtSite import PLUGINSDIR
 
+translate = QtGui.QApplication.translate
 
 def isPlugin(folder, name):
     """Check if a given module is a plugin.
@@ -131,17 +134,16 @@ class PluginsLoader(object):
 
     :Parameters:
 
-    - plugins_paths: a QStringList with the paths where plugins live
-    - enabled_plugins: a QStringList with the UIDs of the enabled plugins
+    - plugins_paths: a list with the paths where plugins live
+    - enabled_plugins: a list with the UIDs of the enabled plugins
     """
 
     def __init__(self, plugins_paths, enabled_plugins):
         """Dynamically load and instantiate the available plugins.
         """
 
-        # Move from PyQt QStringLists to python lists
-        self.plugins_paths = [unicode(item) for item in plugins_paths]
-        self.enabled_plugins = [unicode(item) for item in enabled_plugins]
+        self.plugins_paths = plugins_paths[:]
+        self.enabled_plugins = enabled_plugins[:]
 
         # Ensure that plugins distributed along with ViTables are
         # always available
@@ -218,9 +220,9 @@ class PluginsLoader(object):
         except (ImportError, ValueError):
             self.untrack(plugin)
             if finding_failed:
-                print "\nError: plugin {0} cannot be found.".format(plugin)
+                print("\nError: plugin {0} cannot be found.".format(plugin))
             else:
-                print "\nError: plugin {0} cannot be loaded.".format(name)
+                print("\nError: plugin {0} cannot be loaded.".format(name))
             return
         finally:
             if not finding_failed:
@@ -232,7 +234,7 @@ class PluginsLoader(object):
             cls = getattr(module, class_name)
         except AttributeError:
             self.untrack(plugin)
-            print "\nError: module {0} is not a valid plugin.".format(name)
+            print("\nError: module {0} is not a valid plugin.".format(name))
             return
 
         # Load the plugin
@@ -245,7 +247,7 @@ class PluginsLoader(object):
             self.loaded_plugins[plugin] = instance
         except:
             self.untrack(plugin)
-            print "\nError: plugin {0} cannot be loaded.".format(name)
+            print("\nError: plugin {0} cannot be loaded.".format(name))
             vitables.utils.formatExceptionInfo()
             return
 

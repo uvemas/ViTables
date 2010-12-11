@@ -26,17 +26,14 @@ This module provides a dialog for deleting bookmarks from the bookmarks list.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'BookmarksDlg'
 
 import sys
 import os.path
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class BookmarksDlg(QtGui.QDialog):
@@ -65,7 +62,8 @@ class BookmarksDlg(QtGui.QDialog):
         # The HelpBrowser GUI instance from which this dialog has been opened
         super(BookmarksDlg, self).__init__(hbgui)
 
-        self.setWindowTitle(trs('Bookmarks editor', 'Dialog caption'))
+        self.setWindowTitle(
+            translate('BookmarksDlg', 'Bookmarks editor', 'Dialog caption'))
         dlg_layout = QtGui.QVBoxLayout(self)
 
         # Add a tree view
@@ -74,26 +72,29 @@ class BookmarksDlg(QtGui.QDialog):
         self.tmodel = QtGui.QStandardItemModel()
         self.tree.setModel(self.tmodel)
         self.tmodel.setHorizontalHeaderLabels([
-            trs('Bookmark', 
+            translate('BookmarksDlg', 'Bookmark', 
             'First column header of the bookmarks table'), 
-            trs('URL', 
+            translate('BookmarksDlg', 'URL', 
             'Second column header of the bookmarks table')])
         dlg_layout.addWidget(self.tree)
 
         # Add a group of buttons
         self.button_group = QtGui.QDialogButtonBox(self)
-        self.ok_button = self.button_group.addButton(trs('&OK', 
-            'Button label'), QtGui.QDialogButtonBox.AcceptRole)
-        self.del_button = self.button_group.addButton(trs('&Delete', 
-            'Button label'), QtGui.QDialogButtonBox.ActionRole)
-        self.cancel_button = self.button_group.addButton(trs('&Cancel', 
-            'Button label'), QtGui.QDialogButtonBox.RejectRole)
+        self.ok_button = self.button_group.addButton(
+            translate('BookmarksDlg', '&OK', 'Button label'), 
+            QtGui.QDialogButtonBox.AcceptRole)
+        self.del_button = self.button_group.addButton(
+            translate('BookmarksDlg', '&Delete', 'Button label'), 
+            QtGui.QDialogButtonBox.ActionRole)
+        self.cancel_button = self.button_group.addButton(
+            translate('BookmarksDlg', '&Cancel', 'Button label'), 
+            QtGui.QDialogButtonBox.RejectRole)
         dlg_layout.addWidget(self.button_group)
 
         # We dont work directly on the HelpBrowser bookmarks list,
         # instead we make a copy. This is convenient if, after doing
         # some changes in the list, we decide to cancel the changes.
-        self.blist = QtCore.QStringList(blist)
+        self.blist = blist[:]
         self.fillBookmarksTable()
         self.show()
 
@@ -115,7 +116,7 @@ class BookmarksDlg(QtGui.QDialog):
             # extracts the short name. Examples:
             # /home/vmas/estilo.html --> estilo.html
             # /home/vmas/estilo.html#color --> estilo.html#color
-            shortname = os.path.basename(unicode(entry))
+            shortname = os.path.basename(entry)
             item = QtGui.QStandardItem(shortname)
             item.setCheckable(True)
             item.setEditable(False)

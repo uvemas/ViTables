@@ -25,21 +25,19 @@ active plugin. Selecting these menu items will bring up a short
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'PluginsMenu'
 __version__ = '0.2'
 plugin_class = 'PluginsMenu'
 
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 def setupTextWidget(parent, palette, kind='line'):
@@ -79,7 +77,7 @@ class PluginsMenu(QtCore.QObject):
         self.vtgui = self.vtapp.gui
 
         # Create the Plugins menu and insert it before the Help menu
-        self.plugins_menu = QtGui.QMenu(trs("&Plugins", 
+        self.plugins_menu = QtGui.QMenu(translate('PluginsMenu', "&Plugins", 
             'The Plugins menu entry'))
         for menu in self.vtgui.menuBar().findChildren(QtGui.QMenu):
             if menu.objectName() == 'help_menu':
@@ -120,7 +118,7 @@ class PluginsMenu(QtCore.QObject):
         """Brief description of the plugin."""
 
         # Text to be displayed
-        about_text = trs(
+        about_text = translate('PluginsMenu', 
             """<qt>
             <p>This plugin inserts a <b>Plugins</b> menu in the 
             ViTables menu bar and adds an entry to it for each active 
@@ -149,11 +147,11 @@ class PluginsMenu(QtCore.QObject):
         """
 
         # Text to be displayed
-        about_text = trs(
+        about_text = translate('PluginsMenu', 
             "Sorry, there is not available information about this plugin.",
             'Text of the About Plugin message box')
 
-        title = trs('About plugin', 
+        title = translate('PluginsMenu', 'About plugin', 
             'Title for an About plugin message box')
 
         QtGui.QMessageBox.about(self.vtgui, title, about_text)
@@ -166,17 +164,24 @@ class PluginsMenu(QtCore.QObject):
         """
 
         action = self.sender()
-        action_name = unicode(action.objectName())
+        action_name = action.objectName()
         descr = self.vtapp.plugins_mgr.loaded_plugins[action_name].helpAbout()
         info_dlg = QtGui.QDialog(self.vtgui)
-        info_dlg.setWindowTitle(trs('About plugin', 'A dialog title'))
+        info_dlg.setWindowTitle(
+            translate('PluginsMenu', 'About plugin', 'A dialog title'))
 
-        label1 = QtGui.QLabel(trs('Module name:', 'Label text'), info_dlg)
-        label2 = QtGui.QLabel(trs('Folder:', 'Label text'), info_dlg)
-        label3 = QtGui.QLabel(trs('Plugin name:', 'Label text'), info_dlg)
-        label4 = QtGui.QLabel(trs('Version:', 'Label text'), info_dlg)
-        label5 = QtGui.QLabel(trs('Author:', 'Label text'), info_dlg)
-        label6 = QtGui.QLabel(trs('Description:', 'Label text'), info_dlg)
+        label1 = QtGui.QLabel(
+            translate('PluginsMenu', 'Module name:', 'Label text'), info_dlg)
+        label2 = QtGui.QLabel(
+            translate('PluginsMenu', 'Folder:', 'Label text'), info_dlg)
+        label3 = QtGui.QLabel(
+            translate('PluginsMenu', 'Plugin name:', 'Label text'), info_dlg)
+        label4 = QtGui.QLabel(
+            translate('PluginsMenu', 'Version:', 'Label text'), info_dlg)
+        label5 = QtGui.QLabel(
+            translate('PluginsMenu', 'Author:', 'Label text'), info_dlg)
+        label6 = QtGui.QLabel(
+            translate('PluginsMenu', 'Description:', 'Label text'), info_dlg)
 
         palette = QtGui.QPalette(QtGui.qApp.palette())
         palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, 

@@ -28,20 +28,18 @@ contains methods for editing nodes (but not data stored in nodes).
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'DBDoc'
 
 import os
 import uuid
 
 import tables
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class DBDoc(QtCore.QObject):
@@ -108,19 +106,21 @@ class DBDoc(QtCore.QObject):
         if self.mode != 'r' and os.path.isfile(self.filepath):
             if not os.access(self.filepath, os.W_OK):
                 self.mode = 'r'
-                print trs("""\nWarning: file access in read-write mode"""
-                    """ is denied. It will be opened in read-only mode.""",
-                    'A logger error message')
+                print(translate('DBDoc', 
+                    """\nWarning: file access in read-write mode"""
+                    """ is denied. It will be opened in read-only mode.""", 
+                    'A logger error message'))
 
         try:
             h5file = tables.openFile(self.filepath, self.mode)
         except IOError, inst:
-            print trs("\nError: {0}.", 'A logger error message').format(inst)
+            print(translate('DBDoc', 
+                "\nError: {0}.", 'A logger error message').format(inst))
         except:
             vitables.utils.formatExceptionInfo()
-            print trs("""Please, if you think this is a bug, report """
-                """it to developers.""",
-                'A logger error message')
+            print(translate('DBDoc', 
+                "Please, if you think it is a bug, report it to developers.", 
+                'A logger error message'))
 
         return h5file
 
@@ -164,8 +164,9 @@ class DBDoc(QtCore.QObject):
             node = self.h5file.getNode(where)
             return node
         except tables.exceptions.NoSuchNodeError:
-            print trs("""\nError: cannot open node {0} in file {1} """,
-                'Error message').format(where, self.filepath)
+            print(translate('DBDoc', 
+                """\nError: cannot open node {0} in file {1} """,
+                'Error message').format(where, self.filepath))
             vitables.utils.formatExceptionInfo()
             return None
 
@@ -197,10 +198,11 @@ class DBDoc(QtCore.QObject):
         try:
             self.h5file.copyFile(dst_filepath.encode('utf_8'), overwrite=True)
         except tables.exceptions.HDF5ExtError:
-            print trs("""\nError: unable to save the file {0} as """\
-                """{1}. Beware that only closed files can be safely """\
+            print(translate('DBDoc', 
+                """\nError: unable to save the file {0} as """
+                """{1}. Beware that only closed files can be safely """
                 """overwritten via Save As...""",
-                'A logger error message').format(self.filepath, dst_filepath)
+                'A logger error message').format(self.filepath, dst_filepath))
             vitables.utils.formatExceptionInfo()
 
 
@@ -224,7 +226,7 @@ class DBDoc(QtCore.QObject):
         Create a hidden group for storing cut nodes.
         """
 
-        group_name = u'_p_' + unicode(uuid.uuid4())
+        group_name = '_p_' + unicode(uuid.uuid4())
         self.hidden_group = '/' + group_name
         self.h5file.createGroup('/', group_name, 'Hide cut nodes')
         self.h5file.flush()

@@ -26,7 +26,6 @@ series contained in `PyTables` tables generated via ``scikits.timeseries``.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'TSFormatter'
 __version__ = '0.8'
 plugin_class = 'TSFormatter'
 
@@ -39,15 +38,14 @@ try:
 except ImportError:
     ts = None
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 def findTS(datasheet):
@@ -191,7 +189,7 @@ class TSFormatter(object):
         """Brief description of the plugin."""
 
         # Text to be displayed
-        about_text = trs(
+        about_text = translate('TSFormatter', 
             """<qt>
             <p>Plugin that provides nice string formatting for time fields.
             <p>It supports not only native PyTables time datatypes but 

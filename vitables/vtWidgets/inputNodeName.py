@@ -27,11 +27,11 @@ is being renamed.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'InputNodeName'
 
 import os.path
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 from PyQt4.uic import loadUiType
 
 import vitables.utils
@@ -104,7 +104,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
         :Parameter current: the value currently displayed in the text box
         """
 
-        if current.isEmpty():
+        if current == '':
             self.edit_button.setEnabled(0)
         else:
             self.edit_button.setEnabled(1)
@@ -115,5 +115,5 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
         """Slot for saving the entered name and closing the dialog.
         """
 
-        self.node_name = unicode(self.valueLE.text())
+        self.node_name = self.valueLE.text()
         self.accept()

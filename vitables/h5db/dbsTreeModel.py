@@ -29,7 +29,6 @@ The model is populated using data structures defined in the
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'DBsTreeModel'
 
 import tempfile
 import os
@@ -38,7 +37,9 @@ import re
 
 import tables
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 from vitables.h5db import dbDoc
@@ -46,10 +47,7 @@ from vitables.h5db import rootGroupNode
 from vitables.h5db import groupNode
 from vitables.h5db import leafNode
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class DBsTreeModel(QtCore.QAbstractItemModel):
@@ -140,39 +138,43 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         try:
             # Check if file doesn't exist
             if os.path.isdir(filepath):
-                error = trs('Openning cancelled: {0} is a folder.',
+                error = translate('DBsTreeModel', 
+                    'Openning cancelled: {0} is a folder.',
                     'A logger error message').format(filepath)
                 raise ValueError
 
             elif not os.path.isfile(filepath):
-                error = trs('Opening failed: file {0} cannot be found.',
+                error = translate('DBsTreeModel', 
+                    'Opening failed: file {0} cannot be found.',
                     'A logger error message').format(filepath)
                 raise ValueError
 
             # Check if file is already open.
             elif self.getDBDoc(filepath) is not None:
-                error = trs('Opening cancelled: file {0} already open.',
+                error = translate('DBsTreeModel', 
+                    'Opening cancelled: file {0} already open.',
                     'A logger error message').format(filepath)
 
                 raise ValueError
 
         except ValueError:
-            print error
+            print(error)
             return False
 
         # Check the file format
         try:
             if not tables.isHDF5File(filepath):
-                error = trs(\
+                error = translate('DBsTreeModel', \
                     'Opening cancelled: file {0} has not HDF5 format.', 
                     'A logger error message').format(filepath)
-                print error
+                print(error)
                 return False
         except Exception:
-            error = trs("""Opening failed: I cannot find """
-                """out if file {0} has HDF5 format.""", 
+            error = translate('DBsTreeModel', 
+                """Opening failed: I cannot find out if file {0} has HDF5 """
+                """format.""", 
                 'A logger error message').format(filepath)
-            print error
+            print(error)
             return False
         else:
             return True
@@ -215,9 +217,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Parameter filepath: the full path of the file being closed
         """
 
-        if isinstance(filepath, QtCore.QString):
-            filepath = unicode(filepath)
-
         for row, child in enumerate(self.root.children):
             if child.filepath == filepath:
                 # Deletes the node from the tree of databases model/view
@@ -258,12 +257,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 self.insertRows(0, 1)
             except:
                 db_doc = None
-                print trs(
+                print(translate('DBsTreeModel', 
                     """\nFile creation failed due to unknown reasons!\n"""
                     """Please, have a look to the last error displayed in """
                     """the logger. If you think it's a bug, please report it"""
                     """ to developers.""",
-                    'A file creation error')
+                    'A file creation error'))
         finally:
             QtGui.qApp.restoreOverrideCursor()
             return db_doc
@@ -278,11 +277,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         # Create the database
-        print trs('Creating the Query results file...',
-            'A logger info message')
+        print(translate('DBsTreeModel', 'Creating the Query results file...',
+            'A logger info message'))
         (f_handler, filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)
-        self.tmp_filepath = unicode(QtCore.QDir.fromNativeSeparators(filepath))
+        self.tmp_filepath = QtCore.QDir.fromNativeSeparators(filepath)
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         return db_doc
 
@@ -495,15 +494,17 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             sibling = getattr(parent, '_v_children').keys()
             # Nodename pattern
             pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
-            info = [trs('Node move: nodename already exists', 
-                    'A dialog caption'), 
-                    trs("""Source file: {0}\nMoved node: {1}\n"""
-                        """Destination file: {2}\nParent group: {3}\n\n"""
-                        """Node name '{4}' already in use in that group.\n""", 
-                        'A dialog label').format\
-                        (src_filepath, childpath, dst_filepath, 
+            info = [translate('DBsTreeModel', 
+                'Node move: nodename already exists', 
+                'A dialog caption'), 
+                translate('DBsTreeModel', 
+                    """Source file: {0}\nMoved node: {1}\n"""
+                    """Destination file: {2}\nParent group: {3}\n\n"""
+                    """Node name '{4}' already in use in that group.\n""", 
+                    'A dialog label').format\
+                    (src_filepath, childpath, dst_filepath, 
                         parentpath, nodename), 
-                    trs('Rename', 'A button label')]
+                translate('DBsTreeModel', 'Rename', 'A button label')]
             # Validate the nodename
             nodename, overwrite = vitables.utils.getFinalName(nodename, 
                 sibling, pattern, info)
@@ -632,7 +633,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if role == QtCore.Qt.DisplayRole:
             data = QtCore.QVariant(node.name)
         elif role == QtCore.Qt.ToolTipRole:
-            data = QtCore.QVariant('{0}: {1}'.format(node.node_kind, node.name))
+            data = QtCore.QVariant('{0}: {1}'.format(node.node_kind, 
+                node.name))
         elif role == QtCore.Qt.StatusTipRole:
             data = QtCore.QVariant(node.as_record)
         elif role == QtCore.Qt.DecorationRole:
@@ -703,7 +705,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         if (orientation, role) == (QtCore.Qt.Horizontal, \
             QtCore.Qt.DisplayRole):
-            return QtCore.QVariant(trs('Tree of databases',
+            return QtCore.QVariant(translate('DBsTreeModel', 
+                'Tree of databases',
                 'Header of the only column of the tree of databases view'))
 
         return QtCore.QVariant()
@@ -954,10 +957,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """Returns a list of MIME types that can be used to describe a
         list of model indexes.
         """
-
-        types = QtCore.QStringList()
-        types << "application/x-dbstreemodeldatalist" << "text/uri-list"
-        return types
+        return ["application/x-dbstreemodeldatalist", "text/uri-list"]
 
 
     def mimeData(self, indexes):
@@ -981,8 +981,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             if index.isValid():
                 filepath = self.data(index, QtCore.Qt.UserRole).toString()
                 nodepath = self.data(index, QtCore.Qt.UserRole+1).toString()
-                row = QtCore.QString(str(index.row()))
-                stream << filepath << nodepath << row
+                row = unicode(index.row())
+                stream.writeString(filepath.encode())
+                stream.writeString(nodepath.encode())
+                stream.writeString(row.encode())
 
                 self.initial_parent = self.parent(index)
 
@@ -1022,11 +1024,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Convert the binary array into a string with suitable format
             uris_string = QtCore.QUrl.fromEncoded(encoded_data).toString()
             # Split the string using the apropriate separators
-            uris_list = re.split(u'\r\n|\r|\n', unicode(uris_string))
+            uris_list = re.split('\r\n|\r|\n', uris_string)
             # Transform every element of the sequence into a path and open it
             for item in uris_list:
                 uri = QtCore.QUrl(item)
-                path = unicode(uri.path())
+                path = uri.path()
                 if sys.platform.startswith('win'):
                     path = path[1:]
                 if os.path.isfile(path):
@@ -1044,14 +1046,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         stream = QtCore.QDataStream(encoded_data, QtCore.QIODevice.ReadOnly)
         while not stream.atEnd():
             # Decode the encoded data
-            filepath = QtCore.QString()
-            nodepath = QtCore.QString()
-            initial_row = QtCore.QString()
-            stream >> filepath >> nodepath >> initial_row
-
-            filepath = unicode(filepath)
-            nodepath = unicode(nodepath)
-            initial_row = int(initial_row.toInt()[0])
+            filepath = stream.readString()
+            nodepath = stream.readString()
+            initial_row = int(stream.readString())
 
             # A node cannot be moved on itself
             if (parent_node.filepath, parent_node.nodepath) == (filepath, 

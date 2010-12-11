@@ -43,26 +43,24 @@ This dialog allows the user to solve the problem. Available options are:
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'RenameDlg'
 
 import os.path
 import re
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 from PyQt4.uic import loadUiType
 
 import vitables.utils
 
+translate = QtGui.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_RenameNodeDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'rename_dlg.ui'))[0]
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
 class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
@@ -116,10 +114,12 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         self.action = {'overwrite': False, 'new_name': ''}
 
         # The dialog buttons: Rename, Overwrite and Cancel
-        self.overwrite_button = self.buttonsBox.addButton(trs('Overwrite', 
-            'A button label'), QtGui.QDialogButtonBox.AcceptRole)
-        self.rename_button = self.buttonsBox.addButton(trs('Rename', 
-            'A button label'), QtGui.QDialogButtonBox.AcceptRole)
+        self.overwrite_button = self.buttonsBox.addButton(
+            translate('RenameDlg', 'Overwrite', 'A button label'), 
+            QtGui.QDialogButtonBox.AcceptRole)
+        self.rename_button = self.buttonsBox.addButton(
+            translate('RenameDlg', 'Rename', 'A button label'), 
+            QtGui.QDialogButtonBox.AcceptRole)
         self.rename_button.setDefault(1)
         self.cancel_button = self.buttonsBox.button(\
             QtGui.QDialogButtonBox.Cancel)
@@ -137,7 +137,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         self.valueLE.textChanged.emit(self.valueLE.text())
 
 
-    @QtCore.pyqtSlot("QString", name="on_valueLE_textChanged")
+    @QtCore.pyqtSlot('QString', name="on_valueLE_textChanged")
     def checkName(self, new_name):
         """
         Check the new name value.
@@ -168,7 +168,6 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
 
         # If the new name and the current nodename are the same then the
         # group 1 of the pattern is matched
-        new_name = unicode(new_name)
         result = self.cpattern.search(new_name)
         if (result == None) or \
             ((result != None) and (result.lastindex == 1)) or \
@@ -220,7 +219,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         the dialog finishes.
         """
 
-        new_name = unicode(self.valueLE.text())
+        new_name = self.valueLE.text()
         self.action['overwrite'] = False
         self.action['new_name'] = new_name
         self.accept()

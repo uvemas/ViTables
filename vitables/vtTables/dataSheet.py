@@ -22,8 +22,8 @@
 """
 This module defines a widget that wraps the view widget of leaves.
 
-When a leaf node is opened in the tree of databases view the data stored in that
-leaf will be displayed in the workspace using this wrapper widget.
+When a leaf node is opened in the tree of databases view the data stored in 
+that leaf will be displayed in the workspace using this wrapper widget.
 """
 
 __docformat__ = 'restructuredtext'
@@ -94,30 +94,40 @@ class DataSheet(QtGui.QMdiSubWindow):
         self.dbt_leaf.has_view = False
         self.vtgui.updateActions()
 
-        # Clean up things
-        del self.dbt_leaf
-        del self.pindex
-
         # Propagate the event. In the process, self.widget().closeEvent
         # will be called 
         QtGui.QMdiSubWindow.closeEvent(self, event)
 
+        if self.vtgui.workspace.subWindowList() == []:
+            self.vtgui.dbs_tree_view.setFocus(True)
+
+
+    def focusInEvent(self, event):
+        """Specialised handler for focus events.
+
+        Synchronize with the tree view when the view gets keyboard focus.
+
+        :Parameter event: the event being processed
+        """
+
+        # Sync the workspace with the tree view (if needed) but keep the
+        # focus (giving focus to the tree view when a given view is
+        # clicked is counter intuitive)
+        QtGui.QMdiSubWindow.focusInEvent(self, event)
+        self.syncTreeView()
+        self.setFocus(True)
+
 
     def syncTreeView(self):
         """
-        When the view gets focus select its leaf in the tree of databases view.
-
-        See bug 016548 in the issues tracker for further information on
-        this method.
+        If the view is activated select its leaf in the tree of databases view.
         """
 
         # Locate the tree view leaf tied to this data sheet. Persistent
         # indices are used to get direct access to the leaf so we don't
         # have to walk the tree
-        focus_widget = QtGui.qApp.focusWidget()
-        if isinstance(focus_widget, leafView.LeafView):
-            self.vtgui.dbs_tree_view.setCurrentIndex(\
-                QtCore.QModelIndex(self.pindex))
+        self.vtgui.dbs_tree_view.setCurrentIndex(
+            QtCore.QModelIndex(self.pindex))
 
 
     def zoomCell(self, index):

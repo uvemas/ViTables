@@ -26,7 +26,6 @@ to user's input i.e. the slots connected to every menu entry are defined here.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'VTApp'
 
 import os
 import time
@@ -35,7 +34,9 @@ import sys
 
 import tables
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 import vitables.vtsplash
@@ -62,11 +63,7 @@ import vitables.vtTables.dataSheet as dataSheet
 
 import vitables.vtGUI as vtGUI
 
-
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class VTApp(QtCore.QObject):
@@ -113,7 +110,7 @@ class VTApp(QtCore.QObject):
         # - create the main window
         # - create the model/view for the tree of databases
         # - setup the main window
-        splash.drawMessage(trs('Creating the GUI...',
+        splash.drawMessage(translate('VTApp', 'Creating the GUI...',
             'A splash screen message'))
         self.gui = vtGUI.VTGUI(self, vtconfig.getVersion())
         dbs_tmodel = dbsTreeModel.DBsTreeModel(self)
@@ -126,22 +123,23 @@ class VTApp(QtCore.QObject):
         self.config = vtconfig.Config()
 
         # Apply the configuration stored on disk
-        splash.drawMessage(trs('Configuration setup...',
+        splash.drawMessage(translate('VTApp', 'Configuration setup...',
             'A splash screen message'))
         self.config.loadConfiguration(self.config.readConfiguration())
 
         # Print the welcome message
-        print trs('''ViTables {0}\nCopyright (c) 2008-2010 Vicent Mas.'''
-            '''\nAll rights reserved.''', 
-            'Application startup message').format(vtconfig.getVersion())
+        print(translate('VTApp', 
+            """ViTables {0}\nCopyright (c) 2008-2010 Vicent Mas."""
+            """\nAll rights reserved.""", 
+            'Application startup message').format(vtconfig.getVersion()))
 
         # The list of most recently open DBs
         self.number_of_recent_files = 10
-        while self.config.recent_files.count() > self.number_of_recent_files:
-            self.config.recent_files.takeLast()
+        while len(self.config.recent_files) > self.number_of_recent_files:
+            del self.config.recent_files[-1]
 
         # The File Selector History
-        self.file_selector_history = QtCore.QStringList()
+        self.file_selector_history = []
         if self.config.startup_working_directory != u'last':
             self.config.last_working_directory = os.getcwdu()
         self.file_selector_history.append(self.config.last_working_directory)
@@ -162,17 +160,18 @@ class VTApp(QtCore.QObject):
 
         # Restore last session
         if self.config.restore_last_session:
-            splash.drawMessage(trs('Recovering last session...',
+            splash.drawMessage(translate('VTApp', 'Recovering last session...',
                 'A splash screen message'))
             self.recoverLastSession()
 
         # Process the command line
         if h5files:
-            splash.drawMessage(trs('Opening files...',
+            splash.drawMessage(translate('VTApp', 'Opening files...',
                 'A splash screen message'))
             self.processCommandLineArgs(mode=mode, h5files=h5files)
         elif dblist:
-            splash.drawMessage(trs('Opening the list of files...',
+            splash.drawMessage(translate('VTApp', 
+                'Opening the list of files...', 
                 'A splash screen message'))
             self.processCommandLineArgs(dblist=dblist)
 
@@ -214,7 +213,7 @@ class VTApp(QtCore.QObject):
         """
 
         for file_data in self.config.session_files_nodes:
-            item = unicode(file_data).split('#@#')
+            item = file_data.split('#@#')
             # item looks like [mode, filepath1, nodepath1, nodepath2, ...]
             mode = item.pop(0)
             filepath = item.pop(0)
@@ -277,7 +276,8 @@ class VTApp(QtCore.QObject):
         - `dblist`: a file that contains a list of files to be open at startup
         """
 
-        bad_line = trs("""Opening failed: wrong {0} in line {1} of {2}""", 
+        bad_line = translate('VTApp', 
+            """Opening failed: wrong {0} in line {1} of {2}""", 
             'Bad line format')
         # The database manager opens the files (if any)
         if isinstance(h5files, list):
@@ -297,12 +297,12 @@ class VTApp(QtCore.QObject):
                 input_file.close()
                 for line in lines:
                     if len(line) != 2:
-                        print bad_line.format('format', line, dblist)
+                        print(bad_line.format('format', line, dblist))
                         continue
                     [mode, filepath] = line
                     filepath = vitables.utils.forwardPath(filepath)
                     if not mode in ['r', 'a']:
-                        print bad_line.format('mode', line, dblist)
+                        print(bad_line.format('mode', line, dblist))
                         continue
                     if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
                         self.gui.dbs_tree_view.setCurrentIndex(\
@@ -311,8 +311,9 @@ class VTApp(QtCore.QObject):
                         self.updateRecentFiles(filepath, mode)
 
             except IOError:
-                print trs("""\nError: list of HDF5 files not read""",
-                                'File not updated error')
+                print(translate('VTApp', 
+                    "\nError: list of HDF5 files not read",
+                    'File not updated error'))
 
 
     def updateRecentFiles(self, filepath, mode):
@@ -331,13 +332,13 @@ class VTApp(QtCore.QObject):
         item = mode + u'#@#' + filepath
         recent_files = self.config.recent_files
         # Updates the list of recently open files. Most recent goes first.
-        if not recent_files.contains(item):
+        if item not in recent_files:
             recent_files.insert(0, item)
         else:
-            recent_files.removeAt(recent_files.indexOf(item))
+            recent_files.remove(item)
             recent_files.insert(0, item)
-        while recent_files.count() > self.number_of_recent_files:
-            recent_files.takeLast()
+        while len(recent_files) > self.number_of_recent_files:
+            del recent_files[-1]
 
 
     def updateFSHistory(self, working_dir):
@@ -347,10 +348,11 @@ class VTApp(QtCore.QObject):
         """
 
         self.config.last_working_directory = working_dir
-        if not self.file_selector_history.contains(working_dir):
+        if working_dir not in self.file_selector_history:
             self.file_selector_history.append(working_dir)
         else:
-            self.file_selector_history.removeAll(working_dir)
+            while working_dir in self.file_selector_history:
+                self.file_selector_history.remove(working_dir)
             self.file_selector_history.append(working_dir)
 
 
@@ -362,9 +364,9 @@ class VTApp(QtCore.QObject):
         extension to it. This is useful when a file is being created or
         saved.
 
-        :Parameter filepath: the full path of the file (a QString).
+        :Parameter filepath: the full path of the file.
 
-        :Returns: the filepath with the proper extension (a Python string).
+        :Returns: the filepath with the proper extension.
         """
 
         if not re.search('\.(.+)$', os.path.basename(filepath)):
@@ -380,12 +382,14 @@ class VTApp(QtCore.QObject):
         fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen, 
             'file_mode': QtGui.QFileDialog.AnyFile, 
             'history': self.file_selector_history, 
-            'label': trs('Create', 'Accept button text for QFileDialog')}
+            'label': translate('VTApp', 'Create', 
+                'Accept button text for QFileDialog')}
         filepath, working_dir = vitables.utils.getFilepath(
             self.gui, 
-            trs('Creating a new file...', 
+            translate('VTApp', 'Creating a new file...', 
                 'Caption of the File New... dialog'), 
-            dfilter=trs("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
+            dfilter=translate('VTApp', 
+                """HDF5 Files (*.hdf *.h5 *.hd5 *.hdf5);;"""
                 """All Files (*)""", 'Filter for the Open New dialog'), 
             settings=fs_args)
 
@@ -401,10 +405,10 @@ class VTApp(QtCore.QObject):
 
         # Check the returned path
         if os.path.exists(filepath):
-            print trs(
+            print(translate('VTApp', 
                 """\nWarning: """
                 """new file creation failed because file already exists.""",
-                'A file creation error')
+                'A file creation error'))
             return
 
         # Open the database and select it in the tree view
@@ -437,12 +441,14 @@ class VTApp(QtCore.QObject):
         fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave, 
             'file_mode': QtGui.QFileDialog.AnyFile, 
             'history': self.file_selector_history, 
-            'label': trs('Create', 'Accept button text for QFileDialog')}
+            'label': translate('VTApp', 'Create', 
+                'Accept button text for QFileDialog')}
         trier_filepath, working_dir = vitables.utils.getFilepath(
             self.gui, 
-            trs('Copying a file...', 
+            translate('VTApp', 'Copying a file...', 
                       'Caption of the File Save as... dialog'), 
-            dfilter = trs("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
+            dfilter = translate('VTApp', 
+                """HDF5 Files (*.hdf *.h5 *.hd5 *.hdf5);;"""
                 """All Files (*)""", 'Filter for the Save As... dialog'), 
             filepath=initial_filepath, 
             settings=fs_args)
@@ -459,7 +465,7 @@ class VTApp(QtCore.QObject):
         # Check if the chosen name is valid
         #
 
-        info = [trs('File Save as: file already exists', 
+        info = [translate('VTApp', 'File Save as: file already exists', 
                 'A dialog caption'), None]
         # Bad filepath conditions
         trier_dirname, trier_filename = os.path.split(trier_filepath)
@@ -475,21 +481,24 @@ class VTApp(QtCore.QObject):
         # we must check all error conditions every time a new name is tried
         while is_tmp_filepath or is_initial_filepath or filename_in_sibling:
             if is_tmp_filepath:
-                info[1] = trs("""Target directory: {0}\n\nThe Query results"""
+                info[1] = translate('VTApp', 
+                    """Target directory: {0}\n\nThe Query results"""
                     """ database cannot be overwritten.""", 
                     'Overwrite file dialog label').format(trier_dirname)
                 template = \
                     "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
                 pattern = template.format(trier_filename)
             elif is_initial_filepath:
-                info[1] = trs("""Target directory: {0}\n\nThe file being """
+                info[1] = translate('VTApp', 
+                    """Target directory: {0}\n\nThe file being """
                     """saved cannot overwrite itself.""", 
                     'Overwrite file dialog label').format(trier_dirname)
                 template = \
                     "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
                 pattern = template.format(trier_filename)
             elif filename_in_sibling:
-                info[1] = trs("""Target directory: {0}\n\nFile name {1}"""
+                info[1] = translate('VTApp', 
+                    """Target directory: {0}\n\nFile name {1}"""
                     """ already in use in that directory.\n""", 
                     'Overwrite file dialog label').format(trier_dirname, 
                     trier_filename)
@@ -500,7 +509,7 @@ class VTApp(QtCore.QObject):
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
                 trier_filepath = \
-                    unicode(QtCore.QDir.fromNativeSeparators(trier_filepath))
+                    QtCore.QDir.fromNativeSeparators(trier_filepath)
                 overwrite = dialog.action['overwrite']
                 # Update the error conditions
                 is_initial_filepath = trier_filepath == initial_filepath
@@ -568,7 +577,7 @@ class VTApp(QtCore.QObject):
 
         action = self.sender()
         item = action.data().toString()
-        (mode, filepath) = unicode(item).split('#@#')
+        (mode, filepath) = item.split('#@#')
         self.fileOpen(filepath, mode)
 
 
@@ -603,12 +612,14 @@ class VTApp(QtCore.QObject):
             fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen, 
                 'file_mode': QtGui.QFileDialog.ExistingFile, 
                 'history': self.file_selector_history, 
-                'label': trs('Open', 'Accept text for QFileDialog')}
-            filepath, working_dir = vitables.utils.getFilepath(\
+                'label': 
+                    translate('VTApp', 'Open', 'Accept text for QFileDialog')}
+            filepath, working_dir = vitables.utils.getFilepath(
                 self.gui, 
-                trs('Select a file for opening', 
+                translate('VTApp', 'Select a file for opening', 
                 'Caption of the File Open... dialog'), 
-                dfilter = trs("""HDF5 Files (*.h5 *.hd5 *.hdf5);;"""
+                dfilter = translate('VTApp', 
+                    """HDF5 Files (*.hdf *.h5 *.hd5 *.hdf5);;"""
                     """All Files (*)""", 'Filter for the Open New dialog'), 
                 settings=fs_args)
 
@@ -621,7 +632,7 @@ class VTApp(QtCore.QObject):
 
         else:
             # Make sure the path contains no backslashes
-            filepath = unicode(QtCore.QDir.fromNativeSeparators(filepath))
+            filepath = QtCore.QDir.fromNativeSeparators(filepath)
 
         # Open the database and select it in the tree view
         if self.gui.dbs_tree_model.openDBDoc(filepath, mode, position):
@@ -728,8 +739,9 @@ class VTApp(QtCore.QObject):
         # tables.UnImplemented datasets cannot be read so are not opened
         if isinstance(leaf, tables.UnImplemented):
             QtGui.QMessageBox.information(self, 
-                trs('About UnImplemented nodes', 'A dialog caption'), 
-                trs(
+                translate('VTApp', 
+                    'About UnImplemented nodes', 'A dialog caption'), 
+                translate('VTApp', 
                 """Actual data for this node are not accesible.<br> """
                 """The combination of datatypes and/or dataspaces in this """
                 """node is not yet supported by PyTables.<br>"""
@@ -786,10 +798,10 @@ class VTApp(QtCore.QObject):
 
         # Get the new group name
         dialog = inputNodeName.InputNodeName(\
-            trs('Creating a new group', 'A dialog caption'), 
-            trs('Source file: {0}\nParent group: {1}\n\n ', 
+            translate('VTApp', 'Creating a new group', 'A dialog caption'), 
+            translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n ', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 
-            trs('Create', 'A button label'))
+            translate('VTApp', 'Create', 'A button label'))
         if dialog.exec_():
             suggested_nodename = dialog.node_name
             del dialog
@@ -802,9 +814,11 @@ class VTApp(QtCore.QObject):
         #
         sibling = getattr(parent.node, '_v_children').keys()
         pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
-        info = [trs('Creating a new group: name already in use', 
-                'A dialog caption'), 
-                trs("""Source file: {0}\nParent group: {1}\n\nThere is """
+        info = [translate('VTApp', 
+                    'Creating a new group: name already in use', 
+                    'A dialog caption'), 
+                translate('VTApp', 
+                    """Source file: {0}\nParent group: {1}\n\nThere is """
                     """already a node named '{2}' in that parent group.\n""", 
                     'A dialog label').format\
                     (parent.filepath, parent.nodepath, suggested_nodename)]
@@ -838,10 +852,10 @@ class VTApp(QtCore.QObject):
 
         # Get the new nodename
         dialog = inputNodeName.InputNodeName(\
-            trs('Renaming a node', 'A dialog caption'),
-            trs('Source file: {0}\nParent group: {1}\n\n', 
+            translate('VTApp', 'Renaming a node', 'A dialog caption'),
+            translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 
-            trs('Rename', 'A button label'))
+            translate('VTApp', 'Rename', 'A button label'))
         if dialog.exec_():
             suggested_nodename = dialog.node_name
             del dialog
@@ -858,9 +872,10 @@ class VTApp(QtCore.QObject):
         # rename dialog via method argument and simplifies the code
         pattern = """(^{0}$)|""" \
             """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(child.name)
-        info = [trs('Renaming a node: name already in use', 
+        info = [translate('VTApp', 'Renaming a node: name already in use', 
                 'A dialog caption'), 
-                trs("""Source file: {0}\nParent group: {1}\n\nThere is """
+                translate('VTApp', 
+                    """Source file: {0}\nParent group: {1}\n\nThere is """
                     """already a node named '{2}' in that parent """
                     """group.\n""", 'A dialog label').format\
                     (parent.filepath, parent.nodepath, suggested_nodename)]
@@ -912,11 +927,12 @@ class VTApp(QtCore.QObject):
             leaf_buffer = rbuffer.Buffer(leaf)
             if not leaf_buffer.isDataSourceReadable():
                 QtGui.QMessageBox.information(self, 
-                    trs('About unreadable datasets', 'Dialog caption'), 
-                    trs(
-                    """Sorry, actual data for this node are not accesible."""
-                    """<br>The node will not be copied.""", 
-                    'Text of the Unimplemented node dialog'))
+                    translate('VTApp', 'About unreadable datasets', 
+                        'Dialog caption'), 
+                    translate('VTApp', 
+                        """Sorry, actual data for this node are not """
+                        """accesible.<br>The node will not be copied.""", 
+                        'Text of the Unimplemented node dialog'))
                 return
 
         # Copy the node
@@ -978,15 +994,15 @@ class VTApp(QtCore.QObject):
         # Nodename pattern
         pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
         # Bad nodename conditions
-        info = [trs('Node paste: nodename already exists', 
+        info = [translate('VTApp', 'Node paste: nodename already exists', 
                 'A dialog caption'), 
-                trs("""Source file: {0}\nCopied node: {1}\n"""
+                translate('VTApp', """Source file: {0}\nCopied node: {1}\n"""
                     """Destination file: {2}\nParent group: {3}\n\n"""
                     """Node name '{4}' already in use in that group.\n""", 
                     'A dialog label').format\
                     (src_filepath, src_nodepath, parent.filepath, 
                     parent.nodepath, nodename), 
-                trs('Paste', 'A button label')]
+                translate('VTApp', 'Paste', 'A button label')]
         # Validate the nodename
         nodename, overwrite = vitables.utils.getFinalName(nodename, sibling, 
             pattern, info)
@@ -1020,16 +1036,20 @@ class VTApp(QtCore.QObject):
 
         # Confirm deletion dialog
         if not force:
-            title = trs('Node deletion', 'Caption of the node deletion dialog')
-            text = trs("""\nYou are about to delete the node:\n{0}\n""", 
+            title = translate('VTApp', 'Node deletion', 
+                'Caption of the node deletion dialog')
+            text = translate('VTApp', 
+                """\nYou are about to delete the node:\n{0}\n""", 
                 'Ask for confirmation').format(node.nodepath)
             itext = ''
             dtext = ''
-            buttons = {\
-                'Delete': \
-                    (trs('Delete', 'Button text'), QtGui.QMessageBox.YesRole), 
-                'Cancel': \
-                    (trs('Cancel', 'Button text'), QtGui.QMessageBox.NoRole), 
+            buttons = {
+                'Delete': 
+                    (translate('VTApp', 'Delete', 'Button text'), 
+                    QtGui.QMessageBox.YesRole), 
+                'Cancel': 
+                    (translate('VTApp', 'Cancel', 'Button text'), 
+                    QtGui.QMessageBox.NoRole), 
                 }
 
             # Ask for confirmation
@@ -1049,8 +1069,7 @@ class VTApp(QtCore.QObject):
         # Delete the node
         self.gui.dbs_tree_model.deleteNode(current)
 
-        # Synchronise the workspace with the tree of databases pane i.e.
-        # ensure that the new current node (if any) gets selected
+        # Ensure that the new current node (if any) gets selected
         select_model = self.gui.dbs_tree_view.selectionModel()
         new_current = self.gui.dbs_tree_view.currentIndex()
         select_model.select(new_current, QtGui.QItemSelectionModel.Select)
@@ -1097,7 +1116,10 @@ class VTApp(QtCore.QObject):
 
     def windowClose(self):
         """Close the window currently active in the workspace."""
+
         self.gui.workspace.activeSubWindow().close()
+        if self.gui.workspace.subWindowList() == []:
+            self.gui.dbs_tree_view.setFocus(True)
 
 
     def windowCloseAll(self):
@@ -1105,6 +1127,7 @@ class VTApp(QtCore.QObject):
 
         for window in self.gui.workspace.subWindowList():
             window.close()
+        self.gui.dbs_tree_view.setFocus(True)
 
 
     def windowRestoreAll(self):
@@ -1134,7 +1157,7 @@ class VTApp(QtCore.QObject):
         """
 
         # Text to be displayed
-        about_text = trs(
+        about_text = translate('VTApp', 
             """<qt>
             <h3>ViTables {0}</h3>
             ViTables is a graphical tool for displaying datasets
@@ -1149,7 +1172,7 @@ class VTApp(QtCore.QObject):
             copyright notice of the individual packages.
             </qt>""",
             'Text of the About ViTables dialog').format(vtconfig.getVersion())
-        thanks_text = trs(
+        thanks_text = translate('VTApp', 
             """<qt>
             Dmitrijs Ledkovs for contributing the new and greatly enhanced
             build system and for making Debian packages.<p>
@@ -1161,8 +1184,10 @@ class VTApp(QtCore.QObject):
 
         # Construct the dialog
         about_dlg = QtGui.QDialog(self.gui)
-        about_dlg.setWindowTitle(trs('About ViTables {0}',
-            'Caption of the About ViTables dialog').format(vtconfig.getVersion()))
+        about_dlg.setWindowTitle(
+            translate('VTApp', 'About ViTables {0}', 
+                'Caption of the About ViTables dialog').\
+                format(vtconfig.getVersion()))
         layout = QtGui.QVBoxLayout(about_dlg)
         tab_widget = QtGui.QTabWidget(about_dlg)
         buttons_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
@@ -1173,11 +1198,11 @@ class VTApp(QtCore.QObject):
 
         # Make About page
         content = [about_text, thanks_text, license_text]
-        tabs = [trs('&About',
+        tabs = [translate('VTApp', '&About',
             'Title of the first tab of the About dialog'), 
-            trs('&Thanks To',
+            translate('VTApp', '&Thanks To',
             'Title of the second tab of the About dialog'), 
-            trs('&License',
+            translate('VTApp', '&License',
             'Title of the third tab of the About dialog')]
 
         for index in range(0, 3):
@@ -1210,7 +1235,7 @@ class VTApp(QtCore.QObject):
         """
         Show a message box with the Qt About info.
         """
-        QtGui.QMessageBox.aboutQt(self.gui, trs('About Qt',
+        QtGui.QMessageBox.aboutQt(self.gui, translate('VTApp', 'About Qt',
             'Caption of the About Qt dialog'))
 
 
@@ -1222,7 +1247,7 @@ class VTApp(QtCore.QObject):
 
         # The libraries versions dictionary
         libs_versions = {
-            'title': trs('Version Numbers',
+            'title': translate('VTApp', 'Version Numbers',
                 'Caption of the Versions dialog'),
             'Python': reduce(lambda x,y: '.'.join([unicode(x), unicode(y)]), 
                 sys.version_info[:3]),
@@ -1240,12 +1265,12 @@ class VTApp(QtCore.QObject):
             if lversion:
                 libs_versions[lib] = lversion[1]
             else:
-                libs_versions[lib] = trs('not available',
+                libs_versions[lib] = translate('VTApp', 'not available',
                     'Part of the library not found text')
 
         # Construct the dialog
         versions_dlg = QtGui.QDialog(self.gui)
-        versions_dlg.setWindowTitle(trs('Version Numbers', 
+        versions_dlg.setWindowTitle(translate('VTApp', 'Version Numbers', 
                                              'Caption of the Versions dialog'))
         layout = QtGui.QVBoxLayout(versions_dlg)
         versions_edit = QtGui.QTextEdit(versions_dlg)

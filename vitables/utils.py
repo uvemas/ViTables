@@ -61,7 +61,7 @@ def toUnicode(thing):
             return unicode(thing)
     else:
         # thing can be:
-        # - a PyQt object, namely a QString or
+        # - a PyQt object or
         # - a numpy array, eg. a multidimensional attribute 
         #   like in examples/misc/MDobjects.h5
         # - a numpy scalar object, e.g. an attribute whose
@@ -141,10 +141,10 @@ def getFilepath(parent, caption, dfilter, filepath='', settings=None):
             # Update the working directory
             working_dir = file_selector.directory().canonicalPath()
         else:  # Cancel clicked
-            filepath = working_dir = QtCore.QString('')
+            filepath = working_dir = ''
     finally:
         del file_selector
-    return unicode(filepath), unicode(working_dir)
+    return filepath, working_dir
 
 #
 # Icons related functions
@@ -336,7 +336,7 @@ def formatExceptionInfo(limit=1):
     :Parameter limit: the number of stack trace entries to be printed
     """
 
-    print '\n{0}\n'.format(traceback.format_exc(limit))
+    print('\n{0}\n'.format(traceback.format_exc(limit)))
 
 #
 # Path related functions
@@ -355,7 +355,7 @@ def getHomeDir():
         home = forwardPath(home)
     else:
         home = os.getenv('HOME')
-    return QtCore.QString(home)
+    return home
 
 
 def forwardPath(path):

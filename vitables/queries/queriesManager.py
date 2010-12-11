@@ -30,18 +30,16 @@ is executed on a given table.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'QueriesManager'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 import vitables.queries.queryDlg as queryDlg
 import vitables.queries.query as query
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 def getTableInfo(table):
@@ -64,8 +62,9 @@ def getTableInfo(table):
     info[u'valid_fields'] = []
 
     if info[u'nrows'] <= 0:
-        print trs("""Caveat: table {0} is empty. Nothing to query.""",
-            'Warning message for users').format(info[u'name'])
+        print(translate('QueriesManager', 
+            "Caveat: table {0} is empty. Nothing to query.", 
+            'Warning message for users').format(info[u'name']))
         return None
 
     # Find out the valid (i.e. searchable) fields and condition variables.
@@ -100,18 +99,19 @@ def getTableInfo(table):
 
     # If table has not columns suitable to be filtered does nothing
     if not info[u'valid_fields']:
-        print trs("""\nError: table {0} has no """
-        """columns suitable to be queried. All columns are nested, """
-        """multidimensional or have a Complex data type.""",
-        'An error when trying to query a table').format(info['name'])
+        print(translate('QueriesManager', 
+            """\nError: table {0} has no columns suitable to be """
+            """queried. All columns are nested, multidimensional or have a """
+            """Complex data type.""", 
+            'An error when trying to query a table').format(info['name']))
         return None
     elif len(info[u'valid_fields']) != len(info[u'col_names']):
     # Log a message if non selectable fields exist
-        print trs("""\nWarning: some table columns contain """
-           """nested, multidimensional or Complex data. They """
-           """cannot be queried so are not included in the Column"""
-           """ selector of the query dialog.""",
-           'An informational note for users')
+        print(translate('QueriesManager', 
+            """\nWarning: some table columns contain multidimensional, """
+            """nested or Complex data. They cannot be queried so are not """
+            """included in the Column selector of the query dialog.""", 
+           'An informational note for users'))
 
     return info
 
@@ -248,17 +248,20 @@ class QueriesManager(QtCore.QObject):
         Delete all nodes under the `Query results` node of the databases tree.
         """
 
-        title = trs('Cleaning the Query results file', 
+        title = translate('QueriesManager', 'Cleaning the Query results file', 
             'Caption of the QueryDeleteAll dialog')
-        text = trs("""\n\nYou are about to delete all nodes """
-                """under Query results\n\n""", 'Ask for confirmation')
+        text = translate('QueriesManager', 
+            "\n\nYou are about to delete all nodes under Query results\n\n", 
+            'Ask for confirmation')
         itext = ''
         dtext = ''
-        buttons = {\
-            'Delete': \
-                (trs('Delete', 'Button text'), QtGui.QMessageBox.YesRole), 
-            'Cancel': \
-                (trs('Cancel', 'Button text'), QtGui.QMessageBox.NoRole), 
+        buttons = {
+            'Delete': 
+                (translate('QueriesManager', 'Delete', 'Button text'), 
+                QtGui.QMessageBox.YesRole), 
+            'Cancel': 
+                (translate('QueriesManager', 'Cancel', 'Button text'), 
+                QtGui.QMessageBox.NoRole), 
             }
 
         # Ask for confirmation
@@ -295,8 +298,8 @@ class QueriesManager(QtCore.QObject):
 
         QtGui.qApp.restoreOverrideCursor()
         if not completed:
-            print trs('Query on table {0} failed!', 
-                'Warning log message about a failed query').format(table_uid)
+            print(translate('QueriesManager', 'Query on table {0} failed!', 
+                'Warning log message about a failed query').format(table_uid))
             return
 
         # Update temporary database view i.e. call lazyAddChildren

@@ -32,16 +32,14 @@ commands in the Logger.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'Logger'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class Logger(QtGui.QTextEdit):
@@ -65,7 +63,7 @@ class Logger(QtGui.QTextEdit):
         self.setReadOnly(1)
         self.setMinimumHeight(50)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setWhatsThis(trs(
+        self.setWhatsThis(translate('Logger', 
             """<qt>
             <h3>The Logger</h3>
             This is the screen region where info about the currently
@@ -134,24 +132,24 @@ class Logger(QtGui.QTextEdit):
         edit_menu.setStyleSheet("background-color: {0}".format(10))
 
         self.copy_action = QtGui.QAction(
-            trs("&Copy", 'Logger menu entry'), self, 
+            translate('Logger', "&Copy", 'Logger menu entry'), self, 
             shortcut=QtGui.QKeySequence.Copy, triggered=vtapp.makeCopy, 
-            statusTip=trs('Copy selected text to clipboard', 
+            statusTip=translate('Logger', 'Copy selected text to clipboard', 
                 'Status bar text for the logger context menu -> Copy action'))
         edit_menu.addAction(self.copy_action)
 
         self.clear_action = QtGui.QAction(
-            trs("Cl&ear All", 'Logger menu entry'), self, 
+            translate('Logger', "Cl&ear All", 'Logger menu entry'), self, 
             triggered=self.clear, 
-            statusTip=trs('Empty the Logger', 
+            statusTip=translate('Logger', 'Empty the Logger', 
                 'Status bar text for the logger context menu -> Clear action'))
         edit_menu.addAction(self.clear_action)
         edit_menu.addSeparator()
 
         self.select_action = QtGui.QAction(
-            trs("Select &All", 'Logger menu entry'), self, 
+            translate('Logger', "Select &All", 'Logger menu entry'), self, 
             triggered=self.selectAll, 
-            statusTip=trs('Select the whole Logger contents', 
+            statusTip=translate('Logger', 'Select the whole Logger contents', 
                 'Status bar text for the logger context menu -> Select All'))
         edit_menu.addAction(self.select_action)
 
@@ -214,8 +212,8 @@ if __name__ == '__main__':
     # Redirect standard output and standard error to the Logger instance
     sys.stdout = LOGGER
     sys.stderr = LOGGER
-    print 'Hola mundo!'
-    print '\nError: El viatger del crepuscle'
-    print '\nWarning: Adolf Piquer'
-    print 'Adeu!'
+    print('Hola mundo!')
+    print('\nError: El viatger del crepuscle')
+    print('\nWarning: Adolf Piquer')
+    print('Adeu!')
     APP.exec_()

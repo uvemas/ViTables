@@ -20,35 +20,34 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module displays in a dialog the node information collected by the :mod:`vitables.nodeProperties.nodeInfo` module.
+This module displays in a dialog the node information collected by the
+:mod:`vitables.nodeProperties.nodeInfo` module.
 
 Users' attributes can be edited if the database has been opened in read-write 
 mode. Otherwise all shown information is read-only.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'NodePropDlg'
 
 import os.path
 
 import tables
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 from PyQt4.uic import loadUiType
 
 import vitables.utils
 import vitables.nodeProperties.attrEditor as attrEditor
 
+translate = QtGui.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_NodePropDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'prop_dlg.ui'))[0]
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
 class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
@@ -85,13 +84,20 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
 
         # The dialog caption
         caption_for_type = {
-            u'root group': trs('Database properties', 'Dialog caption'), 
-            u'group': trs('Group properties', 'Dialog caption'),
-            u'table': trs('Table properties', 'Dialog caption'), 
-            u'vlarray': trs('VLArray properties', 'Dialog caption'), 
-            u'earray': trs('EArray properties', 'Dialog caption'), 
-            u'carray': trs('CArray properties', 'Dialog caption'), 
-            u'array': trs('Array properties', 'Dialog caption'), }
+            u'root group': 
+                translate('NodePropDlg', 'Database properties', 'Dlg caption'),
+            u'group': 
+                translate('NodePropDlg', 'Group properties', 'Dlg caption'),
+            u'table': 
+                translate('NodePropDlg', 'Table properties', 'Dlg caption'), 
+            u'vlarray': 
+                translate('NodePropDlg', 'VLArray properties', 'Dlg caption'), 
+            u'earray': 
+                translate('NodePropDlg', 'EArray properties', 'Dlg caption'), 
+            u'carray': 
+                translate('NodePropDlg', 'CArray properties', 'Dlg caption'), 
+            u'array': 
+                translate('NodePropDlg', 'Array properties', 'Dlg caption')}
         self.setWindowTitle(caption_for_type[info.node_type])
 
         # Customise the dialog's pages
@@ -185,9 +191,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """
 
         if info.node_type == u'root group':
-            self.bottomGB.setTitle(trs('Root group', 'Title of a groupbox'))
+            self.bottomGB.setTitle(
+                translate('NodePropDlg', 'Root group', 'Title of a groupbox'))
         else:
-            self.bottomGB.setTitle(trs('Group', 'Title of a groupbox'))
+            self.bottomGB.setTitle(
+                translate('NodePropDlg', 'Group', 'Title of a groupbox'))
 
         # Number of children label
         self.nchildrenLE.setText(unicode(len(info.hanging_nodes)))
@@ -199,18 +207,18 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         table.setStyleSheet("background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()
         self.children_model.setHorizontalHeaderLabels([
-            trs('Child name', 
+            translate('NodePropDlg', 'Child name', 
             'First column header of the table'), 
-            trs('Type', 
+            translate('NodePropDlg', 'Type', 
             'Second column header of the table')])
         table.setModel(self.children_model)
         for name in info.hanging_groups.keys():
             name_item = QtGui.QStandardItem(name)
-            type_item = QtGui.QStandardItem(trs('group'))
+            type_item = QtGui.QStandardItem(translate('NodePropDlg', 'group'))
             self.children_model.appendRow([name_item, type_item])
         for name in info.hanging_leaves.keys():
             name_item = QtGui.QStandardItem(name)
-            type_item = QtGui.QStandardItem(trs('leaf'))
+            type_item = QtGui.QStandardItem(translate('NodePropDlg', 'leaf'))
             self.children_model.appendRow([name_item, type_item])
 
 
@@ -230,11 +238,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             QtGui.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
-            trs('Name', 
+            translate('NodePropDlg', 'Name', 
             'First column header of the table'), 
-            trs('Value', 
+            translate('NodePropDlg', 'Value', 
             'Second column header of the table'), 
-            trs('Datatype', 
+            translate('NodePropDlg', 'Datatype', 
             'Third column header of the table')])
         self.sysTable.setModel(self.sysattr_model)
 
@@ -301,7 +309,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         self.shapeLE.setText(unicode(info.shape))
         self.dtypeLE.setText(info.type)
         if info.filters.complib is None:
-            self.compressionLE.setText(unicode('uncompressed', 'utf_8'))
+            self.compressionLE.setText('uncompressed')
         else:
             self.compressionLE.setText(unicode(info.filters.complib, 
                 'utf_8'))
@@ -316,11 +324,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             table.setStyleSheet("background-color: {0}".format(bg_name))
             self.fields_model = QtGui.QStandardItemModel()
             self.fields_model.setHorizontalHeaderLabels([
-                trs('Field name', 
+                translate('NodePropDlg', 'Field name', 
                 'First column header of the table'), 
-                trs('Type', 
+                translate('NodePropDlg', 'Type', 
                 'Second column header of the table'), 
-                trs('Shape', 
+                translate('NodePropDlg', 'Shape', 
                 'Third column header of the table')])
             table.setModel(self.fields_model)
 
@@ -334,8 +342,10 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
                     else:
                         seen_paths.append(field_name)
                     pathname_item = QtGui.QStandardItem(field_name)
-                    type_item = QtGui.QStandardItem(trs('nested'))
-                    shape_item = QtGui.QStandardItem(trs('-'))
+                    type_item = QtGui.QStandardItem(
+                        translate('NodePropDlg', 'nested'))
+                    shape_item = QtGui.QStandardItem(
+                        translate('NodePropDlg', '-'))
                 else:
                     pathname_item = QtGui.QStandardItem(unicode(pathname, 
                                                                 'utf_8'))
@@ -365,20 +375,19 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
                         setResizeMode(QtGui.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
-            trs('Name', 
+            translate('NodePropDlg', 'Name', 
             'First column header of the table'), 
-            trs('Value', 
+            translate('NodePropDlg', 'Value', 
             'Second column header of the table'), 
-            trs('Datatype', 
+            translate('NodePropDlg', 'Datatype', 
             'Third column header of the table')])
         self.userTable.setModel(self.userattr_model)
 
         # Fill the table
         # The Data Type cell is a combobox with static content
-        datatypes = QtCore.QString("""int8 int16 int32 int64 uint8 uint16 """
-            """uint32 uint64 float32 float64 complex64 complex128 bool """
-            """string unicode python""")
-        dtypes_list = QtCore.QStringList(datatypes.split(u' '))
+        dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 
+            'uint32', 'uint64', 'float32', 'float64', 'complex64', 
+            'complex128', 'bool', 'string', 'unicode', 'python']
 
         bg_brush = self.userTable.palette().brush(QtGui.QPalette.Window)
         base_brush = self.userTable.palette().brush(QtGui.QPalette.Base)
@@ -426,9 +435,8 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             name_item.setBackground(brush)
             value_item.setEditable(editable)
             value_item.setBackground(brush)
-            self.user_attrs_before.append((unicode(name_item.text()), 
-                unicode(value_item.text()), 
-                unicode(dtypes_combo.currentText())))
+            self.user_attrs_before.append((name_item.text(), 
+                value_item.text(), dtypes_combo.currentText()))
         self.user_attrs_before.sort()
 
         # The group of buttons Add, Delete, What's This
@@ -474,10 +482,9 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         self.userattr_model.appendRow([name_item, value_item, dtype_item])
 
         # The Data Type cell is a combobox with static content
-        datatypes = QtCore.QString("""int8 int16 int32 int64 uint8 uint16 """
-            """uint32 uint64 float32 float64 complex64 complex128 bool """
-            """string unicode python""")
-        dtypes_list = QtCore.QStringList(datatypes.split(u' '))
+        dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 
+            'uint32', 'uint64', 'float32', 'float64', 'complex64', 
+            'complex128', 'bool', 'string', 'unicode', 'python']
         dtypes_combo = QtGui.QComboBox()
         dtypes_combo.addItems(dtypes_list)
         dtypes_combo.setEditable(False)
@@ -504,8 +511,9 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         # If there is not a selected attribute then return
         current_index = self.userTable.currentIndex()
         if not current_index.isValid():
-            print trs('Please, select the attribute to be deleted.',
-                'A usage text')
+            print(translate('NodePropDlg', 
+                'Please, select the attribute to be deleted.',
+                'A usage text'))
             return
 
         # Get the name of the attribute being deleted
@@ -516,17 +524,20 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         name = self.userattr_model.itemFromIndex(current_index).text()
 
         # Delete the marked attribute
-        title = trs('User attribute deletion',
+        title = translate('NodePropDlg', 'User attribute deletion',
             'Caption of the attr deletion dialog')
-        text = trs("""\n\nYou are about to delete the attribute:\n{0}\n\n""",
-            'Ask for confirmation').format(unicode(name))
+        text = translate('NodePropDlg', 
+            "\n\nYou are about to delete the attribute:\n{0}\n\n", 
+            'Ask for confirmation').format(name)
         itext = ''
         dtext = ''
-        buttons = {\
-            'Delete': \
-                (trs('Delete', 'Button text'), QtGui.QMessageBox.YesRole), 
-            'Cancel': \
-                (trs('Cancel', 'Button text'), QtGui.QMessageBox.NoRole), 
+        buttons = {
+            'Delete': 
+                (translate('NodePropDlg', 'Delete', 'Button text'), 
+                QtGui.QMessageBox.YesRole), 
+            'Cancel': 
+                (translate('NodePropDlg', 'Cancel', 'Button text'), 
+                QtGui.QMessageBox.NoRole), 
             }
 
         # Ask for confirmation
@@ -549,19 +560,19 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         # generic HDF5 files
         self.title_after = None
         if hasattr(self, u'title_row'):
-            self.title_after = unicode(\
-                self.sysattr_model.item(self.title_row, 1).text())
+            self.title_after = \
+                self.sysattr_model.item(self.title_row, 1).text()
             if self.title_before != self.title_after:
                 return True
 
         # Check user attributes
         self.user_attrs_after = []
         for index in range(0, self.userTable.model().rowCount()):
-            name_after = unicode(self.userattr_model.item(index, 0).text())
-            value_after = unicode(self.userattr_model.item(index, 1).text())
+            name_after = self.userattr_model.item(index, 0).text()
+            value_after = self.userattr_model.item(index, 1).text()
             dtype_item = self.userattr_model.item(index, 2)
             dtype_combo = self.userTable.indexWidget(dtype_item.index())
-            dtype_after = unicode(dtype_combo.currentText())
+            dtype_after = dtype_combo.currentText()
             self.user_attrs_after.append((name_after, value_after, 
                 dtype_after))
         self.user_attrs_after.sort()

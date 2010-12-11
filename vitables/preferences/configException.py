@@ -25,14 +25,10 @@ reading/writting the ``ViTables`` configuration.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'ConfigFileIOException'
 
 from PyQt4 import QtGui
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class ConfigFileIOException(Exception):
@@ -51,12 +47,12 @@ class ConfigFileIOException(Exception):
         # raised. If not a read exception is raised
         if '=' in key:
             setting = key.split('=')[0]
-            self.error_message = trs(\
+            self.error_message = translate('ConfigFileIOException', \
                 """\nConfiguration error: the application setting """\
                 """{0} cannot be saved.""",
                 'A logger error message').format(setting)
         else:
-            self.error_message = trs(\
+            self.error_message = translate('ConfigFileIOException', \
                 """\nConfiguration warning: the application setting """\
                 """{0} cannot be read. Its default value will be used.""",
                 'A logger error message').format(key)

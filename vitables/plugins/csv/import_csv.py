@@ -57,7 +57,6 @@ Other aspects to take into account:
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'ImportCSV'
 __version__ = '0.9'
 plugin_class = 'ImportCSV'
 
@@ -67,15 +66,14 @@ import tempfile
 import tables
 import numpy
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 def getArray(buf):
@@ -269,18 +267,23 @@ def askForHelp(first_line):
       the `CSV` file
     """
 
-    title = trs('Resolving first line role', 'Message box title')
-    text = trs("""Does the first line of the file contain """
-        """a table header or regular data?""", 'Message box text')
+    title = translate('ImportCSV', 'Resolving first line role', 
+        'Message box title')
+    text = translate('ImportCSV', """Does the first line of the file contain"""
+        """ a table header or regular data?""", 'Message box text')
     itext = ''
     try:
         dtext = reduce(lambda x, y: '{0}, {1}'.format(x, y), first_line)
     except TypeError:
         # If first_line has only one field reduce raises a TypeError
         dtext = first_line.tostring()
-    buttons = {\
-        'Header': (trs('Header', 'Button text'), QtGui.QMessageBox.YesRole), 
-        'Data': (trs('Data', 'Button text'), QtGui.QMessageBox.NoRole),
+    buttons = {
+        'Header': 
+            (translate('ImportCSV', 'Header', 'Button text'), 
+            QtGui.QMessageBox.YesRole), 
+        'Data': 
+            (translate('ImportCSV', 'Data', 'Button text'), 
+            QtGui.QMessageBox.NoRole),
         }
     return vitables.utils.questionBox(title, text, itext, dtext, buttons)
 
@@ -408,17 +411,17 @@ def isValidFilepath(filepath):
 
     valid = True
     if os.path.exists(filepath):
-        print trs(
+        print(translate('ImportCSV', 
             """\nWarning: """
             """import failed because destination file already exists.""",
-            'A file creation error')
+            'A file creation error'))
         valid = False
 
     elif os.path.isdir(filepath):
-        print trs(
+        print(translate('ImportCSV', 
             """\nWarning: import failed """
             """because destination container is a directory.""",
-            'A file creation error')
+            'A file creation error'))
         valid = False
 
     return valid
@@ -460,39 +463,52 @@ class ImportCSV(QtCore.QObject):
         icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
         self.import_submenu = \
-            QtGui.QMenu(trs('I&mport from CSV...','File -> Import CSV'))
+            QtGui.QMenu(translate('ImportCSV', 
+                'I&mport from CSV...','File -> Import CSV'))
         self.import_submenu.setSeparatorsCollapsible(False)
         self.import_submenu.setIcon(icon)
 
         # Create the actions
         actions = {}
         actions['import_table'] = QtGui.QAction(
-            trs("Import &Table...", "Import table from CSV file"), self, 
+            translate('ImportCSV', "Import &Table...", 
+                "Import table from CSV file"), 
+            self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
             triggered=self.csv2Table, 
-            statusTip=trs("Import Table from plain CSV file", 
-            "Status bar text for the File -> Import CSV... -> Import Table"))
+            statusTip=translate('ImportCSV', 
+                "Import Table from plain CSV file", 
+                "Status bar text for File -> Import CSV... -> Import Table"))
 
         actions['import_array'] = QtGui.QAction(
-            trs("Import &Array...", "Import array from CSV file"), self, 
+            translate('ImportCSV', "Import &Array...", 
+                "Import array from CSV file"), 
+            self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
             triggered=self.csv2Array, 
-            statusTip=trs("Import Array from plain CSV file",
-            "Status bar text for the File -> Import CSV... -> Import Array"))
+            statusTip=translate('ImportCSV', 
+                "Import Array from plain CSV file", 
+                "Status bar text for File -> Import CSV... -> Import Array"))
 
         actions['import_carray'] = QtGui.QAction(
-            trs("Import &CArray...", "Import carray from CSV file"), self, 
+            translate('ImportCSV', "Import &CArray...", 
+                "Import carray from CSV file"), 
+            self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
             triggered=self.csv2CArray, 
-            statusTip=trs("Import CArray from plain CSV file",
-            "Status bar text for the File -> Import CSV... -> Import CArray"))
+            statusTip=translate('ImportCSV', 
+                "Import CArray from plain CSV file",
+                "Status bar text for File -> Import CSV... -> Import CArray"))
 
         actions['import_earray'] = QtGui.QAction(
-            trs("Import &EArray...", "Import earray from CSV file"), self, 
+            translate('ImportCSV', "Import &EArray...", 
+                "Import earray from CSV file"), 
+            self, 
             shortcut=QtGui.QKeySequence.UnknownKey, 
             triggered=self.csv2EArray,
-            statusTip=trs("Import EArray from plain CSV file",
-            "Status bar text for the File -> Import CSV... -> Import EArray"))
+            statusTip=translate('ImportCSV', 
+                "Import EArray from plain CSV file", 
+                "Status bar text for File -> Import CSV... -> Import EArray"))
 
         # Add actions to the Import submenu
         keys = ('import_table', 'import_array', 'import_carray', 
@@ -528,10 +544,10 @@ class ImportCSV(QtCore.QObject):
             if isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
-            print trs(
+            print(translate('ImportCSV', 
                 """\nWarning: import failed """
                 """because destination file cannot be created.""",
-                'A file creation error')
+                'A file creation error'))
             vitables.utils.formatExceptionInfo()
 
         return dbdoc
@@ -546,14 +562,15 @@ class ImportCSV(QtCore.QObject):
         # Call the file selector (and, if needed, customise it)
         filepath, working_dir = vitables.utils.getFilepath(\
             self.vtgui, 
-            trs('Importing CSV file into {0}',
+            translate('ImportCSV', 'Importing CSV file into {0}',
                 'Caption of the Import from CSV dialog').format(leaf_kind), 
-            dfilter=trs("""CSV Files (*.csv);;"""
+            dfilter=translate('ImportCSV', """CSV Files (*.csv);;"""
                 """All Files (*)""", 'Filter for the Import from CSV dialog'), 
             settings={'accept_mode': QtGui.QFileDialog.AcceptOpen, 
             'file_mode': QtGui.QFileDialog.ExistingFile, 
             'history': self.vtapp.file_selector_history, 
-            'label': trs('Import', 'Accept button text for QFileDialog')}
+            'label': translate('ImportCSV', 'Import', 
+                'Accept button text for QFileDialog')}
             )
 
         if not filepath:
@@ -685,9 +702,10 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            print trs("""\nError: please, make sure that you are """\
+            print(translate('ImportCSV', 
+                """\nError: please, make sure that you are """
                 """importing a homogeneous dataset.""",
-                'CSV file not imported error')
+                'CSV file not imported error'))
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -744,9 +762,10 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            print trs("""\nError: please, make sure that you are """\
+            print(translate('ImportCSV', 
+                """\nError: please, make sure that you are """
                 """importing a homogeneous dataset.""",
-                'CSV file not imported error')
+                'CSV file not imported error'))
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -784,9 +803,10 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except TypeError:
-            print trs("""\nError: please, make sure that you are """\
+            print(translate('ImportCSV', 
+                """\nError: please, make sure that you are """
                 """importing a homogeneous dataset.""",
-                'CSV file not imported error')
+                'CSV file not imported error'))
             self.dbt_model.closeDBDoc(dbdoc.filepath)
         except:
             vitables.utils.formatExceptionInfo()
@@ -799,7 +819,7 @@ class ImportCSV(QtCore.QObject):
         """Brief description of the plugin."""
 
         # Text to be displayed
-        about_text = trs(
+        about_text = translate('ImportCSV', 
             """<qt>
             <p>Plugin that provides import CSV files capabilities.
             <p>CSV files can be imported into any of the following 

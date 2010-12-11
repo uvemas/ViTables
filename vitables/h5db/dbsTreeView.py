@@ -27,16 +27,14 @@ node of the tree contains the object tree of a `PyTables`/`HDF5` database.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'DBsTreeView'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 from vitables.h5db.nodeItemDelegate import NodeItemDelegate
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class DBsTreeView(QtGui.QTreeView):
@@ -87,7 +85,7 @@ class DBsTreeView(QtGui.QTreeView):
         self.setRootIsDecorated(True)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.setWhatsThis(trs(
+        self.setWhatsThis(translate('DBsTreeView', 
             """<qt>
             <h3>The Tree of databases</h3>
             For every open database this widget shows the object tree, 
@@ -218,6 +216,7 @@ class DBsTreeView(QtGui.QTreeView):
     def currentChanged(self, current, previous):
         """This slot is automatically called when the current item changes.
 
+        The slot is not called if the item doesn't actually changed.
         When the current item changes the menus, toolbars and statusbar have
         to be updated. Probably some QActions will be enabled and other will
         be disabled. Also the databases tree and the workspace have to be

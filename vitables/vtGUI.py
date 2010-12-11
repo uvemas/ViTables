@@ -25,21 +25,17 @@ toolbars, statusbars and `QActions` bound to both menus and toolbars.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'VTGUI'
 
 import sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 import vitables.utils
 import vitables.logger as logger
 import vitables.vtsplash
 
-
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class VTGUI(QtGui.QMainWindow):
@@ -57,7 +53,7 @@ class VTGUI(QtGui.QMainWindow):
 
         super(VTGUI, self).__init__(None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle(trs('ViTables {0}', 
+        self.setWindowTitle(translate('VTGUI', 'ViTables {0}', 
             'Main window title').format(version))
         self.vtapp = vtapp
 
@@ -84,8 +80,8 @@ class VTGUI(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-    #    sys.stdout = self.logger
-    #    sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
 
     def addComponents(self):
@@ -111,7 +107,7 @@ class VTGUI(QtGui.QMainWindow):
         sb_as_needed = QtCore.Qt.ScrollBarAsNeeded
         self.workspace.setHorizontalScrollBarPolicy(sb_as_needed)
         self.workspace.setVerticalScrollBarPolicy(sb_as_needed)
-        self.workspace.setWhatsThis(trs(
+        self.workspace.setWhatsThis(translate('VTGUI', 
             """<qt>
             <h3>The Workspace</h3>
             This is the area where open leaves of the object tree are
@@ -134,7 +130,6 @@ class VTGUI(QtGui.QMainWindow):
         self.workspace.installEventFilter(self)
 
 
-
     def setupActions(self):
         """Provide actions to the menubar and the toolbars.
         """
@@ -143,251 +138,267 @@ class VTGUI(QtGui.QMainWindow):
         # from plugins
         actions = {}
         actions['fileNew'] = QtGui.QAction(
-            trs('&New...', 'File -> New'), self, 
+            translate('VTGUI', '&New...', 'File -> New'), self, 
             shortcut=QtGui.QKeySequence.New, 
             triggered=self.vtapp.fileNew, 
             icon=self.icons_dictionary['document-new'], 
-            statusTip=trs('Create a new file', 
+            statusTip=translate('VTGUI', 'Create a new file', 
                 'Status bar text for the File -> New action'))
         actions['fileNew'].setObjectName('fileNew')
 
         actions['fileOpen'] = QtGui.QAction(
-            trs('&Open...', 'File -> Open'), self, 
+            translate('VTGUI', '&Open...', 'File -> Open'), self, 
             shortcut=QtGui.QKeySequence.Open, 
             triggered=self.vtapp.fileOpen, 
             icon=self.icons_dictionary['document-open'], 
-            statusTip=trs('Open an existing file',
+            statusTip=translate('VTGUI', 'Open an existing file',
                 'Status bar text for the File -> Open action'))
         actions['fileOpen'].setObjectName('fileOpen')
 
         actions['fileOpenRO'] = QtGui.QAction(
-            trs('Read-only open...', 'File -> Open'), self, 
+            translate('VTGUI', 'Read-only open...', 'File -> Open'), self, 
             triggered=self.vtapp.fileOpenRO, 
             icon=self.icons_dictionary['document-open'], 
-            statusTip=trs('Open an existing file in read-only mode',
+            statusTip=translate('VTGUI', 
+                'Open an existing file in read-only mode', 
                 'Status bar text for the File -> Open action'))
         actions['fileOpenRO'].setObjectName('fileOpenRO')
 
         actions['fileClose'] = QtGui.QAction(
-            trs('&Close', 'File -> Close'), self, 
+            translate('VTGUI', '&Close', 'File -> Close'), self, 
             shortcut=QtGui.QKeySequence.Close, 
             triggered=self.vtapp.fileClose, 
             icon=self.icons_dictionary['document-close'], 
-            statusTip=trs('Close the selected file',
+            statusTip=translate('VTGUI', 'Close the selected file',
                 'Status bar text for the File -> Close action'))
         actions['fileClose'].setObjectName('fileClose')
 
         actions['fileCloseAll'] = QtGui.QAction(
-            trs('Close &All', 'File -> Close All'), self, 
+            translate('VTGUI', 'Close &All', 'File -> Close All'), self, 
             triggered=self.vtapp.fileCloseAll, 
-            statusTip=trs('Close all files', 
+            statusTip=translate('VTGUI', 'Close all files', 
                 'Status bar text for the File -> Close All action'))
         actions['fileCloseAll'].setObjectName('fileCloseAll')
 
         actions['fileSaveAs'] = QtGui.QAction(
-            trs('&Save as...', 'File -> Save As'), self, 
+            translate('VTGUI', '&Save as...', 'File -> Save As'), self, 
             shortcut=QtGui.QKeySequence('CTRL+SHIFT+S'), 
             triggered=self.vtapp.fileSaveAs, 
             icon=self.icons_dictionary['document-save-as'], 
-            statusTip=trs('Save a renamed copy of the selected file',
+            statusTip=translate('VTGUI', 
+                'Save a renamed copy of the selected file',
                 'Status bar text for the File -> Save As action'))
         actions['fileSaveAs'].setObjectName('fileSaveAs')
 
         actions['fileExit'] = QtGui.QAction(
-            trs('E&xit', 'File -> Exit'), self, 
+            translate('VTGUI', 'E&xit', 'File -> Exit'), self, 
             shortcut=QtGui.QKeySequence('CTRL+Q'), 
     #        triggered=self.vtapp.fileExit, 
             triggered=self.close, 
             icon=self.icons_dictionary['application-exit'], 
-            statusTip=trs('Quit ViTables',
+            statusTip=translate('VTGUI', 'Quit ViTables',
                 'Status bar text for the File -> Exit action'))
         actions['fileExit'].setObjectName('fileExit')
 
         actions['nodeOpen'] = QtGui.QAction(
-            trs('&Open view', 'Node -> Open View'), self, 
+            translate('VTGUI', '&Open view', 'Node -> Open View'), self, 
             shortcut=QtGui.QKeySequence('CTRL+SHIFT+O'), 
             triggered=self.vtapp.nodeOpen, 
-            statusTip=trs('Display the contents of the selected node', 
+            statusTip=translate('VTGUI', 
+                'Display the contents of the selected node', 
                 'Status bar text for the Node -> Open View action'))
         actions['nodeOpen'].setObjectName('nodeOpen')
 
         actions['nodeClose'] = QtGui.QAction(
-            trs('C&lose view', 'Node -> Close View'), self, 
+            translate('VTGUI', 'C&lose view', 'Node -> Close View'), self, 
             shortcut=QtGui.QKeySequence('CTRL+SHIFT+W'), 
             triggered=self.vtapp.nodeClose, 
-            statusTip=trs('Close the view of the selected node', 
+            statusTip=translate('VTGUI', 
+                'Close the view of the selected node', 
                 'Status bar text for the Node -> Close View action'))
         actions['nodeClose'].setObjectName('nodeClose')
 
         actions['nodeProperties'] = QtGui.QAction(
-            trs('Prop&erties...', 'Node -> Properties'), self, 
+            translate('VTGUI', 'Prop&erties...', 'Node -> Properties'), self, 
             shortcut=QtGui.QKeySequence('CTRL+I'), 
             triggered=self.vtapp.nodeProperties, 
             icon=self.icons_dictionary['help-about'], 
-            statusTip=trs('Show the properties dialog for the selected node', 
+            statusTip=translate('VTGUI', 
+                'Show the properties dialog for the selected node', 
                 'Status bar text for the Node -> Properties action'))
         actions['nodeProperties'].setObjectName('nodeProperties')
 
         actions['nodeNew'] = QtGui.QAction(
-            trs('&New group...', 'Node -> New group'), self, 
+            translate('VTGUI', '&New group...', 'Node -> New group'), self, 
             shortcut=QtGui.QKeySequence('CTRL+SHIFT+N'), 
             triggered=self.vtapp.nodeNewGroup, 
             icon=self.icons_dictionary['folder-new'], 
-            statusTip=trs('Create a new group under the selected node', 
+            statusTip=translate('VTGUI', 
+                'Create a new group under the selected node', 
                 'Status bar text for the Node -> New group action'))
         actions['nodeNew'].setObjectName('nodeNew')
 
         actions['nodeRename'] = QtGui.QAction(
-            trs('&Rename...', 'Node -> Rename'), self, 
+            translate('VTGUI', '&Rename...', 'Node -> Rename'), self, 
             shortcut=QtGui.QKeySequence('CTRL+R'), 
             triggered=self.vtapp.nodeRename, 
             icon=self.icons_dictionary['edit-rename'], 
-            statusTip=trs('Rename the selected node', 
+            statusTip=translate('VTGUI', 'Rename the selected node', 
                 'Status bar text for the Node -> Rename action'))
         actions['nodeRename'].setObjectName('nodeRename')
 
         actions['nodeCut'] = QtGui.QAction(
-            trs('Cu&t', 'Node -> Cut'), self, 
+            translate('VTGUI', 'Cu&t', 'Node -> Cut'), self, 
             shortcut=QtGui.QKeySequence('CTRL+X'), 
             triggered=self.vtapp.nodeCut, 
             icon=self.icons_dictionary['edit-cut'], 
-            statusTip=trs('Cut the selected node', 
+            statusTip=translate('VTGUI', 'Cut the selected node', 
                 'Status bar text for the Node -> Cut action'))
         actions['nodeCut'].setObjectName('nodeCut')
 
         actions['nodeCopy'] = QtGui.QAction(
-            trs('&Copy', 'Node -> Copy'), self, 
+            translate('VTGUI', '&Copy', 'Node -> Copy'), self, 
             shortcut=QtGui.QKeySequence.Copy, 
             triggered=self.makeCopy, 
             icon=self.icons_dictionary['edit-copy'], 
-            statusTip=trs('Copy the selected node', 
+            statusTip=translate('VTGUI', 'Copy the selected node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodeCopy'].setObjectName('nodeCopy')
 
         actions['nodePaste'] = QtGui.QAction(
-            trs('&Paste', 'Node -> Paste'), self, 
+            translate('VTGUI', '&Paste', 'Node -> Paste'), self, 
             shortcut=QtGui.QKeySequence.Paste, 
             triggered=self.vtapp.nodePaste, 
             icon=self.icons_dictionary['edit-paste'], 
-            statusTip=trs('Paste the last copied/cut node', 
+            statusTip=translate('VTGUI', 'Paste the last copied/cut node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodePaste'].setObjectName('nodePaste')
 
         actions['nodeDelete'] = QtGui.QAction(
-            trs('&Delete', 'Node -> Delete'), self, 
+            translate('VTGUI', '&Delete', 'Node -> Delete'), self, 
             shortcut=QtGui.QKeySequence.Delete, 
             triggered=self.vtapp.nodeDelete, 
             icon=self.icons_dictionary['edit-delete'], 
-            statusTip=trs('Delete the selected node', 
+            statusTip=translate('VTGUI', 'Delete the selected node', 
                 'Status bar text for the Node -> Copy action'))
         actions['nodeDelete'].setObjectName('nodeDelete')
 
         actions['queryNew'] = QtGui.QAction(
-            trs('&Query...', 'Query -> New...'), self, 
+            translate('VTGUI', '&Query...', 'Query -> New...'), self, 
             triggered=self.vtapp.newQuery, 
             icon=self.icons_dictionary['view-filter'], 
-            statusTip=trs('Create a new filter for the selected table', 
+            statusTip=translate('VTGUI', 
+                'Create a new filter for the selected table', 
                 'Status bar text for the Query -> New... action'))
         actions['queryNew'].setObjectName('queryNew')
 
         actions['queryDeleteAll'] = QtGui.QAction(
-            trs('Delete &All', 'Query -> Delete All'), self, 
+            translate('VTGUI', 'Delete &All', 'Query -> Delete All'), self, 
             triggered=self.vtapp.deleteAllQueries, 
             icon=self.icons_dictionary['delete_filters'], 
-            statusTip=trs('Remove all filters', 
+            statusTip=translate('VTGUI', 'Remove all filters', 
                 'Status bar text for the Query -> Delete All action'))
         actions['queryDeleteAll'].setObjectName('queryDeleteAll')
 
         actions['settingsPreferences'] = QtGui.QAction(
-            trs('&Preferences...', 'Settings -> Preferences'), self, 
+            translate('VTGUI', '&Preferences...', 'Settings -> Preferences'), 
+            self, 
             triggered=self.vtapp.settingsPreferences, 
             icon=self.icons_dictionary['configure'], 
-            statusTip=trs('Configure ViTables', 
+            statusTip=translate('VTGUI', 'Configure ViTables', 
                 'Status bar text for the Settings -> Preferences action'))
         actions['settingsPreferences'].setObjectName('settingsPreferences')
 
         actions['windowCascade'] = QtGui.QAction(
-            trs('&Cascade', 'Windows -> Cascade'), self, 
+            translate('VTGUI', '&Cascade', 'Windows -> Cascade'), self, 
             triggered=self.workspace.cascadeSubWindows, 
-            statusTip=trs('Arranges open windows in a cascade pattern', 
+            statusTip=translate('VTGUI', 
+                'Arranges open windows in a cascade pattern', 
                 'Status bar text for the Windows -> Cascade action'))
         actions['windowCascade'].setObjectName('windowCascade')
 
         actions['windowTile'] = QtGui.QAction(
-            trs('&Tile', 'Windows -> Tile'), self, 
+            translate('VTGUI', '&Tile', 'Windows -> Tile'), self, 
             triggered=self.workspace.tileSubWindows, 
-            statusTip=trs('Arranges open windows in a tile pattern', 
+            statusTip=translate('VTGUI', 
+                'Arranges open windows in a tile pattern', 
                 'Status bar text for the Windows -> Tile action'))
         actions['windowTile'].setObjectName('windowTile')
 
         actions['windowRestoreAll'] = QtGui.QAction(
-            trs('&Restore All', 'Windows -> Restore All'), self, 
+            translate('VTGUI', '&Restore All', 'Windows -> Restore All'), 
+            self, 
             triggered=self.vtapp.windowRestoreAll, 
-            statusTip=trs('Restore all minimized windows on the workspace', 
+            statusTip=translate('VTGUI', 
+                'Restore all minimized windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowRestoreAll'].setObjectName('windowRestoreAll')
 
         actions['windowMinimizeAll'] = QtGui.QAction(
-            trs('&Minimize All', 'Windows -> Minimize All'), self, 
+            translate('VTGUI', '&Minimize All', 'Windows -> Minimize All'), 
+            self, 
             triggered=self.vtapp.windowMinimizeAll, 
-            statusTip=trs('Minimize all windows on the workspace', 
+            statusTip=translate('VTGUI', 
+                'Minimize all windows on the workspace', 
                 'Status bar text for the Windows -> Restore All action'))
         actions['windowMinimizeAll'].setObjectName('windowMinimizeAll')
 
         actions['windowClose'] = QtGui.QAction(
-            trs('C&lose', 'Windows -> Close'), self, 
+            translate('VTGUI', 'C&lose', 'Windows -> Close'), self, 
             triggered=self.vtapp.windowClose, 
-            statusTip=trs('Close the active view', 
+            statusTip=translate('VTGUI', 'Close the active view', 
                 'Status bar text for the Windows -> Close action'))
         actions['windowClose'].setObjectName('windowClose')
 
         actions['windowCloseAll'] = QtGui.QAction(
-            trs('Close &All', 'Windows -> Close All'), self, 
+            translate('VTGUI', 'Close &All', 'Windows -> Close All'), self, 
             triggered=self.vtapp.windowCloseAll, 
-            statusTip=trs('Close all views', 
+            statusTip=translate('VTGUI', 'Close all views', 
                 'Status bar text for the Windows -> Close All action'))
         actions['windowCloseAll'].setObjectName('windowCloseAll')
 
         actions['windowSeparator'] = QtGui.QAction(
-            trs('Current View', 'Windows -> separator'), self)
+            translate('VTGUI', 'Current View', 'Windows -> separator'), self)
         actions['windowSeparator'].setSeparator(True)
         actions['windowSeparator'].setObjectName('windowSeparator')
 
         actions['mdiTabbed'] = QtGui.QAction(
-            trs('Change view mode', 'MDI -> Tabbed'), self, 
+            translate('VTGUI', 'Change view mode', 'MDI -> Tabbed'), self, 
             triggered=self.changeMDIViewMode, 
-            statusTip=trs('Change the workspace view mode', 
+            statusTip=translate('VTGUI', 'Change the workspace view mode', 
                 'Status bar text for the MDI -> Tabbed action'))
         actions['mdiTabbed'].setObjectName('mdiTabbed')
 
         actions['helpUsersGuide'] = QtGui.QAction(
-            trs("&User's Guide", 'Help -> Users Guide'), self, 
+            translate('VTGUI', "&User's Guide", 'Help -> Users Guide'), self, 
             shortcut=QtGui.QKeySequence.HelpContents, 
             triggered=self.vtapp.helpBrowser, 
             icon=self.icons_dictionary['help-contents'], 
-            statusTip=trs("Open the ViTables User's Guide",
+            statusTip=translate('VTGUI', "Open the ViTables User's Guide",
                     'Status bar text for the Help -> Users Guide action'))
         actions['helpUsersGuide'].setObjectName('helpUsersGuide')
 
         actions['helpAbout'] = QtGui.QAction(
-            trs('&About ViTables', 'Help -> About'), self, 
+            translate('VTGUI', '&About ViTables', 'Help -> About'), self, 
             triggered=self.vtapp.helpAbout, 
             icon=self.icons_dictionary['vitables_wm'], 
-            statusTip=trs('Display information about ViTables',
+            statusTip=translate('VTGUI', 'Display information about ViTables', 
                     'Status bar text for the Help -> About action'))
         actions['helpAbout'].setObjectName('helpAbout')
 
         actions['helpAboutQt'] = QtGui.QAction(
-            trs('About &Qt', 'Help -> About Qt'), self, 
+            translate('VTGUI', 'About &Qt', 'Help -> About Qt'), self, 
             triggered=self.vtapp.helpAboutQt, 
-            statusTip=trs('Display information about the Qt library',
-                    'Status bar text for the Help -> About Qt action'))
+            statusTip=translate('VTGUI', 
+                'Display information about the Qt library',
+                'Status bar text for the Help -> About Qt action'))
         actions['helpAboutQt'].setObjectName('helpAboutQt')
 
         actions['helpVersions'] = QtGui.QAction(
-            trs('Show &Versions', 'Help -> Show Versions'), self, 
+            translate('VTGUI', 'Show &Versions', 'Help -> Show Versions'), 
+            self, 
             triggered=self.vtapp.helpVersions, 
-            statusTip=trs(\
+            statusTip=translate('VTGUI', \
                 'Show the versions of the libraries used by ViTables', 
                 'Status bar text for the Help -> Show Versions action'))
         actions['helpVersions'].setObjectName('helpVersions')
@@ -403,8 +414,8 @@ class VTGUI(QtGui.QMainWindow):
         """
 
         # File toolbar
-        self.file_toolbar = self.addToolBar(trs('File operations', 
-            'Toolbar title'))
+        self.file_toolbar = self.addToolBar(
+            translate('VTGUI', 'File operations', 'Toolbar title'))
         # Warning! Do NOT use 'File toolbar' as a object name or it will
         # show an strange behaviour (a Qt bug I think): it will always
         # be added to the left and will expand the whole top area
@@ -416,33 +427,33 @@ class VTGUI(QtGui.QMainWindow):
         # Reset the tooltip of the File -> Open... button
         file_open_button = self.file_toolbar.widgetForAction(
             self.gui_actions['fileOpen'])
-        file_open_button.setToolTip(trs("""Click to open a """
+        file_open_button.setToolTip(translate('VTGUI', """Click to open a """
             """file\nClick and hold to open a recent file""",
             'File toolbar -> Open Recent Files'))
 
         # Node toolbar
-        self.node_toolbar = self.addToolBar(trs('Node operations', 
-            'Toolbar title'))
+        self.node_toolbar = self.addToolBar(
+            translate('VTGUI', 'Node operations', 'Toolbar title'))
         self.node_toolbar.setObjectName('Node toolbar')
         actions = ['nodeNew', 'nodeCut', 'nodeCopy', 'nodePaste', 'nodeDelete']
         vitables.utils.addActions(self.node_toolbar, actions, self.gui_actions)
 
         # Query toolbar
-        self.query_toolbar = self.addToolBar(trs('Queries on tables', 
-            'Toolbar title'))
+        self.query_toolbar = self.addToolBar(
+            translate('VTGUI', 'Queries on tables', 'Toolbar title'))
         self.query_toolbar.setObjectName('Query toolbar')
         actions = ['queryNew', 'queryDeleteAll']
         vitables.utils.addActions(self.query_toolbar, actions, 
                                     self.gui_actions)
 
         # Help toolbar
-        self.help_toolbar = self.addToolBar(trs('Help system', 
+        self.help_toolbar = self.addToolBar(translate('VTGUI', 'Help system', 
             'Toolbar title'))
         self.help_toolbar.setObjectName('Help toolbar')
         actions = ['helpUsersGuide']
         vitables.utils.addActions(self.help_toolbar, actions, self.gui_actions)
         whatis = QtGui.QWhatsThis.createAction(self.help_toolbar)
-        whatis.setStatusTip(trs('Contextual help',
+        whatis.setStatusTip(translate('VTGUI', 'Contextual help',
                     'Status bar text for the Help -> Whats This action'))
         self.help_toolbar.addAction(whatis)
 
@@ -455,10 +466,10 @@ class VTGUI(QtGui.QMainWindow):
         self.sb_node_info.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding, \
                                         QtGui.QSizePolicy.Minimum)
         status_bar.addPermanentWidget(self.sb_node_info)
-        self.sb_node_info.setToolTip(trs(
+        self.sb_node_info.setToolTip(translate('VTGUI', 
             'The node currently selected in the Tree of databases pane',
             'The Selected node box startup message'))
-        status_bar.showMessage(trs('Ready...',
+        status_bar.showMessage(translate('VTGUI', 'Ready...',
             'The status bar startup message'))
 
 
@@ -474,11 +485,12 @@ class VTGUI(QtGui.QMainWindow):
         """
 
         # Create the File menu and add actions/submenus/separators to it
-        self.file_menu = self.menuBar().addMenu(trs("&File", 
+        self.file_menu = self.menuBar().addMenu(translate('VTGUI', "&File", 
             'The File menu entry'))
         self.file_menu.setObjectName('file_menu')
-        self.open_recent_submenu = QtGui.QMenu(trs('Open R&ecent Files',
-            'File -> Open Recent Files'))
+        self.open_recent_submenu = QtGui.QMenu(
+            translate('VTGUI', 'Open R&ecent Files', 
+                'File -> Open Recent Files'))
         self.open_recent_submenu.setObjectName('open_recent_submenu')
         self.open_recent_submenu.setSeparatorsCollapsible(False)
         self.open_recent_submenu.setIcon(\
@@ -496,7 +508,7 @@ class VTGUI(QtGui.QMainWindow):
             self.updateRecentSubmenu)
 
         # Create the Node menu and add actions/submenus/separators to it
-        node_menu = self.menuBar().addMenu(trs("&Node", 
+        node_menu = self.menuBar().addMenu(translate('VTGUI', "&Node", 
             'The Node menu entry'))
         node_menu.setObjectName('node_menu')
         node_actions = ['nodeOpen', 'nodeClose', 'nodeProperties', None, 
@@ -505,28 +517,28 @@ class VTGUI(QtGui.QMainWindow):
         vitables.utils.addActions(node_menu, node_actions, self.gui_actions)
 
         # Create the Dataset menu and add actions/submenus/separators to it
-        self.dataset_menu = self.menuBar().addMenu(trs("&Dataset", 
-            'The Dataset menu entry'))
+        self.dataset_menu = self.menuBar().addMenu(
+            translate('VTGUI', "&Dataset", 'The Dataset menu entry'))
         self.dataset_menu.setObjectName('dataset_menu')
         dataset_actions = ['queryNew', None]
         vitables.utils.addActions(self.dataset_menu, dataset_actions, 
             self.gui_actions)
 
         # Create the Settings menu and add actions/submenus/separators to it
-        settings_menu = self.menuBar().addMenu(trs("&Settings", 
+        settings_menu = self.menuBar().addMenu(translate('VTGUI', "&Settings", 
             'The Settings menu entry'))
         settings_menu.setObjectName('settings-menu')
         self.hide_toolbar_submenu = self.createPopupMenu()
-        self.hide_toolbar_submenu.menuAction().setText(trs('ToolBars', 
-                                                'Tools -> ToolBars action'))
+        self.hide_toolbar_submenu.menuAction().setText(
+            translate('VTGUI', 'ToolBars', 'Tools -> ToolBars action'))
         settings_actions = ['settingsPreferences', None, 
             self.hide_toolbar_submenu]
         vitables.utils.addActions(settings_menu, settings_actions, 
             self.gui_actions)
 
         # Create the Window menu and add actions/menus/separators to it
-        self.window_menu = self.menuBar().addMenu(trs("&Window", 
-            'The Windows menu entry'))
+        self.window_menu = self.menuBar().addMenu(
+            translate('VTGUI', "&Window", 'The Windows menu entry'))
         self.window_menu.setObjectName('window_menu')
         windows_actions = ['windowCascade', 'windowTile', 
                            'windowRestoreAll', 'windowMinimizeAll', 
@@ -537,14 +549,14 @@ class VTGUI(QtGui.QMainWindow):
         self.window_menu.aboutToShow.connect(self.updateWindowMenu)
 
         # Create the Help menu and add actions/menus/separators to it
-        help_menu = self.menuBar().addMenu(trs("&Help", 
+        help_menu = self.menuBar().addMenu(translate('VTGUI', "&Help", 
             'The Help menu entry'))
         help_menu.setObjectName('help_menu')
         help_actions = ['helpUsersGuide', None, 'helpAbout', 'helpAboutQt', 
             'helpVersions', None]
         vitables.utils.addActions(help_menu, help_actions, self.gui_actions)
         whatis = QtGui.QWhatsThis.createAction(help_menu)
-        whatis.setStatusTip(trs('Context help',
+        whatis.setStatusTip(translate('VTGUI', 'Context help',
                     'Status bar text for the Help -> Whats This action'))
         help_menu.addAction(whatis)
 
@@ -741,7 +753,8 @@ class VTGUI(QtGui.QMainWindow):
         # Always add a separator and a clear QAction. So if the menu is empty
         # the user still will know what's going on
         self.open_recent_submenu.addSeparator()
-        action = QtGui.QAction(trs('&Clear', 'Recent File submenu entry'), 
+        action = QtGui.QAction(
+            translate('VTGUI', '&Clear', 'Recent File submenu entry'), 
             self, triggered=self.vtapp.clearRecentFiles)
         self.open_recent_submenu.addAction(action)
 
@@ -765,14 +778,14 @@ class VTGUI(QtGui.QMainWindow):
             'windowMinimizeAll', 'windowClose', 'windowCloseAll', 
             'windowSeparator']
         vitables.utils.addActions(wmenu, window_actions, self.gui_actions)
-        action_group = QtGui.QActionGroup(wmenu)
-        wmenu.action_group = action_group
 
         windows_list = self.workspace.subWindowList()
         if not windows_list:
             return
 
         # Create actions for the existing views
+        action_group = QtGui.QActionGroup(wmenu)
+        wmenu.action_group = action_group
         counter = 1
         for window in windows_list:
             title = window.windowTitle()
@@ -781,18 +794,19 @@ class VTGUI(QtGui.QMainWindow):
                 wmenu.action_group.addAction(action)
             elif counter == 10:
                 wmenu.addSeparator()
-                submenu = wmenu.addMenu(trs("&More", 'A Windows submenu'))
-                action_group = QtGui.QActionGroup(submenu)
+                submenu = wmenu.addMenu(
+                    translate('VTGUI', "&More...", 'A Windows submenu'))
+                action_subgroup = QtGui.QActionGroup(submenu)
             elif counter < 36:
                 atext = "&{0} {1}".format(chr(counter + ord("@") - 10), title)
                 action = submenu.addAction(atext)
-                action_group.addAction(action)
+                action_subgroup.addAction(action)
 
+            self.window_mapper.setMapping(action, window)
+            action.triggered.connect(self.window_mapper.map)
             action.setCheckable(True)
             if self.workspace.activeSubWindow() == window:
                 action.setChecked(True)
-            action.triggered.connect(self.window_mapper.map)
-            self.window_mapper.setMapping(action, window)
             counter = counter + 1
 
 

@@ -27,25 +27,23 @@ page, Look&Feel settings page and Plugins settings page.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'Preferences'
 
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 from PyQt4.uic import loadUiType
 
 from vitables.vtSite import ICONDIR
 import vitables.utils
 
+translate = QtGui.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_SettingsDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'settings_dlg.ui'))[0]
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
 
 
 class Preferences(QtGui.QDialog, Ui_SettingsDialog):
@@ -129,7 +127,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         general_button = QtGui.QListWidgetItem(self.contentsWidget)
         general_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-other.png')))
-        general_button.setText(trs("  General  ", 
+        general_button.setText(translate('Preferences', "  General  ", 
             "Text for page selector icon"))
         general_button.setTextAlignment(QtCore.Qt.AlignHCenter)
         general_button.setFlags(QtCore.Qt.ItemIsSelectable | 
@@ -138,7 +136,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         style_button = QtGui.QListWidgetItem(self.contentsWidget)
         style_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-desktop-theme.png')))
-        style_button.setText(trs("Look & Feel", "Text for page selector icon"))
+        style_button.setText(translate('Preferences', "Look & Feel", 
+            "Text for page selector icon"))
         style_button.setTextAlignment(QtCore.Qt.AlignHCenter)
         style_button.setFlags(QtCore.Qt.ItemIsSelectable | 
             QtCore.Qt.ItemIsEnabled)
@@ -146,7 +145,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         plugins_button = QtGui.QListWidgetItem(self.contentsWidget)
         plugins_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-plugin.png')))
-        plugins_button.setText(trs("  Plugins  ", 
+        plugins_button.setText(translate('Preferences', "  Plugins  ", 
             "Text for page selector icon"))
         plugins_button.setTextAlignment(QtCore.Qt.AlignHCenter)
         plugins_button.setFlags(QtCore.Qt.ItemIsSelectable | 
@@ -388,8 +387,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         # The selected paper color is applied to the sample text window
         if color.isValid():
             self.new_prefs['Logger/Paper'] = color
-            stylesheet.replace(background, color.name())
-            self.sampleTE.setStyleSheet(stylesheet)
+            new_stylesheet = stylesheet.replace(background, color.name())
+            self.sampleTE.setStyleSheet(new_stylesheet)
 
 
     @QtCore.pyqtSlot(name="on_workspacePB_clicked")
@@ -402,8 +401,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         # The selected color is applied to the sample label besides the button
         if color.isValid():
             self.new_prefs['Workspace/Background'] = QtGui.QBrush(color)
-            stylesheet.replace(background, color.name())
-            self.workspaceLabel.setStyleSheet(stylesheet)
+            new_stylesheet = stylesheet.replace(background, color.name())
+            self.workspaceLabel.setStyleSheet(new_stylesheet)
 
 
     @QtCore.pyqtSlot("QString", name="on_stylesCB_activated")
@@ -413,7 +412,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         :Parameter style_name: the style to be applied
         """
-        self.new_prefs['Look/currentStyle'] = unicode(style_name)
+        self.new_prefs['Look/currentStyle'] = style_name
 
 
     @QtCore.pyqtSlot(name="on_newButton_clicked")
@@ -421,13 +420,12 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """Slot for adding a new searchable path if `New` button is clicked."""
 
         folder = QtGui.QFileDialog.getExistingDirectory()
-        folder = unicode(folder)
         if not folder:
             return
 
         # Add the folder to the list of folders unless it is already there
         model = self.pathsLV.model()
-        self.plugins_paths = [unicode(model.item(row).text()) \
+        self.plugins_paths = [model.item(row).text() \
             for row in range(model.rowCount())]
         if not folder in self.plugins_paths:
             item = QtGui.QStandardItem(folder)
@@ -442,7 +440,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         current = self.pathsLV.currentIndex()
         model = self.pathsLV.model()
         model.removeRow(current.row(), current.parent())
-        self.plugins_paths = [unicode(model.item(row).text()) \
+        self.plugins_paths = [model.item(row).text() \
             for row in range(model.rowCount())]
 
 
@@ -463,8 +461,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.enabled_plugins = []
         for row in range(enabled_model.rowCount()):
             item = enabled_model.item(row)
-            name = unicode(item.text())
-            folder = unicode(item.data().toString())
+            name = item.text()
+            folder = item.data().toString()
             self.enabled_plugins.append('{0}#@#{1}'.format(folder, name))
 
 
@@ -484,8 +482,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.enabled_plugins = []
         for row in range(enabled_model.rowCount()):
             item = enabled_model.item(row)
-            name = unicode(item.text())
-            folder = unicode(item.data().toString())
+            name = item.text()
+            folder = item.data().toString()
             self.enabled_plugins.append('{0}#@#{1}'.format(folder, name))
 
 

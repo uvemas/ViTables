@@ -28,7 +28,6 @@ about the error and the dialog remains open so the user can fix her mistake.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'AttrEditor'
 
 import numpy
 
@@ -36,10 +35,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 def checkSyntax(value):
@@ -172,11 +168,10 @@ class AttrEditor(object):
                 multidim = True
             else:
                 multidim = False
-            name = unicode(model.item(row, 0).text())
-            value = unicode(model.item(row, 1).text())
+            name = model.item(row, 0).text()
+            value = model.item(row, 1).text()
             dtype_index = model.indexFromItem(model.item(row, 2))
-            current_dtype = user_table.indexWidget(dtype_index).currentText() 
-            dtype = unicode(current_dtype)
+            dtype = user_table.indexWidget(dtype_index).currentText() 
             self.edited_attrs[row] = (name, value, dtype, multidim)
 
         # Add the TITLE attribute to the dictionary
@@ -195,23 +190,23 @@ class AttrEditor(object):
         """
 
         # Error message for mismatching value/type pairs
-        dtype_error = trs("""\nError: "{0}" value """
+        dtype_error = translate('AttrEditor', """\nError: "{0}" value """
             """mismatches its data type.""",
             'User attributes table editing error')
 
         # Error message for overflow values
-        range_error = trs("""\nError: "{0}" value """
+        range_error = translate('AttrEditor', """\nError: "{0}" value """
             """is out of range.""",
             'User attributes table editing error')
 
         # Some times it's difficult to find out if the error
         # is due to a mismatch or to an overflow
-        conversion_error = trs("""\nError: "{0}" value """
+        conversion_error = translate('AttrEditor', """\nError: "{0}" value """
             """is out of range or mismatches its data type.""",
             'User attributes table editing error')
 
         # Error message for syntax errors in Python attributes
-        syntax_error = trs("""\nError: "{0}" """
+        syntax_error = translate('AttrEditor', """\nError: "{0}" """
             """cannot be converted to a Python object.""",
             'User attributes table editing error')
 
@@ -224,8 +219,9 @@ class AttrEditor(object):
             # but empty Name cells are invalid
             if name == u'':
                 return (False, 
-                        trs("\nError: empty field Name in the row {0:d}", 
-                        'User attributes editing error').format(int(row + 1)))
+                        translate('AttrEditor', 
+                            "\nError: empty field Name in the row {0:d}", 
+                            'User attrs editing error').format(int(row + 1)))
 
         # Check for repeated names
         names_list = []
@@ -235,8 +231,9 @@ class AttrEditor(object):
                 names_list.append(name)
             else:
                 return (False, 
-                        trs('\nError: attribute name "{0}" is repeated.', 
-                        'User attributes table editing error').format(name))
+                        translate('AttrEditor', 
+                            '\nError: attribute name "{0}" is repeated.', 
+                            'User attrs table editing error').format(name))
 
         # Check for dtype, range and syntax correctness of scalar attributes
         for row in rows_range:

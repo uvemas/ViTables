@@ -24,16 +24,14 @@ Here is defined the NodeItemDelegate class.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'NodeItemDelegate'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class NodeItemDelegate(QtGui.QItemDelegate):
@@ -88,7 +86,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         - `index`: the index of the item being edited
         """
 
-        suggested_nodename = unicode(editor.text())
+        suggested_nodename = editor.text()
 
         node = model.nodeFromIndex(index)  # A GroupNode or a LeafNode instance
         parent = node.parent
@@ -100,13 +98,15 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
-        pattern = """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)|"""\
-            """(^{0}$)""".format(unicode(self.current_name))
-        info = [trs('Renaming a node: name already in use', 
-                'A dialog caption'), 
-                trs("""Source file: {0}\nParent group: {1}\n\nThere is """
-                    """already a node named '{2}' in that parent group.\n""", 
-                    'A dialog label').format\
+        pattern = """(^{0}$)|""" \
+            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(self.current_name)
+        info = [translate('NodeItemDelegate', 
+            'Renaming a node: name already in use', 
+            'A dialog caption'), 
+            translate('NodeItemDelegate', 
+                """Source file: {0}\nParent group: {1}\n\nThere is """
+                """already a node named '{2}' in that parent group.\n""", 
+                'A dialog label').format\
                     (parent.filepath, parent.nodepath, suggested_nodename)]
         # Validate the nodename
         nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 

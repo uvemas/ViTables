@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""This is the launcher script for the ViTables application."""
+
+from __future__ import print_function
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2010 Vicent Mas. All rights reserved
@@ -20,33 +23,15 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-"""Here is defined the main script of the project.
-
-Functions:
-
-* main(args)
-
-Misc variables:
-
-* __docformat__
-
-This is the main script of the project.
-The application has (more or less) a MVC architecture.
-The GUI is designed as a Multiple Document Interface.
-The application framework:
-
-- supports multiple documents with one view on those documents
-- keeps track of which view shows which document
-- keeps track of modifications to documents, saving, saving under a
-  new filename, and closing documents without saving
-"""
-
 __docformat__ = 'restructuredtext'
 
 import locale
 from optparse import OptionParser
 import sys
 import os.path
+
+import sip
+sip.setapi('QString', 2)
 
 from PyQt4 import QtGui
 

@@ -27,15 +27,16 @@ executes the query.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'Query'
 
 import tables
 import numpy
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 import vitables.utils
 
+translate = QtGui.QApplication.translate
 
 
 class Query(QtCore.QObject):

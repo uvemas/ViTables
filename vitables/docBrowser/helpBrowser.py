@@ -20,25 +20,23 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-The controller of the ``ViTables`` documentation browser is implemented in this module.
+The controller of the Users' Guide browser is implemented in this module.
 
-The documentation browser is used for browsing the `ViTables User's Guide` in 
-HTML format. It is distributed along the source code in every supported platform.
+The documentation browser is used for browsing the HTML version of the Guide
+which is distributed along the source code in every supported platform.
 """
 
 __docformat__ = 'restructuredtext'
-_context = 'HelpBrowser'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+
 
 import vitables.utils
 from vitables.docBrowser import bookmarksDlg
 from vitables.docBrowser import browserGUI
 
-
-def trs(source, comment=None):
-    """Translate string function."""
-    return unicode(QtGui.qApp.translate(_context, source, comment))
+translate = QtGui.QApplication.translate
 
 
 class HelpBrowser(QtCore.QObject) :
@@ -102,7 +100,7 @@ class HelpBrowser(QtCore.QObject) :
             src = action.data().toString()
 
         src = QtCore.QDir(src).dirName()
-        src = QtCore.QDir().fromNativeSeparators(src) # src can be a QString
+        src = QtCore.QDir().fromNativeSeparators(src)
         url = QtCore.QUrl(src)
         self.gui.text_browser.setSource(url)
 
@@ -189,8 +187,8 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         src = self.gui.text_browser.source().toString()
-        src = QtCore.QDir().fromNativeSeparators(src)
-        src = unicode(src).replace('///', '/')
+        src = QtCore.QDir.fromNativeSeparators(src)
+        src = src.replace('///', '/')
         if self.bookmarks.count(src) :
             # if the page is already bookmarked we do nothing
             pass
@@ -211,7 +209,7 @@ class HelpBrowser(QtCore.QObject) :
 
     def clearBookmarks(self) :
         """Clear all bookmarks."""
-        self.bookmarks.clear()
+        self.bookmarks = []
 
     #########################################################
     #
@@ -224,7 +222,7 @@ class HelpBrowser(QtCore.QObject) :
         Clear the history of visited pages.
         """
 
-        self.history.clear()
+        self.history = []
         self.gui.combo_history.clear()
         self.updateHome()
 
@@ -245,14 +243,13 @@ class HelpBrowser(QtCore.QObject) :
         :Parameter src: the path being added to the combo
         """
 
-        url = src.toString()
-        url = QtCore.QDir().fromNativeSeparators(url)
-        url = unicode(url).replace('///', '/')
-        if not self.history.count(url):
+        url = QtCore.QDir().fromNativeSeparators(src.toString())
+        url = url.replace('///', '/')
+        if url not in self.history:
             self.history.append(url)
             self.gui.combo_history.addItem(url)
 
-        self.gui.combo_history.setCurrentIndex(self.history.indexOf(url))
+        self.gui.combo_history.setCurrentIndex(self.history.index(url))
         self.updateHome()
 
     #########################################################
@@ -267,8 +264,8 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         QtGui.QMessageBox.information(self.gui, \
-            trs('About HelpBrowser', 'A dialog caption'), 
-            trs("""<html><h3>HelpBrowser</h3>
+            translate('HelpBrowser', 'About HelpBrowser', 'A dialog caption'), 
+            translate('HelpBrowser', """<html><h3>HelpBrowser</h3>
                 HelpBrowser is a very simple tool for displaying the HTML
                 version of the ViTables' Guide without using external programs.
                 <p>Best of all... it is written using PyQt, the Python
@@ -282,5 +279,5 @@ class HelpBrowser(QtCore.QObject) :
         Shows a message box with the `Qt About` info.
         """
 
-        caption = trs('About Qt', 'A dialog caption')
+        caption = translate('HelpBrowser', 'About Qt', 'A dialog caption')
         QtGui.QMessageBox.aboutQt(self.gui, caption)
