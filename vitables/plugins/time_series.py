@@ -252,15 +252,15 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
 
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
-            return QtCore.QVariant()
+            return None
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
             index.column())
         if role == QtCore.Qt.DisplayRole:
-            return QtCore.QVariant(self.formatTimeContent(cell))
+            return self.formatTimeContent(cell)
         elif role == QtCore.Qt.TextAlignmentRole:
-            return QtCore.QVariant(int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop))
+            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         else:
-            return QtCore.QVariant()
+            return None
 
 
     def rowCount(self, index):
@@ -376,17 +376,17 @@ class TableTSModel(QtCore.QAbstractTableModel):
 
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
-            return QtCore.QVariant()
+            return None
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
             index.column())
         if role == QtCore.Qt.DisplayRole:
             if index.column() in self.time_cols:
-                return QtCore.QVariant(self.formatTime(cell))
-            return QtCore.QVariant(vitables.utils.formatArrayContent(cell))
+                return self.formatTime(cell)
+            return vitables.utils.formatArrayContent(cell)
         elif role == QtCore.Qt.TextAlignmentRole:
-            return QtCore.QVariant(int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop))
+            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         else:
-            return QtCore.QVariant()
+            return None
 
 
     def rowCount(self, index):

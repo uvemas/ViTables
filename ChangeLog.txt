@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 18, 2010 **
+More advances in the migration path to Python 3.0.
+
 ** December 11, 2010 **
 More advances in the migration path to Python 3.0.
 

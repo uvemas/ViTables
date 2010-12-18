@@ -156,7 +156,7 @@ class DBsTreeView(QtGui.QTreeView):
 
         node = self.dbt_model.nodeFromIndex(index)
         if node.node_kind == 'group':
-            self.dbt_model.setData(index, QtCore.QVariant(node.closed_folder), 
+            self.dbt_model.setData(index, node.closed_folder, 
                 QtCore.Qt.DecorationRole)
         self.smodel.clearSelection()
         self.smodel.setCurrentIndex(index, 
@@ -181,7 +181,7 @@ class DBsTreeView(QtGui.QTreeView):
         node = self.dbt_model.nodeFromIndex(index)
         node_kind = node.node_kind
         if node_kind == 'group':
-            self.dbt_model.setData(index, QtCore.QVariant(node.open_folder), 
+            self.dbt_model.setData(index, node.open_folder, 
                 QtCore.Qt.DecorationRole)
         if node_kind in ['group', 'root group']:
             if not node.updated:

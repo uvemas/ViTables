@@ -576,7 +576,7 @@ class VTApp(QtCore.QObject):
         """
 
         action = self.sender()
-        item = action.data().toString()
+        item = action.data()
         (mode, filepath) = item.split('#@#')
         self.fileOpen(filepath, mode)
 

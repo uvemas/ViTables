@@ -221,7 +221,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             if split:
                 folder, name = i.split('#@#')
                 item = QtGui.QStandardItem(name)
-                item.setData(QtCore.QVariant(folder), QtCore.Qt.UserRole+1)
+                item.setData(folder, QtCore.Qt.UserRole+1)
             else:
                 item = QtGui.QStandardItem(i)
             model.appendRow(item)
@@ -298,7 +298,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         # Update the rest of settings
         for key, value in self.new_prefs.items():
-            self.new_prefs[key] = QtCore.QVariant(value)
+            self.new_prefs[key] = value
 
         self.accept()
 
@@ -462,7 +462,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         for row in range(enabled_model.rowCount()):
             item = enabled_model.item(row)
             name = item.text()
-            folder = item.data().toString()
+            folder = item.data()
             self.enabled_plugins.append('{0}#@#{1}'.format(folder, name))
 
 
@@ -483,7 +483,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         for row in range(enabled_model.rowCount()):
             item = enabled_model.item(row)
             name = item.text()
-            folder = item.data().toString()
+            folder = item.data()
             self.enabled_plugins.append('{0}#@#{1}'.format(folder, name))
 
 

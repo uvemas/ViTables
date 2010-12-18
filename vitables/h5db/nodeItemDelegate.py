@@ -67,7 +67,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         - `index`: the index of the item being edited
         """
 
-        node_name = index.model().data(index, QtCore.Qt.DisplayRole).toString()
+        node_name = index.model().data(index, QtCore.Qt.DisplayRole)
         self.current_name = node_name
         editor.setText(node_name)
 

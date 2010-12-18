@@ -122,22 +122,19 @@ class LeafModel(QtCore.QAbstractTableModel):
         # The section alignment
         if role == QtCore.Qt.TextAlignmentRole:
             if orientation == QtCore.Qt.Horizontal:
-                return QtCore.QVariant(\
-                    int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter))
-            return QtCore.QVariant(\
-                int(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter))
+                return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+            return int(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
         if role != QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
+            return None
         # The section label for horizontal header
         if orientation == QtCore.Qt.Horizontal:
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
             if hasattr(self.data_source, 'description'):
-                return QtCore.QVariant(\
-                    unicode(self.data_source.colnames[section]))
-            return QtCore.QVariant(unicode(section + 1))
+                return unicode(self.data_source.colnames[section])
+            return unicode(section + 1)
         # The section label for vertical header
-        return QtCore.QVariant(unicode(self.rbuffer.start + section + 1))
+        return unicode(self.rbuffer.start + section + 1)
 
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
@@ -154,15 +151,15 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
-            return QtCore.QVariant()
+            return None
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
             index.column())
         if role == QtCore.Qt.DisplayRole:
-            return QtCore.QVariant(self.formatContent(cell))
+            return self.formatContent(cell)
         elif role == QtCore.Qt.TextAlignmentRole:
-            return QtCore.QVariant(int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop))
+            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         else:
-            return QtCore.QVariant()
+            return None
 
 
     def columnCount(self, index=QtCore.QModelIndex()):

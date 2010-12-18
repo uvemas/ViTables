@@ -97,7 +97,7 @@ class HelpBrowser(QtCore.QObject) :
 
         if src is False: # entry selected in the Bookmarks menu
             action = self.gui.sender()
-            src = action.data().toString()
+            src = action.data()
 
         src = QtCore.QDir(src).dirName()
         src = QtCore.QDir().fromNativeSeparators(src)
@@ -243,7 +243,7 @@ class HelpBrowser(QtCore.QObject) :
         :Parameter src: the path being added to the combo
         """
 
-        url = QtCore.QDir().fromNativeSeparators(src.toString())
+        url = QtCore.QDir.fromNativeSeparators(src.toString())
         url = url.replace('///', '/')
         if url not in self.history:
             self.history.append(url)

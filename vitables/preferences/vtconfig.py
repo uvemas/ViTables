@@ -170,9 +170,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Logger/Paper'
-        default_value = QtCore.QVariant(QtGui.QColor("#ffffff"))
+        default_value = QtGui.QColor("#ffffff")
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.Color):
+        if isinstance(setting_value, QtGui.QColor):
             return setting_value
         else:
             return default_value
@@ -184,9 +184,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Logger/Text'
-        default_value = QtCore.QVariant(QtGui.QColor("#000000"))
+        default_value = QtGui.QColor("#000000")
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.Color):
+        if isinstance(setting_value, QtGui.QColor):
             return setting_value
         else:
             return default_value
@@ -198,9 +198,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Logger/Font'
-        default_value = QtCore.QVariant(QtGui.qApp.font())
+        default_value = QtGui.qApp.font()
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.Font):
+        if isinstance(setting_value, QtGui.QFont):
             return setting_value
         else:
             return default_value
@@ -212,9 +212,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Workspace/Background'
-        default_value = QtCore.QVariant(QtGui.QBrush(QtGui.QColor("#ffffff")))
+        default_value = QtGui.QBrush(QtGui.QColor("#ffffff"))
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.Brush):
+        if isinstance(setting_value, QtGui.QBrush):
             return setting_value
         else:
             return default_value
@@ -225,14 +225,14 @@ class Config(QtCore.QSettings):
 
         # The property key and its default value
         key = 'Look/currentStyle'
-        default_value = QtCore.QVariant(self.default_style)
+        default_value = self.default_style
 
         # Read the entry from the configuration file/registry
         entry = self.value(key)
 
         # Check the entry format and value
         styles = QtGui.QStyleFactory.keys()
-        if not entry.canConvert(QtCore.QVariant.String):
+        if not isinstance(entry, unicode):
             return default_value
         elif entry not in styles:
             return default_value
@@ -246,9 +246,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Geometry/Position'
-        default_value = QtCore.QVariant()
+        default_value = None
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+        if isinstance(setting_value, QtCore.QByteArray):
             return setting_value
         else:
             return default_value
@@ -263,9 +263,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Geometry/Layout'
-        default_value = QtCore.QVariant()
+        default_value = None
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+        if isinstance(setting_value, QtCore.QByteArray):
             return setting_value
         else:
             return default_value
@@ -277,9 +277,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Geometry/HSplitter'
-        default_value = QtCore.QVariant()
+        default_value = None
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+        if isinstance(setting_value, QtCore.QByteArray):
             return setting_value
         else:
             return default_value
@@ -291,9 +291,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Geometry/VSplitter'
-        default_value = QtCore.QVariant()
+        default_value = None
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.ByteArray):
+        if isinstance(setting_value, QtCore.QByteArray):
             return setting_value
         else:
             return default_value
@@ -305,9 +305,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Startup/restoreLastSession'
-        default_value = QtCore.QVariant(False)
+        default_value = u'false'
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.Bool):
+        if setting_value in (u'false', u'true'):
             return setting_value
         else:
             return default_value
@@ -317,9 +317,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Startup/startupWorkingDir'
-        default_value = QtCore.QVariant('home')
+        default_value = u'home'
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.String):
+        if isinstance(setting_value, unicode):
             return setting_value
         else:
             return default_value
@@ -331,9 +331,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Startup/lastWorkingDir'
-        default_value = QtCore.QVariant(vitables.utils.getHomeDir())
+        default_value = vitables.utils.getHomeDir()
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.String):
+        if isinstance(setting_value, unicode):
             return setting_value
         else:
             return default_value
@@ -345,9 +345,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Recent/Files'
-        default_value = QtCore.QVariant([])
+        default_value = []
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.StringList):
+        if isinstance(setting_value, list):
             return setting_value
         else:
             return default_value
@@ -359,9 +359,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Session/Files'
-        default_value = QtCore.QVariant([])
+        default_value = []
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.StringList):
+        if isinstance(setting_value, list):
             return setting_value
         else:
             return default_value
@@ -373,9 +373,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'HelpBrowser/History'
-        default_value = QtCore.QVariant([])
+        default_value = []
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.StringList):
+        if isinstance(setting_value, list):
             return setting_value
         else:
             return default_value
@@ -387,9 +387,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'HelpBrowser/Bookmarks'
-        default_value = QtCore.QVariant([])
+        default_value = []
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.StringList):
+        if isinstance(setting_value, list):
             return setting_value
         else:
             return default_value
@@ -400,9 +400,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Plugins/Paths'
-        default_value = QtCore.QVariant([])
+        default_value = []
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.StringList):
+        if isinstance(setting_value, list):
             return setting_value
         else:
             return default_value
@@ -413,9 +413,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Plugins/Enabled'
-        default_value = QtCore.QVariant([])
+        default_value = []
         setting_value = self.value(key)
-        if setting_value.canConvert(QtCore.QVariant.StringList):
+        if isinstance(setting_value, list):
             return setting_value
         else:
             return default_value
@@ -432,7 +432,7 @@ class Config(QtCore.QSettings):
         """
 
         try:
-            self.setValue(key, QtCore.QVariant(value))
+            self.setValue(key, value)
             if self.status():
                 raise configException.ConfigFileIOException, \
                     '{0}={1}'.format(key, value)
@@ -588,47 +588,42 @@ class Config(QtCore.QSettings):
         try:
             key = 'Geometry/Position'
             value = config[key]
-            if value.isValid():
+            if isinstance(value, QtCore.QByteArray):
                 # Default position is provided by the underlying window manager
-                gui.restoreGeometry(value.toByteArray())
+                gui.restoreGeometry(value)
 
             key = 'Geometry/Layout'
             value = config[key]
-            if value.isValid():
+            if isinstance(value, QtCore.QByteArray):
                 # Default layout is provided by the underlying Qt installation
-                gui.restoreState(value.toByteArray())
+                gui.restoreState(value)
 
             key = 'Geometry/HSplitter'
             value = config[key]
-            if value.isValid():
+            if isinstance(value, QtCore.QByteArray):
                 # Default geometry provided by the underlying Qt installation
-                gui.hsplitter.restoreState(value.toByteArray())
+                gui.hsplitter.restoreState(value)
 
             key = 'Geometry/VSplitter'
             value = config[key]
-            if value.isValid():
+            if isinstance(value, QtCore.QByteArray):
                 # Default geometry provided by the underlying Qt installation
-                gui.vsplitter.restoreState(value.toByteArray())
+                gui.vsplitter.restoreState(value)
 
             key = 'Startup/lastWorkingDir'
-            value = config[key]
-            self.last_working_directory = value.toString()
+            self.last_working_directory = config[key]
 
             key = 'Recent/Files'
-            value = config[key]
-            self.recent_files = value.toStringList()
+            self.recent_files = config[key]
 
             key = 'Session/Files'
-            value = config[key]
-            self.session_files_nodes = value.toStringList()
+            self.session_files_nodes = config[key]
 
             key = 'HelpBrowser/History'
-            value = config[key]
-            self.hb_history = value.toStringList()
+            self.hb_history = config[key]
 
             key = 'HelpBrowser/Bookmarks'
-            value = config[key]
-            self.hb_bookmarks = value.toStringList()
+            self.hb_bookmarks = config[key]
         except KeyError:
             pass
 
@@ -645,18 +640,20 @@ class Config(QtCore.QSettings):
         key = 'Startup/restoreLastSession'
         if key in config:
             value = config[key]
-            self.restore_last_session = value.toBool()
+            if value == u'false':
+                self.restore_last_session = False
+            elif value == u'true':
+                self.restore_last_session = True
 
         key = 'Startup/startupWorkingDir'
         if key in config:
-            value = config[key]
-            self.startup_working_directory = value.toString()
+            self.startup_working_directory = config[key]
 
         key = 'Logger/Paper'
         logger = self.vtapp.gui.logger
         if key in config:
             value = config[key]
-            paper = QtGui.QColor(value).name()
+            paper = value.name()
             stylesheet = logger.styleSheet()
             old_paper = stylesheet[-7:]
             new_stylesheet = stylesheet.replace(old_paper, paper)
@@ -664,36 +661,29 @@ class Config(QtCore.QSettings):
 
         key = 'Logger/Text'
         if key in config:
-            value = config[key]
-            text_color = QtGui.QColor(value)
             logger.moveCursor(QtGui.QTextCursor.End)
-            logger.setTextColor(text_color)
+            logger.setTextColor(config[key])
 
         key = 'Logger/Font'
         if key in config:
-            value = config[key]
-            logger.setFont(QtGui.QFont(value))
+            logger.setFont(config[key])
 
         key = 'Workspace/Background'
         workspace = self.vtapp.gui.workspace
         if key in config:
-            value = config[key]
-            workspace.setBackground(QtGui.QBrush(value))
+            workspace.setBackground(config[key])
             workspace.viewport().update()
 
         key = 'Look/currentStyle'
         if key in config:
-            value = config[key]
-            self.current_style = value.toString()
+            self.current_style = config[key]
             # Default style is provided by the underlying window manager
             QtGui.qApp.setStyle(self.current_style)
 
         key = 'Plugins/Paths'
         if key in config:
-            value = config[key]
-            self.plugins_paths = value.toStringList()
+            self.plugins_paths = config[key]
 
         key = 'Plugins/Enabled'
         if key in config:
-            value = config[key]
-            self.enabled_plugins = value.toStringList()
+            self.enabled_plugins = config[key]

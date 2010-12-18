@@ -80,8 +80,8 @@ class VTGUI(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+    #    sys.stdout = self.logger
+    #    sys.stderr = self.logger
 
 
     def addComponents(self):
@@ -743,7 +743,7 @@ class VTGUI(QtGui.QMainWindow):
             (mode, filepath) = item.split('#@#')
             action = QtGui.QAction(u'{0:>2} {1}.'.format(index, filepath), 
                 self, triggered=self.vtapp.openRecentFile)
-            action.setData(QtCore.QVariant(item))
+            action.setData(item)
             if mode == 'r':
                 action.setIcon(iconset['file_ro'])
             else:
@@ -817,9 +817,9 @@ class VTGUI(QtGui.QMainWindow):
         current = self.dbs_tree_view.currentIndex()
         if current.isValid():
             tip = self.dbs_tree_model.data(current, QtCore.Qt.StatusTipRole)
-            message = tip.toString()
+            message = tip
         else:
-            message = ''
+            message = u''
         self.sb_node_info.setText(message)
 
 

@@ -626,27 +626,27 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         if not index.isValid():
-            data = QtCore.QVariant()
+            data = None
             return data
 
         node = self.nodeFromIndex(index)
         if role == QtCore.Qt.DisplayRole:
-            data = QtCore.QVariant(node.name)
+            data = node.name
         elif role == QtCore.Qt.ToolTipRole:
-            data = QtCore.QVariant('{0}: {1}'.format(node.node_kind, 
-                node.name))
+            data = '{0}: {1}'.format(node.node_kind, 
+                node.name)
         elif role == QtCore.Qt.StatusTipRole:
-            data = QtCore.QVariant(node.as_record)
+            data = node.as_record
         elif role == QtCore.Qt.DecorationRole:
-            data = QtCore.QVariant(node.icon)
+            data = node.icon
         elif role == QtCore.Qt.UserRole:
-            data = QtCore.QVariant(node.filepath)
+            data = node.filepath
         elif role == QtCore.Qt.UserRole+1:
-            data = QtCore.QVariant(node.nodepath)
+            data = node.nodepath
         elif role == QtCore.Qt.UserRole+2:
-            data = QtCore.QVariant(node.node_kind)
+            data = node.node_kind
         else:
-            data = QtCore.QVariant()
+            data = None
         return data
 
 
@@ -705,11 +705,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         if (orientation, role) == (QtCore.Qt.Horizontal, \
             QtCore.Qt.DisplayRole):
-            return QtCore.QVariant(translate('DBsTreeModel', 
+            return translate('DBsTreeModel', 
                 'Tree of databases',
-                'Header of the only column of the tree of databases view'))
+                'Header of the only column of the tree of databases view')
 
-        return QtCore.QVariant()
+        return None
 
 
     def columnCount(self, index):
@@ -979,8 +979,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         # view so indexes contains always one element
         for index in indexes:
             if index.isValid():
-                filepath = self.data(index, QtCore.Qt.UserRole).toString()
-                nodepath = self.data(index, QtCore.Qt.UserRole+1).toString()
+                filepath = self.data(index, QtCore.Qt.UserRole)
+                nodepath = self.data(index, QtCore.Qt.UserRole+1)
                 row = unicode(index.row())
                 stream.writeString(filepath.encode())
                 stream.writeString(nodepath.encode())
