@@ -70,7 +70,7 @@ if sphinx_found:
             True.
             """
 
-            for builder in ('html', 'latex'):
+            for builder in ('html', 'pdf'):
                 self.builder = builder
                 self.builder_target_dir = os.path.join(self.build_dir, 
                     self.builder)
@@ -84,10 +84,11 @@ if sphinx_found:
                 shutil.rmtree(os.path.join(output_dir,"_sources"))
                 copy_file('LICENSE.html', output_dir)
                 # Include the PDF guide in the package
-                make_path = find_executable("make")
-                spawn([make_path, "-C", self.builder_target_dir, "all-pdf"])
-                copy_file(os.path.join(self.build_dir, "latex", 
-                    "ViTablesUsersGuide.pdf"), "doc")
+                makefile_dir = os.path.join(self.build_dir, 'latex')
+#                make_path = find_executable("make")
+#                spawn([make_path, "-C", makefile_dir, "all-pdf"])
+#                copy_file(os.path.join(makefile_dir, 
+#                    "ViTablesUsersGuide.pdf"), "doc")
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:

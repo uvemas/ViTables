@@ -22,7 +22,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-# extensions = []
+#extensions = ['rst2pdf.pdfbuilder']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -195,7 +195,7 @@ latex_use_modindex = False
 
 # -- Options for PDF output --------------------------------------------------
 pdf_documents = [
-  ('index', 'ViTablesUsersGuide.tex', u'ViTables Users\' Guide Documentation',
+  ('index', 'ViTablesUsersGuide', u'ViTables Users\' Guide Documentation',
    u'Vicent Mas', 'manual'),
 ]
 

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 17, 2011 **
+Updated several files required for building the Windows installer.
+
 ** December 18, 2010 **
 More advances in the migration path to Python 3.0.
 

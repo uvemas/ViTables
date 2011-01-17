@@ -1,5 +1,5 @@
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2009 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 # This script is intended to generate a binary installer for sources imported
@@ -58,9 +58,9 @@ Function .onInit
 	StrCpy $STARTMENU_FOLDER "ViTables @VERSION@ for Python @DOTPYTHONVERSION@"
 
 	# Check the python installation
-	ExecWait "pythonw -c $\"import sys; (sys.version_info[0:3] > (2, 5)) or 0/0$\"" $R0
+	ExecWait "pythonw -c $\"import sys; (sys.version_info[0:3] > (2, 6)) or 0/0$\"" $R0
 	${If} $R0 == "1"
-	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that Python 2.5 is not \
+	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that Python 2.6 is not \
 	  installed. Aborting the ViTables installation process."
 	  Abort
 	${EndIf}
@@ -159,15 +159,16 @@ Section "ViTables @VERSION@" VT
   # Copy the ViTables script in the Python Scripts directory
   SetOutPath $PYTHONDIR\Scripts
   File vitables.exe
+  File vitables.exe.manifest
 
   # Copy the ViTables sources in the Python site-packages directory
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables
-  File /r /x plotter @ROOT@\vitables\*.py
-  File /r /x plotter @ROOT@\vitables\*.ui
+  File /r /x images /x .leo_shadow @ROOT@\vitables\*.py
+  File /r /x images @ROOT@\vitables\*.ui
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\icons
   File /r @ROOT@\vitables\icons\*
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\htmldocs
-  File /r @ROOT@\doc\htmldocs\*
+  File /r @ROOT@\vitables\htmldocs\*
 
   # The text files: TODO.txt, INSTALL.txt and stuff like that
   SetOutPath $INSTDIR
@@ -176,9 +177,9 @@ Section "ViTables @VERSION@" VT
 
   # The documentation directory
   SetOutPath $INSTDIR\doc\html
-  File /r @ROOT@\doc\htmldocs\*
-  SetOutPath $INSTDIR\doc
-  File @ROOT@\doc\usersguide.pdf
+  File /r @ROOT@\vitables\htmldocs\*
+#  SetOutPath $INSTDIR\doc
+#  File @ROOT@\doc\ViTablesUsersGuide.pdf
 
   # The examples directory
   SetOutPath $INSTDIR\examples
@@ -271,6 +272,7 @@ Section "Un.Vitables uninstall" UVT
   # Remove the vitables package
   RMDir /r "$PYTHONDIR\Lib\site-packages\vitables"
   Delete "$PYTHONDIR\Scripts\vitables.exe"
+  Delete "$PYTHONDIR\Scripts\vitables.exe.manifest"
 
   # Remove the application entry in the Start Menu
   !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
