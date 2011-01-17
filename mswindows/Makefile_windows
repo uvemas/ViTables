@@ -27,12 +27,12 @@ GUIDE_INDEX=$(ROOT)\doc\index.rst
 HTML_OUTDIR=$(ROOT)\vitables\htmldocs
 
 clean:
+	del $(VTNSIS)
+	del ViTables*.win32-py$(DOTPYTHONVERSION).exe
 	del $(ROOT)\vitables.py
 	rmdir /q /s $(ROOT)\doc\_build
 	rmdir /q /s $(HTML_OUTDIR)
-#	del $(ROOT)\doc\ViTablesUsersGuide.pdf
-	del $(VTNSIS)
-	del ViTables*.win32-py$(DOTPYTHONVERSION).exe
+	del $(ROOT)\doc\ViTablesUsersGuide.pdf
 
 vitables.exe:
 	copy $(ROOT)\scripts\vitables .\vitables.py

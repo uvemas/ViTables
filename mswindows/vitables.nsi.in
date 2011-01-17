@@ -178,8 +178,8 @@ Section "ViTables @VERSION@" VT
   # The documentation directory
   SetOutPath $INSTDIR\doc\html
   File /r @ROOT@\vitables\htmldocs\*
-#  SetOutPath $INSTDIR\doc
-#  File @ROOT@\doc\ViTablesUsersGuide.pdf
+  SetOutPath $INSTDIR\doc
+  File @ROOT@\doc\ViTablesUsersGuide.pdf
 
   # The examples directory
   SetOutPath $INSTDIR\examples
