@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 18, 2011 **
+Fixed some minor issues in the creation of the Windows installer.
+
 ** January 17, 2011 **
 Fine tuning the building process of the Windows installer.
 

@@ -163,8 +163,10 @@ Section "ViTables @VERSION@" VT
 
   # Copy the ViTables sources in the Python site-packages directory
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables
-  File /r /x images /x .leo_shadow @ROOT@\vitables\*.py
-  File /r /x images @ROOT@\vitables\*.ui
+  File /r /x images /x plotter /x .leo_shadow @ROOT@\vitables\*.py
+  File /r /x images /x plotter @ROOT@\vitables\*.ui
+  SetOutPath $PYTHONDIR\Lib\site-packages\vitables\plugins\csv\icons
+  File /r @ROOT@\vitables\plugins\csv\icons\*
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\icons
   File /r @ROOT@\vitables\icons\*
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\htmldocs
@@ -200,7 +202,7 @@ Section "ViTables @VERSION@" VT
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Examples.lnk" "$INSTDIR\examples"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (PDF).lnk" "$INSTDIR\doc\usersguide.pdf"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (PDF).lnk" "$INSTDIR\doc\ViTablesUsersGuide.pdf"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (HTML).lnk" "$INSTDIR\doc\html\index.html"
     CreateShortCut "$DESKTOP\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
 
