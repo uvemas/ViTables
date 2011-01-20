@@ -96,9 +96,9 @@ class PluginsMenu(QtCore.QObject):
 
         loaded_plugins = self.vtapp.plugins_mgr.loaded_plugins
         plugins_keys = loaded_plugins.keys()
-        menu_key = os.path.join(PLUGINSDIR, 'menu#@#plugins_menu')
-        plugins_keys.remove(menu_key)
-        plugins_keys.insert(0, menu_key)
+        # menu_key = os.path.join(PLUGINSDIR, 'menu#@#plugins_menu')
+        # plugins_keys.remove(menu_key)
+        # plugins_keys.insert(0, menu_key)
 
         # Create a QAction for every loaded plugin
         for key in plugins_keys:

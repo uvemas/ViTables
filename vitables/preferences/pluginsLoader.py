@@ -155,6 +155,17 @@ class PluginsLoader(object):
             if os.path.isabs(path) and (path not in sys.path):
                 sys.path = [path] + sys.path
 
+        # Disable not available enabled plugins
+        for epg in self.enabled_plugins[:]:
+            folder, name = epg.split('#@#')
+            match = False
+            for ppth in self.plugins_paths:
+                if folder.startswith(ppth):
+                    match = True
+                    break
+            if not match:
+                self.enabled_plugins.remove(epg)
+
         # Some useful stuff
         self.all_plugins = []
         self.disabled_plugins = []
