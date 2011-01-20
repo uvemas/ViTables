@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2010 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ if sphinx_found:
             True.
             """
 
-            for builder in ('html', 'pdf'):
+            for builder in ('html', 'latex'):
                 self.builder = builder
                 self.builder_target_dir = os.path.join(self.build_dir, 
                     self.builder)
@@ -83,12 +83,12 @@ if sphinx_found:
                 copy_tree(os.path.join(self.build_dir,"html"), output_dir)
                 shutil.rmtree(os.path.join(output_dir,"_sources"))
                 copy_file('LICENSE.html', output_dir)
-                # Include the PDF guide in the package
+                # Include the PDF guide in the source package
                 makefile_dir = os.path.join(self.build_dir, 'latex')
-#                make_path = find_executable("make")
-#                spawn([make_path, "-C", makefile_dir, "all-pdf"])
-#                copy_file(os.path.join(makefile_dir, 
-#                    "ViTablesUsersGuide.pdf"), "doc")
+                make_path = find_executable("make")
+                spawn([make_path, "-C", makefile_dir, "all-pdf"])
+                copy_file(os.path.join(makefile_dir, 
+                "ViTablesUsersGuide.pdf"), "doc")
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:

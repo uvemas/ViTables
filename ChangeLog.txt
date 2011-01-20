@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** January 20, 2011 **
+The setup.py script has changed.
+
 Applied a workaround to a PyQt4 4.8.2 bug.
 
 Fixed some minor bugs regarding plugins.
