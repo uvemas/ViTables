@@ -528,11 +528,11 @@ class VTGUI(QtGui.QMainWindow):
         settings_menu = self.menuBar().addMenu(translate('VTGUI', "&Settings", 
             'The Settings menu entry'))
         settings_menu.setObjectName('settings-menu')
-        self.hide_toolbar_submenu = self.createPopupMenu()
-        self.hide_toolbar_submenu.menuAction().setText(
+        self.toolbars_submenu = self.createPopupMenu()
+        self.toolbars_submenu.menuAction().setText(
             translate('VTGUI', 'ToolBars', 'Tools -> ToolBars action'))
         settings_actions = ['settingsPreferences', None, 
-            self.hide_toolbar_submenu]
+            self.toolbars_submenu]
         vitables.utils.addActions(settings_menu, settings_actions, 
             self.gui_actions)
 
@@ -594,7 +594,6 @@ class VTGUI(QtGui.QMainWindow):
             self.window_menu]
         vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
 
-
     def closeEvent(self, event):
         """
         Handle close events.
@@ -612,8 +611,11 @@ class VTGUI(QtGui.QMainWindow):
 
         # Quit
         event.accept()
+        # Explicit deletion is required here as a workaround of a PyQt4
+        # v4.8.2 bug. See <QMainWindow.createPopupMenu bug?> thread in
+        # the PyQt4 mailing list for details
+        del self.toolbars_submenu
         QtGui.qApp.quit()
-
 
     def makeCopy(self):
         """Copy text/leaf depending on which widget has focus.
