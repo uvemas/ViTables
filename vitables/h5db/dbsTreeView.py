@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2010 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -99,9 +99,10 @@ class DBsTreeView(QtGui.QTreeView):
         self.expanded.connect(self.updateExpandedGroup)
         self.collapsed.connect(self.updateCollapsedGroup)
         self.dbt_model.layoutChanged.connect(self.updateColumnWidth)
-        self.dbsTreeViewCreated.connect(self.vtgui.setup)
+    #    self.dbsTreeViewCreated.connect(self.vtgui.setup)
 
-        self.dbsTreeViewCreated.emit(self)
+    #    self.dbsTreeViewCreated.emit(self)
+        self.vtgui.setup(self)
 
 
     def updateColumnWidth(self):

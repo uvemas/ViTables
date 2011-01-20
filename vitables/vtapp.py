@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2010 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ class VTApp(QtCore.QObject):
 
         # Print the welcome message
         print(translate('VTApp', 
-            """ViTables {0}\nCopyright (c) 2008-2010 Vicent Mas."""
+            """ViTables {0}\nCopyright (c) 2008-2011 Vicent Mas."""
             """\nAll rights reserved.""", 
             'Application startup message').format(vtconfig.getVersion()))
 

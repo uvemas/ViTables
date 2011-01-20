@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** January 20, 2011 **
+The copyright statement has been updated.
+
 The setup.py script has changed.
 
 Applied a workaround to a PyQt4 4.8.2 bug.
