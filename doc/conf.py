@@ -38,7 +38,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'ViTables Users\' Guide'
-copyright = u'2010, Vicent Mas'
+copyright = u'2011, Vicent Mas'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -188,7 +188,7 @@ latex_logo = 'images/title_page_plain.png'
 #latex_preamble = ''
 
 # Documents to append as an appendix to all manuals.
-#latex_appendices = []
+latex_appendices = ['usersguide-app1', 'usersguide-app2']
 
 # If false, no module index is generated.
 latex_use_modindex = False

@@ -1,8 +1,8 @@
 
 .. _appendix-a:
 
-Appendix A. Available Plugins
-=============================
+Available Plugins
+=================
 
 Three plugins are currently distributed along with *ViTables*:
 

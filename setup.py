@@ -70,24 +70,40 @@ if sphinx_found:
             True.
             """
 
+            # Build the Users Guide in HTML and TeX format
             for builder in ('html', 'latex'):
+                # Tidy up before every build
+                try:
+                    os.remove(os.path.join(self.source_dir, 'index.rst'))
+                except OSError:
+                    pass
+                shutil.rmtree(self.doctree_dir, True)
+
                 self.builder = builder
-                self.builder_target_dir = os.path.join(self.build_dir, 
-                    self.builder)
+                self.builder_target_dir = os.path.join(self.build_dir, builder)
                 self.mkpath(self.builder_target_dir)
+                builder_index = 'index_{0}.txt'.format(builder)
+                copy_file(os.path.join(self.source_dir, builder_index), 
+                    os.path.join(self.source_dir, 'index.rst'))
                 BuildDoc.run(self)
 
+            # Build the Users Guide in PDF format
+            builder_latex_dir = os.path.join(self.build_dir, 'latex')
+            copy_file("doc/manual_anyopen.cls", 
+                os.path.join(builder_latex_dir, "manual.cls"))
+            make_path = find_executable("make")
+            spawn([make_path, "-C", builder_latex_dir, "all-pdf"])
+
+            # Copy the docs to their final destination:
+            # HTML docs (Users Guide and License) -> ./vitables/htmldocs
+            # PDF guide -> ./doc
             output_dir = os.path.join("vitables", "htmldocs")
             if not os.access(output_dir, os.F_OK):
                 # Include the HTML guide and the license in the package
                 copy_tree(os.path.join(self.build_dir,"html"), output_dir)
                 shutil.rmtree(os.path.join(output_dir,"_sources"))
                 copy_file('LICENSE.html', output_dir)
-                # Include the PDF guide in the source package
-                makefile_dir = os.path.join(self.build_dir, 'latex')
-                make_path = find_executable("make")
-                spawn([make_path, "-C", makefile_dir, "all-pdf"])
-                copy_file(os.path.join(makefile_dir, 
+            copy_file(os.path.join(builder_latex_dir, 
                 "ViTablesUsersGuide.pdf"), "doc")
 
 use_py2app = False

@@ -1,5 +1,5 @@
-Appendix B. The Help Browser
-============================
+The Help Browser
+================
 
 *ViTables* comes with its own
 fully-integrated documentation browser. It allows the

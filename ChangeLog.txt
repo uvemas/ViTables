@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 22, 2011 **
+The process for building documentation has been refined.
+
 ** January 20, 2011 **
 The copyright statement has been updated.
 
