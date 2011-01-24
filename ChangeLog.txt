@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 24, 2011 **
+Fixed a bug in the startup settings of ViTables.
+
 ** January 22, 2011 **
 The process for building documentation has been refined.
 

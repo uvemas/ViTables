@@ -80,8 +80,8 @@ class VTGUI(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-    #    sys.stdout = self.logger
-    #    sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
 
     def addComponents(self):
@@ -193,7 +193,6 @@ class VTGUI(QtGui.QMainWindow):
         actions['fileExit'] = QtGui.QAction(
             translate('VTGUI', 'E&xit', 'File -> Exit'), self, 
             shortcut=QtGui.QKeySequence('CTRL+Q'), 
-    #        triggered=self.vtapp.fileExit, 
             triggered=self.close, 
             icon=self.icons_dictionary['application-exit'], 
             statusTip=translate('VTGUI', 'Quit ViTables',

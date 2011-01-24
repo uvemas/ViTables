@@ -305,9 +305,9 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Startup/restoreLastSession'
-        default_value = u'false'
-        setting_value = self.value(key)
-        if setting_value in (u'false', u'true'):
+        default_value = False
+        setting_value = self.value(key, type=bool)
+        if setting_value in (False, True):
             return setting_value
         else:
             return default_value
@@ -639,11 +639,7 @@ class Config(QtCore.QSettings):
         # we have to check if it needs to be reloaded or not
         key = 'Startup/restoreLastSession'
         if key in config:
-            value = config[key]
-            if value == u'false':
-                self.restore_last_session = False
-            elif value == u'true':
-                self.restore_last_session = True
+            self.restore_last_session = config[key]
 
         key = 'Startup/startupWorkingDir'
         if key in config:
