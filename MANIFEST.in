@@ -3,6 +3,7 @@ include scripts/vitables
 recursive-include unixapp vitables.desktop vitables.svg
 recursive-include doc *
 exclude doc/images/title_page_plain.svg
+exclude doc/index.rst
 recursive-include examples *
 recursive-include macosxapp *
 recursive-include vitables/* *.ui

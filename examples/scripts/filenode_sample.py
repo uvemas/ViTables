@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
-#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 #
-#       This script is based on a scripts by Ivan Vilata.
+#       This script is based on a script by Ivan Vilata.
 
 """How to use the filenode module."""
 

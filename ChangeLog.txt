@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 25, 2011 **
+Several files (mainly example scripts) have been updated.
+
 ** January 24, 2011 **
 Fixed a bug in the startup settings of ViTables.
 

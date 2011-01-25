@@ -1,7 +1,7 @@
 #!/bin/sh
 
-#       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -72,8 +72,8 @@ for PYVER in $PYVERS; do
 	cp ../README.txt "$DMGDIR/ReadMe.txt"
 	sed -e "s/@VER@/$VER/g" -e "s/@PYVER@/$PYVER/g" < ReadMe-MacOSX.rtf > "$DMGDIR/ReadMe-MacOSX.rtf"
 	echo -n " guide"
-	cp ../doc/usersguide.pdf "$DMGDIR/User's Guide.pdf"
-	cp -R ../doc/html "$DMGDIR/User's Guide (HTML)"
+	cp ../doc/ViTablesUsersGuide.pdf "$DMGDIR/User's Guide.pdf"
+	cp -R ../vitables/htmldocs "$DMGDIR/User's Guide (HTML)"
 	echo "."
 	hdiutil create -srcfolder "$DMGDIR" -anyowners -format UDZO -imagekey zlib-level=9 "$DMG"
 done
