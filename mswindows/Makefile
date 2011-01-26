@@ -23,7 +23,8 @@ SIB="C:\Documents and Settings\vmas\Mis documentos\VendorID-1.0.0\sib\sib.py"
 ICON=$(ROOT)\vitables\icons\vitables.ico
 
 # Building the PDF documentation is currently not supported
-GUIDE_INDEX=$(ROOT)\doc\index.rst
+INDEX=$(ROOT)\doc\index.rst
+HTML_INDEX=$(ROOT)\doc\index_html.txt
 HTML_OUTDIR=$(ROOT)\vitables\htmldocs
 
 clean:
@@ -32,7 +33,8 @@ clean:
 	del $(ROOT)\vitables.py
 	rmdir /q /s $(ROOT)\doc\_build
 	rmdir /q /s $(HTML_OUTDIR)
-	del $(ROOT)\doc\ViTablesUsersGuide.pdf
+	del $(INDEX)
+#	del $(ROOT)\doc\ViTablesUsersGuide.pdf
 
 vitables.exe:
 	copy $(ROOT)\scripts\vitables .\vitables.py
@@ -45,9 +47,11 @@ vitables.exe:
 	del .\vitables.py
 
 vtdoc:
+	copy $(HTML_INDEX) $(INDEX)
 	cd $(ROOT)\doc && make html
 	mkdir $(HTML_OUTDIR)
 	xcopy $(ROOT)\doc\_build\html\*.* /E $(HTML_OUTDIR)
+	rmdir /q /s $(HTML_OUTDIR)\_sources
 	copy $(ROOT)\LICENSE.html $(HTML_OUTDIR)
 
 installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vtdoc vitables.exe

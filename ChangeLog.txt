@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 26, 2011 **
+The Makefile file for building the MSWindows installer has changed.
+
 ** January 25, 2011 **
 Several files (mainly example scripts) have been updated.
 
