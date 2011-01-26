@@ -982,9 +982,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 filepath = self.data(index, QtCore.Qt.UserRole)
                 nodepath = self.data(index, QtCore.Qt.UserRole+1)
                 row = unicode(index.row())
-                stream.writeString(filepath.encode())
-                stream.writeString(nodepath.encode())
-                stream.writeString(row.encode())
+                stream.writeQString(filepath)
+                stream.writeQString(nodepath)
+                stream.writeQString(row)
 
                 self.initial_parent = self.parent(index)
 
@@ -1046,9 +1046,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         stream = QtCore.QDataStream(encoded_data, QtCore.QIODevice.ReadOnly)
         while not stream.atEnd():
             # Decode the encoded data
-            filepath = stream.readString()
-            nodepath = stream.readString()
-            initial_row = int(stream.readString())
+            filepath = stream.readQString()
+            nodepath = stream.readQString()
+            initial_row = int(stream.readQString())
 
             # A node cannot be moved on itself
             if (parent_node.filepath, parent_node.nodepath) == (filepath, 
