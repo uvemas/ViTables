@@ -376,7 +376,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             else:
                 dirname = self.getDBDoc(src_filepath).hidden_group
                 basename = self.copied_node_info['node'].name
-                src_nodepath = '{0}/{1}'.format(dirname, basename)
+                src_nodepath = u'{0}/{1}'.format(dirname, basename)
             self.getDBDoc(src_filepath).pasteNode(src_nodepath, 
                                                     parent.node, childname)
             # Paste the node in the view
@@ -449,10 +449,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             old_nodepath = node.nodepath
             dirname = os.path.split(old_nodepath)[0]
             new_nodepath = \
-                ('{0}/{1}'.format(dirname, new_name)).replace('//', '/')
+                (u'{0}/{1}'.format(dirname, new_name)).replace('//', '/')
             self.setData(index, new_nodepath, QtCore.Qt.UserRole+1)
             self.setData(index, 
-                        '{0}->{1}'.format(node.filepath, node.nodepath), 
+                        u'{0}->{1}'.format(node.filepath, node.nodepath), 
                         QtCore.Qt.StatusTipRole)
             for child_index in self.walkTreeView(index):
                 child_node = self.nodeFromIndex(child_index)
@@ -460,7 +460,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                                                             new_nodepath, 1)
                 self.setData(child_index, child_nodepath, QtCore.Qt.UserRole+1)
                 self.setData(child_index, 
-                            '{0}->{1}'.format\
+                            u'{0}->{1}'.format\
                             (child_node.filepath, child_node.nodepath), 
                             QtCore.Qt.StatusTipRole)
         finally:
@@ -633,7 +633,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if role == QtCore.Qt.DisplayRole:
             data = node.name
         elif role == QtCore.Qt.ToolTipRole:
-            data = '{0}: {1}'.format(node.node_kind, 
+            data = u'{0}: {1}'.format(node.node_kind, 
                 node.name)
         elif role == QtCore.Qt.StatusTipRole:
             data = node.as_record

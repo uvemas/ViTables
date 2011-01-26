@@ -486,7 +486,7 @@ class VTApp(QtCore.QObject):
                     """ database cannot be overwritten.""", 
                     'Overwrite file dialog label').format(trier_dirname)
                 template = \
-                    "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
+                    u"(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
                 pattern = template.format(trier_filename)
             elif is_initial_filepath:
                 info[1] = translate('VTApp', 
@@ -494,7 +494,7 @@ class VTApp(QtCore.QObject):
                     """saved cannot overwrite itself.""", 
                     'Overwrite file dialog label').format(trier_dirname)
                 template = \
-                    "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
+                    u"(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
                 pattern = template.format(trier_filename)
             elif filename_in_sibling:
                 info[1] = translate('VTApp', 
@@ -870,8 +870,8 @@ class VTApp(QtCore.QObject):
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
-        pattern = """(^{0}$)|""" \
-            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(child.name)
+        pattern = u"""(^{0}$)|""" \
+            u"""(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(child.name)
         info = [translate('VTApp', 'Renaming a node: name already in use', 
                 'A dialog caption'), 
                 translate('VTApp', 
@@ -956,7 +956,7 @@ class VTApp(QtCore.QObject):
         src_nodepath = src_node.nodepath
         if src_nodepath == '/':
             nodename = \
-                'root_group_of_{0}'.format(os.path.basename(src_filepath))
+                u'root_group_of_{0}'.format(os.path.basename(src_filepath))
         else:
             nodename = src_node.name
 
@@ -1282,7 +1282,7 @@ class VTApp(QtCore.QObject):
 
         versions_edit.setReadOnly(1)
         versions_edit.setText(\
-            """
+            u"""
             <qt>
             <h3>{title}</h3>
             <table>

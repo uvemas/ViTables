@@ -258,7 +258,7 @@ class Buffer(object):
         try:
             return self.chunk[()]
         except IndexError:
-            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
+            print(u'IndexError! buffer start: {0} row, column: {1}, {2}'.\
                 format(self.start, row, col))
 
 
@@ -286,7 +286,7 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)]
         except IndexError:
-            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
+            print(u'IndexError! buffer start: {0} row, column: {1}, {2}'.\
                 format(self.start, row, col))
 
 
@@ -318,5 +318,5 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)][col]
         except IndexError:
-            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
+            print(u'IndexError! buffer start: {0} row, column: {1}, {2}'.\
                 format(self.start, row, col))

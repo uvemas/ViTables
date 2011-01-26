@@ -204,7 +204,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         table = self.nchildrenTable
         table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
-        table.setStyleSheet("background-color: {0}".format(background.name()))
+        table.setStyleSheet(u"background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()
         self.children_model.setHorizontalHeaderLabels([
             translate('NodePropDlg', 'Child name', 
@@ -321,7 +321,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
             # QtGui.QPalette.Window constant is 10
             bg_name = table.palette().brush(10).color().name()
-            table.setStyleSheet("background-color: {0}".format(bg_name))
+            table.setStyleSheet(u"background-color: {0}".format(bg_name))
             self.fields_model = QtGui.QStandardItemModel()
             self.fields_model.setHorizontalHeaderLabels([
                 translate('NodePropDlg', 'Field name', 

@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** January 26, 2011 **
+Python strings and Unicode strings have been revisited.
+
 The Makefile file for building the MSWindows installer has changed.
 
 ** January 25, 2011 **

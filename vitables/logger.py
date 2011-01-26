@@ -129,11 +129,11 @@ class Logger(QtGui.QTextEdit):
         # Make the menu
         edit_menu = QtGui.QMenu(self)
         # QtGui.Qpalette.Window constant is 10
-        edit_menu.setStyleSheet("background-color: {0}".format(10))
+        edit_menu.setStyleSheet(u"background-color: {0}".format(10))
 
         self.copy_action = QtGui.QAction(
             translate('Logger', "&Copy", 'Logger menu entry'), self, 
-            shortcut=QtGui.QKeySequence.Copy, triggered=vtapp.makeCopy, 
+            shortcut=QtGui.QKeySequence.Copy, triggered=vtapp.gui.makeCopy, 
             statusTip=translate('Logger', 'Copy selected text to clipboard', 
                 'Status bar text for the logger context menu -> Copy action'))
         edit_menu.addAction(self.copy_action)

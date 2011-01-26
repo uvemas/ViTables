@@ -435,7 +435,7 @@ class Config(QtCore.QSettings):
             self.setValue(key, value)
             if self.status():
                 raise configException.ConfigFileIOException, \
-                    '{0}={1}'.format(key, value)
+                    u'{0}={1}'.format(key, value)
         except configException.ConfigFileIOException, inst:
             print(inst.error_message)
 

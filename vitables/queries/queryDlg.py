@@ -120,7 +120,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         self.setWindowTitle(translate('QueryDlg', 'New query on table: {0}',
             'A dialog caption').format(info[u'name']))
 
-        self.nameLE.setText('FilteredTable_{0}'.format(counter))
+        self.nameLE.setText(u'FilteredTable_{0}'.format(counter))
 
         self.indicesColumnLE.setEnabled(0)
 

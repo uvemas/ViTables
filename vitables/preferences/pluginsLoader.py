@@ -120,7 +120,7 @@ def scanFolder(folder):
     pkg_plugins = []
     for loader, name, ispkg in pkgutil.iter_modules([folder]):
         if not ispkg and isPlugin(folder, name):
-            pkg_plugins.append('{0}#@#{1}'.format(folder, name))
+            pkg_plugins.append(u'{0}#@#{1}'.format(folder, name))
     return pkg_plugins
 
 
@@ -187,7 +187,7 @@ class PluginsLoader(object):
         for folder in self.plugins_paths:
             for loader, name, ispkg in pkgutil.iter_modules([folder]):
                 if not ispkg and isPlugin(folder, name):
-                    self.all_plugins.append('{0}#@#{1}'.format(folder, name))
+                    self.all_plugins.append(u'{0}#@#{1}'.format(folder, name))
                 else:
                     pkg_plugins = scanFolder(os.path.join(folder, name))
                     self.all_plugins = self.all_plugins + pkg_plugins
@@ -231,9 +231,9 @@ class PluginsLoader(object):
         except (ImportError, ValueError):
             self.untrack(plugin)
             if finding_failed:
-                print("\nError: plugin {0} cannot be found.".format(plugin))
+                print(u"\nError: plugin {0} cannot be found.".format(plugin))
             else:
-                print("\nError: plugin {0} cannot be loaded.".format(name))
+                print(u"\nError: plugin {0} cannot be loaded.".format(name))
             return
         finally:
             if not finding_failed:
@@ -245,7 +245,7 @@ class PluginsLoader(object):
             cls = getattr(module, class_name)
         except AttributeError:
             self.untrack(plugin)
-            print("\nError: module {0} is not a valid plugin.".format(name))
+            print(u"\nError: module {0} is not a valid plugin.".format(name))
             return
 
         # Load the plugin
@@ -258,7 +258,7 @@ class PluginsLoader(object):
             self.loaded_plugins[plugin] = instance
         except:
             self.untrack(plugin)
-            print("\nError: plugin {0} cannot be loaded.".format(name))
+            print(u"\nError: plugin {0} cannot be loaded.".format(name))
             vitables.utils.formatExceptionInfo()
             return
 

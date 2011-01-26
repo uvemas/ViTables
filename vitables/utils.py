@@ -42,7 +42,7 @@ from vitables.vtSite import ICONDIR, DOCDIR
 
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
-DEFAULT_LOCALE = locale.getdefaultlocale()[1]
+DEFAULT_ENCODING = locale.getdefaultlocale()[1]
 
 
 def toUnicode(thing):
@@ -56,7 +56,7 @@ def toUnicode(thing):
     if isinstance(thing, str):
         # thing is a byte string, e.g. an attribute whose type is numpy.string_
         try:
-            return unicode(thing, DEFAULT_LOCALE)
+            return unicode(thing, DEFAULT_ENCODING)
         except TypeError:
             return unicode(thing)
     else:
@@ -171,12 +171,12 @@ def createIcons(large_icons, small_icons, icons_dict):
         icon = QtGui.QIcon()
         if name in large_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR, '22x22','{0}.png').format(name))
+                os.path.join(ICONDIR, '22x22',u'{0}.png').format(name))
             pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR,'16x16', '{0}.png').format(name))
+                os.path.join(ICONDIR,'16x16', u'{0}.png').format(name))
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 
@@ -336,7 +336,7 @@ def formatExceptionInfo(limit=1):
     :Parameter limit: the number of stack trace entries to be printed
     """
 
-    print('\n{0}\n'.format(traceback.format_exc(limit)))
+    print(u'\n{0}\n'.format(traceback.format_exc(limit)))
 
 #
 # Path related functions

@@ -312,8 +312,8 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
         # Get caption
         if self.field_names:
-            caption = '{0}: {1}[{2}]'.format(self.title,
+            caption = u'{0}: {1}[{2}]'.format(self.title,
                 self.field_names[col], row + 1)
         else:
-            caption = '{0}: ({1}, {2})'.format(self.title, row + 1, col + 1)
+            caption = u'{0}: ({1}, {2})'.format(self.title, row + 1, col + 1)
         ZoomCell(cell, caption, self.workspace, self.dbt_leaf)
