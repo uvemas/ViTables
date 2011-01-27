@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 27, 2011 **
+Fixed a bug in the initial configuration setup.
+
 ** January 26, 2011 **
 Fixed a small drag & drop issue.
 

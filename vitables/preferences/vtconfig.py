@@ -306,7 +306,16 @@ class Config(QtCore.QSettings):
 
         key = 'Startup/restoreLastSession'
         default_value = False
-        setting_value = self.value(key, type=bool)
+        # Warning!
+        # If the application settings have not yet been saved
+        # in the registry then self.value(key) returns a Null
+        # QVariant (its type is None) and self.value(key, type=bool)
+        # raises an exception because None cannot be converted
+        # to a boolean value
+        try:
+            setting_value = self.value(key, type=bool)
+        except TypeError:
+            setting_value = default_value
         if setting_value in (False, True):
             return setting_value
         else:
