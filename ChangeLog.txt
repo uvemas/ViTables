@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 28, 2011 **
+Fixed a bug introduced in the CSV plugin in r220.
+
 ** January 27, 2011 **
 Fixed a bug in the initial configuration setup.
 

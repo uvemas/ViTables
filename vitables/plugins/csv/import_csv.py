@@ -74,7 +74,9 @@ import vitables.utils
 from vitables.vtSite import PLUGINSDIR
 
 translate = QtGui.QApplication.translate
-
+TYPE_ERROR = translate('ImportCSV', 
+            """\nError: please, make sure that you are importing a """
+            """homogeneous dataset.""", 'CSV file not imported error')
 
 def getArray(buf):
     """Fill an intermediate ``numpy`` array with data read from the `CSV` file.
@@ -178,7 +180,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
     if has_header:
         descr = {}
         for i in range(0, first_line.size):
-            dtype = data.dtype.fields[u'f{0}'.format(i)][0]
+            dtype = data.dtype.fields['f{0}'.format(i)][0]
             descr[first_line[i]] = tables.Col.from_dtype(dtype, pos=i)
         for i in itemsizes:
             descr[first_line[i]] = tables.StringCol(itemsizes[i], pos=i)
@@ -186,7 +188,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
         descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in 
             data.dtype.fields.items()])
         for i in itemsizes:
-            descr[u'f{0}'.format(i)] = tables.StringCol(itemsizes[i])
+            descr['f{0}'.format(i)] = tables.StringCol(itemsizes[i])
 
     return descr, has_header
 
@@ -250,11 +252,11 @@ def homogeneousTableInfo(input_handler, first_line, data):
     else:
         if data.dtype.name.startswith('string'):
             descr = dict(
-                [(u'f{0}'.format(field), tables.StringCol(itemsize)) \
+                [('f{0}'.format(field), tables.StringCol(itemsize)) \
                 for field in indices])
         else:
             descr = dict(
-                [(u'f{0}'.format(field), tables.Col.from_dtype(data.dtype)) \
+                [('f{0}'.format(field), tables.Col.from_dtype(data.dtype)) \
                 for field in indices])
 
     return descr, has_header
@@ -702,10 +704,7 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            print(translate('ImportCSV', 
-                """\nError: please, make sure that you are """
-                """importing a homogeneous dataset.""",
-                'CSV file not imported error'))
+            print(TYPE_ERROR)
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -762,10 +761,7 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            print(translate('ImportCSV', 
-                """\nError: please, make sure that you are """
-                """importing a homogeneous dataset.""",
-                'CSV file not imported error'))
+            print(TYPE_ERROR)
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -791,28 +787,29 @@ class ImportCSV(QtCore.QObject):
             # The dtypes are determined by the contents of each column
             # Multidimensional columns will have string datatype
             data = numpy.genfromtxt(filepath, delimiter=',', dtype=None)
-
-            # Create the array
-            dbdoc = self.createDestFile(filepath)
-            if dbdoc is None:
-                return
-            array_name = u"imported_{0}".format(kind)
-            title = \
-                u'Imported from CSV file {0}'.format(os.path.basename(filepath))
-            dbdoc.h5file.createArray('/', array_name, data, title=title)
-            dbdoc.h5file.flush()
-            self.updateTree(dbdoc.filepath)
         except TypeError:
-            print(translate('ImportCSV', 
-                """\nError: please, make sure that you are """
-                """importing a homogeneous dataset.""",
-                'CSV file not imported error'))
-            self.dbt_model.closeDBDoc(dbdoc.filepath)
-        except:
-            vitables.utils.formatExceptionInfo()
+            data = None
+            dbdoc = None
+            print(TYPE_ERROR)
+        else:
+            try:
+                # Create the array
+                dbdoc = self.createDestFile(filepath)
+                if dbdoc is None:
+                    return
+                array_name = u"imported_{0}".format(kind)
+                title = \
+                    u'Imported from CSV file {0}'.format(os.path.basename(filepath))
+                dbdoc.h5file.createArray('/', array_name, data, title=title)
+                dbdoc.h5file.flush()
+                self.updateTree(dbdoc.filepath)
+            except TypeError:
+                print(TYPE_ERROR)
+            except:
+                vitables.utils.formatExceptionInfo()
         finally:
-            QtGui.qApp.restoreOverrideCursor()
             del data
+            QtGui.qApp.restoreOverrideCursor()
 
 
     def helpAbout(self):
