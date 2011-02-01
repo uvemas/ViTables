@@ -17,4 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['csv', 'menu', 'timeseries']
+__all__ = ['timeFormatterDlg', 'time_series']

@@ -30,6 +30,8 @@ __version__ = '0.8'
 plugin_class = 'TSFormatter'
 
 import time
+import os
+import ConfigParser
 
 import tables
 
@@ -44,6 +46,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
+from vitables.plugins.timeseries.timeFormatterDlg import TimeFormatterDlg
 
 translate = QtGui.QApplication.translate
 
@@ -186,7 +189,13 @@ class TSFormatter(object):
 
 
     def helpAbout(self):
-        """Brief description of the plugin."""
+        """Brief description of the plugin.
+
+        This is a convenience method which works as expected by
+        :meth:menu.plugins_menu.showInfo i.e. it returns a dictionary
+        whose keys will be used by the `menu` plugin in order to show
+        information about this plugin.
+        """
 
         # Text to be displayed
         about_text = translate('TSFormatter', 
@@ -202,9 +211,26 @@ class TSFormatter(object):
             version=__version__, 
             plugin_name='Time series formatter', 
             author='Vicent Mas <vmas@vitables.org>', 
-            descr=about_text)
+            descr=about_text, 
+            config=True)
 
         return descr
+
+
+    def configure(self):
+        """Configure the format used in a timeseries.
+
+        This is a convenience method. If the `menu` plugin is enabled
+        and its Time Series entry is activated then the raised dialog
+        has a Configure button which is connected to this method.
+
+        The timeseries format can be configured without calling this
+        method simply by editing the time_format.ini file by hand.
+        """
+        TimeFormatterDlg()
+
+
+
 
 
 class ArrayTSModel(QtCore.QAbstractTableModel):
@@ -230,6 +256,16 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
 
         super(ArrayTSModel, self).__init__(parent)
 
+        config = ConfigParser.RawConfigParser()
+        def_tformat = '%c' 
+        try:
+            config.read(\
+                os.path.join(os.path.dirname(__file__), u'time_format.ini'))
+            self.tformat = config.get('Timeseries', 'strftime')
+        except (IOError, ConfigParser.Error):
+            self.tformat = def_tformat
+
+
 
     def formatTimeContent(self, content):
         """
@@ -237,7 +273,11 @@ class ArrayTSModel(QtCore.QAbstractTableModel):
 
         Used when the content atom is `TimeAtom`.
         """
-        return time.asctime(time.gmtime(content))
+
+        try:
+            return time.strftime(self.tformat, time.gmtime(content))
+        except ValueError:
+            return content
 
 
     def data(self, index=QtCore.QModelIndex(), role=QtCore.Qt.DisplayRole):
@@ -325,6 +365,15 @@ class TableTSModel(QtCore.QAbstractTableModel):
 
         super(TableTSModel, self).__init__(parent)
 
+        config = ConfigParser.RawConfigParser()
+        def_tformat = '%c' 
+        try:
+            config.read(\
+                os.path.join(os.path.dirname(__file__), u'time_format.ini'))
+            self.tformat = config.get('Timeseries', 'strftime')
+        except (IOError, ConfigParser.Error):
+            self.tformat = def_tformat
+
 
 
     def timeFormatter(self, ts_kind):
@@ -345,7 +394,11 @@ class TableTSModel(QtCore.QAbstractTableModel):
 
         Used when the content atom is `TimeAtom`.
         """
-        return time.asctime(time.gmtime(content))
+
+        try:
+            return time.strftime(self.tformat, time.gmtime(content))
+        except ValueError:
+            return content
 
 
     def formatScikitsTS(self, value):
@@ -359,7 +412,7 @@ class TableTSModel(QtCore.QAbstractTableModel):
 
         date = ts.Date(self.freq, value=int(value))
         try:
-            return date.datetime.strftime('%a %b %d %H:%M:%S %Y')
+            return date.datetime.strftime(self.tformat)
         except ValueError:
             return value
 

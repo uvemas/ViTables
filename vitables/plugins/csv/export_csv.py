@@ -298,7 +298,13 @@ class ExportToCSV(QtCore.QObject):
 
 
     def helpAbout(self):
-        """Brief description of the plugin."""
+        """Brief description of the plugin.
+
+        This is a convenience method which works as expected by
+        :meth:menu.plugins_menu.showInfo i.e. it returns a dictionary
+        whose keys will be used by the `menu` plugin in order to show
+        information about this plugin.
+        """
 
         # Text to be displayed
         about_text = translate('ExportToCSV', 

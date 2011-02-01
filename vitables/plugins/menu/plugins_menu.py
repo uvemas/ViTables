@@ -95,22 +95,17 @@ class PluginsMenu(QtCore.QObject):
         """
 
         loaded_plugins = self.vtapp.plugins_mgr.loaded_plugins
-        plugins_keys = loaded_plugins.keys()
-        # menu_key = os.path.join(PLUGINSDIR, 'menu#@#plugins_menu')
-        # plugins_keys.remove(menu_key)
-        # plugins_keys.insert(0, menu_key)
-
         # Create a QAction for every loaded plugin
-        for key in plugins_keys:
-            pg_instance = loaded_plugins[key]
+        for pgID in loaded_plugins.keys():
+            pg_instance = loaded_plugins[pgID]
             if hasattr(pg_instance, 'helpAbout'):
                 slot = self.showInfo
                 name = pg_instance.helpAbout()['plugin_name']
             else:
                 slot = self.noInfo
-                name = key.split('#@#')[1]
+                name = pgID.split('#@#')[1]
             action = QtGui.QAction(name, self.plugins_menu, triggered=slot)
-            action.setObjectName(key)
+            action.setObjectName(pgID)
             self.plugins_menu.addAction(action)
 
 
@@ -164,8 +159,8 @@ class PluginsMenu(QtCore.QObject):
         """
 
         action = self.sender()
-        action_name = action.objectName()
-        descr = self.vtapp.plugins_mgr.loaded_plugins[action_name].helpAbout()
+        pgID = action.objectName()
+        descr = self.vtapp.plugins_mgr.loaded_plugins[pgID].helpAbout()
         info_dlg = QtGui.QDialog(self.vtgui)
         info_dlg.setWindowTitle(
             translate('PluginsMenu', 'About plugin', 'A dialog title'))
@@ -201,6 +196,18 @@ class PluginsMenu(QtCore.QObject):
 
         button_box = QtGui.QDialogButtonBox(info_dlg)
         button_box.addButton(QtGui.QDialogButtonBox.Ok)
+
+        # Add a Configure button if the plugin description has a 'config' key
+        try:
+            if descr['config'] == True:
+                config_button = button_box.addButton(\
+                    translate('PluginsMenu', 'Configure...', 'Button text'), 
+                    QtGui.QDialogButtonBox.ActionRole)
+                pg_conf = self.vtapp.plugins_mgr.loaded_plugins[pgID].configure
+                config_button.clicked.connect(pg_conf)
+        except KeyError:
+            pass
+
         grid = QtGui.QGridLayout(info_dlg)
         grid.addWidget(label1, 0, 0)
         grid.addWidget(field1, 0, 1)

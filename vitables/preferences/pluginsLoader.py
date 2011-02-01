@@ -117,6 +117,7 @@ def scanFolder(folder):
     :Parameter folder: the folder being scanned
     """
 
+
     pkg_plugins = []
     for loader, name, ispkg in pkgutil.iter_modules([folder]):
         if not ispkg and isPlugin(folder, name):

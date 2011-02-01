@@ -80,8 +80,8 @@ class VTGUI(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+    #    sys.stdout = self.logger
+    #    sys.stderr = self.logger
 
 
     def addComponents(self):
