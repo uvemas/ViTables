@@ -192,17 +192,6 @@ setup(name = 'ViTables', # The name of the distribution
         'vitables.plugins.timeseries': ['*.ui', '*.ini'], 
     }, 
     cmdclass = command_class,
-    data_files = [
-        ('examples', glob.glob('examples/*.h5')), 
-        ('examples/scripts', glob.glob('examples/scripts/*.py')), 
-        ('examples/arrays', glob.glob('examples/arrays/*.h5')), 
-        ('examples/misc', glob.glob('examples/misc/*.h5')), 
-        ('examples/scripts', glob.glob('examples/scripts/*.py')), 
-        ('examples/tables', glob.glob('examples/tables/*.h5')), 
-        ('examples/timeseries', glob.glob('examples/timeseries/*.h5')), 
-        ('', ['LICENSE.txt', 'LICENSE.html']), 
-        ('examples/csv', glob.glob('plugins/csv/examples/*.csv')), 
-    ], 
 
     **setup_args
 )
