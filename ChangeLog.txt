@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** February 02, 2011 **
+Fixed a minor issue in the NSIS installer script.
+
 Fixed a minor issue in the setup.py module.
 
 The Users' Guide has been updated.

@@ -189,9 +189,9 @@ Section "ViTables @VERSION@" VT
   File /r @ROOT@\examples\*.*
 
   # The translations directory
-  SetOutPath $INSTDIR\translations
-  File @ROOT@\translations\*.txt
-  File @ROOT@\translations\*.qm
+#  SetOutPath $INSTDIR\translations
+#  File @ROOT@\translations\*.txt
+#  File @ROOT@\translations\*.qm
 
   # Create the uninstaller and put it in the aplication directory
   WriteUninstaller "$INSTDIR\Uninstall.exe"
