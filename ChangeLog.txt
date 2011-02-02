@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** February 02, 2011 **
+Packaging procedure changed accordingly to recent changes in timeseries plugin.
+
 ** February 01, 2011 **
 The timeseries and menu plugins have been enhanced.
 

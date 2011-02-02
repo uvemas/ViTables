@@ -6,7 +6,7 @@ exclude doc/images/title_page_plain.svg
 exclude doc/index.rst
 recursive-include examples *
 recursive-include macosxapp *
-recursive-include vitables/* *.ui
+recursive-include vitables/* *.ui *.ini
 recursive-include vitables/icons *
 exclude vitables/icons/vitables_logo.svg
 recursive-include vitables/htmldocs *

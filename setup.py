@@ -179,7 +179,8 @@ setup(name = 'ViTables', # The name of the distribution
     packages = ['vitables', 'vitables.docBrowser', 'vitables.h5db', 
         'vitables.nodeProperties', 'vitables.queries', 'vitables.preferences', 
         'vitables.vtTables', 'vitables.vtWidgets', 'vitables.plugins', 
-        'vitables.plugins.csv', 'vitables.plugins.menu'], 
+        'vitables.plugins.csv', 'vitables.plugins.timeseries', 
+        'vitables.plugins.menu'], 
     package_data = {
         'vitables.nodeProperties': ['*.ui'], 
         'vitables.preferences': ['*.ui'], 
@@ -188,6 +189,7 @@ setup(name = 'ViTables', # The name of the distribution
         'vitables': ['icons/*.*', 'icons/*/*.*', 'htmldocs/*.*', 
             'htmldocs/*/*.*'], 
         'vitables.plugins.csv': ['icons/*.*'], 
+        'vitables.plugins.timeseries': ['*.ui', '*.ini'], 
     }, 
     cmdclass = command_class,
     data_files = [

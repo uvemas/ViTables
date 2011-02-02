@@ -165,6 +165,7 @@ Section "ViTables @VERSION@" VT
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables
   File /r /x images /x plotter /x .leo_shadow @ROOT@\vitables\*.py
   File /r /x images /x plotter @ROOT@\vitables\*.ui
+  File /r /x images /x plotter @ROOT@\vitables\*.ini
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\plugins\csv\icons
   File /r @ROOT@\vitables\plugins\csv\icons\*
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\icons

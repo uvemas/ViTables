@@ -26,7 +26,7 @@ series contained in `PyTables` tables generated via ``scikits.timeseries``.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '0.8'
+__version__ = '0.9'
 plugin_class = 'TSFormatter'
 
 import time
