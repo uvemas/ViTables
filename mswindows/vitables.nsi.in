@@ -187,6 +187,8 @@ Section "ViTables @VERSION@" VT
   # The examples directory
   SetOutPath $INSTDIR\examples
   File /r @ROOT@\examples\*.*
+# To ensure that examples can be accessed in read/write mode on Windows Vista
+  AccessControl::GrantOnFile "$INSTDIR\examples" "EveryOne" "FullAccess"
 
   # The translations directory
 #  SetOutPath $INSTDIR\translations
