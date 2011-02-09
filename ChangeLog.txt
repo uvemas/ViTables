@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** February 09, 2011 **
+Issues specific to Windows Vista have been reworked in the NSIS installer script.
+
 ** February 05, 2011 **
 Fixed a minor issue (specific to Windows Vista) in the NSIS installer script.
 

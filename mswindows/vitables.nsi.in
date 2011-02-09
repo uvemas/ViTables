@@ -37,7 +37,6 @@ XPStyle on
 
 # Variables declaration
 Var VITABLES_KEY
-Var VITABLES_SUBKEY
 Var HDF5FILE_SUBKEY
 Var HDF5SHELL_SUBKEY
 Var STARTMENU_FOLDER
@@ -54,7 +53,6 @@ Var PYTHONDIR
 Function .onInit
 	# The registry key where application settings will be stored
 	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
-	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
 	StrCpy $STARTMENU_FOLDER "ViTables @VERSION@ for Python @DOTPYTHONVERSION@"
 
 	# Check the python installation
@@ -143,7 +141,7 @@ Browse and select another folder. Click Next to Continue."
 
 # Page: Start Menu Folder Configuration
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
-!define MUI_STARTMENUPAGE_REGISTRY_KEY $VITABLES_SUBKEY
+!define MUI_STARTMENUPAGE_REGISTRY_KEY $VITABLES_KEY
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
 
@@ -188,7 +186,7 @@ Section "ViTables @VERSION@" VT
   SetOutPath $INSTDIR\examples
   File /r @ROOT@\examples\*.*
 # To ensure that examples can be accessed in read/write mode on Windows Vista
-  AccessControl::GrantOnFile "$INSTDIR\examples" "EveryOne" "FullAccess"
+  AccessControl::GrantOnFile "$INSTDIR\examples" "(BU)" "GenericRead|GenericWrite"
 
   # The translations directory
 #  SetOutPath $INSTDIR\translations
@@ -212,8 +210,8 @@ Section "ViTables @VERSION@" VT
   !insertmacro MUI_STARTMENU_WRITE_END
 
   # Update the registry
-  WriteRegStr HKLM $VITABLES_SUBKEY "INSTDIR" $INSTDIR
-  WriteRegStr HKLM $VITABLES_SUBKEY "PYTHONDIR" $PYTHONDIR
+  WriteRegStr HKLM $VITABLES_KEY "INSTDIR" $INSTDIR
+  WriteRegStr HKLM $VITABLES_KEY "PYTHONDIR" $PYTHONDIR
 
   # Remove the existing file association (if any) for the .h5 extension
   # TODO we should backup the key and restore it once vitables has been uninstalled
@@ -268,8 +266,8 @@ succesfully."
 
 Section "Un.Vitables uninstall" UVT
 
-  ReadRegStr $PYTHONDIR HKLM $VITABLES_SUBKEY "PYTHONDIR"
-  ReadRegStr $INSTDIR HKLM $VITABLES_SUBKEY "INSTDIR"
+  ReadRegStr $PYTHONDIR HKLM $VITABLES_KEY "PYTHONDIR"
+  ReadRegStr $INSTDIR HKLM $VITABLES_KEY "INSTDIR"
 
   # Remove the application directory
   RMDir /r $INSTDIR
@@ -289,7 +287,7 @@ Section "Un.Vitables uninstall" UVT
   Delete "$SMPROGRAMS\$MUI_TEMP\User's Guide (HTML).lnk"
   Delete "$DESKTOP\ViTables.lnk"
 
-  # Delete empty start menu parent diretories
+  # Delete empty start menu parent directories
   StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
 
   startMenuDeleteLoop:
@@ -303,7 +301,7 @@ Section "Un.Vitables uninstall" UVT
   startMenuDeleteLoopDone:
 
   # Delete the ViTables key from the registry
-  DeleteRegKey HKLM $VITABLES_SUBKEY
+  DeleteRegKey HKLM $VITABLES_KEY
 
   # Delete the ViTables configuration from the registry
   DeleteRegKey HKCU $VITABLES_KEY
@@ -314,6 +312,8 @@ Section "Un.Vitables uninstall" UVT
   ${If} $1 == "ViTables\@VERSION@\HDF5File"
     DeleteRegKey HKCR ".h5"
     DeleteRegKey HKCR "ViTables"
+    DeleteRegKey HKCR "Applications\vitables.exe"
+    DeleteRegKey HKLM "SOFTWARE\Classes\Applications\vitables.exe"
   ${EndIf}
 
 SectionEnd
@@ -326,5 +326,4 @@ Function un.onInit
   # Variables set in installer functions are not available here so we must set
   # them again
 	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
-	StrCpy $VITABLES_SUBKEY "$VITABLES_KEY\Python@PYTHONVERSION@"
 FunctionEnd
