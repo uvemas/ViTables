@@ -89,8 +89,6 @@ if sphinx_found:
 
             # Build the Users Guide in PDF format
             builder_latex_dir = os.path.join(self.build_dir, 'latex')
-            copy_file("doc/manual_anyopen.cls", 
-                os.path.join(builder_latex_dir, "manual.cls"))
             make_path = find_executable("make")
             spawn([make_path, "-C", builder_latex_dir, "all-pdf"])
 
@@ -104,7 +102,7 @@ if sphinx_found:
                 shutil.rmtree(os.path.join(output_dir,"_sources"))
                 copy_file('LICENSE.html', output_dir)
             copy_file(os.path.join(builder_latex_dir, 
-                "ViTablesUsersGuide.pdf"), "doc")
+                "UsersGuide.pdf"), "doc")
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:

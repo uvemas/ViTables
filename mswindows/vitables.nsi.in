@@ -180,7 +180,7 @@ Section "ViTables @VERSION@" VT
   SetOutPath $INSTDIR\doc\html
   File /r @ROOT@\vitables\htmldocs\*
   SetOutPath $INSTDIR\doc
-  File @ROOT@\doc\ViTablesUsersGuide.pdf
+  File @ROOT@\doc\UsersGuide.pdf
 
   # The examples directory
   SetOutPath $INSTDIR\examples
@@ -203,7 +203,7 @@ Section "ViTables @VERSION@" VT
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Examples.lnk" "$INSTDIR\examples"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (PDF).lnk" "$INSTDIR\doc\ViTablesUsersGuide.pdf"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (PDF).lnk" "$INSTDIR\doc\UsersGuide.pdf"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (HTML).lnk" "$INSTDIR\doc\html\index.html"
     CreateShortCut "$DESKTOP\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
 

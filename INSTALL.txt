@@ -1,11 +1,12 @@
 System requirements
 -------------------
 
-ViTables 2.1 has been tested against Python 2.6 and the latest versions of
-PyTables, Qt4 and PyQt4 (you can try older versions at your own risk :).
+ViTables 2.1 has been tested against Python 2.6 and 2.7 and the latest
+versions of PyTables and PyQt4 (you can try older versions at your own risk
+:).
 
-Installation on Windows XP platforms
-------------------------------------
+Installation on Windows platforms
+---------------------------------
 Just double click the installer icon and follow the wizard instructions.
 
 If you prefer to launch ViTables from the command line then install it

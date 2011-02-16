@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** February 16, 2011 **
+Docs have been updated after checking that ViTables runs fine with Python 2.7.
+
 ** February 09, 2011 **
 Issues specific to Windows Vista have been reworked in the NSIS installer script.
 
