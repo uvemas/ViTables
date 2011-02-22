@@ -586,8 +586,7 @@ class VTApp(QtCore.QObject):
         Clear the list of recently opened files and delete the corresponding
         historical file.
         """
-
-        self.config.recent_files.clear()
+        self.config.recent_files = []
 
 
     def fileOpen(self, filepath=None, mode='a', position=0):
