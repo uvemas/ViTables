@@ -76,7 +76,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.tmp_filepath = u''
         self.tmp_dbdoc = self.__createTempDB()
 
-        self.copied_node_info = {}
+        # The Cut/CopiedNodeInfo dictionary
+        self.ccni = {}
         self.vtapp = vtapp
         self.vtgui = self.vtapp.gui
 
@@ -221,8 +222,18 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             if child.filepath == filepath:
                 # Deletes the node from the tree of databases model/view
                 self.removeRows(row)
+
+                # If needed, refresh the copied node info
+                try:
+                    if self.ccni['filepath'] == filepath:
+                        self.ccni = {}
+                except KeyError:
+                    pass
+
                 # Close the hdf5 file
                 db_doc = self.getDBDoc(filepath)
+                if db_doc.hidden_group is not None:
+                    db_doc.h5file.removeNode(db_doc.hidden_group, recursive=True)
                 db_doc.closeH5File()
                 # Update the dictionary of open files
                 self.removeMappedDB(filepath)
@@ -302,6 +313,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             parent = self.parent(index)
             position = node.row()
             self.removeRows(position, parent=parent)
+
+            # If needed, refresh the copied node info
+            try:
+                if self.ccni['filepath'] == node.filepath:
+                    if self.ccni['nodepath'].startswith(node.nodepath):
+                        self.ccni = {}
+            except KeyError:
+                pass
+
             # Deletes the node from the PyTables database
             self.getDBDoc(node.filepath).deleteNode(node.nodepath)
         finally:
@@ -317,9 +337,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         try:
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
-            self.copied_node_info = {'is_copied': True, 'node': node, 
-                'initial_filepath': node.filepath, 
-                'initial_nodepath': node.nodepath}
+            self.ccni = {'is_copied': True, 
+                'nodename': node.name, 
+                'filepath': node.filepath, 
+                'nodepath': node.nodepath}
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -335,9 +356,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         try:
             QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
-            self.copied_node_info = {'is_copied': False, 'node': node, 
-                'initial_filepath': node.filepath, 
-                'initial_nodepath': node.nodepath}
+            self.ccni = {'is_copied': False, 
+                'nodename': node.name, 
+                'filepath': node.filepath, 
+                'nodepath': node.nodepath}
             # Deletes the node from the tree of databases model/view
             parent = self.parent(index)
             # position = node.row()
@@ -370,12 +392,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 self.overwriteNode(parent, index, childname)
 
             # Paste the copied/cut node in the destination database
-            src_filepath = self.copied_node_info['node'].filepath
-            if self.copied_node_info['is_copied']:
-                src_nodepath = self.copied_node_info['node'].nodepath
+            src_filepath = self.ccni['filepath']
+            if self.ccni['is_copied']:
+                src_nodepath = self.ccni['nodepath']
             else:
                 dirname = self.getDBDoc(src_filepath).hidden_group
-                basename = self.copied_node_info['node'].name
+                basename = self.ccni['nodename']
                 src_nodepath = u'{0}/{1}'.format(dirname, basename)
             self.getDBDoc(src_filepath).pasteNode(src_nodepath, 
                                                     parent.node, childname)
@@ -463,6 +485,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                             u'{0}->{1}'.format\
                             (child_node.filepath, child_node.nodepath), 
                             QtCore.Qt.StatusTipRole)
+
+            # If needed, refresh the copied node info
+            try:
+                if self.ccni['filepath'] == node.filepath:
+                    if self.ccni['nodepath'].startswith(old_nodepath):
+                        self.ccni = {}
+            except KeyError:
+                pass
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
@@ -1062,6 +1092,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
             # Remove the dragged node from the model
             self.removeRows(initial_row, parent=initial_parent)
+
+
+            # If needed, refresh the copied node info
+            try:
+                if self.ccni['filepath'] == filepath:
+                    if self.ccni['nodepath'].startswith(nodepath):
+                        self.ccni = {}
+            except KeyError:
+                pass
 
             # Add the dropped node to the model
             self.lazyAddChildren(parent)

@@ -673,9 +673,6 @@ class VTApp(QtCore.QObject):
 
         # The tree model closes the file and delete its root item
         # from the tree view
-        dbdoc = self.gui.dbs_tree_model.getDBDoc(filepath)
-        if dbdoc.hidden_group is not None:
-            dbdoc.h5file.removeNode(dbdoc.hidden_group, recursive=True)
         self.gui.dbs_tree_model.closeDBDoc(filepath)
 
         # The root node immediately below the closed node becomes selected
@@ -946,44 +943,23 @@ class VTApp(QtCore.QObject):
         current = self.gui.dbs_tree_view.currentIndex()
         parent = self.gui.dbs_tree_model.nodeFromIndex(current)
 
-        copied_node_info = self.gui.dbs_tree_model.copied_node_info
-        if copied_node_info == {}:
+        cni = self.gui.dbs_tree_model.ccni
+        if cni == {}:
             return
 
-        src_node = copied_node_info['node']
-        src_filepath = src_node.filepath
-        src_nodepath = src_node.nodepath
-        if src_nodepath == '/':
+        nodename = cni['nodename']
+        if cni['nodepath'] == '/':
             nodename = \
-                u'root_group_of_{0}'.format(os.path.basename(src_filepath))
-        else:
-            nodename = src_node.name
+                u'root_group_of_{0}'.format(os.path.basename(cni['filepath']))
 
-        dbdoc = self.gui.dbs_tree_model.getDBDoc(\
-            copied_node_info['initial_filepath'])
-        if not dbdoc:
-            # The database where the copied/cut node lived has been closed
-            return
-        if src_filepath != copied_node_info['initial_filepath']:
-            # The copied/cut node doesn't exist. It has been moved to
-            # other file
-            return
-
-        # Check if the copied node still exists in the tree of databases
-        if copied_node_info['is_copied']:
-            if src_nodepath != copied_node_info['initial_nodepath']:
-                # The copied node doesn't exist. It has been moved somewhere
-                return
-            if not dbdoc.h5file.__contains__(src_nodepath):
-                return
-
+        if cni['is_copied']:
             # Check if pasting is allowed. It is not when the node has been
             # copied (pasting cut nodes has no restrictions) and
             # - source and target are the same node
             # - target is the source's parent
-            if (src_filepath == parent.filepath):
-                if (src_nodepath == parent.nodepath) or \
-                   (parent.nodepath == src_node.parent.nodepath):
+            if (cni['filepath'] == parent.filepath):
+                if (cni['nodepath'] == parent.nodepath) or \
+                   (parent.nodepath == os.path.dirname(cni['nodepath'])):
                     return
 
         #
@@ -999,7 +975,7 @@ class VTApp(QtCore.QObject):
                     """Destination file: {2}\nParent group: {3}\n\n"""
                     """Node name '{4}' already in use in that group.\n""", 
                     'A dialog label').format\
-                    (src_filepath, src_nodepath, parent.filepath, 
+                    (cni['filepath'], cni['nodepath'], parent.filepath, 
                     parent.nodepath, nodename), 
                 translate('VTApp', 'Paste', 'A button label')]
         # Validate the nodename
