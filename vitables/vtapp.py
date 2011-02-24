@@ -296,6 +296,8 @@ class VTApp(QtCore.QObject):
                 lines = [i[:-1].split('#@#') for i in input_file.readlines()]
                 input_file.close()
                 for line in lines:
+                    if line == ['']:
+                        continue
                     if len(line) != 2:
                         print(bad_line.format('format', line, dblist))
                         continue
