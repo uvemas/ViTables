@@ -134,7 +134,7 @@ class VTGUI(QtGui.QMainWindow):
         """Provide actions to the menubar and the toolbars.
         """
 
-        # Setting action names makes it easier to acces this actions
+        # Setting action names makes it easier to acces these actions
         # from plugins
         actions = {}
         actions['fileNew'] = QtGui.QAction(
@@ -166,7 +166,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['fileClose'] = QtGui.QAction(
             translate('VTGUI', '&Close', 'File -> Close'), self, 
-            shortcut=QtGui.QKeySequence.Close, 
+            shortcut=QtGui.QKeySequence('Shift+F4'), 
             triggered=self.vtapp.fileClose, 
             icon=self.icons_dictionary['document-close'], 
             statusTip=translate('VTGUI', 'Close the selected file',
@@ -182,7 +182,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['fileSaveAs'] = QtGui.QAction(
             translate('VTGUI', '&Save as...', 'File -> Save As'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+S'), 
+            shortcut=QtGui.QKeySequence.SaveAs, 
             triggered=self.vtapp.fileSaveAs, 
             icon=self.icons_dictionary['document-save-as'], 
             statusTip=translate('VTGUI', 
@@ -192,7 +192,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['fileExit'] = QtGui.QAction(
             translate('VTGUI', 'E&xit', 'File -> Exit'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+Q'), 
+            shortcut=QtGui.QKeySequence.Quit, 
             triggered=self.close, 
             icon=self.icons_dictionary['application-exit'], 
             statusTip=translate('VTGUI', 'Quit ViTables',
@@ -201,7 +201,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['nodeOpen'] = QtGui.QAction(
             translate('VTGUI', '&Open view', 'Node -> Open View'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+O'), 
+            shortcut=QtGui.QKeySequence('Alt+Ctrl+O'), 
             triggered=self.vtapp.nodeOpen, 
             statusTip=translate('VTGUI', 
                 'Display the contents of the selected node', 
@@ -210,7 +210,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['nodeClose'] = QtGui.QAction(
             translate('VTGUI', 'C&lose view', 'Node -> Close View'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+W'), 
+            shortcut=QtGui.QKeySequence('Alt+Shift+F4'), 
             triggered=self.vtapp.nodeClose, 
             statusTip=translate('VTGUI', 
                 'Close the view of the selected node', 
@@ -219,7 +219,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['nodeProperties'] = QtGui.QAction(
             translate('VTGUI', 'Prop&erties...', 'Node -> Properties'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+I'), 
+            shortcut=QtGui.QKeySequence('Ctrl+I'), 
             triggered=self.vtapp.nodeProperties, 
             icon=self.icons_dictionary['help-about'], 
             statusTip=translate('VTGUI', 
@@ -229,7 +229,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['nodeNew'] = QtGui.QAction(
             translate('VTGUI', '&New group...', 'Node -> New group'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+SHIFT+N'), 
+            shortcut=QtGui.QKeySequence('Alt+Ctrl+N'), 
             triggered=self.vtapp.nodeNewGroup, 
             icon=self.icons_dictionary['folder-new'], 
             statusTip=translate('VTGUI', 
@@ -239,7 +239,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['nodeRename'] = QtGui.QAction(
             translate('VTGUI', '&Rename...', 'Node -> Rename'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+R'), 
+            shortcut=QtGui.QKeySequence('Ctrl+R'), 
             triggered=self.vtapp.nodeRename, 
             icon=self.icons_dictionary['edit-rename'], 
             statusTip=translate('VTGUI', 'Rename the selected node', 
@@ -248,7 +248,7 @@ class VTGUI(QtGui.QMainWindow):
 
         actions['nodeCut'] = QtGui.QAction(
             translate('VTGUI', 'Cu&t', 'Node -> Cut'), self, 
-            shortcut=QtGui.QKeySequence('CTRL+X'), 
+            shortcut=QtGui.QKeySequence.Cut, 
             triggered=self.vtapp.nodeCut, 
             icon=self.icons_dictionary['edit-cut'], 
             statusTip=translate('VTGUI', 'Cut the selected node', 
@@ -302,6 +302,7 @@ class VTGUI(QtGui.QMainWindow):
         actions['settingsPreferences'] = QtGui.QAction(
             translate('VTGUI', '&Preferences...', 'Settings -> Preferences'), 
             self, 
+            shortcut=QtGui.QKeySequence.Preferences, 
             triggered=self.vtapp.settingsPreferences, 
             icon=self.icons_dictionary['configure'], 
             statusTip=translate('VTGUI', 'Configure ViTables', 
@@ -452,8 +453,9 @@ class VTGUI(QtGui.QMainWindow):
         actions = ['helpUsersGuide']
         vitables.utils.addActions(self.help_toolbar, actions, self.gui_actions)
         whatis = QtGui.QWhatsThis.createAction(self.help_toolbar)
-        whatis.setStatusTip(translate('VTGUI', 'Contextual help',
+        whatis.setStatusTip(translate('VTGUI', 'Whats this? help for a widget',
                     'Status bar text for the Help -> Whats This action'))
+        whatis.setShortcut(QtGui.QKeySequence())
         self.help_toolbar.addAction(whatis)
 
 
@@ -824,7 +826,7 @@ class VTGUI(QtGui.QMainWindow):
         self.sb_node_info.setText(message)
 
 
-    def popupContextualMenu(self, kind, pos):
+    def popupContextMenu(self, kind, pos):
         """
         Popup a context menu in the tree of databases view.
 

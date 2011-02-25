@@ -211,7 +211,7 @@ class DBsTreeView(QtGui.QTreeView):
             node = self.dbt_model.nodeFromIndex(index)
             kind = node.node_kind
         pos = self.mapToGlobal(pos)
-        self.vtgui.popupContextualMenu(kind, pos)
+        self.vtgui.popupContextMenu(kind, pos)
 
 
     def currentChanged(self, current, previous):

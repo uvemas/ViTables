@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** February 25, 2011 **
+Bug 333 has been fixed.
+
 ** February 24, 2011 **
 Bug 334 has been fixed.
 
