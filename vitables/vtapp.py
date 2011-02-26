@@ -800,10 +800,13 @@ class VTApp(QtCore.QObject):
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n ', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 
             translate('VTApp', 'Create', 'A button label'))
+        self.gui.editing_dlg = True
         if dialog.exec_():
             suggested_nodename = dialog.node_name
+            self.gui.dbs_tree_view.setFocus(True)
             del dialog
         else:
+            self.gui.dbs_tree_view.setFocus(True)
             del dialog
             return
 
@@ -854,6 +857,7 @@ class VTApp(QtCore.QObject):
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 
             translate('VTApp', 'Rename', 'A button label'))
+        self.gui.editing_dlg = True
         if dialog.exec_():
             suggested_nodename = dialog.node_name
             del dialog
@@ -879,6 +883,7 @@ class VTApp(QtCore.QObject):
                     (parent.filepath, parent.nodepath, suggested_nodename)]
         nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
             sibling, pattern, info)
+        self.gui.editing_dlg = True
         if nodename is None:
             return
 
@@ -983,7 +988,9 @@ class VTApp(QtCore.QObject):
         # Validate the nodename
         nodename, overwrite = vitables.utils.getFinalName(nodename, sibling, 
             pattern, info)
+        self.gui.editing_dlg = True
         if nodename is None:
+            # Node editing dialog is not displayed
             return
 
         # If the pasting overwrites a node with attached views then these
@@ -1032,6 +1039,7 @@ class VTApp(QtCore.QObject):
             # Ask for confirmation
             answer = \
                 vitables.utils.questionBox(title, text, itext, dtext, buttons)
+            self.gui.editing_dlg = True
             if answer == 'Cancel':
                 return
 
@@ -1063,6 +1071,7 @@ class VTApp(QtCore.QObject):
         node = self.gui.dbs_tree_model.nodeFromIndex(current)
         info = nodeInfo.NodeInfo(node)
         nodePropDlg.NodePropDlg(info)
+        self.gui.editing_dlg = True
 
 
     def newQuery(self):

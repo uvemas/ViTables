@@ -61,6 +61,13 @@ class VTGUI(QtGui.QMainWindow):
         self.setObjectName('VTGUI')
 
         self.icons_dictionary = vitables.utils.getIcons()
+        # After a node editing the workspace and the databases tree view
+        # should not been sync because keyboard focus should remain on
+        # the tree view. However, if editing dialogs are raised, when
+        # they are closed the focus goes temporarily to the workspace,
+        # resulting in spurious syncs. The editing_dlg flag prevents
+        # this behavior
+        self.editing_dlg = None
 
 
     def setup(self, tree_view):

@@ -123,6 +123,9 @@ class DataSheet(QtGui.QMdiSubWindow):
         If the view is activated select its leaf in the tree of databases view.
         """
 
+        if self.vtgui.editing_dlg is not None:
+            self.vtgui.editing_dlg = None
+            return
         # Locate the tree view leaf tied to this data sheet. Persistent
         # indices are used to get direct access to the leaf so we don't
         # have to walk the tree

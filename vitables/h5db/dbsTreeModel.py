@@ -538,6 +538,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Validate the nodename
             nodename, overwrite = vitables.utils.getFinalName(nodename, 
                 sibling, pattern, info)
+            self.vtgui.editing_dlg = True
             if nodename is None:
                 # I don't know why but break raises a syntax error here so
                 # I use return
