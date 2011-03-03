@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 03, 2011 **
+Added basic support for PyTables soft links and external links.
+
 ** February 26, 2011 **
 Bug 338 has been fixed.
 

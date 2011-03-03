@@ -52,10 +52,19 @@ class DataSheet(QtGui.QMdiSubWindow):
         # The main application window
         self.vtgui = vitables.utils.getVTApp().gui
 
-        # The LeafNode instance whose dataset is being displayed
+        # The data structure (LeafNode/LinkNode instance) whose dataset
+        # is being displayed
         dbt_model = self.vtgui.dbs_tree_model
         self.dbt_leaf = dbt_model.nodeFromIndex(index)
-        leaf = self.dbt_leaf.node
+
+        # The tables.Node instance tied to that data structure
+        pt_node = self.dbt_leaf.node
+        if hasattr(pt_node, 'target'):
+            # The selected item is a link and must be dereferenced
+            leaf = pt_node()
+        else:
+            leaf = pt_node
+
         rbuffer = readBuffer.Buffer(leaf)
         self.leaf_model = leafModel.LeafModel(rbuffer)
         self.leaf_view = leafView.LeafView(self.leaf_model)

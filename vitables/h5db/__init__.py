@@ -18,4 +18,5 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 __all__ = ["dbDoc", "dbsTreeModel", "dbsTreeView", "groupNode",
-"leafNode", "nodeItemDelegate", "rootGroupNode"]
+"leafNode", "linkNode", "nodeItemDelegate", "rootGroupNode", "tlinkEditor", 
+"tnodeEditor"]

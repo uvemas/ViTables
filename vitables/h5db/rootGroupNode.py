@@ -28,6 +28,7 @@ file.
 __docformat__ = 'restructuredtext'
 
 import vitables.utils
+import vitables.h5db.tnodeEditor as tnodeEditor
 
 class RootGroupNode(object):
     """
@@ -42,7 +43,7 @@ class RootGroupNode(object):
     - `tmp_db`: True if the node is tied to the temporary database
     """
 
-    def __init__(self, data_source=None, parent=None, tmp_db=False):
+    def __init__(self, model, data_source=None, parent=None, tmp_db=False):
         """Create the root group node for the tree of databases model.
 
         The root of the tree of databases model is a RootGroupNode with
@@ -51,6 +52,7 @@ class RootGroupNode(object):
         tree of databases model) and a data source (the HDF5 file).
         """
 
+        self.dbt_model = model
         self.updated = False
         self.children = []
         self.parent = parent
@@ -143,3 +145,9 @@ class RootGroupNode(object):
                 return node
                 break
         return None
+
+
+    def editor(self):
+        """Return an instance of `TNodeEditor`.
+        """
+        return tnodeEditor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))

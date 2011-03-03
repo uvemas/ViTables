@@ -90,14 +90,6 @@ class DBDoc(QtCore.QObject):
             self.h5file.flush()
 
 
-    def tieToTempDB(self, tmp_dbdoc):
-        """Setup the `tmp_dbdoc` instance variable.
-        """
-
-        self.tmp_dbdoc = tmp_dbdoc
-        self.tmp_h5file = self.tmp_dbdoc.h5file
-
-
     def openH5File(self):
         """Open the file tied to this instance."""
 
@@ -118,6 +110,7 @@ class DBDoc(QtCore.QObject):
                 "\nError: {0}.", 'A logger error message').format(inst))
         except:
             vitables.utils.formatExceptionInfo()
+            print('++++', self.filepath)
             print(translate('DBDoc', 
                 "Please, if you think it is a bug, report it to developers.", 
                 'A logger error message'))
@@ -206,21 +199,6 @@ class DBDoc(QtCore.QObject):
             vitables.utils.formatExceptionInfo()
 
 
-    def deleteNode(self, nodepath):
-        """Delete a tables.Node.
-
-        :Parameters:
-
-        - `nodepath`: the full path of the node being deleted
-        """
-
-        try:
-            self.h5file.removeNode(where=nodepath, recursive=True)
-            self.h5file.flush()
-        except:
-            vitables.utils.formatExceptionInfo()
-
-
     def createHiddenGroup(self):
         """
         Create a hidden group for storing cut nodes.
@@ -230,112 +208,3 @@ class DBDoc(QtCore.QObject):
         self.hidden_group = '/' + group_name
         self.h5file.createGroup('/', group_name, 'Hide cut nodes')
         self.h5file.flush()
-
-
-    def cutNode(self, nodepath):
-        """Moves a tables.Node to a hidden group of its database.
-
-        The cut node must be stored somewhere or it will no be possible
-        to paste it later. Storing it in the same database is extremely
-        fast independently of the node size. Storing it in other database
-        (i.e. in the temporary database) would have a cost which depends
-        on the size of the cut node.
-
-        :Parameters:
-
-        - `nodepath`: the path of the node being cut
-        """
-
-        if not self.hidden_group:
-            self.createHiddenGroup()
-        nodename = os.path.basename(nodepath)
-        # The hidden group should contain at most 1 node
-        for node in self.h5file.listNodes(self.hidden_group):
-            self.deleteNode(node._v_pathname)
-        self.moveNode(nodepath, self, self.hidden_group, nodename)
-
-
-    def pasteNode(self, src_nodepath, parent, childname):
-        """Copy a tables.Node to a different location.
-
-        :Parameters:
-
-        - `src_nodepath`: the path of the copied node being pasted
-        - `parent`: the new parent of the node being pasted
-        - `childname`: the new name of the node being pasted
-        """
-
-        try:
-            self.h5file.copyNode(src_nodepath, newparent=parent,
-                newname=childname, overwrite=True, recursive=True)
-            self.h5file.flush()
-        except:
-            vitables.utils.formatExceptionInfo()
-
-
-    def renameNode(self, nodepath, new_name):
-        """
-        Rename the selected node from the object tree.
-
-        :Parameters:
-
-        - `nodepath`: the full path of the node being renamed
-        - `new_name`: the node new name
-        """
-
-        h5file = self.h5file
-        where, current_name = os.path.split(nodepath)
-
-        try:
-            h5file.renameNode(where, new_name, current_name, overwrite=1)
-            h5file.flush()
-        except:
-            vitables.utils.formatExceptionInfo()
-
-
-    def createGroup(self, where, final_name):
-        """
-        Create a new group under the given location.
-
-        :Parameters:
-
-        - `where`: the full path of the parent node
-        - `final_name`: the new group name
-        """
-
-        h5file = self.h5file
-        try:
-            if final_name in h5file.getNode(where)._v_children.keys():
-                h5file.removeNode(where, final_name, recursive=True)
-            h5file.createGroup(where, final_name, title='')
-            h5file.flush()
-        except:
-            vitables.utils.formatExceptionInfo()
-
-
-    def moveNode(self, childpath, dst_dbdoc, parentpath, childname):
-        """Move a tables.Node to a different location.
-
-        :Parameters:
-
-        - `childpath`: the full path of the node being moved
-        - `dst_dbdoc`: the destination database (a :meth:`DBDoc` instance)
-        - `parentpath`: the full path of the new parent node
-        - `childname`: the name of the node in its final location
-        """
-
-        try:
-            dst_h5file = dst_dbdoc.h5file
-            parent_node = dst_h5file.getNode(parentpath)
-            if self.h5file is dst_h5file:
-                self.h5file.moveNode(childpath, newparent=parent_node,
-                    newname=childname, overwrite=True)
-            else:
-                self.h5file.copyNode(childpath, newparent=parent_node,
-                    newname=childname, overwrite=True, recursive=True)
-                dst_h5file.flush()
-                src_where, src_nodename = os.path.split(childpath)
-                self.h5file.removeNode(src_where, src_nodename, recursive=1)
-            self.h5file.flush()
-        except:
-            vitables.utils.formatExceptionInfo()

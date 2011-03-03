@@ -666,6 +666,7 @@ class VTApp(QtCore.QObject):
         last_row = len(self.gui.dbs_tree_model.root.children) - 1
         for row, child in enumerate(self.gui.dbs_tree_model.root.children):
             if child.filepath == filepath:
+                position = row
                 break
 
         # If some leaf of this database has an open view then close it
@@ -678,8 +679,8 @@ class VTApp(QtCore.QObject):
         self.gui.dbs_tree_model.closeDBDoc(filepath)
 
         # The root node immediately below the closed node becomes selected
-        if row <= last_row:
-            index = self.gui.dbs_tree_model.index(row, 0, QtCore.QModelIndex())
+        if position <= last_row:
+            index = self.gui.dbs_tree_model.index(position, 0, QtCore.QModelIndex())
             self.gui.dbs_tree_view.setCurrentIndex(index)
 
 
@@ -717,6 +718,21 @@ class VTApp(QtCore.QObject):
         self.fileClose(index)
 
 
+    def tablesNode(self, index):
+        """The tables.Leaf instance tied to the given index.
+
+        :Parameter index: the tree of databases model index being retrieved
+        """
+
+        # The leaf (data structure) of the databases tree view tied to index
+        leaf = self.gui.dbs_tree_model.nodeFromIndex(index)
+        # The tables.Leaf instance referenced by that data structure
+        pt_node = leaf.node
+        if hasattr(pt_node, 'target'):
+            return pt_node()
+        return pt_node
+
+
     def nodeOpen(self, current=False):
         """
         Open a leaf node for viewing.
@@ -731,8 +747,7 @@ class VTApp(QtCore.QObject):
         else:
             # When restoring the previous session explicit indexes are passed
             index = current
-        dbs_tree_leaf = self.gui.dbs_tree_model.nodeFromIndex(index)
-        leaf = dbs_tree_leaf.node # A PyTables node
+        leaf = self.tablesNode(index)
 
         # tables.UnImplemented datasets cannot be read so are not opened
         if isinstance(leaf, tables.UnImplemented):
@@ -926,17 +941,19 @@ class VTApp(QtCore.QObject):
         # Non readable leaves should not be copied
         dbs_tree_node = self.gui.dbs_tree_model.nodeFromIndex(current)
         if not (dbs_tree_node.node_kind in ('root group', 'group')):
-            leaf = dbs_tree_node.node # A PyTables node
-            leaf_buffer = rbuffer.Buffer(leaf)
-            if not leaf_buffer.isDataSourceReadable():
-                QtGui.QMessageBox.information(self, 
-                    translate('VTApp', 'About unreadable datasets', 
-                        'Dialog caption'), 
-                    translate('VTApp', 
-                        """Sorry, actual data for this node are not """
-                        """accesible.<br>The node will not be copied.""", 
-                        'Text of the Unimplemented node dialog'))
-                return
+            leaf = dbs_tree_node.node
+            # tables.Leaf instances must be readable in order to be copied
+            if not hasattr(leaf, 'target'):
+                leaf_buffer = rbuffer.Buffer(leaf)
+                if not leaf_buffer.isDataSourceReadable():
+                    QtGui.QMessageBox.information(self, 
+                        translate('VTApp', 'About unreadable datasets', 
+                            'Dialog caption'), 
+                        translate('VTApp', 
+                            """Sorry, actual data for this node are not """
+                            """accesible.<br>The node will not be copied.""", 
+                            'Text of the Unimplemented node dialog'))
+                    return
 
         # Copy the node
         self.gui.dbs_tree_model.copyNode(current)
@@ -960,13 +977,22 @@ class VTApp(QtCore.QObject):
                 u'root_group_of_{0}'.format(os.path.basename(cni['filepath']))
 
         if cni['is_copied']:
-            # Check if pasting is allowed. It is not when the node has been
-            # copied (pasting cut nodes has no restrictions) and
+            # Check if pasting a copied node is allowed (pasting a cut
+            # node has no restrictions). It is not when
             # - source and target are the same node
             # - target is the source's parent
             if (cni['filepath'] == parent.filepath):
                 if (cni['nodepath'] == parent.nodepath) or \
-                   (parent.nodepath == os.path.dirname(cni['nodepath'])):
+                (parent.nodepath == os.path.dirname(cni['nodepath'])):
+                    return
+
+        # Soft links cannot be pasted in external files
+        if cni['target']:
+            link = self.gui.dbs_tree_model.copiedNode()
+            try:
+                getattr(link, 'extfile')
+            except AttributeError:
+                if (parent.filepath != cni['filepath']):
                     return
 
         #

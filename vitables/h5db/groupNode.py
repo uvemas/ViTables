@@ -28,6 +28,7 @@ tree. The data structure is equivalent to a (non root) group node in a
 __docformat__ = 'restructuredtext'
 
 import vitables.utils
+import vitables.h5db.tnodeEditor as tnodeEditor
 
 class GroupNode(object):
     """
@@ -39,7 +40,7 @@ class GroupNode(object):
     - `name`: the name of the node
     """
 
-    def __init__(self, parent, name):
+    def __init__(self, model, parent, name):
         """Create a group node for the tree of databases model.
 
         A GroupNode represents a (non root) group of a `HDF5` file and has
@@ -47,6 +48,7 @@ class GroupNode(object):
         a name.
         """
 
+        self.dbt_model = model
         self.updated = False
         self.children = []
         self.parent = parent
@@ -133,3 +135,9 @@ class GroupNode(object):
                 return node
                 break
         return None
+
+
+    def editor(self):
+        """Return an instance of `TNodeEditor`.
+        """
+        return tnodeEditor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))
