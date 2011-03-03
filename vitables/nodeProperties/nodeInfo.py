@@ -79,9 +79,9 @@ class NodeInfo(object):
         self.node = node_item.node
 
         # The hosting File instance, filepath, filename and opening mode
-        self.h5file = self.node._v_file
-        self.filepath = vitables.utils.toUnicode(self.h5file.filename)
+        self.filepath = vitables.utils.toUnicode(node_item.filepath)
         self.filename = os.path.basename(self.filepath)
+        self.h5file = self.node._v_file
         mode = vitables.utils.toUnicode(self.h5file.mode)
         if mode == u'a':
             self.mode = u'append'
@@ -95,8 +95,8 @@ class NodeInfo(object):
         # or unimplemented
         self.node_type = node_item.node_kind
         self.file_type = self.format + u', ' + self.size
-        self.nodename = vitables.utils.toUnicode(self.node._v_name)
-        self.nodepath = vitables.utils.toUnicode(self.node._v_pathname)
+        self.nodename = vitables.utils.toUnicode(node_item.name)
+        self.nodepath = vitables.utils.toUnicode(node_item.nodepath)
 
         # The attributes set instance
         self.asi = self.node._v_attrs
@@ -298,5 +298,32 @@ class NodeInfo(object):
             return None
 
     ncolumns = property(fget=_ncolumns)
+
+
+    def _target(self):
+        """The target of a `tables.Link` node."""
+
+        try:
+            return vitables.utils.toUnicode(self.node.target)
+        except AttributeError:
+            return None
+
+    target = property(fget=_target)
+
+
+    def _link_type(self):
+        """The kind of link (i.e. soft or external) of a `tables.Link` node."""
+
+        if self.target:
+            try:
+                link_type = u'external'
+                vitables.utils.toUnicode(self.node.extfile)
+            except AttributeError:
+                link_type = 'soft'
+            return link_type
+        else:
+            return None
+
+    link_type = property(fget=_link_type)
 
 

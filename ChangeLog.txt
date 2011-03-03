@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** March 03, 2011 **
+Added a Properties dialog for both soft and external links.
+
 Added basic support for PyTables soft links and external links.
 
 ** February 26, 2011 **

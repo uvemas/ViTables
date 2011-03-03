@@ -29,7 +29,9 @@ __docformat__ = 'restructuredtext'
 import tables
 
 import vitables.utils
-import vitables.h5db.tlinkEditor as tlinkEditor
+from vitables.h5db import tlinkEditor
+from vitables.nodeProperties import nodeInfo
+from vitables.nodeProperties import linkPropDlg
 
 class LinkNode(object):
     """
@@ -42,11 +44,11 @@ class LinkNode(object):
     """
 
     def __init__(self, model, parent, name):
-        """Create a leaf node for the tree of databases model.
+        """Create a link node for the tree of databases model.
 
-        A LeafNode represents a leaf of a `HDF5` file and has
-        a parent (a group node of the tree of databases model) and
-        a name.
+        A LinkNode represents a link (soft or external) of a `PyTables`
+        file and has a parent (a group node of the tree of databases
+        model) and a name.
         """
 
         self.dbt_model = model
@@ -116,3 +118,11 @@ class LinkNode(object):
         """Return an instance of `TLinkEditor`.
         """
         return tlinkEditor.TLinkEditor(self.dbt_model.getDBDoc(self.filepath))
+
+
+    def properties(self):
+        """The Properties dialog for this node.
+        """
+
+        info = nodeInfo.NodeInfo(self)
+        linkPropDlg.LinkPropDlg(info)

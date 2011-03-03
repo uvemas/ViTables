@@ -54,8 +54,6 @@ import vitables.queries.queriesManager as qmgr
 import vitables.vtWidgets.inputNodeName as inputNodeName
 import vitables.vtWidgets.renameDlg as renameDlg
 
-import vitables.nodeProperties.nodeInfo as nodeInfo
-from vitables.nodeProperties import nodePropDlg
 from vitables.docBrowser import helpBrowser
 
 import vitables.vtTables.buffer as rbuffer
@@ -680,7 +678,8 @@ class VTApp(QtCore.QObject):
 
         # The root node immediately below the closed node becomes selected
         if position <= last_row:
-            index = self.gui.dbs_tree_model.index(position, 0, QtCore.QModelIndex())
+            index = self.gui.dbs_tree_model.index(position, 0, 
+                QtCore.QModelIndex())
             self.gui.dbs_tree_view.setCurrentIndex(index)
 
 
@@ -1095,8 +1094,7 @@ class VTApp(QtCore.QObject):
 
         current = self.gui.dbs_tree_view.currentIndex()
         node = self.gui.dbs_tree_model.nodeFromIndex(current)
-        info = nodeInfo.NodeInfo(node)
-        nodePropDlg.NodePropDlg(info)
+        node.properties()
         self.gui.editing_dlg = True
 
 
