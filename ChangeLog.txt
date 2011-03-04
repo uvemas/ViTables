@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** March 04, 2011 **
+Subpackage nodeProperties has been reorganised and refactored.
+
 Bug 335 has been fixed.
 
 First implementation of soft/external links support is completed.

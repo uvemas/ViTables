@@ -31,7 +31,7 @@ import tables
 import vitables.utils
 from vitables.h5db import tnodeEditor
 from vitables.nodeProperties import nodeInfo
-from vitables.nodeProperties import nodePropDlg
+from vitables.nodeProperties import leafPropDlg
 
 class LeafNode(object):
     """
@@ -119,4 +119,4 @@ class LeafNode(object):
         """
 
         info = nodeInfo.NodeInfo(self)
-        nodePropDlg.NodePropDlg(info)
+        leafPropDlg.LeafPropDlg(info)

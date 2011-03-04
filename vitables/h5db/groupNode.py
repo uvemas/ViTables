@@ -30,7 +30,7 @@ __docformat__ = 'restructuredtext'
 import vitables.utils
 from vitables.h5db import tnodeEditor
 from vitables.nodeProperties import nodeInfo
-from vitables.nodeProperties import nodePropDlg
+from vitables.nodeProperties import groupPropDlg
 
 class GroupNode(object):
     """
@@ -150,4 +150,4 @@ class GroupNode(object):
         """
 
         info = nodeInfo.NodeInfo(self)
-        nodePropDlg.NodePropDlg(info)
+        groupPropDlg.GroupPropDlg(info)

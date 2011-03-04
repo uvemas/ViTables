@@ -425,8 +425,7 @@ class VTGUI(QtGui.QMainWindow):
         # show an strange behaviour (a Qt bug I think): it will always
         # be added to the left and will expand the whole top area
         self.file_toolbar.setObjectName('File')
-        actions = ['fileNew', 'fileOpen', 'fileClose', 'fileSaveAs', 
-                   'fileExit']
+        actions = ['fileNew', 'fileOpen', 'fileClose', 'fileSaveAs']
         vitables.utils.addActions(self.file_toolbar, actions, self.gui_actions)
 
         # Reset the tooltip of the File -> Open... button

@@ -39,18 +39,18 @@ from PyQt4 import QtGui
 from PyQt4.uic import loadUiType
 
 import vitables.utils
-import vitables.nodeProperties.attrEditor as attrEditor
+from vitables.nodeProperties import attrEditor
 
 translate = QtGui.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
-Ui_NodePropDialog = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'prop_dlg.ui'))[0]
+Ui_AttrPropDialog = \
+    loadUiType(os.path.join(os.path.dirname(__file__),'attr_prop_dlg.ui'))[0]
 
 
 
-class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
+class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     """
     Node properties dialog.
 
@@ -79,30 +79,10 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         """Setup the Properties dialog."""
 
         vtapp = vitables.utils.getVTApp()
-        super(NodePropDlg, self).__init__(vtapp.gui)
+        super(AttrPropDlg, self).__init__(vtapp.gui)
         self.setupUi(self)
 
-        # The dialog caption
-        caption_for_type = {
-            u'root group': 
-                translate('NodePropDlg', 'Database properties', 'Dlg caption'),
-            u'group': 
-                translate('NodePropDlg', 'Group properties', 'Dlg caption'),
-            u'table': 
-                translate('NodePropDlg', 'Table properties', 'Dlg caption'), 
-            u'vlarray': 
-                translate('NodePropDlg', 'VLArray properties', 'Dlg caption'), 
-            u'earray': 
-                translate('NodePropDlg', 'EArray properties', 'Dlg caption'), 
-            u'carray': 
-                translate('NodePropDlg', 'CArray properties', 'Dlg caption'), 
-            u'array': 
-                translate('NodePropDlg', 'Array properties', 'Dlg caption')}
-        self.setWindowTitle(caption_for_type[info.node_type])
-
         # Customise the dialog's pages
-        self.cleanGeneralPage(info.node_type)
-        self.fillGeneralPage(info)
         self.fillSysAttrsPage(info)
         self.fillUserAttrsPage(info)
         self.resize(self.size().width(), self.minimumHeight())
@@ -110,116 +90,6 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         # Variables used for checking the table of user attributes
         self.mode = info.mode
         self.asi = info.asi
-
-        # Show the dialog
-        self.show()
-
-
-    def cleanGeneralPage(self, node_type):
-        """Remove unneeded components from the General page.
-
-        The General page is a kind of template generated via Qt-Designer and
-        it is used for any kind of node so its content has to be reorganised
-        depending on the type of node being reported.
-
-        :Parameter node_type: the type of node (root group, group, array...)
-        """
-
-        if node_type.count('group'):
-            # Remove the Dataspace groupbox
-            self.general_layout.removeWidget(self.dataspaceGB)
-            self.dataspaceGB.deleteLater()
-        else:
-            # Remove the Group groupbox
-            self.general_layout.removeWidget(self.bottomGB)
-            self.bottomGB.deleteLater()
-
-        if node_type != 'root group':
-            # Remove the Access mode widgets
-            self.database_layout.removeWidget(self.modeLabel)
-            self.database_layout.removeWidget(self.modeLE)
-            self.modeLabel.deleteLater()
-            self.modeLE.deleteLater()
-
-        if node_type != 'table':
-            # Remove the table description
-            self.dataspace_layout.removeWidget(self.recordsTable)
-            self.recordsTable.deleteLater()
-
-
-    def fillGeneralPage(self, info):
-        """Make the General page of the Properties dialog.
-
-        The page contains two groupboxes that are laid out vertically.
-
-        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
-          describing a given node
-        """
-
-        self.databaseGB(info)
-        if info.node_type.count('group'):
-            self.groupGB(info)
-        else:
-            self.leafGB(info)
-
-
-    def databaseGB(self, info):
-        """Fill the Database groupbox of the General page.
-
-        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
-          describing a given node
-        """
-
-        if info.node_type == u'root group':
-            self.nameLE.setText(info.filename)
-            self.pathLE.setText(info.filepath)
-            self.pathLE.setToolTip(info.filepath)
-            self.typeLE.setText(info.file_type)
-            self.modeLE.setText(info.mode)
-        else:
-            self.nameLE.setText(info.nodename)
-            self.pathLE.setText(info.nodepath)
-            self.pathLE.setToolTip(info.nodepath)
-            self.typeLE.setText(info.node_type)
-
-
-    def groupGB(self, info):
-        """Fill the Group groupbox of the General page for File/Group nodes.
-
-        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
-          describing a given node
-        """
-
-        if info.node_type == u'root group':
-            self.bottomGB.setTitle(
-                translate('NodePropDlg', 'Root group', 'Title of a groupbox'))
-        else:
-            self.bottomGB.setTitle(
-                translate('NodePropDlg', 'Group', 'Title of a groupbox'))
-
-        # Number of children label
-        self.nchildrenLE.setText(unicode(len(info.hanging_nodes)))
-
-        # The group's children table
-        table = self.nchildrenTable
-        table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        background = table.palette().brush(QtGui.QPalette.Window).color()
-        table.setStyleSheet(u"background-color: {0}".format(background.name()))
-        self.children_model = QtGui.QStandardItemModel()
-        self.children_model.setHorizontalHeaderLabels([
-            translate('NodePropDlg', 'Child name', 
-            'First column header of the table'), 
-            translate('NodePropDlg', 'Type', 
-            'Second column header of the table')])
-        table.setModel(self.children_model)
-        for name in info.hanging_groups.keys():
-            name_item = QtGui.QStandardItem(name)
-            type_item = QtGui.QStandardItem(translate('NodePropDlg', 'group'))
-            self.children_model.appendRow([name_item, type_item])
-        for name in info.hanging_leaves.keys():
-            name_item = QtGui.QStandardItem(name)
-            type_item = QtGui.QStandardItem(translate('NodePropDlg', 'leaf'))
-            self.children_model.appendRow([name_item, type_item])
 
 
     def fillSysAttrsPage(self, info):
@@ -238,11 +108,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             QtGui.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
-            translate('NodePropDlg', 'Name', 
+            translate('AttrPropDlg', 'Name', 
             'First column header of the table'), 
-            translate('NodePropDlg', 'Value', 
+            translate('AttrPropDlg', 'Value', 
             'Second column header of the table'), 
-            translate('NodePropDlg', 'Datatype', 
+            translate('AttrPropDlg', 'Datatype', 
             'Third column header of the table')])
         self.sysTable.setModel(self.sysattr_model)
 
@@ -298,65 +168,6 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
 
 
-    def leafGB(self, info):
-        """Fill the Dataspace groupbox of the General page for Leaf nodes.
-
-        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
-          describing a given node
-        """
-
-        self.dimLE.setText(unicode(len(info.shape)))
-        self.shapeLE.setText(unicode(info.shape))
-        self.dtypeLE.setText(info.type)
-        if info.filters.complib is None:
-            self.compressionLE.setText('uncompressed')
-        else:
-            self.compressionLE.setText(unicode(info.filters.complib, 
-                'utf_8'))
-
-        # Information about the fields of Table instances
-        if info.node_type == 'table':
-            table = self.recordsTable
-            # The Table's fields description
-            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-            # QtGui.QPalette.Window constant is 10
-            bg_name = table.palette().brush(10).color().name()
-            table.setStyleSheet(u"background-color: {0}".format(bg_name))
-            self.fields_model = QtGui.QStandardItemModel()
-            self.fields_model.setHorizontalHeaderLabels([
-                translate('NodePropDlg', 'Field name', 
-                'First column header of the table'), 
-                translate('NodePropDlg', 'Type', 
-                'Second column header of the table'), 
-                translate('NodePropDlg', 'Shape', 
-                'Third column header of the table')])
-            table.setModel(self.fields_model)
-
-            # Fill the table. Nested fields will appear as (colname, nested, -)
-            seen_paths = []
-            for pathname in info.columns_pathnames:
-                if pathname.count('/'):
-                    field_name = pathname.split('/')[0]
-                    if field_name in seen_paths:
-                        continue
-                    else:
-                        seen_paths.append(field_name)
-                    pathname_item = QtGui.QStandardItem(field_name)
-                    type_item = QtGui.QStandardItem(
-                        translate('NodePropDlg', 'nested'))
-                    shape_item = QtGui.QStandardItem(
-                        translate('NodePropDlg', '-'))
-                else:
-                    pathname_item = QtGui.QStandardItem(unicode(pathname, 
-                                                                'utf_8'))
-                    type_item = QtGui.QStandardItem(\
-                            unicode(info.columns_types[pathname], 'utf_8'))
-                    shape_item = QtGui.QStandardItem(\
-                                        unicode(info.columns_shapes[pathname]))
-                self.fields_model.appendRow([pathname_item, type_item, 
-                                            shape_item])
-
-
     def fillUserAttrsPage(self, info):
         """Fill the page of user attributes.
 
@@ -375,11 +186,11 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
                         setResizeMode(QtGui.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
-            translate('NodePropDlg', 'Name', 
+            translate('AttrPropDlg', 'Name', 
             'First column header of the table'), 
-            translate('NodePropDlg', 'Value', 
+            translate('AttrPropDlg', 'Value', 
             'Second column header of the table'), 
-            translate('NodePropDlg', 'Datatype', 
+            translate('AttrPropDlg', 'Datatype', 
             'Third column header of the table')])
         self.userTable.setModel(self.userattr_model)
 
@@ -511,7 +322,7 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         # If there is not a selected attribute then return
         current_index = self.userTable.currentIndex()
         if not current_index.isValid():
-            print(translate('NodePropDlg', 
+            print(translate('AttrPropDlg', 
                 'Please, select the attribute to be deleted.',
                 'A usage text'))
             return
@@ -524,19 +335,19 @@ class NodePropDlg(QtGui.QDialog, Ui_NodePropDialog):
         name = self.userattr_model.itemFromIndex(current_index).text()
 
         # Delete the marked attribute
-        title = translate('NodePropDlg', 'User attribute deletion',
+        title = translate('AttrPropDlg', 'User attribute deletion',
             'Caption of the attr deletion dialog')
-        text = translate('NodePropDlg', 
+        text = translate('AttrPropDlg', 
             "\n\nYou are about to delete the attribute:\n{0}\n\n", 
             'Ask for confirmation').format(name)
         itext = ''
         dtext = ''
         buttons = {
             'Delete': 
-                (translate('NodePropDlg', 'Delete', 'Button text'), 
+                (translate('AttrPropDlg', 'Delete', 'Button text'), 
                 QtGui.QMessageBox.YesRole), 
             'Cancel': 
-                (translate('NodePropDlg', 'Cancel', 'Button text'), 
+                (translate('AttrPropDlg', 'Cancel', 'Button text'), 
                 QtGui.QMessageBox.NoRole), 
             }
 

@@ -123,13 +123,13 @@ class NodeInfo(object):
     def _size(self):
         """The size of the hosting `tables.File` instance"""
 
-        bytes = os.path.getsize(self.filepath) *1.0
-        kbytes = bytes/1024
+        n_bytes = os.path.getsize(self.filepath) *1.0
+        kbytes = n_bytes/1024
         mbytes = kbytes/1024
         gbytes = mbytes/1024
         tbytes = gbytes/1024
         if kbytes < 1:
-            size = u'{0:.0f} bytes'.format(bytes)
+            size = u'{0:.0f} bytes'.format(n_bytes)
         elif mbytes < 1:
             size = u'{0:.1f} KB'.format(kbytes)
         elif gbytes < 1:
@@ -175,6 +175,17 @@ class NodeInfo(object):
             return {}
 
     hanging_leaves = property(fget=_hangingLeaves)
+
+
+    def _hangingLinks(self):
+        """The dictionary of links hanging from this node."""
+
+        try:
+            return self.node._v_links
+        except AttributeError:
+            return {}
+
+    hanging_links = property(fget=_hangingLinks)
 
 
     # Properties for Leaf instances
