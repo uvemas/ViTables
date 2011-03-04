@@ -390,6 +390,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             parent = self.parent(index)
             position = index.row()
             self.removeRows(position, parent=parent)
+            current = self.nodeFromIndex(self.currentIndex())
+            self.vtgui.dbs_tree_view.selectNode(current)
         finally:
             QtGui.qApp.restoreOverrideCursor()
 

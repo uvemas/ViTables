@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** March 04, 2011 **
+Bug 335 has been fixed.
+
 First implementation of soft/external links support is completed.
 
 ** March 03, 2011 **
