@@ -80,7 +80,7 @@ class LinkNode(object):
         icons = vitables.utils.getIcons()
         if isinstance(self.node(), tables.Table):
             self.node_kind = u'table'
-            self.icon = icons[u'table']
+            self.icon = icons[u'link_table']
         elif isinstance(self.node(), tables.VLArray):
             self.node_kind = u'vlarray'
             data_type = self.node().atom.type
@@ -89,16 +89,16 @@ class LinkNode(object):
             elif data_type == u'object':
                 self.icon = icons['object']
             else:
-                self.icon = icons[u'vlarray']
+                self.icon = icons[u'link_vlarray']
         elif isinstance(self.node(), tables.EArray):
             self.node_kind = 'earray'
-            self.icon = icons['earray']
+            self.icon = icons['link_earray']
         elif isinstance(self.node(), tables.CArray):
             self.node_kind = u'carray'
-            self.icon = icons[u'carray']
+            self.icon = icons[u'link_carray']
         elif isinstance(self.node(), tables.Array):
             self.node_kind = u'array'
-            self.icon = icons['array']
+            self.icon = icons['link_array']
         elif isinstance(self.node(), tables.UnImplemented):
             self.node_kind = u'image-missing'
             self.icon = icons[u'image-missing']

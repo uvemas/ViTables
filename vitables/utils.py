@@ -214,9 +214,10 @@ def getIcons():
             'configure', 
             'help-about', 'help-contents', 
             # Icons for tree pane items
-            'image-missing', 
-            'array', 'carray', 'earray', 'object', 
-            'vlarray','table', 'vlstring', 
+            'image-missing', 'object', 'vlstring', 
+            'array', 'link_array', 'carray', 'link_carray', 
+            'earray', 'link_earray', 'vlarray','link_vlarray', 
+            'table', 'link_table', 
             # Icons for node views
             'zoom-in', 
             # Icons for buttons

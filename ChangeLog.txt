@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 04, 2011 **
+First implementation of soft/external links support is completed.
+
 ** March 03, 2011 **
 Added a Properties dialog for both soft and external links.
 
