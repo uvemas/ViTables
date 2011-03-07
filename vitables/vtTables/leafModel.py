@@ -89,7 +89,7 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         self.formatContent = vitables.utils.formatArrayContent
 
-        # Format time series (if they are found) are formatted transparently
+        # Time series (if they are found) are formatted transparently
         # via the time_series.py plugin
 
         if not isinstance(self.data_source, tables.Table):

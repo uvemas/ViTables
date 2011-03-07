@@ -86,7 +86,8 @@ class Buffer(object):
 
         # The length of the dimension that is going to be read. It
         # is an int64.
-        self.leaf_numrows = self.data_source.nrows
+    #    self.leaf_numrows = self.data_source.nrows
+        self.leaf_numrows = self.leafNumberOfRows()
 
         # Every chunk of data read from the data source is stored in a list.
         # The maximum length of the list (i.e. the chunk size) is 10000 rows

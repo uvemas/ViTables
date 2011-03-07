@@ -70,13 +70,15 @@ class LeafView(QtGui.QTableView):
 
         # For potentially huge datasets use a customised scrollbar
         if self.leaf_numrows > self.tmodel.numrows:
+            self.rbuffer_fault = False
             self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-            self.tricky_vscrollbar = scrollBar.ScrollBar(self.vscrollbar)
-            self.max_value = self.tricky_vscrollbar.maximum()
-            self.tricky_vscrollbar.installEventFilter(self)
+            self.tricky_vscrollbar = scrollBar.ScrollBar(self)
+            self.max_value = self.tvsMaxValue()
+            self.tricky_vscrollbar.setMaximum(self.max_value)
+            self.tricky_vscrollbar.setMinimum(0)
+            self.interval_size = self.mapSlider2Leaf()
 
         # Setup the vertical header width
-        #self.vheader = self.verticalHeader()
         self.vheader = QtGui.QHeaderView(QtCore.Qt.Vertical)
         self.setVerticalHeader(self.vheader)
         font = self.vheader.font()
@@ -105,35 +107,64 @@ class LeafView(QtGui.QTableView):
             self.tmodel.headerDataChanged.connect(self.repaintCurrentCell)
 
 
+    def tvsMaxValue(self):
+        """Calulate the maximum range value of the tricky vertical scrollbar.
+        """
+
+        # The scrollbar range must be a signed 32 bits integer so its
+        # largest range is [0, 2**31 - 1]
+        top_value = 2**31 - 1
+        if self.leaf_numrows <= top_value:
+            top_value = self.leaf_numrows
+        return top_value
+
+
+
+    def mapSlider2Leaf(self):
+        """Map the slider position a row in the leaf.
+
+        We divide the number of rows into equaly sized intervals. The
+        interval size is given by the formula::
+
+            int(self.leaf_numrows/self.max_value)
+
+        Note that the larger is the number of rows the worse is this
+        approach. In the worst case we would have an interval size of
+        (2**64 - 1)/(2**31 - 1) = 2**33. Nevertheless the approach is
+        quite good for number of rows about 2**33 (eight thousand million
+        rows). In this case the interval size is about 4.
+        """
+
+        # If the slider range equals to the number of rows of the dataset
+        # then there is a 1:1 mapping between range values and dataset
+        # rows and row equals to value
+        interval_size = 1
+        if self.max_value < self.leaf_numrows:
+            interval_size = int(self.leaf_numrows/self.max_value)
+        return interval_size
+
+
     def syncView(self):
-        """Synchronize the displayed data and the position of the visible
-        vertical scrollbar.
+        """Update the tricky scrollbar value accordingly to first visible row.
         """
 
         top_left_corner = QtCore.QPoint(0, 0)
+        # The first visible label
         fv_label = \
             self.tmodel.rbuffer.start + self.indexAt(top_left_corner).row() + 1
-        value = numpy.array(fv_label*self.max_value/self.leaf_numrows, 
-                            dtype=numpy.int64)
+        value = numpy.rint(numpy.array(fv_label/self.interval_size, 
+            dtype=numpy.float64))
         self.tricky_vscrollbar.setValue(value)
 
 
-    def eventFilter(self, widget, event):
-        """Event handler that customises the view behavior for some events.
-
-        :Parameters:
-
-        - `widget`: the widget that receives the event
-        - `event`: the received event
+    def updateView(self):
+        """Update the view contents after a buffer fault.
         """
 
-        if event.type() in (QtCore.QEvent.MouseButtonRelease, 
-            QtCore.QEvent.Wheel):
-            top_left = self.tmodel.index(0, 0)
-            bottom_right = self.tmodel.index(self.tmodel.numrows - 1, 
+        top_left = self.tmodel.index(0, 0)
+        bottom_right = self.tmodel.index(self.tmodel.numrows - 1, 
                                             self.tmodel.numcols - 1)
-            self.dataChanged(top_left, bottom_right)
-        return QtGui.QTableView.eventFilter(self, widget, event)
+        self.dataChanged(top_left, bottom_right)
 
 
     def navigateWithMouse(self, action):
@@ -169,6 +200,7 @@ class LeafView(QtGui.QTableView):
         elif action in (2, 4):
             self.subStep()
         elif action == 7:
+            # The slider is being dragged or wheeled
             self.dragSlider()
 
 
@@ -179,7 +211,9 @@ class LeafView(QtGui.QTableView):
         table_size = self.tmodel.numrows
         last_section = self.tmodel.rbuffer.start + table_size
 
-        # The required offset to make the last section visible
+        # The required offset to make the last section visible i.e where
+        # should start the viewport to ensure that the last section is
+        # visible
         last_section_offset = self.vheader.length() - \
                                 self.vheader.viewport().height()
         # If the last section is visible and it is not the last row of
@@ -191,6 +225,7 @@ class LeafView(QtGui.QTableView):
                 self.tmodel.loadData(start, table_size)
                 self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                                 table_size - 1)
+                self.updateView()
                 self.scrollToTop()
 
         # Eventually synchronize the position of the visible scrollbar
@@ -215,6 +250,7 @@ class LeafView(QtGui.QTableView):
                 self.tmodel.loadData(start, table_size)
                 self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                                 table_size - 1)
+                self.updateView()
                 self.scrollToBottom()
 
         # Eventually synchronize the position of the visible scrollbar
@@ -227,45 +263,149 @@ class LeafView(QtGui.QTableView):
         """Move the slider by dragging it or wheeling the mouse.
 
         When navigating large datasets we must beware that the number of
-        rows of the dataset is greater than the number of values in the
-        range of values of the scrollbar. It means that there are rows
-        that cannot be reached with the scrollbar.
+        rows of the dataset (uint64) is greater than the number of
+        values in the range of values (int32) of the scrollbar. It means
+        that there are rows that cannot be reached with the scrollbar.
 
-        The relationship between the scrollbar value and the row in the
-        dataset can be expressed in several ways::
+        Note:: QScrollBar.sliderPosition and QScrollBar.value not always
+        return the same value. When we reache the top of the dataset:
 
-            (max_value - value)/value = (numrows - row)/row
-            row = (value * numrows)/max_value
-            value = (row * max_value)/numrows
+        - wheeling: value() returns 0, sliderPosition() returns a
+            negative number
+        - dragging: sliderPosition() returns 0, value() returns values
+            larger than 0
         """
 
         table_size = self.tmodel.numrows
-
         value = self.tricky_vscrollbar.sliderPosition()
-        if value == 0:
-            row = 0
-            self.vscrollbar.triggerAction(\
-                QtGui.QAbstractSlider.SliderToMinimum)
+        if value < 0:
+            value = 0
+        if value > self.max_value:
+            value = self.max_value
+        row = numpy.array(self.interval_size*value, dtype=numpy.int64)
+
+        # top buffer fault condition
+        if row < self.tmodel.rbuffer.start:
+            self.topBF(value, row)
+        # bottom buffer fault condition
+        elif row > self.tmodel.rbuffer.start + table_size:
+            self.bottomBF(value, row)
+        # We are at top of the dataset
+        elif value == self.tricky_vscrollbar.minimum():
+            self.topDataset()
+        # We are at bottom of the dataset
         elif value == self.tricky_vscrollbar.maximum():
-            row = self.leaf_numrows - 1
-            self.vscrollbar.triggerAction(\
-                QtGui.QAbstractSlider.SliderToMaximum)
-        else:
-            row = numpy.array(self.leaf_numrows*value/self.max_value, 
-                              dtype=numpy.int64)
-        # bottom dataset fault condition
-        if row + table_size > self.leaf_numrows:
-            start = self.leaf_numrows - table_size
-        # top/bottom buffer fault condition
-        elif (row < self.tmodel.rbuffer.start) or \
-            (row > self.tmodel.rbuffer.start + table_size - 1):
-            start = row - table_size/2
+            self.bottomDataset()
         # no fault condition occurs
         else:
-            return
+            position = row - self.tmodel.rbuffer.start
+            index = self.tmodel.index(position, 0)
+            self.scrollTo(index, QtGui.QAbstractItemView.PositionAtTop)
+
+
+    def topBF(self, value, row):
+        """Going out of buffer when browsing upwards.
+
+        Buffer fault condition: row < rbuffer.start
+
+        :Parameters:
+
+            - `value`: the current value of the tricky scrollbar
+            - `row`: the estimated dataset row mapped to that value
+        """
+
+        table_size = self.tmodel.numrows
+        if value == self.tricky_vscrollbar.minimum():
+            row = 0
+            start = 0
+            position = 0
+            hint = QtGui.QAbstractItemView.PositionAtTop
+            self.vscrollbar.triggerAction(\
+                QtGui.QAbstractSlider.SliderToMinimum)
+        else:
+            start = row - table_size
+            position = table_size - 1
+            hint = QtGui.QAbstractItemView.PositionAtBottom
+
+        self.tmodel.loadData(start, table_size)
+        self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
+                                    table_size - 1)
+        self.updateView()
+        index = self.tmodel.index(position, 0)
+        self.scrollTo(index, hint)
+
+
+    def bottomBF(self, value, row):
+        """Going out of buffer when browsing downwards.
+
+        Buffer fault condition: row > self.tmodel.rbuffer.start + table_size - 1
+
+        :Parameters:
+
+            - `value`: the current value of the tricky scrollbar
+            - `row`: the estimated dataset row mapped to that value
+        """
+
+        table_size = self.tmodel.numrows
+        if value == self.tricky_vscrollbar.maximum():
+            row = self.leaf_numrows - 1
+            start = self.leaf_numrows - table_size
+            position = table_size - 1
+            hint = QtGui.QAbstractItemView.PositionAtBottom
+            self.vscrollbar.triggerAction(\
+                QtGui.QAbstractSlider.SliderToMinimum)
+        else:
+            start = row
+            position = row - start
+            hint = QtGui.QAbstractItemView.PositionAtTop
+
         self.tmodel.loadData(start, table_size)
         self.vheader.headerDataChanged(QtCore.Qt.Vertical, 0, 
                                         table_size - 1)
+        self.updateView()
+        index = self.tmodel.index(position, 0)
+        self.scrollTo(index, hint)
+
+
+    def topDataset(self):
+        """First dataset row reached with no buffer fault.
+        """
+
+        position = 0
+        hint = QtGui.QAbstractItemView.EnsureVisible
+        self.vscrollbar.triggerAction(\
+            QtGui.QAbstractSlider.SliderToMinimum)
+        index = self.tmodel.index(position, 0)
+        self.scrollTo(index, hint)
+
+
+    def bottomDataset(self):
+        """Last dataset row reached with no buffer fault.
+        """
+
+        table_size = self.tmodel.numrows
+        position = table_size - 1
+        hint = QtGui.QAbstractItemView.EnsureVisible
+        self.vscrollbar.triggerAction(\
+            QtGui.QAbstractSlider.SliderToMaximum)
+        index = self.tmodel.index(position, 0)
+        self.scrollTo(index, hint)
+
+
+    def wheelEvent(self, event):
+        """Send the wheel events received by the *viewport* to the visible
+        vertical scrollbar.
+
+        :Parameter event: the QWheelEvent being processed
+        """
+
+        if self.leaf_numrows > self.tmodel.numrows:
+            # Move the tricky scrollbar by the same amount than the hidden one.
+            # Because we are moving the tricky scrollbar the dragSlider method
+            # will be called
+            QtCore.QCoreApplication.sendEvent(self.tricky_vscrollbar, event)
+        else:
+            QtGui.QTableView.wheelEvent(self, event)
 
 
     def keyPressEvent(self, event):
@@ -500,19 +640,6 @@ class LeafView(QtGui.QTableView):
         # with the displayed data using the first visible cell as
         # reference
         self.syncView()
-
-
-    def wheelEvent(self, event):
-        """Send the wheel events received by the viewport to the visible
-        vertical scrollbar.
-
-        :Parameter event: the event being processed
-        """
-
-        if self.tmodel.rbuffer.leaf_numrows > self.tmodel.numrows:
-            QtCore.QCoreApplication.sendEvent(self.tricky_vscrollbar, event)
-        else:
-            QtGui.QTableView.wheelEvent(self, event)
 
     # For large datasets the number of rows of the dataset is greater than
     # the number of rows of the table used for displaying data. It means

@@ -20,7 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This (too much) minimal module makes a QScrollBar that will be used for browsing huge datasets.
+This minimal module makes a QScrollBar for browsing huge datasets.
 
 The use of this scrollbar is very tricky. It will be painted over the scrollbar
 of views bound to huge datasets so the view will look as usual but will have 2 
@@ -42,7 +42,7 @@ class ScrollBar(QtGui.QScrollBar):
     :Parameter scrollbar: the scrollbar being hidden
     """
 
-    def __init__(self, scrollbar=None):
+    def __init__(self, view):
         """Replace a vertical scrollbar with other one.
 
         After replacing, the ancestor widgets of `scrollbar` looks
@@ -53,7 +53,9 @@ class ScrollBar(QtGui.QScrollBar):
 
         # Cheat the user hidding a scrollbar and displaying other one
         # that looks exactly the same
-        super(ScrollBar, self).__init__(scrollbar.parent())
-        scrollbar.setVisible(False)
-        scrollbar.parent().layout().addWidget(self)
+        parent = view.vscrollbar.parent()
+        super(ScrollBar, self).__init__(parent)
+        view.vscrollbar.setVisible(False)
+        parent.layout().addWidget(self)
         self.setOrientation(QtCore.Qt.Vertical)
+        self.setObjectName('tricky_vscrollbar')

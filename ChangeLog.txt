@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 07, 2011 **
+Navigation of large datasets using the right scrollbar has been debugged.
+
 ** March 04, 2011 **
 Subpackage nodeProperties has been reorganised and refactored.
 
