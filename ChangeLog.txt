@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 08, 2011 **
+Bugs 330 and 359 have been fixed.
+
 ** March 07, 2011 **
 Navigation of large datasets using the right scrollbar has been debugged.
 

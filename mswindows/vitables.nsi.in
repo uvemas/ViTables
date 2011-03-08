@@ -2,11 +2,11 @@
 #       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
 #       Author:  Vicent Mas - vmas@vitables.org
 #
-# This script is intended to generate a binary installer for sources imported
-# from a ViTables repository. It is not intended for distribution.
+# This script is intended to generate a binary installer for sources
+# imported from a ViTables repository. It is not intended for distribution.
 
 # Use Modern User Interface style
-!include MUI.nsh
+!include MUI2.nsh
 
 !include Library.nsh
 !include Sections.nsh
@@ -25,8 +25,10 @@ Name "ViTables @VERSION@"
 # The file where the installer will be saved
 OutFile "ViTables-@VERSION@.win32-py@DOTPYTHONVERSION@.exe"
 
-# To ensure that shortcuts are removed from the Start Menu on Windows Vista
-RequestExecutionLevel admin
+# We need admin privileges to write in HKLM and HKCR root keys of the registry.
+# And to install into system folders (Program Files). Note that none and admin
+# have the same effect
+RequestExecutionLevel none
 
 # The installer icons as used by MUI (see NSIS FAQ)
 !define MUI_ICON "@ROOT@\vitables\icons\vtinstaller.ico"
@@ -176,16 +178,22 @@ Section "ViTables @VERSION@" VT
   File @ROOT@\*.txt
   File ..\LICENSE.html
 
-  # The documentation directory
-  SetOutPath $INSTDIR\doc\html
-  File /r @ROOT@\vitables\htmldocs\*
+  # The documentation directory contains the sources and the Users Guide
+  # in PDF format
   SetOutPath $INSTDIR\doc
   File @ROOT@\doc\UsersGuide.pdf
+  File @ROOT@\doc\usersguide-*.rst
+  File @ROOT@\doc\index_*.txt
+  File @ROOT@\doc\make.bat
+  File @ROOT@\doc\conf.py
+  SetOutPath $INSTDIR\doc\images
+  File /r @ROOT@\doc\images\*
 
   # The examples directory
   SetOutPath $INSTDIR\examples
   File /r @ROOT@\examples\*.*
-# To ensure that examples can be accessed in read/write mode on Windows Vista
+
+  # To ensure that examples can be accessed in read/write mode on Windows Vista
   AccessControl::GrantOnFile "$INSTDIR\examples" "(BU)" "GenericRead|GenericWrite"
 
   # The translations directory
@@ -196,6 +204,9 @@ Section "ViTables @VERSION@" VT
   # Create the uninstaller and put it in the aplication directory
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
+  # Make sure that Start menu folders will be created for regular users too
+  SetShellVarContext all
+
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 
     # Create shortcuts
@@ -204,7 +215,6 @@ Section "ViTables @VERSION@" VT
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Examples.lnk" "$INSTDIR\examples"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (PDF).lnk" "$INSTDIR\doc\UsersGuide.pdf"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (HTML).lnk" "$INSTDIR\doc\html\index.html"
     CreateShortCut "$DESKTOP\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
 
   !insertmacro MUI_STARTMENU_WRITE_END
@@ -230,14 +240,6 @@ Section "ViTables @VERSION@" VT
 
 SectionEnd
 
-# Set descriptions for Section 0 (VT section)
-LangString DESC_VT $(LANG_ENGLISH) "A GUI for PyTables. It allows for very \
-fast opening and navigation of arbitrarely large PyTables files."
-
-!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT 0 $(DESC_VT)
-!insertmacro MUI_FUNCTION_DESCRIPTION_END
-
 ###########################################################
 #	PART II: UNINSTALLER
 ###########################################################
@@ -257,9 +259,6 @@ succesfully."
 !define MUI_UNFINSIHPAGE_NOAUTOCLOSE 1
 !insertmacro MUI_UNPAGE_INSTFILES
 
-# Eventually the LANGUAGE macro must be inserted 
-!insertmacro MUI_LANGUAGE "English"
-
 # --------------------------------
 # Uninstaller Sections
 # --------------------------------
@@ -277,6 +276,9 @@ Section "Un.Vitables uninstall" UVT
   Delete "$PYTHONDIR\Scripts\vitables.exe"
   Delete "$PYTHONDIR\Scripts\vitables.exe.manifest"
 
+  # Make sure that Start menu folders will be removed for regular users too
+  SetShellVarContext all
+
   # Remove the application entry in the Start Menu
   !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
 
@@ -284,7 +286,6 @@ Section "Un.Vitables uninstall" UVT
   Delete "$SMPROGRAMS\$MUI_TEMP\ViTables.lnk"
   Delete "$SMPROGRAMS\$MUI_TEMP\Examples.lnk"
   Delete "$SMPROGRAMS\$MUI_TEMP\User's Guide (PDF).lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\User's Guide (HTML).lnk"
   Delete "$DESKTOP\ViTables.lnk"
 
   # Delete empty start menu parent directories
@@ -317,6 +318,9 @@ Section "Un.Vitables uninstall" UVT
   ${EndIf}
 
 SectionEnd
+
+# Eventually the LANGUAGE macro must be inserted
+!insertmacro MUI_LANGUAGE "English"
 
 # --------------------------------
 # Functions
