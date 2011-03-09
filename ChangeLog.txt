@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 09, 2011 **
+The behavior of the current cell when browsing large views has been fixed.
+
 ** March 08, 2011 **
 Bugs 330 and 359 have been fixed.
 
