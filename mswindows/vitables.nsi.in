@@ -5,44 +5,42 @@
 # This script is intended to generate a binary installer for sources
 # imported from a ViTables repository. It is not intended for distribution.
 
-# Use Modern User Interface style
+# INCLUDES
 !include MUI2.nsh
-
 !include Library.nsh
 !include Sections.nsh
 !include LogicLib.nsh
-#!include WordFunc.nsh
-#!insertmacro VersionCompare
-#!insertmacro VersionConvert
-#!insertmacro WordReplace
+!include fileassoc.nsh
+!include UAC.nsh
 
-# Select the compressor that will compress the installer
+# INIT
+# Admin privileges are needed for writing in HKLM and HKCR root keys
+# of the registry and also for installing into system folders (Program Files).
+# But the UAC plugin requires user privileges
+RequestExecutionLevel user
 SetCompressor /SOLID lzma
-
-# The name of the installer
 Name "ViTables @VERSION@"
-
-# The file where the installer will be saved
 OutFile "ViTables-@VERSION@.win32-py@DOTPYTHONVERSION@.exe"
+XPStyle on
 
-# We need admin privileges to write in HKLM and HKCR root keys of the registry.
-# And to install into system folders (Program Files). Note that none and admin
-# have the same effect
-RequestExecutionLevel none
-
+# CONSTANTS
+!define APPNAME "ViTables"
+!define APPFOLDER "ViTables@VERSION@ for Python@DOTPYTHONVERSION@"
+!define S_DEFINSTDIR_USER "$LocalAppData\${APPNAME}"
+!define S_DEFINSTDIR_ADMIN "$ProgramFiles\${APPNAME}"
+!define INICIOFOLDER "$SMPROGRAMS\${APPFOLDER}"
+!define INICIOFOLDER_RUN "${INICIOFOLDER}\ViTables.lnk"
+!define INICIOFOLDER_UNINSTALLER "${INICIOFOLDER}\Uninstall.lnk"
+!define INICIOFOLDER_EXAMPLES "${INICIOFOLDER}\Examples.lnk"
+!define INICIOFOLDER_GUIDE "${INICIOFOLDER}\User's Guide (PDF).lnk"
+!define DESKTOPFOLDER_RUN "$DESKTOP\ViTables.lnk"
 # The installer icons as used by MUI (see NSIS FAQ)
 !define MUI_ICON "@ROOT@\vitables\icons\vtinstaller.ico"
 !define MUI_UNICON "@ROOT@\vitables\icons\vtinstaller.ico"
 
-# Use the new XP style
-XPStyle on
 
 # Variables declaration
 Var VITABLES_KEY
-Var HDF5FILE_SUBKEY
-Var HDF5SHELL_SUBKEY
-Var STARTMENU_FOLDER
-Var MUI_TEMP
 Var PYTHONDIR
 
 ###########################################################
@@ -50,46 +48,51 @@ Var PYTHONDIR
 ###########################################################
 
 # --------------------------------
-# Functions
+# FUNCTIONS
 # --------------------------------
 Function .onInit
-	# The registry key where application settings will be stored
-	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
-	StrCpy $STARTMENU_FOLDER "ViTables @VERSION@ for Python @DOTPYTHONVERSION@"
+  # The registry key where application settings will be stored
+  StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
 
-	# Check the python installation
-	ExecWait "pythonw -c $\"import sys; (sys.version_info[0:3] > (2, 6)) or 0/0$\"" $R0
-	${If} $R0 == "1"
-	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that Python 2.6 is not \
-	  installed. Aborting the ViTables installation process."
-	  Abort
-	${EndIf}
+  # Check the python installation
+  ExecWait "pythonw -c $\"import sys; (sys.version_info[0:3] > (2, 6)) or 0/0$\"" $R0
+  ${If} $R0 == "1"
+    MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that Python 2.6 is not \
+    installed. Aborting the ViTables installation process."
+    Abort
+  ${EndIf}
 
-	# Check the tables installation
-	ExecWait "pythonw -c $\"import tables$\""
-	IfErrors 0 +3
-	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyTables is not \
-	  installed. Aborting the ViTables installation process."
-	  Abort
+  # Check the tables installation
+  ExecWait "pythonw -c $\"import tables$\""
+  IfErrors 0 +3
+    MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyTables is not \
+    installed. Aborting the ViTables installation process."
+    Abort
 
-	# Check the PyQt4.QtGui installation
-	ExecWait "pythonw -c $\"from PyQt4.QtGui import *$\""
-	IfErrors 0 +3
-	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtGui is not \
-	  installed. Aborting the ViTables installation process."
-	  Abort
+  # Check the PyQt4.QtGui installation
+  ExecWait "pythonw -c $\"from PyQt4.QtGui import *$\""
+  IfErrors 0 +3
+    MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtGui is not \
+    installed. Aborting the ViTables installation process."
+    Abort
 
-	# Check the PyQt4.QtCore installation
-	ExecWait "pythonw -c $\"from PyQt4.QtCore import *$\""
-	IfErrors 0 +3
-	  MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtCore is not \
-	  installed. Aborting the ViTables installation process."
-	  Abort
+  # Check the PyQt4.QtCore installation
+  ExecWait "pythonw -c $\"from PyQt4.QtCore import *$\""
+  IfErrors 0 +3
+    MessageBox MB_OK|MB_ICONEXCLAMATION "It seems that PyQt4.QtCore is not \
+    installed. Aborting the ViTables installation process."
+    Abort
 FunctionEnd
 
 Function preInstallDir
-  # Default installation directory
-  StrCpy $INSTDIR "$PROGRAMFILES\ViTables\$STARTMENU_FOLDER"
+  # The installation directory depends on the user privileges
+  # admin user returns 1, regular user returns 0. The result is stored in $0
+  !insertmacro UAC_IsAdmin
+${If} $0 <> 1 ; We are not executing as admin
+    StrCpy $INSTDIR "${S_DEFINSTDIR_USER}\${APPFOLDER}"
+${Else}
+    StrCpy $INSTDIR "${S_DEFINSTDIR_ADMIN}\${APPFOLDER}"
+${EndIf}
 FunctionEnd
 
 Function prePythonDir
@@ -109,7 +112,7 @@ anyway?" IDYES +2 IDNO 0
 FunctionEnd
 
 # --------------------------------
-# Pages
+# PAGES
 # --------------------------------
 
 # Page: Welcome
@@ -140,18 +143,49 @@ Browse and select another folder. Click Next to Continue."
 !define MUI_DIRECTORYPAGE_VARIABLE $PYTHONDIR
 !insertmacro MUI_PAGE_DIRECTORY
 
-
-# Page: Start Menu Folder Configuration
-!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
-!define MUI_STARTMENUPAGE_REGISTRY_KEY $VITABLES_KEY
-!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-!insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
-
 # Page: Install selected components
 !insertmacro MUI_PAGE_INSTFILES
 
 # ------------------------------------------
-# The stuff to install a.k.a. Sections
+# CALLBACKS
+# ------------------------------------------
+Function CreateShortcuts
+  # If we install as admin make sure that Start menu folders will be created
+  # for regular users too, not only for the admin user
+  !insertmacro UAC_IsAdmin
+  ${If} $0 <> 1 ; We are not executing as admin
+    SetShellVarContext current
+  ${Else}
+    SetShellVarContext all
+  ${EndIf}
+
+  # Create shortcuts
+  CreateDirectory "${INICIOFOLDER}"
+  CreateShortCut "${INICIOFOLDER_RUN}" "$PYTHONDIR\Scripts\vitables.exe"
+  CreateShortCut "${INICIOFOLDER_UNINSTALLER}" "$INSTDIR\Uninstall.exe"
+  CreateShortCut "${INICIOFOLDER_EXAMPLES}" "$INSTDIR\examples"
+  CreateShortCut "${INICIOFOLDER_GUIDE}" "$INSTDIR\doc\UsersGuide.pdf"
+  CreateShortCut "${DESKTOPFOLDER_RUN}" "$PYTHONDIR\Scripts\vitables.exe"
+FunctionEnd
+
+Function SaveToRegistry
+  !insertmacro UAC_IsAdmin
+  ${If} $0 <> 1 ; We are not executing as admin
+    # Update the registry
+    WriteRegStr HKCU $VITABLES_KEY "INSTDIR" $INSTDIR
+    WriteRegStr HKCU $VITABLES_KEY "PYTHONDIR" $PYTHONDIR
+  ${Else}
+    # Update the registry and associate the .h5 extension to ViTables
+    WriteRegStr HKLM $VITABLES_KEY "INSTDIR" $INSTDIR
+    WriteRegStr HKLM $VITABLES_KEY "PYTHONDIR" $PYTHONDIR
+    !insertmacro APP_ASSOCIATE "h5" "ViTables.HDF5file" "ViTables document" \
+    "$PYTHONDIR\Lib\site-packages\vitables\icons\vitables_file.ico" \
+    "Open with ViTables" "$PYTHONDIR\Scripts\vitables.exe $\"%1$\""
+  ${EndIf}
+FunctionEnd
+
+# ------------------------------------------
+# SECTIONS (STUFF TO BE INSTALLED)
 # ------------------------------------------
 
 Section "ViTables @VERSION@" VT
@@ -173,13 +207,16 @@ Section "ViTables @VERSION@" VT
   SetOutPath $PYTHONDIR\Lib\site-packages\vitables\htmldocs
   File /r @ROOT@\vitables\htmldocs\*
 
-  # The text files: TODO.txt, INSTALL.txt and stuff like that
+  # Populate the installation directory with:
+  # -text files (TODO.txt, LICENSE.html...)
+  # - users guide (sources and PDF)
+  # - examples directory
+  # - uninstaller
+
   SetOutPath $INSTDIR
   File @ROOT@\*.txt
   File ..\LICENSE.html
 
-  # The documentation directory contains the sources and the Users Guide
-  # in PDF format
   SetOutPath $INSTDIR\doc
   File @ROOT@\doc\UsersGuide.pdf
   File @ROOT@\doc\usersguide-*.rst
@@ -189,64 +226,41 @@ Section "ViTables @VERSION@" VT
   SetOutPath $INSTDIR\doc\images
   File /r @ROOT@\doc\images\*
 
-  # The examples directory
   SetOutPath $INSTDIR\examples
   File /r @ROOT@\examples\*.*
 
-  # To ensure that examples can be accessed in read/write mode on Windows Vista
-  AccessControl::GrantOnFile "$INSTDIR\examples" "(BU)" "GenericRead|GenericWrite"
-
-  # The translations directory
-#  SetOutPath $INSTDIR\translations
-#  File @ROOT@\translations\*.txt
-#  File @ROOT@\translations\*.qm
-
-  # Create the uninstaller and put it in the aplication directory
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
-  # Make sure that Start menu folders will be created for regular users too
-  SetShellVarContext all
+  # To ensure that everybody can accesses the examples folder in read/write
+  # mode on Windows Vista even if  we install as admin
+  !insertmacro UAC_IsAdmin
+  ${If} $0 = 1 ; We are executing as admin
+    AccessControl::GrantOnFile "$INSTDIR\examples" "(BU)" "GenericRead|GenericWrite"
+  ${EndIf}
 
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-
-    # Create shortcuts
-    CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Examples.lnk" "$INSTDIR\examples"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\User's Guide (PDF).lnk" "$INSTDIR\doc\UsersGuide.pdf"
-    CreateShortCut "$DESKTOP\ViTables.lnk" "$PYTHONDIR\Scripts\vitables.exe"
-
-  !insertmacro MUI_STARTMENU_WRITE_END
+  # Create shortcuts in the Start Menu and in the desktop
+  Call CreateShortcuts
 
   # Update the registry
-  WriteRegStr HKLM $VITABLES_KEY "INSTDIR" $INSTDIR
-  WriteRegStr HKLM $VITABLES_KEY "PYTHONDIR" $PYTHONDIR
-
-  # Remove the existing file association (if any) for the .h5 extension
-  # TODO we should backup the key and restore it once vitables has been uninstalled
-  DeleteRegKey HKCR ".h5"
-  # Map the .h5 extension to ViTables
-  StrCpy $HDF5FILE_SUBKEY "ViTables\@VERSION@\HDF5File"
-  WriteRegStr HKCR ".h5" "" $HDF5FILE_SUBKEY
-  # Default settings for the .h5 extension 
-  WriteRegStr HKCR $HDF5FILE_SUBKEY "" "HDF5 file"
-  WriteRegStr HKCR $HDF5FILE_SUBKEY\DefaultIcon "" "$PYTHONDIR\Lib\site-packages\vitables\icons\vitables_file.ico"
-  WriteRegStr HKCR $HDF5FILE_SUBKEY\shell "" ""
-  StrCpy $HDF5SHELL_SUBKEY "$HDF5FILE_SUBKEY\shell"
-  WriteRegStr HKCR $HDF5SHELL_SUBKEY\open "" "Open with ViTables"
-  WriteRegStr HKCR $HDF5SHELL_SUBKEY\open\command "" \
-    '$PYTHONDIR\Scripts\vitables.exe "%1"'
-
+  Call SaveToRegistry
 SectionEnd
 
 ###########################################################
 #	PART II: UNINSTALLER
 ###########################################################
 
+# --------------------------------
+# FUNCTIONS
+# --------------------------------
+
+Function un.onInit
+  # Variables set in installer functions are not available here so we must set
+  # them again
+  StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
+FunctionEnd
 
 # --------------------------------
-# Pages
+# PAGES
 # --------------------------------
 
 # Page: Welcome
@@ -259,75 +273,73 @@ succesfully."
 !define MUI_UNFINSIHPAGE_NOAUTOCLOSE 1
 !insertmacro MUI_UNPAGE_INSTFILES
 
-# --------------------------------
-# Uninstaller Sections
-# --------------------------------
+# ------------------------------------------
+# CALLBACKS
+# ------------------------------------------
+Function un.RetrieveFromRegistry
+  !insertmacro UAC_IsAdmin
+  ${If} $0 <> 1 ; We are not executing as admin
+    # Update the registry
+    ReadRegStr $PYTHONDIR HKCU $VITABLES_KEY "PYTHONDIR"
+    ReadRegStr $INSTDIR HKCU $VITABLES_KEY "INSTDIR"
+  ${Else}
+    # Update the registry
+    ReadRegStr $PYTHONDIR HKLM $VITABLES_KEY "PYTHONDIR"
+    ReadRegStr $INSTDIR HKLM $VITABLES_KEY "INSTDIR"
+  ${EndIf}
+FunctionEnd
+
+Function un.RemoveShortcuts
+  # Make sure that Start menu folders will be removed for regular users too
+  !insertmacro UAC_IsAdmin
+  ${If} $0 <> 1 ; We are not executing as admin
+    SetShellVarContext current
+  ${Else}
+    SetShellVarContext all
+  ${EndIf}
+  # Remove the application entry in the Start Menu
+  RMDir /r "${INICIOFOLDER}"
+  Delete "${DESKTOPFOLDER_RUN}"
+FunctionEnd
+
+Function un.CleanRegistry
+  # Delete the ViTables key from the registry, unassociate the .h5
+  # extension from ViTables and restore the previous association
+  !insertmacro UAC_IsAdmin
+  ${If} $0 <> 1 ; We are not executing as admin
+    DeleteRegKey HKCU $VITABLES_KEY
+  ${Else}
+    DeleteRegKey HKLM $VITABLES_KEY
+    DeleteRegKey HKCU $VITABLES_KEY
+    !insertmacro APP_UNASSOCIATE "h5" "ViTables.HDF5file"
+  ${EndIf}
+FunctionEnd
+
+# ----------------------------------
+# SECTIONS (STUFF TO BE UNINSTALLED)
+# ----------------------------------
 
 Section "Un.Vitables uninstall" UVT
+  # Read the INSTDIR and PYTHONDIR values from the registry
+  Call un.RetrieveFromRegistry
 
-  ReadRegStr $PYTHONDIR HKLM $VITABLES_KEY "PYTHONDIR"
-  ReadRegStr $INSTDIR HKLM $VITABLES_KEY "INSTDIR"
-
-  # Remove the application directory
+  # Remove the application directory and the vitables package
+  # Note that a regular user can't remove a system wide installation
+  # because she will try to retrieve PYTHONDIR and INSTDIR from
+  # the HKCU key root of registry
   RMDir /r $INSTDIR
-
-  # Remove the vitables package
   RMDir /r "$PYTHONDIR\Lib\site-packages\vitables"
   Delete "$PYTHONDIR\Scripts\vitables.exe"
   Delete "$PYTHONDIR\Scripts\vitables.exe.manifest"
 
-  # Make sure that Start menu folders will be removed for regular users too
-  SetShellVarContext all
+  # Remove shortcuts from the Start Menu and desktop
+  # Note that a regular user can't remove a system wide installation
+  # because she  has no write permissions to the All Users folder
+  Call un.RemoveShortcuts
 
-  # Remove the application entry in the Start Menu
-  !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
-
-  Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\ViTables.lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\Examples.lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\User's Guide (PDF).lnk"
-  Delete "$DESKTOP\ViTables.lnk"
-
-  # Delete empty start menu parent directories
-  StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
-
-  startMenuDeleteLoop:
-	ClearErrors
-    RMDir $MUI_TEMP
-    GetFullPathName $MUI_TEMP "$MUI_TEMP\.."
-
-    IfErrors startMenuDeleteLoopDone
-
-    StrCmp $MUI_TEMP $SMPROGRAMS startMenuDeleteLoopDone startMenuDeleteLoop
-  startMenuDeleteLoopDone:
-
-  # Delete the ViTables key from the registry
-  DeleteRegKey HKLM $VITABLES_KEY
-
-  # Delete the ViTables configuration from the registry
-  DeleteRegKey HKCU $VITABLES_KEY
-
-  # File association
-  ReadRegStr $1 HKCR ".h5" ""
-  # If .h5 extension not mapped to ViTables then do nothing
-  ${If} $1 == "ViTables\@VERSION@\HDF5File"
-    DeleteRegKey HKCR ".h5"
-    DeleteRegKey HKCR "ViTables"
-    DeleteRegKey HKCR "Applications\vitables.exe"
-    DeleteRegKey HKLM "SOFTWARE\Classes\Applications\vitables.exe"
-  ${EndIf}
-
+  # Delete ViTables key and file associations from the registry
+  Call un.CleanRegistry
 SectionEnd
 
 # Eventually the LANGUAGE macro must be inserted
 !insertmacro MUI_LANGUAGE "English"
-
-# --------------------------------
-# Functions
-# --------------------------------
-
-Function un.onInit
-  # Variables set in installer functions are not available here so we must set
-  # them again
-	StrCpy $VITABLES_KEY "SOFTWARE\ViTables\@VERSION@"
-FunctionEnd
