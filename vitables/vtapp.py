@@ -151,8 +151,7 @@ class VTApp(QtCore.QObject):
         # Some plugins modify datasets displaying so plugins must be loaded
         # before opening any file.
         self.plugins_mgr = \
-            pluginsLoader.PluginsLoader(self.config.plugins_paths, 
-            self.config.enabled_plugins)
+            pluginsLoader.PluginsLoader(self.config.enabled_plugins)
         self.plugins_mgr.loadAll()
         self.pluginsLoaded.emit()
 

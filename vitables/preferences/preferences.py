@@ -73,26 +73,18 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         self.config = self.vtapp.config
         self.pg_loader = self.vtapp.plugins_mgr
-        self.plugins_paths = self.pg_loader.plugins_paths[:]
+        self.all_plugins = self.pg_loader.all_plugins[:]
         self.enabled_plugins = self.pg_loader.enabled_plugins[:]
 
+        # Setup the Plugins page
+        self.setupPluginsPage()
+
         # Setup the page selector widget
-        self.setupIcons()
+        self.setupSelector()
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
         styles = QtGui.QStyleFactory.keys()
         self.stylesCB.insertItems(0, styles)
-
-        # Setup the Plugins page
-        self.enabled_model = QtGui.QStandardItemModel()
-        self.enabledLV.setModel(self.enabled_model)
-        self.disabled_model = QtGui.QStandardItemModel()
-        self.disabledLV.setModel(self.disabled_model)
-        self.paths_model = QtGui.QStandardItemModel()
-        self.pathsLV.setModel(self.paths_model)
-        for button in (self.removeButton, self.loadButton, 
-            self.unloadButton):
-            button.setEnabled(False)
 
         # The dictionary of current ViTables preferences
         self.initial_prefs = {}
@@ -116,40 +108,115 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.resetPreferences()
 
         # Connect SIGNALS to SLOTS
-        self.makeConnections()
+        self.buttonsBox.helpRequested.connect(\
+            QtGui.QWhatsThis.enterWhatsThisMode)
 
 
-    def setupIcons(self):
-        """Setup icons in the selector list of the Preferences dialog.
+    def setupPluginsPage(self):
+        """Populate the tree of plugins.
+        """
+
+        nrows = len(self.all_plugins)
+        self.plugins_model = QtGui.QStandardItemModel(nrows, 2, self)
+        self.pluginsTV.setModel(self.plugins_model)
+        header = QtGui.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
+        header.setStretchLastSection(True)
+        self.pluginsTV.setHeader(header)
+        self.plugins_model.setHorizontalHeaderLabels(['Name', 'Comment'])
+
+        # Populate the model
+        for p in self.all_plugins:
+            item = QtGui.QStandardItem(p['name'])
+            item.setData(p)
+            item.setCheckable(True)
+            if p in self.enabled_plugins:
+                item.setCheckState(2)
+            row = self.all_plugins.index(p)
+            self.plugins_model.setItem(row, 0, item)
+            item = QtGui.QStandardItem(p['comment'])
+            self.plugins_model.setItem(row, 1, item)
+
+
+    def setupSelector(self):
+        """Setup the page selector widget of the Preferences dialog.
         """
 
         iconsdir = os.path.join(ICONDIR, '64x64')
-        general_button = QtGui.QListWidgetItem(self.contentsWidget)
-        general_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        self.selector_model = QtGui.QStandardItemModel(self)
+        self.pageSelector.setModel(self.selector_model)
+
+        # Populate the model with top level items
+        alignment = QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+        flags = QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
+        general_item = QtGui.QStandardItem()
+        general_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-other.png')))
-        general_button.setText(translate('Preferences', "  General  ", 
+        general_item.setText(translate('Preferences', "  General  ", 
             "Text for page selector icon"))
-        general_button.setTextAlignment(QtCore.Qt.AlignHCenter)
-        general_button.setFlags(QtCore.Qt.ItemIsSelectable | 
-            QtCore.Qt.ItemIsEnabled)
+        general_item.setTextAlignment(alignment)
+        general_item.setFlags(flags)
 
-        style_button = QtGui.QListWidgetItem(self.contentsWidget)
-        style_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        style_item = QtGui.QStandardItem()
+        style_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-desktop-theme.png')))
-        style_button.setText(translate('Preferences', "Look & Feel", 
+        style_item.setText(translate('Preferences', "Look & Feel", 
             "Text for page selector icon"))
-        style_button.setTextAlignment(QtCore.Qt.AlignHCenter)
-        style_button.setFlags(QtCore.Qt.ItemIsSelectable | 
-            QtCore.Qt.ItemIsEnabled)
+        style_item.setTextAlignment(alignment)
+        style_item.setFlags(flags)
 
-        plugins_button = QtGui.QListWidgetItem(self.contentsWidget)
-        plugins_button.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        self.plugins_item = QtGui.QStandardItem()
+        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
             'preferences-plugin.png')))
-        plugins_button.setText(translate('Preferences', "  Plugins  ", 
+        self.plugins_item.setText(translate('Preferences', "  Plugins  ", 
             "Text for page selector icon"))
-        plugins_button.setTextAlignment(QtCore.Qt.AlignHCenter)
-        plugins_button.setFlags(QtCore.Qt.ItemIsSelectable | 
-            QtCore.Qt.ItemIsEnabled)
+        self.plugins_item.setTextAlignment(alignment)
+        self.plugins_item.setFlags(flags)
+
+        for item in (general_item, style_item, self.plugins_item):
+            self.selector_model.appendRow(item)
+
+        # Add items for *loaded* plugins to the Plugins item
+        index = self.selector_model.indexFromItem(self.plugins_item)
+        self.pageSelector.setExpanded(index, True)
+        for pg_name in self.vtapp.plugins_mgr.loaded_plugins.keys():
+            item = QtGui.QStandardItem(pg_name)
+            self.plugins_item.appendRow(item)
+
+
+    @QtCore.pyqtSlot("QModelIndex", name="on_pageSelector_clicked")
+    def changeSettingsPage(self, index):
+        """Slot for changing the selected page in the Settings dialog.
+
+        :Parameter index: the index clicked by the user
+        """
+
+        # If top level item is clicked
+        if not index.parent().isValid():
+            self.stackedPages.setCurrentIndex(index.row())
+        # If a plugin item is clicked
+        elif index.parent() == self.plugins_item.index():
+            pluginID = self.selector_model.itemFromIndex(index).text()
+            self.aboutPluginPage(pluginID)
+
+
+    @QtCore.pyqtSlot("QAbstractButton *", name="on_buttonsBox_clicked")
+    def executeButtonAction(self, button):
+        """Slot that manages button box clicks in the Preferences dialog.
+
+        Whenever one of the `Help`, `Reset`, `Cancel` or `OK` buttons is
+        clicked in the Preferences dialog this slot is called.
+
+        :Parameter button: the clicked button.
+        """
+
+        if button == self.buttonsBox.button(QtGui.QDialogButtonBox.Reset):
+            self.resetPreferences()
+        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Help):
+            pass
+        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Cancel):
+            self.reject()
+        else:
+            self.applySettings()
 
 
     def resetPreferences(self):
@@ -181,106 +248,17 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.initial_prefs['Look/currentStyle'])
         self.stylesCB.setCurrentIndex(index)
 
-        # Plugins page
-        self.setupList('paths', seq=self.pg_loader.plugins_paths)
-        self.setupList('enabled', seq=self.pg_loader.enabled_plugins, 
-            split=True)
-        self.setupList('disabled', seq=self.pg_loader.disabled_plugins, 
-            split=True)
-        self.unloadButton.setEnabled(False)
-        self.loadButton.setEnabled(False)
-
         # The visual update done above is not enough, we must reset the
-        # new preferences dictionary and the lists of plugins paths and
-        # enabled plugins
+        # new preferences dictionary and the list of enabled plugins
         self.new_prefs.clear()
         self.new_prefs.update(self.initial_prefs)
-        self.plugins_paths = self.pg_loader.plugins_paths[:]
         self.enabled_plugins = self.pg_loader.enabled_plugins[:]
-
-
-    def setupList(self, uid, seq, split=False):
-        """Setup the plugins-related lists shown in the dialog.
-
-        :Parameters:
-
-        - `uid`: unique identifier for the list being setup
-        - `seq`: the sequence of items to be added to the list
-        - `split`: True if list items have the format folder#@#name
-        """
-
-        if uid == 'paths':
-            view = self.pathsLV
-        elif uid == 'enabled':
-            view = self.enabledLV
-        elif uid == 'disabled':
-            view = self.disabledLV
-        model = view.model()
-        model.clear()
-        for i in seq:
-            if split:
-                folder, name = i.split('#@#')
-                item = QtGui.QStandardItem(name)
-                item.setData(folder, QtCore.Qt.UserRole+1)
+        for row in range(0, self.plugins_model.rowCount()):
+            item = self.plugins_model.item(row, 0)
+            if item.data() in self.enabled_plugins:
+                item.setCheckState(2)
             else:
-                item = QtGui.QStandardItem(i)
-            model.appendRow(item)
-
-
-    def makeConnections(self):
-        """Connect signals to slots.
-
-        The connections that cannot be done automatically by name are setup 
-        here.
-        """
-
-        self.buttonsBox.helpRequested.connect(\
-            QtGui.QWhatsThis.enterWhatsThisMode)
-
-        # Plugins page
-        self.disabledLV.selectionModel().selectionChanged.connect(\
-            self.updateButton)
-        self.enabledLV.selectionModel().selectionChanged.connect(\
-            self.updateButton)
-        self.pathsLV.selectionModel().selectionChanged.connect(\
-            self.updateButton)
-
-
-
-    @QtCore.pyqtSlot("QListWidgetItem *", "QListWidgetItem *", \
-        name="on_contentsWidget_currentItemChanged")
-    def changeSettingsPage(self, current, previous):
-        """Slot for changing the selected page in the Settings dialog.
-
-        :Parameters:
-
-        - `current`: the item currently selected in the page selector widget
-        - `previous`: the previous current item
-        """
-        if not current:
-            current = previous
-
-        self.stackedPages.setCurrentIndex(self.contentsWidget.row(current))
-
-
-    @QtCore.pyqtSlot("QAbstractButton *", name="on_buttonsBox_clicked")
-    def executeButtonAction(self, button):
-        """Slot that manages button box clicks in the Preferences dialog.
-
-        Whenever one of the `Help`, `Reset`, `Cancel` or `OK` buttons is
-        clicked in the Preferences dialog this slot is called.
-
-        :Parameter button: the clicked button.
-        """
-
-        if button == self.buttonsBox.button(QtGui.QDialogButtonBox.Reset):
-            self.resetPreferences()
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Help):
-            pass
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Cancel):
-            self.reject()
-        else:
-            self.applySettings()
+                item.setCheckState(0)
 
 
     def applySettings(self):
@@ -292,9 +270,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         # Update the plugins manager
-        self.pg_loader.plugins_paths = self.plugins_paths[:]
-        self.pg_loader.enabled_plugins = self.enabled_plugins[:]
-        self.pg_loader.register()
+        self.updatePluginsManager()
 
         # Update the rest of settings
         for key, value in self.new_prefs.items():
@@ -415,110 +391,47 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.new_prefs['Look/currentStyle'] = style_name
 
 
-    @QtCore.pyqtSlot(name="on_newButton_clicked")
-    def addSearchablePath(self):
-        """Slot for adding a new searchable path if `New` button is clicked."""
+    def updatePluginsManager(self):
+        """Update the plugins manager before closing the dialog.
 
-        folder = QtGui.QFileDialog.getExistingDirectory()
-        if not folder:
-            return
-
-        # Add the folder to the list of folders unless it is already there
-        model = self.pathsLV.model()
-        self.plugins_paths = [model.item(row).text() \
-            for row in range(model.rowCount())]
-        if not folder in self.plugins_paths:
-            item = QtGui.QStandardItem(folder)
-            model.appendRow(item)
-            self.plugins_paths.append(folder)
-
-
-    @QtCore.pyqtSlot(name="on_removeButton_clicked")
-    def removeSearchablePath(self):
-        """Slot for removing a searchable path if `Remove` button clicked."""
-
-        current = self.pathsLV.currentIndex()
-        model = self.pathsLV.model()
-        model.removeRow(current.row(), current.parent())
-        self.plugins_paths = [model.item(row).text() \
-            for row in range(model.rowCount())]
-
-
-    @QtCore.pyqtSlot(name="on_loadButton_clicked")
-    def enablePlugin(self):
-        """Slot for enabling a plugin if `Load` button clicked."""
-
-        enabled_model = self.enabledLV.model()
-        disabled_model = self.disabledLV.model()
-
-        current_index = self.disabledLV.currentIndex()
-        row = current_index.row()
-        item = QtGui.QStandardItem(disabled_model.item(row))
-        enabled_model.appendRow(item)
-        disabled_model.removeRows(row, 1, current_index.parent())
-
-
-        self.enabled_plugins = []
-        for row in range(enabled_model.rowCount()):
-            item = enabled_model.item(row)
-            name = item.text()
-            folder = item.data()
-            self.enabled_plugins.append(u'{0}#@#{1}'.format(folder, name))
-
-
-    @QtCore.pyqtSlot(name="on_unloadButton_clicked")
-    def disablePlugin(self):
-        """Slot for disabling a plugin if `Unload` button clicked."""
-
-        enabled_model = self.enabledLV.model()
-        disabled_model = self.disabledLV.model()
-
-        current_index = self.enabledLV.currentIndex()
-        row = current_index.row()
-        item = QtGui.QStandardItem(enabled_model.item(row))
-        enabled_model.removeRows(row, 1, current_index.parent())
-        disabled_model.appendRow(item)
-
-        self.enabled_plugins = []
-        for row in range(enabled_model.rowCount()):
-            item = enabled_model.item(row)
-            name = item.text()
-            folder = item.data()
-            self.enabled_plugins.append(u'{0}#@#{1}'.format(folder, name))
-
-
-    def updateButton(self, selected, deselected):
-        """Enable/disable actions in the configuration dialog.
-
-        This slot is called when a new item becomes selected in a list
-        view (the plugins paths list, the enabled plugins list or the
-        disabled plugins list) and updates the actions tied to that list.
-
-        :Parameters:
-
-        - `selected`: the item selection of selected items
-        - `deselected`: the item selection of deselected items
+        When the Apply button is clicked the list of enabled plugins
+        is refreshed.
         """
 
-        selection_model = self.sender()
-        model = selection_model.model()
+        self.enabled_plugins = []
+        for row in range(self.plugins_model.rowCount()):
+            item = self.plugins_model.item(row, 0)
+            if item.checkState() == 2:
+                self.enabled_plugins.append(item.data())
 
-        # Find out which button has to be updated
-        if model == self.pathsLV.model():
-            button = self.removeButton
-        elif model == self.enabledLV.model():
-            button = self.unloadButton
-        elif model == self.disabledLV.model():
-            button = self.loadButton
+        self.pg_loader.enabled_plugins = self.enabled_plugins[:]
+        self.pg_loader.register()
 
-        # If the list is empty the button is disabled
-        selected_indexes = selected.indexes()
-        if selected_indexes == []:
-            button.setEnabled(False)
-            return
 
-        # If an item is selected the button is enabled otherwise it is disabled
-        if selection_model.hasSelection():
-            button.setEnabled(True)
-        else:
-            button.setEnabled(False)
+    def aboutPluginPage(self, pluginID):
+        """A page with info about the plugin clicked in the selector widget.
+
+        :Parameter pluginID: a unique ID for getting the proper plugin
+        """
+
+        # Refresh the Preferences dialog pages. There is at most one
+        # About Plugin page at any given time
+        while self.stackedPages.count() > 3:
+            about_page = self.stackedPages.widget(3)
+            self.stackedPages.removeWidget(about_page)
+            del about_page
+
+        pg_instance = self.vtapp.plugins_mgr.loaded_plugins[pluginID]
+        try:
+            about_page = pg_instance.helpAbout(self.stackedPages)
+        except AttributeError:
+            about_page = QtGui.QWidget(self.stackedPages)
+            label = QtGui.QLabel(translate(\
+                'Preferences', 
+                'Sorry, there are no info available for this plugin', 
+                'A text label'), about_page)
+            layout = QtGui.QVBoxLayout(about_page)
+            layout.addWidget(label)
+
+        self.stackedPages.addWidget(about_page)
+        self.stackedPages.setCurrentIndex(3)

@@ -57,8 +57,10 @@ Other aspects to take into account:
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '0.9'
+__version__ = '1.0'
 plugin_class = 'ImportCSV'
+plugin_name = 'CSV importer'
+comment = 'Import CSV files into datasets.'
 
 import os
 import tempfile
@@ -72,6 +74,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
+from vitables.plugins.csv.aboutPage import AboutPage
 
 translate = QtGui.QApplication.translate
 TYPE_ERROR = translate('ImportCSV', 
@@ -798,8 +801,8 @@ class ImportCSV(QtCore.QObject):
                 if dbdoc is None:
                     return
                 array_name = u"imported_{0}".format(kind)
-                title = \
-                    u'Imported from CSV file {0}'.format(os.path.basename(filepath))
+                title = u'Imported from CSV file {0}'.\
+                    format(os.path.basename(filepath))
                 dbdoc.h5file.createArray('/', array_name, data, title=title)
                 dbdoc.h5file.flush()
                 self.updateTree(dbdoc.filepath)
@@ -812,17 +815,23 @@ class ImportCSV(QtCore.QObject):
             QtGui.qApp.restoreOverrideCursor()
 
 
-    def helpAbout(self):
-        """Brief description of the plugin.
+    def helpAbout(self, parent):
+        """Full description of the plugin.
 
         This is a convenience method which works as expected by
-        :meth:menu.plugins_menu.showInfo i.e. it returns a dictionary
-        whose keys will be used by the `menu` plugin in order to show
-        information about this plugin.
+        :meth:preferences.preferences.Preferences.aboutPluginPage i.e.
+        build a page which contains the full description of the plugin
+        and, optionally, allows for its configuration.
+
+        :Parameter about_page: the container widget for the page
         """
 
-        # Text to be displayed
-        about_text = translate('ImportCSV', 
+        # Plugin full description
+        desc = {'version': __version__, 
+            'module_name': os.path.join(os.path.basename(__file__)), 
+            'folder': os.path.join(os.path.dirname(__file__)), 
+            'author': 'Vicent Mas <vmas@vitables.org>', 
+            'about_text': translate('ImportCSV', 
             """<qt>
             <p>Plugin that provides import CSV files capabilities.
             <p>CSV files can be imported into any of the following 
@@ -834,13 +843,6 @@ class ImportCSV(QtCore.QObject):
             transformed and write back to disk again so there is a lot 
             of disk IO.
             </qt>""",
-            'Text of an About plugin message box')
-
-        descr = dict(module_name='import_csv.py', 
-            folder=os.path.join(PLUGINSDIR, 'csv'), 
-            version=__version__, 
-            plugin_name='Import from CSV', 
-            author='Vicent Mas <vmas@vitables.org>', 
-            descr=about_text)
-
-        return descr
+            'Text of an About plugin message box')}
+        about_page = AboutPage(desc, parent)
+        return about_page

@@ -404,19 +404,6 @@ class Config(QtCore.QSettings):
             return default_value
 
 
-    def readPluginsPaths(self):
-        """Return the list of directories where plugins live.
-        """
-
-        key = 'Plugins/Paths'
-        default_value = []
-        setting_value = self.value(key)
-        if isinstance(setting_value, list):
-            return setting_value
-        else:
-            return default_value
-
-
     def enabledPlugins(self):
         """Returns the list of enabled plugins.
         """
@@ -425,6 +412,9 @@ class Config(QtCore.QSettings):
         default_value = []
         setting_value = self.value(key)
         if isinstance(setting_value, list):
+            for item in setting_value[:]:
+                if not isinstance(item, dict):
+                    setting_value.remove(item)
             return setting_value
         else:
             return default_value
@@ -480,7 +470,6 @@ class Config(QtCore.QSettings):
         config['HelpBrowser/History'] = self.helpHistory()
         config['HelpBrowser/Bookmarks'] = self.helpBookmarks()
         config['Look/currentStyle'] = self.readStyle()
-        config['Plugins/Paths'] = self.readPluginsPaths()
         config['Plugins/Enabled'] = self.enabledPlugins()
         return config
 
@@ -532,8 +521,6 @@ class Config(QtCore.QSettings):
         self.writeValue('HelpBrowser/History', self.hb_history)
         # The Help Browser bookmarks
         self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
-        # The directories where plugins live
-        self.writeValue('Plugins/Paths', self.vtapp.plugins_mgr.plugins_paths)
         # The list of enabled plugins
         self.writeValue('Plugins/Enabled', 
             self.vtapp.plugins_mgr.enabled_plugins)
@@ -684,10 +671,6 @@ class Config(QtCore.QSettings):
             self.current_style = config[key]
             # Default style is provided by the underlying window manager
             QtGui.qApp.setStyle(self.current_style)
-
-        key = 'Plugins/Paths'
-        if key in config:
-            self.plugins_paths = config[key]
 
         key = 'Plugins/Enabled'
         if key in config:

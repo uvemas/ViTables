@@ -26,12 +26,15 @@ series contained in `PyTables` tables generated via ``scikits.timeseries``.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '0.9'
+__version__ = '1.0'
 plugin_class = 'TSFormatter'
+plugin_name = 'Timeseries formatter'
+comment = 'Display time series in a human friendly format'
 
 import time
 import os
 import ConfigParser
+import datetime
 
 import tables
 
@@ -43,10 +46,9 @@ except ImportError:
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
-from vitables.plugins.timeseries.timeFormatterDlg import TimeFormatterDlg
+from vitables.plugins.timeseries.aboutPage import AboutPage
 
 translate = QtGui.QApplication.translate
 
@@ -188,49 +190,38 @@ class TSFormatter(object):
             model.data = new_model.data
 
 
-    def helpAbout(self):
-        """Brief description of the plugin.
+    def helpAbout(self, parent):
+        """Full description of the plugin.
 
         This is a convenience method which works as expected by
-        :meth:menu.plugins_menu.showInfo i.e. it returns a dictionary
-        whose keys will be used by the `menu` plugin in order to show
-        information about this plugin.
+        :meth:preferences.preferences.Preferences.aboutPluginPage i.e.
+        build a page which contains the full description of the plugin
+        and, optionally, allows for its configuration.
+
+        :Parameter about_page: the container widget for the page
         """
 
-        # Text to be displayed
-        about_text = translate('TSFormatter', 
+        # Plugin full description
+        desc = {'version': __version__, 
+            'module_name': os.path.join(os.path.basename(__file__)), 
+            'folder': os.path.join(os.path.dirname(__file__)), 
+            'author': 'Vicent Mas <vmas@vitables.org>', 
+            'about_text': translate('TimeFormatterPage', 
             """<qt>
             <p>Plugin that provides nice string formatting for time fields.
             <p>It supports not only native PyTables time datatypes but 
             also the time series tables generated 
             via scikits.timeseries package.
             </qt>""",
-            'Text of an About plugin message box')
+            'Text of an About plugin message box')}
+        self.about_page = AboutPage(desc, parent)
 
-        descr = dict(module_name='time_series.py', folder=PLUGINSDIR, 
-            version=__version__, 
-            plugin_name='Time series formatter', 
-            author='Vicent Mas <vmas@vitables.org>', 
-            descr=about_text, 
-            config=True)
-
-        return descr
-
-
-    def configure(self):
-        """Configure the format used in a timeseries.
-
-        This is a convenience method. If the `menu` plugin is enabled
-        and its Time Series entry is activated then the raised dialog
-        has a Configure button which is connected to this method.
-
-        The timeseries format can be configured without calling this
-        method simply by editing the time_format.ini file by hand.
-        """
-        TimeFormatterDlg()
-
-
-
+        # We need install the event filter because the Preferences dialog
+        # eats all Return key presses even if the time format editor widget
+        # has the keyboard focus (so connecting the returnPressed signal
+        # of this widget to the AboutPage.applyFormat is useless)
+        parent.parent().installEventFilter(self.about_page)
+        return self.about_page
 
 
 class ArrayTSModel(QtCore.QAbstractTableModel):

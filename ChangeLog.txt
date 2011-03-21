@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 21, 2011 **
+The Menu plugin functionality is now part of the ViTables core.
+
 ** March 14, 2011 **
 The NSIS installer script has been largely rewritten.
 

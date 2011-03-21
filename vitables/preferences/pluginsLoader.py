@@ -61,21 +61,22 @@ from vitables.vtSite import PLUGINSDIR
 
 translate = QtGui.QApplication.translate
 
-def isPlugin(folder, name):
-    """Check if a given module is a plugin.
 
-    :Parameters:
-        - folder: the folder where the module being tested lives
-        - name: the filename of the module being tested
+def pluginDesc(mod_name, folder=None):
+    """Check if a given module is a plugin and return its description.
+
+    :Parameter name: the filename of the module being tested
     """
 
     # Import the module
+    if folder is None:
+        folder = PLUGINSDIR
     try:
         finding_failed = True
-        file_obj, filepath, desc = imp.find_module(name, [folder])
+        file_obj, filepath, desc = imp.find_module(mod_name, [folder])
         finding_failed = False
 #        module = imp.load_module(name, file_obj, filepath, desc)
-        module = imp.load_source(name, filepath, file_obj)
+        module = imp.load_source(mod_name, filepath, file_obj)
     except (ImportError, Exception):
         # Warning! If the module being loaded is not a ViTables plugin
         # then unexpected errors can occur
@@ -87,7 +88,11 @@ def isPlugin(folder, name):
     # Check if module is a plugin
     try:
         class_name = getattr(module, 'plugin_class')
-        return class_name
+        desc = {'mod_name': mod_name,
+            'folder': folder,
+            'name': getattr(module, 'plugin_name'),
+            'comment': getattr(module, 'comment')}
+        return desc
     except AttributeError:
         return False
 
@@ -108,20 +113,23 @@ def isPlugin(folder, name):
         # del module
 
 
-def scanFolder(folder):
+def scanFolder(proot):
     """Scan a package looking for plugins.
 
     This is a non recursive method. It scans only the top level of
     the package.
 
-    :Parameter folder: the folder being scanned
+    :Parameter proot: the top level folder of the package being scanned
     """
 
 
     pkg_plugins = []
+    folder = os.path.join(PLUGINSDIR, proot)
     for loader, name, ispkg in pkgutil.iter_modules([folder]):
-        if not ispkg and isPlugin(folder, name):
-            pkg_plugins.append(u'{0}#@#{1}'.format(folder, name))
+        if not ispkg:
+            desc = pluginDesc(name, folder)
+            if desc:
+                pkg_plugins.append(desc)
     return pkg_plugins
 
 
@@ -133,41 +141,14 @@ class PluginsLoader(object):
     the plugins manager doesn't iterate recursively over the package looking
     for plugins.
 
-    :Parameters:
-
-    - plugins_paths: a list with the paths where plugins live
-    - enabled_plugins: a list with the UIDs of the enabled plugins
+    :Parameter enabled_plugins: a list with the UIDs of the enabled plugins
     """
 
-    def __init__(self, plugins_paths, enabled_plugins):
+    def __init__(self, enabled_plugins):
         """Dynamically load and instantiate the available plugins.
         """
 
-        self.plugins_paths = plugins_paths[:]
         self.enabled_plugins = enabled_plugins[:]
-
-        # Ensure that plugins distributed along with ViTables are
-        # always available
-        if PLUGINSDIR not in self.plugins_paths:
-            self.plugins_paths.append(PLUGINSDIR)
-
-        # Make sure that other plugins (if any) are available
-        for path in self.plugins_paths:
-            if os.path.isabs(path) and (path not in sys.path):
-                sys.path = [path] + sys.path
-
-        # Disable not available enabled plugins
-        for epg in self.enabled_plugins[:]:
-            folder, name = epg.split('#@#')
-            match = False
-            for ppth in self.plugins_paths:
-                if folder.startswith(ppth):
-                    match = True
-                    break
-            if not match:
-                self.enabled_plugins.remove(epg)
-
-        # Some useful stuff
         self.all_plugins = []
         self.disabled_plugins = []
         self.loaded_plugins = {}
@@ -185,13 +166,19 @@ class PluginsLoader(object):
 
         # Setup the list of available plugins
         self.all_plugins = []
-        for folder in self.plugins_paths:
-            for loader, name, ispkg in pkgutil.iter_modules([folder]):
-                if not ispkg and isPlugin(folder, name):
-                    self.all_plugins.append(u'{0}#@#{1}'.format(folder, name))
-                else:
-                    pkg_plugins = scanFolder(os.path.join(folder, name))
-                    self.all_plugins = self.all_plugins + pkg_plugins
+        for loader, name, ispkg in pkgutil.iter_modules([PLUGINSDIR]):
+            if not ispkg:
+                desc = pluginDesc(name)
+                if desc:
+                    self.all_plugins.append(desc)
+            else:
+                pkg_plugins = scanFolder(name)
+                self.all_plugins = self.all_plugins + pkg_plugins
+
+        # Minimal check of the format of items in the enabled_plugins list
+        for enabled in self.enabled_plugins:
+            if not isinstance(enabled, dict):
+                self.enabled_plugins.remove(enabled)
 
         # Make sure that enabled plugins are included in the list of
         # available plugins (sometimes this is required. When it is not
@@ -218,21 +205,22 @@ class PluginsLoader(object):
     def load(self, plugin):
         """Load a given plugin.
 
-        :Parameters plugin: th UID of the plugin being loaded
+        :Parameter plugin: th UID of the plugin being loaded
         """
 
         # Load the module where the plugin lives
         try:
             finding_failed = True
-            (folder, name) = plugin.split('#@#')
-            file_obj, filepath, desc = imp.find_module(name, [folder])
+            name = plugin['mod_name']
+            file_obj, filepath, desc = \
+                imp.find_module(name, [plugin['folder']])
             finding_failed = False
     #        module = imp.load_module(name, file_obj, filepath, desc)
             module = imp.load_source(name, filepath, file_obj)
         except (ImportError, ValueError):
             self.untrack(plugin)
             if finding_failed:
-                print(u"\nError: plugin {0} cannot be found.".format(plugin))
+                print(u"\nError: plugin {0} cannot be found.".format(name))
             else:
                 print(u"\nError: plugin {0} cannot be loaded.".format(name))
             return
@@ -256,7 +244,7 @@ class PluginsLoader(object):
             # Register plugin
             # In some cases keeping a reference to instance is a must
             # (for example, the time_series plugin)
-            self.loaded_plugins[plugin] = instance
+            self.loaded_plugins[plugin['name']] = instance
         except:
             self.untrack(plugin)
             print(u"\nError: plugin {0} cannot be loaded.".format(name))

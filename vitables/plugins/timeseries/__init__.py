@@ -17,4 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['timeFormatterDlg', 'time_series']
+__all__ = ['aboutPage', 'time_series']

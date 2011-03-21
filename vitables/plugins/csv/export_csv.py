@@ -25,8 +25,10 @@ When exporting tables, a header with the field names can be inserted.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '0.6'
+__version__ = '0.7'
 plugin_class = 'ExportToCSV'
+plugin_name = 'CSV exporter'
+comment = 'Export datasets to CSV files.'
 
 import os
 import re
@@ -40,6 +42,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 from vitables.vtSite import PLUGINSDIR
+from vitables.plugins.csv.aboutPage import AboutPage
 
 translate = QtGui.QApplication.translate
 
@@ -297,33 +300,32 @@ class ExportToCSV(QtCore.QObject):
             QtGui.qApp.restoreOverrideCursor()
 
 
-    def helpAbout(self):
-        """Brief description of the plugin.
+    def helpAbout(self, parent):
+        """Full description of the plugin.
 
         This is a convenience method which works as expected by
-        :meth:menu.plugins_menu.showInfo i.e. it returns a dictionary
-        whose keys will be used by the `menu` plugin in order to show
-        information about this plugin.
+        :meth:preferences.preferences.Preferences.aboutPluginPage i.e.
+        build a page which contains the full description of the plugin
+        and, optionally, allows for its configuration.
+
+        :Parameter about_page: the container widget for the page
         """
 
-        # Text to be displayed
-        about_text = translate('ExportToCSV', 
+        # Plugin full description
+        desc = {'version': __version__, 
+            'module_name': os.path.join(os.path.basename(__file__)), 
+            'folder': os.path.join(os.path.dirname(__file__)), 
+            'author': 'Vicent Mas <vmas@vitables.org>', 
+            'about_text': translate('ExportToCSV', 
             """<qt>
             <p>Plugin that provides export to CSV files capabilities.
             <p>Any kind of PyTables dataset can be exported. When 
             exporting tables, a header with the field names can be 
             inserted at top of the CSV file.
             </qt>""",
-            'Text of an About plugin message box')
-
-        descr = dict(module_name='export_csv.py', 
-            folder=os.path.join(PLUGINSDIR, 'csv'), 
-            version=__version__, 
-            plugin_name='Export to CSV', 
-            author='Vicent Mas <vmas@vitables.org>', 
-            descr=about_text)
-
-        return descr
+            'Text of an About plugin message box')}
+        about_page = AboutPage(desc, parent)
+        return about_page
 
 
 
