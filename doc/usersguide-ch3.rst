@@ -1,3 +1,6 @@
+.. sectnum::
+  :start: 3
+
 Browsing and Querying Datasets
 ==============================
 
@@ -13,7 +16,7 @@ large datasets (with up to 2^64 rows) can be browsed stunningly fast.
 
 .. _browse-large-dataset:
 .. figure:: images/browseDataset.png
-  :width: 861
+  :width: 80%
 
   Browsing a large dataset
 
@@ -42,7 +45,7 @@ strings) that doesn't fit on regular columns.
 
 .. _zoom-cell:
 .. figure:: images/zoomingCells.png
-  :width: 861
+  :width: 80%
 
   Zooming a cell
 
@@ -67,7 +70,7 @@ contain tables that describe the attributes of the node.
 
 .. _properties_dialog:
 .. figure:: images/propertiesDlg.png
-  :width: 446
+  :width: 60%
 
   The Properties dialog
 
@@ -126,7 +129,7 @@ These attributes are:
 
 .. _query_dlg:
 .. figure:: images/newFilteredTable.png
-  :width: 70%
+  :width: 50%
 
   The New Query dialog
 

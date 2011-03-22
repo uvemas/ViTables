@@ -25,7 +25,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+extensions = ['rst2pdf.pdfbuilder']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -207,6 +207,33 @@ latex_appendices = ['usersguide-app1', 'usersguide-app2']
 # If false, no module index is generated.
 latex_domain_indices = False
 
+
+# -- Options for PDF output via rst2pdf --------------------------------------------------
+
+pdf_documents = [
+  ('index', 'UsersGuide', u'ViTables Users\' Guide Documentation',
+   u'Vicent Mas'),
+]
+
+pdf_stylesheets = ['users_guide', 'kerning', 'a4']
+
+pdf_break_level = 1
+
+pdf_breakside = 'any'
+
+pdf_inline_footnotes = False
+
+pdf_use_index = True
+
+pdf_use_coverpage = True
+
+#pdf_cover_template = 'vitables_cover.tmpl'
+
+#pdf_appendices = ['usersguide-app1', 'usersguide-app2']
+
+pdf_default_dpi = 96
+
+pdf_page_template = 'cutePage'
 
 # -- Options for manual page output --------------------------------------------
 

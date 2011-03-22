@@ -1,3 +1,5 @@
+.. sectnum::
+  :start: 5
 
 .. _configuration-chapter:
 
@@ -26,8 +28,8 @@ so you can adapt the global aspect of *ViTables*
 to what would be expected on your platform.
 
 From the :guilabel:`Plugins` page the plugins can be managed. You
-can add or remove searching paths for plugins and enable or disable the available
-plugins
+can enable or disable the available plugins. Changes in this page will take effect
+the next time you start *ViTables*.
 
 The :guilabel:`OK` button will apply the new settings and
 make them permanent by saving them in the Windows registry, in a
@@ -35,6 +37,7 @@ configuration file (on Unix platforms) or in a plist file (on Mac OS X platforms
 if settings are stored in a plain text file editing it by hand is not
 recommended. Some settings, like fonts or geometry settings [#f3]_, are stored in a way not really intended to be modified manually.
 
+Anyway it can be worth how settings are stored so let's do it.
 The configuration file is divided into sections, labeled as
 [section_name]. Every section is made of subsections
 written as key/value pairs and representing the item that is being
@@ -75,9 +78,6 @@ Currently the following sections/subsections are available:
 
   [Plugins] Enabled
     the list of full paths of enabled plugins
-
-  [Plugins] Paths
-    the list of paths where plugins will be searched
 
   [Recent] Files
     the list of files recently opened

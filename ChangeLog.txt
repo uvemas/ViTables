@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 22, 2011 **
+The PDF version of the Users' Guide is now built with rst2pdf.
+
 ** March 21, 2011 **
 The Menu plugin functionality is now part of the ViTables core.
 

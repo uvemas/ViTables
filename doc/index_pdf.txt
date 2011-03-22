@@ -3,13 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ViTables Users' Guide!
-=================================
+.. Welcome to ViTables Users' Guide!
+.. =================================
 
-.. COMMENT: Page title
+.. .. COMMENT: Page title
 
-.. image:: images/title_page_plain.png
-  :width: 359
+.. .. image:: images/title_page_plain.png
+..   :width: 359
 
 .. include:: <isonum.txt>
 
@@ -36,6 +36,11 @@ detailed information see the LICENSE.txt file.
 
 *PyQt* library Copyright by Riverbank Computing Limited.
 
+.. raw:: pdf
+
+  PageBreak
+
+
 .. toctree::
    :maxdepth: 3
    :numbered:
@@ -45,4 +50,6 @@ detailed information see the LICENSE.txt file.
    usersguide-ch3
    usersguide-ch4
    usersguide-ch5
+   usersguide-app1
+   usersguide-app2
 

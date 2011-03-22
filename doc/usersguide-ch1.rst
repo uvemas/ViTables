@@ -1,9 +1,9 @@
+.. sectnum::
+
 .. |geq| unicode:: U+02265 .. greater than or equal symbol
 
 Introduction
 ============
-
-
 
 Overview
 ++++++++
@@ -102,8 +102,6 @@ run fine on many Unix platforms as well.
 
 Installation
 ++++++++++++
-
-
 
 Unix
 ****

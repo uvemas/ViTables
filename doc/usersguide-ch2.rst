@@ -1,3 +1,6 @@
+.. sectnum::
+  :start: 2
+
 First Steps
 ===========
 

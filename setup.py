@@ -55,7 +55,7 @@ if sphinx_found:
             """ Execute the build_sphinx command.
 
             The HTML and PDF docs are included in the tarball. So even if 
-            sphinx or pdflatex are not installed on the user's system she will 
+            sphinx or rst2pdf are not installed on the user's system she will 
             get the full documentation installed when installing ViTables in 
             the usual way::
 
@@ -66,12 +66,12 @@ if sphinx_found:
             If user is installing from a binary package (which will not include
             the docs, I think), in order to ensure that she will always end up with
             the docs being installed, the package should depend on the sphinx and
-            pdflatex packages and the `sphinx_found` variable should be set to 
+            rst2pdf packages and the `sphinx_found` variable should be set to 
             True.
             """
 
             # Build the Users Guide in HTML and TeX format
-            for builder in ('html', 'latex'):
+            for builder in ('html', 'pdf'):
                 # Tidy up before every build
                 try:
                     os.remove(os.path.join(self.source_dir, 'index.rst'))
@@ -87,11 +87,6 @@ if sphinx_found:
                     os.path.join(self.source_dir, 'index.rst'))
                 BuildDoc.run(self)
 
-            # Build the Users Guide in PDF format
-            builder_latex_dir = os.path.join(self.build_dir, 'latex')
-            make_path = find_executable("make")
-            spawn([make_path, "-C", builder_latex_dir, "all-pdf"])
-
             # Copy the docs to their final destination:
             # HTML docs (Users Guide and License) -> ./vitables/htmldocs
             # PDF guide -> ./doc
@@ -101,7 +96,7 @@ if sphinx_found:
                 copy_tree(os.path.join(self.build_dir,"html"), output_dir)
                 shutil.rmtree(os.path.join(output_dir,"_sources"))
                 copy_file('LICENSE.html', output_dir)
-            copy_file(os.path.join(builder_latex_dir, 
+            copy_file(os.path.join(self.build_dir,"pdf", 
                 "UsersGuide.pdf"), "doc")
 
 use_py2app = False
@@ -177,8 +172,7 @@ setup(name = 'ViTables', # The name of the distribution
     packages = ['vitables', 'vitables.docBrowser', 'vitables.h5db', 
         'vitables.nodeProperties', 'vitables.queries', 'vitables.preferences', 
         'vitables.vtTables', 'vitables.vtWidgets', 'vitables.plugins', 
-        'vitables.plugins.csv', 'vitables.plugins.timeseries', 
-        'vitables.plugins.menu'], 
+        'vitables.plugins.csv', 'vitables.plugins.timeseries'], 
     package_data = {
         'vitables.nodeProperties': ['*.ui'], 
         'vitables.preferences': ['*.ui'], 
