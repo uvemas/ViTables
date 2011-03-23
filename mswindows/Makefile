@@ -17,24 +17,26 @@ WINDOWS32=C:\\Windows\\system32
 # The NSIS intstaller script
 VTNSIS=vitables-py$(DOTPYTHONVERSION).nsi
 
-# ViTables executable
+# ViTables executable script
 PYTHON=C:\Python$(PYTHONVERSION)\python
-SIB="C:\Documents and Settings\vmas\Mis documentos\VendorID-1.0.0\sib\sib.py"
+SIB="$(USERPROFILE)\VendorID-1.0.0\sib\sib.py"
 ICON=$(ROOT)\vitables\icons\vitables.ico
 
-# Building the PDF documentation is currently not supported
+# Documentation in HTML and PDF formats
 INDEX=$(ROOT)\doc\index.rst
 HTML_INDEX=$(ROOT)\doc\index_html.txt
+PDF_INDEX=$(ROOT)\doc\index_pdf.txt
 HTML_OUTDIR=$(ROOT)\vitables\htmldocs
+PDF_OUTDIR=$(ROOT)\doc
 
 clean:
 	del $(VTNSIS)
 	del ViTables*.win32-py$(DOTPYTHONVERSION).exe
 	del $(ROOT)\vitables.py
-	rmdir /q /s $(ROOT)\doc\_build
-	rmdir /q /s $(HTML_OUTDIR)
 	del $(INDEX)
-#	del $(ROOT)\doc\ViTablesUsersGuide.pdf
+	del $(ROOT)\doc\UsersGuide.pdf
+	rmdir /q /s $(HTML_OUTDIR)
+	rmdir /q /s $(ROOT)\doc\_build
 
 vitables.exe:
 	copy $(ROOT)\scripts\vitables .\vitables.py
@@ -46,13 +48,24 @@ vitables.exe:
 	rmdir /q /s build_vitables
 	del .\vitables.py
 
-vtdoc:
+vtdoc: htmldoc pdfdoc
+
+htmldoc:
+	del $(INDEX)
 	copy $(HTML_INDEX) $(INDEX)
-	cd $(ROOT)\doc && make html
+	cd $(ROOT)\doc && make.bat html
 	mkdir $(HTML_OUTDIR)
 	xcopy $(ROOT)\doc\_build\html\*.* /E $(HTML_OUTDIR)
 	rmdir /q /s $(HTML_OUTDIR)\_sources
 	copy $(ROOT)\LICENSE.html $(HTML_OUTDIR)
+	rmdir /q /s $(ROOT)\doc\_build
+
+pdfdoc:
+	del $(INDEX)
+	copy $(PDF_INDEX) /Y $(INDEX)
+	cd $(ROOT)\doc && make.bat pdf
+	xcopy $(ROOT)\doc\_build\pdf\*.* $(ROOT)\doc
+	rmdir /q /s $(ROOT)\doc\_build
 
 installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vtdoc vitables.exe
 	copy ..\LICENSE.html LICENSE.html

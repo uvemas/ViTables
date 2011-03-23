@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 23, 2011 **
+The packaging process for Windows has been adapted to use rst2pdf.
+
 ** March 22, 2011 **
 The PDF version of the Users' Guide is now built with rst2pdf.
 
