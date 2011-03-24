@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** March 24, 2011 **
+The plugins management related stuff has been refactored and simplified.
+
 ** March 23, 2011 **
 The packaging process for Windows has been adapted to use rst2pdf.
 

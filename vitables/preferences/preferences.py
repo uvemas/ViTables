@@ -73,7 +73,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         self.config = self.vtapp.config
         self.pg_loader = self.vtapp.plugins_mgr
-        self.all_plugins = self.pg_loader.all_plugins[:]
+        self.all_plugins = \
+            dict(item for item in self.pg_loader.all_plugins.items())
         self.enabled_plugins = self.pg_loader.enabled_plugins[:]
 
         # Setup the Plugins page
@@ -125,16 +126,18 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.plugins_model.setHorizontalHeaderLabels(['Name', 'Comment'])
 
         # Populate the model
-        for p in self.all_plugins:
-            item = QtGui.QStandardItem(p['name'])
-            item.setData(p)
-            item.setCheckable(True)
-            if p in self.enabled_plugins:
-                item.setCheckState(2)
-            row = self.all_plugins.index(p)
-            self.plugins_model.setItem(row, 0, item)
-            item = QtGui.QStandardItem(p['comment'])
-            self.plugins_model.setItem(row, 1, item)
+        row = 0
+        for UID in self.all_plugins.keys():
+            name, comment = UID.split('#@#')
+            nitem = QtGui.QStandardItem(name)
+            nitem.setData(UID)
+            nitem.setCheckable(True)
+            if UID in self.enabled_plugins:
+                nitem.setCheckState(QtCore.Qt.Checked)
+            citem = QtGui.QStandardItem(comment)
+            self.plugins_model.setItem(row, 0, nitem)
+            self.plugins_model.setItem(row, 1, citem)
+            row = row + 1
 
 
     def setupSelector(self):
@@ -178,8 +181,10 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         # Add items for *loaded* plugins to the Plugins item
         index = self.selector_model.indexFromItem(self.plugins_item)
         self.pageSelector.setExpanded(index, True)
-        for pg_name in self.vtapp.plugins_mgr.loaded_plugins.keys():
-            item = QtGui.QStandardItem(pg_name)
+        for UID in self.vtapp.plugins_mgr.loaded_plugins.keys():
+            name = UID.split('#@#')[0]
+            item = QtGui.QStandardItem(name)
+            item.setData(UID)
             self.plugins_item.appendRow(item)
 
 
@@ -195,7 +200,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             self.stackedPages.setCurrentIndex(index.row())
         # If a plugin item is clicked
         elif index.parent() == self.plugins_item.index():
-            pluginID = self.selector_model.itemFromIndex(index).text()
+            pluginID = self.selector_model.itemFromIndex(index).data()
             self.aboutPluginPage(pluginID)
 
 
@@ -253,6 +258,9 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.new_prefs.clear()
         self.new_prefs.update(self.initial_prefs)
         self.enabled_plugins = self.pg_loader.enabled_plugins[:]
+        self.all_plugins = \
+            dict(item for item in self.pg_loader.all_plugins.items())
+        UIDs = self.all_plugins.keys()
         for row in range(0, self.plugins_model.rowCount()):
             item = self.plugins_model.item(row, 0)
             if item.data() in self.enabled_plugins:
@@ -405,7 +413,6 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
                 self.enabled_plugins.append(item.data())
 
         self.pg_loader.enabled_plugins = self.enabled_plugins[:]
-        self.pg_loader.register()
 
 
     def aboutPluginPage(self, pluginID):

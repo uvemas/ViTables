@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CSVPage</class>
- <widget class="QWidget" name="CSVPage">
+ <class>AboutPage</class>
+ <widget class="QWidget" name="AboutPage">
   <property name="geometry">
    <rect>
     <x>0</x>

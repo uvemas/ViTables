@@ -26,6 +26,8 @@ toolbars, statusbars and `QActions` bound to both menus and toolbars.
 
 __docformat__ = 'restructuredtext'
 
+import sys
+
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
@@ -85,8 +87,8 @@ class VTGUI(QtGui.QMainWindow):
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
         # Redirect standard output and standard error to a Logger instance
-    #    sys.stdout = self.logger
-    #    sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
 
 
     def addComponents(self):

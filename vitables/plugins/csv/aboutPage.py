@@ -31,24 +31,22 @@ dialog selector tree.
 __docformat__ = 'restructuredtext'
 
 import os.path
-import ConfigParser
-import datetime
 
 from PyQt4 import QtGui
 from PyQt4.uic import loadUiType
 
 import vitables.utils
+from vitables.vtSite import PLUGINSDIR
 
 translate = QtGui.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
-Ui_CSVPage = \
-    loadUiType(os.path.join(os.path.dirname(__file__), 
-    'csv_page.ui'))[0]
+Ui_AboutPage = \
+    loadUiType(os.path.join(PLUGINSDIR, 'about_page.ui'))[0]
 
 
-class AboutPage(QtGui.QWidget, Ui_CSVPage):
+class AboutPage(QtGui.QWidget, Ui_AboutPage):
     """
     Dialog for interactively formatting scikits.timeseries time series.
 

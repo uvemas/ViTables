@@ -56,7 +56,6 @@ def main(args):
     app.setOrganizationName('ViTables')
     app.setApplicationName('ViTables')
     app.setApplicationVersion(vtconfig.getVersion())
-    config = vtconfig.Config()
 
     # Localize the application using the system locale
     # numpy seems to have problems with decimal separator in some locales
@@ -87,7 +86,6 @@ def main(args):
         h5files = []
 
     # Start the application
-    del config
     vtapp = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
     vtapp.gui.show()
     app.exec_()

@@ -40,36 +40,36 @@ setting into the config file.
 
     - UserScope
 
-      - ``$HOME/.config/MyCompany/ViTables.conf``
+      - ``$HOME/.config/MyCompany/ViTables-version.conf``
       - ``$HOME/.config/MyCompany.conf``
 
     - SystemScope
 
-      - ``/etc/xdg/MyCompany/ViTables.conf``
+      - ``/etc/xdg/MyCompany/ViTables-version.conf``
       - ``/etc/xdg/MyCompany.conf``
 
   - MacOSX
 
     - UserScope
 
-      - ``$HOME/Library/Preferences/org.vitables.ViTables.plist``
+      - ``$HOME/Library/Preferences/org.vitables.ViTables-version.plist``
       - ``$HOME/Library/Preferences/org.vitables.plist``
 
     - SystemScope
 
-      - ``/Library/Preferences/org.vitables.ViTables.plist``
+      - ``/Library/Preferences/org.vitables.ViTables-version.plist``
       - ``/Library/Preferences/org.vitables.plist``
 
   - Windows
 
     - UserScope
 
-      - ``HKEY_CURRENT_USER/Software/MyCompany/ViTables``
+      - ``HKEY_CURRENT_USER/Software/MyCompany/ViTables/version``
       - ``HKEY_CURRENT_USER/Software/MyCompany/``
 
     - SystemScope
 
-      - ``HKEY_LOCAL_MACHINE/Software/MyCompany/ViTables``
+      - ``HKEY_LOCAL_MACHINE/Software/MyCompany/ViTables/version``
       - ``HKEY_LOCAL_MACHINE/Software/MyCompany/``
 
   If format is NativeFormat and platform is Unix the path can be set via
@@ -85,14 +85,6 @@ setting into the config file.
     ``vitables.org`` and the product ``ViTables`` become
     ``org.vitables.ViTables.plist``
 
-  Before to read/write a property value we must provide the product
-  name as the first subkey of the property key.
-  This can be done in two different ways:
-
-  a)  including the product name every time we read/write settings, e.g.
-      `readEntry(/ViTables/Logger/Font)`
-  b)  using `setPath` method once before we read/write settings, so
-      the preceding example becomes `readEntry(/Logger/Font)`
 """
 
 __docformat__ = 'restructuredtext'
@@ -132,22 +124,26 @@ class Config(QtCore.QSettings):
         under the HKCU\Software\ViTables\__version__ key
         Mac OS X saves settings in a properties list stored in a
         standard location, either on a global or user basis (see
-        docstring.for more information)
+        docstring.for more information).
+
+        In all platforms QSettings format is NativeFormat and scope
+        is UserScope.
         """
 
         organization = QtGui.qApp.organizationName()
         product = QtGui.qApp.applicationName()
         version = QtGui.qApp.applicationVersion()
-        if (not sys.platform.startswith('win')) and \
-        (not sys.platform.startswith('darwin')):
+        if sys.platform.startswith('win'):
+            path = 'HKEY_CURRENT_USER\\Software\\{0}\\{1}'
+            rpath = path.format(product, version)
+            super(Config, self).__init__(rpath, QtCore.QSettings.NativeFormat)
+        elif sys.platform.startswith('darwin'):
+            super(Config, self).__init__(product, version)
+        else:
             arg1 = organization
             arg2 = '-'.join((product, version))
-        else:
-            arg1 = product
-            arg2 = version
-        super(Config, self).__init__(arg1, arg2)
+            super(Config, self).__init__(arg1, arg2)
 
-        # The scope is UserScope and the format is NativeFormat
         # System-wide settings will not be searched as a fallback
         # Setting the NativeFormat paths on MacOSX has no effect
         self.setFallbacksEnabled(False)
@@ -412,9 +408,6 @@ class Config(QtCore.QSettings):
         default_value = []
         setting_value = self.value(key)
         if isinstance(setting_value, list):
-            for item in setting_value[:]:
-                if not isinstance(item, dict):
-                    setting_value.remove(item)
             return setting_value
         else:
             return default_value

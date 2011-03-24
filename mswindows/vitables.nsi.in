@@ -25,7 +25,7 @@ XPStyle on
 
 # CONSTANTS
 !define APPNAME "ViTables"
-!define APPFOLDER "ViTables@VERSION@ for Python@DOTPYTHONVERSION@"
+!define APPFOLDER "ViTables @VERSION@ for Python@DOTPYTHONVERSION@"
 !define S_DEFINSTDIR_USER "$LocalAppData\${APPNAME}"
 !define S_DEFINSTDIR_ADMIN "$ProgramFiles\${APPNAME}"
 !define INICIOFOLDER "$SMPROGRAMS\${APPFOLDER}"

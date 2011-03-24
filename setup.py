@@ -178,6 +178,7 @@ setup(name = 'ViTables', # The name of the distribution
         'vitables.preferences': ['*.ui'], 
         'vitables.queries': ['*.ui'], 
         'vitables.vtWidgets': ['*.ui'], 
+        'vitables.plugins': ['*.ui'], 
         'vitables': ['icons/*.*', 'icons/*/*.*', 'htmldocs/*.*', 
             'htmldocs/*/*.*'], 
         'vitables.plugins.csv': ['icons/*.*'], 

@@ -88,10 +88,11 @@ def pluginDesc(mod_name, folder=None):
     # Check if module is a plugin
     try:
         class_name = getattr(module, 'plugin_class')
-        desc = {'mod_name': mod_name,
-            'folder': folder,
-            'name': getattr(module, 'plugin_name'),
-            'comment': getattr(module, 'comment')}
+        plugin_name = getattr(module, 'plugin_name')
+        comment = getattr(module, 'comment')
+        desc = {'UID': '{0}#@#{1}'.format(plugin_name, comment),
+            'mod_name': mod_name, 
+            'folder': folder,}
         return desc
     except AttributeError:
         return False
@@ -123,13 +124,13 @@ def scanFolder(proot):
     """
 
 
-    pkg_plugins = []
+    pkg_plugins = {}
     folder = os.path.join(PLUGINSDIR, proot)
     for loader, name, ispkg in pkgutil.iter_modules([folder]):
         if not ispkg:
             desc = pluginDesc(name, folder)
             if desc:
-                pkg_plugins.append(desc)
+                pkg_plugins[desc['UID']] = desc
     return pkg_plugins
 
 
@@ -149,8 +150,7 @@ class PluginsLoader(object):
         """
 
         self.enabled_plugins = enabled_plugins[:]
-        self.all_plugins = []
-        self.disabled_plugins = []
+        self.all_plugins = {}
         self.loaded_plugins = {}
 
         # Update plugins information: available plugins, disabled plugins
@@ -158,38 +158,23 @@ class PluginsLoader(object):
 
 
     def register(self):
-        """Update the lists of available/enabled/disabled plugins.
+        """Update the list of available plugins.
 
         This method MUST be called every time that the plugins 
         configuration changes.
         """
 
         # Setup the list of available plugins
-        self.all_plugins = []
+        self.all_plugins = {}
         for loader, name, ispkg in pkgutil.iter_modules([PLUGINSDIR]):
             if not ispkg:
                 desc = pluginDesc(name)
                 if desc:
-                    self.all_plugins.append(desc)
+                    self.all_plugins[desc['UID']] = desc
             else:
                 pkg_plugins = scanFolder(name)
-                self.all_plugins = self.all_plugins + pkg_plugins
+                self.all_plugins.update(pkg_plugins)
 
-        # Minimal check of the format of items in the enabled_plugins list
-        for enabled in self.enabled_plugins:
-            if not isinstance(enabled, dict):
-                self.enabled_plugins.remove(enabled)
-
-        # Make sure that enabled plugins are included in the list of
-        # available plugins (sometimes this is required. When it is not
-        # doing it is harmless)
-        for enabled in self.enabled_plugins:
-            if enabled not in self.all_plugins:
-                self.all_plugins.append(enabled)
-
-        # Setup the list of disabled plugins
-        self.disabled_plugins = [plugin for plugin in self.all_plugins \
-            if plugin not in self.enabled_plugins]
 
 
     def loadAll(self):
@@ -198,18 +183,19 @@ class PluginsLoader(object):
 
         if self.enabled_plugins == []:
             return
-        for plugin in self.enabled_plugins:
-            self.load(plugin)
+        for UID in self.enabled_plugins:
+            self.load(UID)
 
 
-    def load(self, plugin):
+    def load(self, UID):
         """Load a given plugin.
 
-        :Parameter plugin: th UID of the plugin being loaded
+        :Parameter UID: th UID of the plugin being loaded
         """
 
         # Load the module where the plugin lives
         try:
+            plugin = self.all_plugins[UID]
             finding_failed = True
             name = plugin['mod_name']
             file_obj, filepath, desc = \
@@ -218,7 +204,7 @@ class PluginsLoader(object):
     #        module = imp.load_module(name, file_obj, filepath, desc)
             module = imp.load_source(name, filepath, file_obj)
         except (ImportError, ValueError):
-            self.untrack(plugin)
+            self.untrack(UID)
             if finding_failed:
                 print(u"\nError: plugin {0} cannot be found.".format(name))
             else:
@@ -244,7 +230,7 @@ class PluginsLoader(object):
             # Register plugin
             # In some cases keeping a reference to instance is a must
             # (for example, the time_series plugin)
-            self.loaded_plugins[plugin['name']] = instance
+            self.loaded_plugins[UID] = instance
         except:
             self.untrack(plugin)
             print(u"\nError: plugin {0} cannot be loaded.".format(name))
@@ -252,17 +238,21 @@ class PluginsLoader(object):
             return
 
 
-    def untrack(self, plugin):
+    def untrack(self, UID):
         """Remove a plugin from the lists of available/enabled plugins.
 
         Plugins that cannot be loaded should be removed using this method.
 
-        :Parameter plugin: the plugin being removed
+        :Parameter UID: the UID of the plugin being removed
         """
 
         try:
-            self.all_plugins.remove(plugin)
-            self.enabled_plugins.remove(plugin)
+            del self.all_plugins[UID]
+        except KeyError:
+            pass
+
+        try:
+            self.enabled_plugins.remove(UID)
         except IndexError:
             pass
 
