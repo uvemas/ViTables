@@ -8,5 +8,5 @@ syntax: glob
 *.pdf
 *.e4*
 doc/html
-./vitables.py
+run_vitables.py
 
