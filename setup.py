@@ -40,7 +40,7 @@ except ImportError:
     pass
 
 
-sphinx_found = True
+sphinx_found = False
 
 
 
