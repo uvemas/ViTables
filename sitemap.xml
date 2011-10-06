@@ -1,59 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
+<url>
+    <loc>http://vitables.org</loc>
 
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/index.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/index.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/screenshots/index.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/screenshots/index.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/development/index.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/development/index.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/download/index.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/download/index.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/download/distros/index.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/download/distros/index.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/reading/index.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/reading/index.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/reading/testimonials/index.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/reading/testimonials/index.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/reading/vtfaq/vtfaq.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/reading/vtfaq/vtfaq.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 <url>
-  <loc>http://uvemas.github.com/ViTables/privacy.html</loc>
-  <lastmod>2011-10-05T12:53:21+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-</url>
+    <loc>http://vitables.org/privacy.html</loc>
+
+    <lastmod>2011-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>  
 </urlset>
