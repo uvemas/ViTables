@@ -749,7 +749,7 @@ class VTApp(QtCore.QObject):
 
         # tables.UnImplemented datasets cannot be read so are not opened
         if isinstance(leaf, tables.UnImplemented):
-            QtGui.QMessageBox.information(self, 
+            QtGui.QMessageBox.information(self.gui, 
                 translate('VTApp', 
                     'About UnImplemented nodes', 'A dialog caption'), 
                 translate('VTApp', 
