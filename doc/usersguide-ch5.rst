@@ -44,8 +44,6 @@ written as key/value pairs and representing the item that is being
 customized.
 Currently the following sections/subsections are available:
 
-.. glossary::
-
   [Geometry] HSplitter
     the size of the horizontal splitter
 

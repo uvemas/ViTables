@@ -221,13 +221,13 @@ pdf_break_level = 1
 
 pdf_breakside = 'any'
 
-pdf_inline_footnotes = False
+pdf_inline_footnotes = True
 
-pdf_use_index = True
+pdf_use_index = False
 
 pdf_use_coverpage = True
 
-#pdf_cover_template = 'vitables_cover.tmpl'
+pdf_cover_template = 'vitables_cover.tmpl'
 
 #pdf_appendices = ['usersguide-app1', 'usersguide-app2']
 

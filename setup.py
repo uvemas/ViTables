@@ -24,80 +24,11 @@ Setup script for the vitables package.
 """
 
 import sys
-import os
-import shutil
-import glob
 
 from distutils.core import setup
-from distutils.spawn import find_executable
-from distutils.spawn import spawn
-from distutils.dir_util import copy_tree
-from distutils.file_util import copy_file
-
-try:
-    from sphinx.setup_command import BuildDoc
-except ImportError:
-    pass
-
-
-sphinx_found = False
 
 
 
-if sphinx_found:
-    class BuildSphinx(BuildDoc):
-        """Customise the BuilDoc provided by the sphinx module setup_command.py
-        """
-
-
-        def run(self):
-
-            """ Execute the build_sphinx command.
-
-            The HTML and PDF docs are included in the tarball. So even if 
-            sphinx or rst2pdf are not installed on the user's system she will 
-            get the full documentation installed when installing ViTables in 
-            the usual way::
-
-                # python setup.py install
-
-            because the build_sphinx command will not be executed by default.
-
-            If user is installing from a binary package (which will not include
-            the docs, I think), in order to ensure that she will always end up with
-            the docs being installed, the package should depend on the sphinx and
-            rst2pdf packages and the `sphinx_found` variable should be set to 
-            True.
-            """
-
-            # Build the Users Guide in HTML and TeX format
-            for builder in ('html', 'pdf'):
-                # Tidy up before every build
-                try:
-                    os.remove(os.path.join(self.source_dir, 'index.rst'))
-                except OSError:
-                    pass
-                shutil.rmtree(self.doctree_dir, True)
-
-                self.builder = builder
-                self.builder_target_dir = os.path.join(self.build_dir, builder)
-                self.mkpath(self.builder_target_dir)
-                builder_index = 'index_{0}.txt'.format(builder)
-                copy_file(os.path.join(self.source_dir, builder_index), 
-                    os.path.join(self.source_dir, 'index.rst'))
-                BuildDoc.run(self)
-
-            # Copy the docs to their final destination:
-            # HTML docs (Users Guide and License) -> ./vitables/htmldocs
-            # PDF guide -> ./doc
-            output_dir = os.path.join("vitables", "htmldocs")
-            if not os.access(output_dir, os.F_OK):
-                # Include the HTML guide and the license in the package
-                copy_tree(os.path.join(self.build_dir,"html"), output_dir)
-                shutil.rmtree(os.path.join(output_dir,"_sources"))
-                copy_file('LICENSE.html', output_dir)
-            copy_file(os.path.join(self.build_dir,"pdf", 
-                "UsersGuide.pdf"), "doc")
 
 use_py2app = False
 if sys.platform == 'darwin' and 'py2app' in sys.argv:
@@ -140,11 +71,6 @@ f = open('VERSION', 'r')
 vt_version = f.readline()[:-1]
 f.close()
 
-if sphinx_found:
-    command_class = {'build_sphinx': BuildSphinx}
-else:
-    command_class = {}
-
 setup(name = 'ViTables', # The name of the distribution
     version = "{0}".format(vt_version), 
     description = 'A viewer for PyTables package', 
@@ -184,7 +110,7 @@ setup(name = 'ViTables', # The name of the distribution
         'vitables.plugins.csv': ['icons/*.*'], 
         'vitables.plugins.timeseries': ['*.ui', '*.ini'], 
     }, 
-    cmdclass = command_class,
+    cmdclass = {},
 
     **setup_args
 )
@@ -196,14 +122,14 @@ setup(name = 'ViTables', # The name of the distribution
 # $ python setup.py build --help
 # $ python setup.py build --help-compiler
 
-helpAsked = False
+help_asked = False
 for item in ['-h', '--help', '--help-commands', '--help-formats',
     '--help-compiler']:
     if item in sys.argv:
-        helpAsked = True
+        help_asked = True
         break
 
-if len(sys.argv) > 1 and not helpAsked:
+if len(sys.argv) > 1 and not help_asked:
     if sys.argv[1] == 'build' :
         print "\nBuild process completed.\n"
     elif sys.argv[1] == 'sdist' :

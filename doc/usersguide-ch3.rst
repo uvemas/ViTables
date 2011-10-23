@@ -116,8 +116,6 @@ Filtered tables can be edited as any other leaf opened in read-write mode.
 By default an automatic title FilteredTable_X is given to the X-th filtered table created. In addition, those tables have three user attributes that are, in principle, only defined for filtered tables.
 These attributes are:
 
-.. glossary::
-
   query
     the applied query
 

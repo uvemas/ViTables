@@ -168,8 +168,6 @@ representation of the data hierarchy) is dynamically created and added to the tr
 
 Any object tree is made of nodes which can be classified as follows:
 
-.. glossary::
-
   Root node
     It is the node from which all other nodes hang.
 

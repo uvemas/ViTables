@@ -8,5 +8,6 @@ syntax: glob
 *.pdf
 *.e4*
 doc/html
+doc/index.rst
 run_vitables.py
 

@@ -33,8 +33,6 @@ If you need more help just send an email to developers or ask to the *ViTables* 
 
 Three plugins are currently distributed along with the application:
 
-.. glossary::
-
   Time series
     formats time series in a human friendly way. It supports PyTables time datatypes and PyTables time series created via scikits.timeseries
     module. The format used for displaying times can be configured by user via the Preferences dialog or editing by hand the
@@ -45,3 +43,4 @@ Three plugins are currently distributed along with the application:
 
   Export CSV
     provides export capabilities of PyTables datasets to :abbr:`CSV` files.
+
