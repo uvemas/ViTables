@@ -1,5 +1,38 @@
 ViTables ChangeLog
 ==================
+** October 27, 2011 **
+The vitables launcher script has been updated.
+
+Following the suggestions made by Dav Clark in the Users Group, the usage of
+pythonw on MacOSX has been dropped.
+
+** October 23, 2011 **
+The abbility for creating the documentation has been removed from setup.py.
+
+As the distributed tarball contains the complete documentation there is
+no need for building it via setup.py. Now the documentation is built with a
+module not intended for distribution.
+
+In addition, the Users Guide has been updated.
+
+** October 17, 2011 **
+Merged a pull request from kisielk/master (a ViTables fork owner).
+
+The merge fixes problems with CRLF endings in the vitables launcher script
+(introduced probably when pushing changes to the repo under MSWindows). It also
+fixes a small bug in the message box for unsupported datatypes.
+
+** October 06, 2011 **
+The setup.py module has been debugged.
+
+In order to install the tarball the Sphinx documentation system for Python is
+not required anymore.
+
+** October 05, 2011 **
+The repo has been moved from BerliOS to GitHub and needs some tuning.
+
+.hgignore file has been renamed to .gitignore.
+
 ** March 24, 2011 **
 The plugins management related stuff has been refactored and simplified.
 

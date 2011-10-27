@@ -91,14 +91,5 @@ def main(args):
     app.exec_()
 
 if __name__ == '__main__':
-    # How to run in Mac OS X
-    if (sys.platform == 'darwin'
-        and not sys.executable.endswith('MacOS/Python')
-        and getattr(sys, 'frozen', None) != 'macosx_app'):
-        # When running this script under Mac OS X from the command line
-        # (but not as an app), the ``pythonw`` interpreter must be used
-        # instead of the ordinary ``python``.
-        os.execvp('pythonw', ['pythonw', __file__] + sys.argv[1:])
-
     main(sys.argv)
 
