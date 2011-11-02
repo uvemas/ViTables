@@ -1,80 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
-<url>
-    <loc>http://vitables.org</loc>
-
-    <lastmod>2011-10-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>  
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
     <loc>http://vitables.org/</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/index.html</loc>
-
-    <lastmod>2011-10-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
 </url>  
 <url>
     <loc>http://vitables.org/screenshots/index.html</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>  
 <url>
     <loc>http://vitables.org/development/index.html</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
 </url>  
 <url>
     <loc>http://vitables.org/download/index.html</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/download/distros/index.html</loc>
-
-    <lastmod>2011-10-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
 </url>  
 <url>
     <loc>http://vitables.org/reading/index.html</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>  
 <url>
     <loc>http://vitables.org/reading/testimonials/index.html</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>  
 <url>
     <loc>http://vitables.org/reading/vtfaq/vtfaq.html</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
 </url>  
 <url>
     <loc>http://vitables.org/privacy.html</loc>
 
-    <lastmod>2011-10-06</lastmod>
+    <lastmod>2011-11-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.3</priority>
 </url>  
 </urlset>
