@@ -8,24 +8,21 @@
 <link type="text/css" rel="stylesheet" title="Pelt" href="themes/pelt.print.css" media="print" />
 <link type="text/css" rel="alternate stylesheet" title="Pelt" href="themes/lightbox/lightbox.css" media="screen" />
 <style type="text/css">/* Extra css */
-        
-        
-        div#container div#header {
+        /* Remove the white line from the header */
+        #container #header {
         background-image: none;
         }
-        
+        /* Center the project logo (useful because I don't use group logo) */
         #header .logo{
         float: none;
         text-align: center;
         }
-
-        
-        
-        ul#nav-main {
+        /* Customise tabs fonts */
+        #nav-main {
         font-family: DejaVu, sans-serif;
         font-size: 90%
         }
-        
+        /* Customise navigation menu fonts */
         #nav-section span {
         font-family: "DejaVu Sans", sans-serif;
         font-size: 110%
@@ -38,12 +35,12 @@
         font-family: DejaVu, sans-serif;
         font-size: 110%
         }
-        
+        /* Customise body fonts */
         #content {
         font-family: DejaVu, sans-serif;
         font-size: 100%
         }
-        
+        /* Customise footer fonts */
         #footer {
         font-family: "DejaVu Mono", sans-serif;
         font-size: 70%;
@@ -87,7 +84,7 @@
         padding-right: 5px;
         bottom: 2px;
         }
-        
+        /* Customise anchor links */
         a:link{
         text-decoration: underline;
         }
@@ -98,14 +95,14 @@
         a:hover{
         font-weight: bold;
         }
-        
+        /* Customise paragraphs containing quotes */
         p.quote {
         margin-left: 2em;
         padding: .5em;
         background-color: #f0f0f0;
         font-family: "DejaVu Mono", monospace;
         }
-        
+        /* Customise the testimonials table */
         .testimonials {
         border-collapse: collapse;
         background-color: #f0f0f0;
@@ -117,7 +114,7 @@
         margin: 0px;
         border-bottom: 2px solid;
         }
-        
+        /* Add caption to images */
         p.withCaption{
         font-style: italic;
         text-align: center;
@@ -184,8 +181,8 @@
 <div id="nav-main-hook">
 <!--+ |start Tabs new +-->
 <ul id="nav-main">
-<li>
-<a class="unselected" href="index.html">Home</a>
+<li class="current">
+<a class="selected" href="index.html">Home</a>
 </li>
 </ul>
 <!--+ |end Tabs +-->
@@ -199,10 +196,10 @@
 <div id="nav-section">
 <ul>
 <li class="pagegroup" id="menu_1.1Title">
-<span onclick="SwitchMenu('menu_1.1')">Sections</span>
+<span onclick="SwitchMenu('menu_1.1')">Contents</span>
 <ul class="menuitemgroup" id="menu_1.1">
 <li class="menuitem">
-<a href="index.html" title="">Presentation</a>
+<a href="index.html" title="">Overview</a>
 </li>
 <li class="menuitem">
 <a href="screenshots/index.html" title="">Screenshots</a>
@@ -211,13 +208,13 @@
 <a href="development/index.html" title="">Development</a>
 </li>
 <li class="menuitem">
-<a href="download/index.html" title="">Getting ViTables</a>
+<a href="download/index.html" title="">Downloads</a>
 </li>
 <li class="pagegroup" id="menu_1.1.5Title">
 <span onclick="SwitchMenu('menu_1.1.5')">Docs</span>
 <ul class="menuitemgroup" id="menu_1.1.5">
 <li class="menuitem">
-<a href="reading/index.html" title="">Index</a>
+<a href="reading/index.html" title="">What to read</a>
 </li>
 <li class="menuitem">
 <a href="reading/testimonials/index.html" title="">Testimonials</a>
