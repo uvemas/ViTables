@@ -1,5 +1,12 @@
 ViTables ChangeLog
 ==================
+** November 18, 2011 **
+The Makefile for building the Mac OS X bundle has been updated.
+
+The path to the standard Python has been fixed. The filename of the PDF
+version of the Users Guide has been updated. Also the Readme-MacOSX.rtf has
+been updated (reference to Carabos coop has been removed).
+
 ** October 27, 2011 **
 The vitables launcher script has been updated.
 

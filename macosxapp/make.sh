@@ -22,7 +22,7 @@ set -e
 
 VER=$(cat ../VERSION)
 
-PYVERS="$(ls /Library/Frameworks/Python.framework/Versions | grep -v Current)"
+PYVERS="$(ls /System/Library/Frameworks/Python.framework/Versions | grep -v Current)"
 if [ ! "$PYVERS" ]; then
 	echo "No available Python installs." > /dev/stderr
 	exit 1
@@ -72,7 +72,7 @@ for PYVER in $PYVERS; do
 	cp ../README.txt "$DMGDIR/ReadMe.txt"
 	sed -e "s/@VER@/$VER/g" -e "s/@PYVER@/$PYVER/g" < ReadMe-MacOSX.rtf > "$DMGDIR/ReadMe-MacOSX.rtf"
 	echo -n " guide"
-	cp ../doc/ViTablesUsersGuide.pdf "$DMGDIR/User's Guide.pdf"
+	cp ../doc/UsersGuide.pdf "$DMGDIR/User's Guide.pdf"
 	cp -R ../vitables/htmldocs "$DMGDIR/User's Guide (HTML)"
 	echo "."
 	hdiutil create -srcfolder "$DMGDIR" -anyowners -format UDZO -imagekey zlib-level=9 "$DMG"
