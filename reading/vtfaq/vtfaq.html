@@ -291,6 +291,12 @@
         I've issues installing ViTables on Mac OS X. What have I to do?
       </a>
 </li>
+<li>
+<a href="#q_7">2.3. 
+        On MacOS X with Python 2.7 the make.sh
+        script seems to require Python 3.x. Why does it happen?
+      </a>
+</li>
 </ul>
 </li>
 </ul>
@@ -450,6 +456,35 @@
         If the above doesn't help your best bet is to ask for help to the
         <a href="http://tech.groups.yahoo.com/group/vitables-users/">ViTables users group</a>.
         </p>
+</div>
+<a name="q_7" title="2.3. &#10;        On MacOS X with Python 2.7 the make.sh&#10;        script seems to require Python 3.x. Why does it happen?&#10;      ">
+ 
+</a>
+<h3 class="underlined_5">2.3. 
+        On MacOS X with Python 2.7 the make.sh
+        script seems to require Python 3.x. Why does it happen?
+      </h3>
+<div class="section">
+<p>If executing the make.sh script raises the following error</p>
+<pre class="code">
+        File "/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/PyQt4/uic/port_v3/proxy_base.py",
+        line 31 class ProxyBase(metaclass=ProxyMetaclass):
+                ^
+                SyntaxError: invalid syntax
+        </pre>
+<p>then probably there is an issue with the configuration of your system that
+        affects to py2app.
+        It has been reported (<a href="https://github.com/uvemas/ViTables/issues/14">issue #14 in the bug tracker</a>) that installing in
+        alias mode fixes the problem so in the make.sh script you should change the line:
+        </p>
+<pre class="code">
+            (cd .. &amp;&amp; python$PYVER setup.py py2app)
+        </pre>
+<p>by</p>
+<pre class="code">
+            (cd .. &amp;&amp; python$PYVER setup.py py2app -A)
+        </pre>
+<p>and then the application bundle should be properly generated.</p>
 </div>
 </div>
 <!--+ |end content-main +-->
