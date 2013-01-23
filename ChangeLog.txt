@@ -1,5 +1,18 @@
 ViTables ChangeLog
 ==================
+** January 23, 2013 **
+The leafView.py module has been revamped.
+
+Several data navigation bugs have been hopefuly fixed. The code has been
+refactored and simplified.
+
+** November 28, 2011 **
+Table navigation using the mouse has been debugged.
+
+Sometimes strange jumps occurred after a buffer fault (a certain amount of rows
+was skipped) making dataset browsing somewhat unpredictable. These jumps have
+been removed.
+
 ** November 18, 2011 **
 The Makefile for building the Mac OS X bundle has been updated.
 

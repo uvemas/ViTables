@@ -110,7 +110,6 @@ class DBDoc(QtCore.QObject):
                 "\nError: {0}.", 'A logger error message').format(inst))
         except:
             vitables.utils.formatExceptionInfo()
-            print('++++', self.filepath)
             print(translate('DBDoc', 
                 "Please, if you think it is a bug, report it to developers.", 
                 'A logger error message'))

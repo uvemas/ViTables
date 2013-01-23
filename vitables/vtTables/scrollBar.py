@@ -33,7 +33,8 @@ datasets with a larger number of rows than that provided by the view widget.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 class ScrollBar(QtGui.QScrollBar):
     """
@@ -51,6 +52,7 @@ class ScrollBar(QtGui.QScrollBar):
         because it is not tied to that data in anyway.
         """
 
+        self.view = view
         # Cheat the user hidding a scrollbar and displaying other one
         # that looks exactly the same
         parent = view.vscrollbar.parent()
@@ -59,3 +61,13 @@ class ScrollBar(QtGui.QScrollBar):
         parent.layout().addWidget(self)
         self.setOrientation(QtCore.Qt.Vertical)
         self.setObjectName('tricky_vscrollbar')
+
+
+    def event(self, e):
+        """Filter wheel events and send them to the table viewport.
+        """
+        
+        if (e.type() == QtCore.QEvent.Wheel):
+            self.view.wheelEvent(e)
+            return True
+        return QtGui.QScrollBar.event(self, e)

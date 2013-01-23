@@ -133,7 +133,7 @@ class LeafModel(QtCore.QAbstractTableModel):
             if hasattr(self.data_source, 'description'):
                 return unicode(self.data_source.colnames[section])
             return unicode(section + 1)
-        # The section label for vertical header
+        # The section label for vertical header. This is a 64 bits integer
         return unicode(self.rbuffer.start + section + 1)
 
 
@@ -185,7 +185,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         When implementing a table based model this method has to be overriden
         -because it is an abstract method- and should return 0 for valid
         indices (because they have no children). If the index is not valid the 
-        method  should return the number of columns exposed by the model.
+        method  should return the number of rows exposed by the model.
 
         :Parameter index: the model index being inspected.
         """

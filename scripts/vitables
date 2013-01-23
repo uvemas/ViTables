@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""This is the launcher script for the ViTables application."""
-
 from __future__ import print_function
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
@@ -22,6 +19,8 @@ from __future__ import print_function
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
+
+"""This is the launcher script for the ViTables application."""
 
 __docformat__ = 'restructuredtext'
 
