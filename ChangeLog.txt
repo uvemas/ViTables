@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** January 24, 2013 **
+Some more copyright notices have been updated.
+
 The copyright notice of the license has been updated.
 
 The launcher script has been modified.

@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ import vitables.utils
 
 
 translate = QtGui.QApplication.translate
+
+
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.

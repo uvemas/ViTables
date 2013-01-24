@@ -127,7 +127,7 @@ class VTApp(QtCore.QObject):
 
         # Print the welcome message
         print(translate('VTApp', 
-            """ViTables {0}\nCopyright (c) 2008-2011 Vicent Mas."""
+            """ViTables {0}\nCopyright (c) 2008-2013 Vicent Mas."""
             """\nAll rights reserved.""", 
             'Application startup message').format(vtconfig.getVersion()))
 
