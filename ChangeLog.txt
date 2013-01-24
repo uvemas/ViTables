@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** January 24, 2013 **
+The license of plugins and some example scripts has been updated.
+
 Some more copyright notices have been updated.
 
 The copyright notice of the license has been updated.

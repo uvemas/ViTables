@@ -17,8 +17,10 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-#       Author:  Jeff Whitaker
-#       Modified by: Vicent Mas - vmas@vitables.org
+#       Author:  Vicent Mas - vmas@vitables.org
+
+#
+#       This script is based on a script by Jeff Whitaker.
 
 """Bogus example to illustrate the use of tables.netcdf3."""
 

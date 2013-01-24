@@ -18,6 +18,7 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
+
 #
 #       This script is based on a script by Francesc Alted.
 

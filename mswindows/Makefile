@@ -1,3 +1,7 @@
+#       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
+#       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
+#       Author:  Vicent Mas - vmas@vitables.org
+#
 # This Makefile is intended to create the ViTables installer for Windows.
 # It is not intended for distribution.
 

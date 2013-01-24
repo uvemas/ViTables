@@ -47,3 +47,4 @@ title='Example table with csikits time series')
 group_doc = h5file.createGroup("/", 'examples', 'Test Data')
 table = h5file.createTimeSeriesTable(group_doc, 'Example_3', series)
 h5file.close()
+
