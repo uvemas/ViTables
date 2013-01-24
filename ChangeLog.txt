@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** January 24, 2013 **
+The copyright notice of the license has been updated.
+
 The launcher script has been modified.
 
 Now it can be launched by itself (instead of calling python in the command

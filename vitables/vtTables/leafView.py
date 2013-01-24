@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -62,7 +62,6 @@ class LeafView(QtGui.QTableView):
         self.tmodel = tmodel  # This is a MUST
         self.leaf_numrows = self.tmodel.rbuffer.leaf_numrows
         self.selection_model = self.selectionModel()
-        self.current_cell = (None, None)
 
         # Setup the actual vertical scrollbar
         self.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerItem)
@@ -791,3 +790,21 @@ class LeafView(QtGui.QTableView):
             self.tmodel.rbuffer.start + table_rows - 1):
             self.tmodel.loadData(self.valid_current_buffer, table_rows)
             self.updateView()
+
+
+    def selectionChanged(self, selected, deselected):
+        """Track the dataset selected cells.
+
+        This method is automatically called when the selected range changes.
+
+        :Parameters:
+
+        - `selected`: the new selection
+        - `deselected`: the previous selection (maybe empty)
+        """
+
+        QtGui.QTableView.selectionChanged(self, selected, deselected)
+        if self.tmodel.numrows < self.leaf_numrows:
+            # Get the new QItemSelection object
+            self.selected_indexes = self.selection_model.selection()
+            print '++++ self.selected_indexes {}'.format(self.selected_indexes)

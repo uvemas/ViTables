@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2011 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ class Buffer(object):
         # Every chunk of data read from the data source is stored in a list.
         # The maximum length of the list (i.e. the chunk size) is 10000 rows
         self.chunk = []
-        self.chunk_size = 10000
+        self.chunk_size = 1000
         if self.leaf_numrows <= self.chunk_size:
             self.chunk_size = self.leaf_numrows
 
