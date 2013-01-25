@@ -28,12 +28,17 @@ import locale
 from optparse import OptionParser
 import sys
 import os.path
+import logging
 
 import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
 from PyQt4 import QtGui
+
+_VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
+                            2: logging.INFO, 3: logging.DEBUG}
+_FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 def main(args):
     """The application launcher.
@@ -78,12 +83,36 @@ def main(args):
     parser.add_option('-d', '--dblist', dest='dblist',
         help='a file with the list of databases to be open', metavar='h5list')
     parser.set_defaults(mode='a', dblist='')
+    # logging options
+    parser.add_option('-l', '--log-file', help='log file path')
+    parser.add_option('-v', '--verbose', action='count', default=0,
+                      help='log verbosity level')
+    # parse and process options
     (options, h5files) = parser.parse_args()
     if options.dblist:
         # Other options and positional arguments are silently ignored
         options.mode = ''
         h5files = []
-
+    # setup top level logger using command line options
+    logger = logging.getLogger('vitables')
+    file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
+    temporary_stderr_handler = logging.StreamHandler()
+    temporary_stderr_handler.setFormatter(file_formatter)
+    logger.addHandler(temporary_stderr_handler)
+    if options.log_file is not None:
+        log_filename = os.path.expandvars(os.path.expanduser(options.log_file))
+        # TODO(alexey) add checks that the file can be written into,
+        # add a function into utils maybe
+        file_handler = logging.FileHandler(log_filename)
+        file_handler.setFormatter(file_formatter)
+        logger.addHandler(file_handler)
+    if options.verbose in _VERBOSITY_LOGLEVEL_DICT:
+        logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[options.verbose])
+    else:
+        logger.setLevel(logging.ERROR)
+        logger.error('Invalid verbosity level: {}'.format(options.verbose))
+    # remove stderr handler, by default use logger.Logger object
+    logger.removeHandler(temporary_stderr_handler)
     # Start the application
     vtapp = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
     vtapp.gui.show()
