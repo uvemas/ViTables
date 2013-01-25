@@ -27,6 +27,7 @@ toolbars, statusbars and `QActions` bound to both menus and toolbars.
 __docformat__ = 'restructuredtext'
 
 import sys
+import logging
 
 from PyQt4 import QtCore
 from PyQt4 import QtGui
@@ -37,6 +38,7 @@ import vitables.vtsplash
 
 translate = QtGui.QApplication.translate
 
+_GUI_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 class VTGUI(QtGui.QMainWindow):
     """
@@ -128,6 +130,11 @@ class VTGUI(QtGui.QMainWindow):
 
         # Put the logging console in the bottom region of the window
         self.logger = logger.Logger(self.vsplitter)
+        # add self.logger as handler of main logger object
+        vitables_logger = logging.getLogger('vitables')
+        stream_handler = logging.StreamHandler(self.logger)
+        stream_handler.setFormatter(logging.Formatter(_GUI_LOG_FORMAT))
+        vitables_logger.addHandler(stream_handler)
 
         # The signal mapper used to keep the the Window menu updated
         self.window_mapper = QtCore.QSignalMapper(self)
