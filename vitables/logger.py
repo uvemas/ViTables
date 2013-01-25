@@ -117,6 +117,11 @@ class Logger(QtGui.QTextEdit):
         self.moveCursor(QtGui.QTextCursor.EndOfLine)
         self.setTextColor(current_color)
 
+    def flush(self):
+        """
+        Stopgap function to allow use of this class with logging.StreamHandler.
+        """
+        pass
 
     def createCustomContextMenu(self, pos):
         """
