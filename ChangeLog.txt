@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 28, 2013 **
+A selected cell rendering bug has been fixed.
+
 ** January 24, 2013 **
 The license of plugins and some example scripts has been updated.
 

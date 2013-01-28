@@ -29,6 +29,7 @@ __docformat__ = 'restructuredtext'
 import tables
 
 from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 import vitables.utils
 
@@ -99,6 +100,9 @@ class LeafModel(QtCore.QAbstractTableModel):
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
                 self.formatContent = vitables.utils.formatStringContent
+
+        # Track selected cell
+        self.selected_cell = {'index': QtCore.QModelIndex(), 'buffer_start': 0}
 
         # Populate the model with the first chunk of data
         self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)

@@ -92,7 +92,7 @@ class Buffer(object):
         # Every chunk of data read from the data source is stored in a list.
         # The maximum length of the list (i.e. the chunk size) is 10000 rows
         self.chunk = []
-        self.chunk_size = 1000
+        self.chunk_size = 10000
         if self.leaf_numrows <= self.chunk_size:
             self.chunk_size = self.leaf_numrows
 

@@ -36,9 +36,11 @@ __docformat__ = 'restructuredtext'
 
 import numpy
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 import vitables.vtTables.scrollBar as scrollBar
+import vitables.vtTables.leafDelegate as leafDelegate
 
 class LeafView(QtGui.QTableView):
     """
@@ -62,6 +64,8 @@ class LeafView(QtGui.QTableView):
         self.tmodel = tmodel  # This is a MUST
         self.leaf_numrows = self.tmodel.rbuffer.leaf_numrows
         self.selection_model = self.selectionModel()
+        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
 
         # Setup the actual vertical scrollbar
         self.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerItem)
@@ -69,6 +73,7 @@ class LeafView(QtGui.QTableView):
 
         # For potentially huge datasets use a customised scrollbar
         if self.leaf_numrows > self.tmodel.numrows:
+            self.setItemDelegate(leafDelegate.LeafDelegate())
             self.rbuffer_fault = False
             self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
             self.tricky_vscrollbar = scrollBar.ScrollBar(self)
@@ -803,8 +808,14 @@ class LeafView(QtGui.QTableView):
         - `deselected`: the previous selection (maybe empty)
         """
 
-        QtGui.QTableView.selectionChanged(self, selected, deselected)
-        if self.tmodel.numrows < self.leaf_numrows:
-            # Get the new QItemSelection object
-            self.selected_indexes = self.selection_model.selection()
-            print '++++ self.selected_indexes {}'.format(self.selected_indexes)
+        model = self.tmodel
+        if model.numrows < self.leaf_numrows:
+            # Get the selected indexes from the QItemSelection object
+            selection = selected.indexes()
+            if len(selection):
+                model.selected_cell = {
+                    'index': selection[0],
+                    'buffer_start': model.rbuffer.start,
+                }
+        else:
+            QtGui.QTableView.selectionChanged(self, selected, deselected)
