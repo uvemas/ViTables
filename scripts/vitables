@@ -25,7 +25,7 @@ from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 import locale
-from optparse import OptionParser
+import argparse
 import sys
 import os.path
 import logging
@@ -75,49 +75,57 @@ def main(args):
     # app.installTranslator(vt_translator)
     # app.installTranslator(qt_translator)
 
-    # Parse the command line
-    parser = OptionParser(prog='vitables', version=vtconfig.getVersion(),
-        usage='''%prog [options] [h5file]''')
-    parser.add_option('-m', '--mode', dest='mode', choices=['r', 'a'],
-        help='mode access for a database', metavar='MODE')
-    parser.add_option('-d', '--dblist', dest='dblist',
-        help='a file with the list of databases to be open', metavar='h5list')
-    parser.set_defaults(mode='a', dblist='')
-    # logging options
-    parser.add_option('-l', '--log-file', help='log file path')
-    parser.add_option('-v', '--verbose', action='count', default=0,
+    # Parse the command line optional arguments.
+    parser = argparse.ArgumentParser(usage='%(prog)s [option]... [h5file]...')
+    h5files_group = parser.add_argument_group('h5files')
+    logging_group = parser.add_argument_group('logging')
+    # Options for the default group
+    parser.add_argument('--version', action='version',
+        version='%(prog)s {}'.format(vtconfig.getVersion()))
+    # Options for opening files
+    h5files_group.add_argument('-m', '--mode', choices=['r', 'a'],
+        metavar='MODE',
+        help='mode access for a database. Can be r(ead) or a(ppend)')
+    h5files_group.add_argument('-d', '--dblist',
+        help='a file with the list of HDF5 filepaths to be open')
+    # Logging options
+    logging_group.add_argument('-l', '--log-file', help='log file path')
+    logging_group.add_argument('-v', '--verbose', action='count', default=0,
                       help='log verbosity level')
-    # parse and process options
-    (options, h5files) = parser.parse_args()
-    if options.dblist:
+    # Allow an optional list of input filepaths
+    parser.add_argument('h5file', nargs='*')
+    # Set sensible option defaults
+    parser.set_defaults(mode='a', dblist='', h5file=[])
+    # parse and process arguments
+    args = parser.parse_args()
+    if args.dblist:
         # Other options and positional arguments are silently ignored
-        options.mode = ''
-        h5files = []
+        args.mode = ''
+        args.h5file = []
     # setup top level logger using command line options
     logger = logging.getLogger('vitables')
     file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
     temporary_stderr_handler = logging.StreamHandler()
     temporary_stderr_handler.setFormatter(file_formatter)
     logger.addHandler(temporary_stderr_handler)
-    if options.log_file is not None:
-        log_filename = os.path.expandvars(os.path.expanduser(options.log_file))
+    if args.log_file is not None:
+        log_filename = os.path.expandvars(os.path.expanduser(args.log_file))
         # TODO(alexey) add checks that the file can be written into,
         # add a function into utils maybe
         file_handler = logging.FileHandler(log_filename)
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
-    if options.verbose in _VERBOSITY_LOGLEVEL_DICT:
-        logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[options.verbose])
+    if args.verbose in _VERBOSITY_LOGLEVEL_DICT:
+        logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[args.verbose])
     else:
         logger.setLevel(logging.ERROR)
-        logger.error('Invalid verbosity level: {}'.format(options.verbose))
+        logger.error('Invalid verbosity level: {}'.format(args.verbose))
     # remove stderr handler, by default use logger.Logger object
     logger.removeHandler(temporary_stderr_handler)
     # Start the application
-    vtapp = VTApp(mode=options.mode, dblist=options.dblist, h5files=h5files)
+    vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
     vtapp.gui.show()
     app.exec_()
 
 if __name__ == '__main__':
     main(sys.argv)
-

@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** January 30, 2013 **
+The processing of command-line arguments has been upgraded.
+
+The deprecated optparse module has been replaced with the argparse module.
+
 ** January 28, 2013 **
 A selected cell rendering bug has been fixed.
 
