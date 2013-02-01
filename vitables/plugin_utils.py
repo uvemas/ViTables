@@ -23,6 +23,7 @@ plugin writers.
 __docformat__ = 'restructuredtext'
 
 import logging
+import collections
 
 from vitables import utils as vtutils
 
@@ -64,3 +65,36 @@ def addToMainMenu(submenu):
     main_menu = vtgui.menuBar()
     last_action = main_menu.actions()[-1]
     main_menu.insertMenu(last_action, submenu)
+
+def addToContextMenu(context_menu, actions):
+    """Add entries to the given context menu.
+
+    The function accept a QAction or an iterable. Entries will be
+    separated above items by a line.
+
+    :parameter actions: QtGui.QAction object or a list of such objects
+
+    :return: None
+
+    """
+
+    context_menu.addSeparator()
+    if not isinstance(actions, collections.Iterable):
+        actions = [actions]
+    for a in actions:
+        context_menu.addAction(a)
+
+def addToLeafContextMenu(actions):
+    """Add entries to the leaf context menu.
+
+    The function accept a QAction or an iterable. Entries will be
+    separated above items by a line.
+
+    :parameter actions: QtGui.QAction object or a list of such objects
+
+    :return: None
+
+    """
+
+    context_menu = vtutils.getVTApp().gui.leaf_node_cm
+    addToContextMenu(context_menu, actions)
