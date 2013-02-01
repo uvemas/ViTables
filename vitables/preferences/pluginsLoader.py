@@ -57,6 +57,7 @@ from PyQt4 import QtGui
 import vitables.utils
 import vitables.plugins
 from vitables.vtSite import PLUGINSDIR
+from vitables.plugin_utils import getLogger
 
 translate = QtGui.QApplication.translate
 
@@ -66,7 +67,7 @@ def pluginDesc(mod_name, folder=None):
 
     :Parameter name: the filename of the module being tested
     """
-
+    logger = getLogger() # top level logger
     # Import the module
     if folder is None:
         folder = PLUGINSDIR
@@ -79,10 +80,14 @@ def pluginDesc(mod_name, folder=None):
     except (ImportError, Exception):
         # Warning! If the module being loaded is not a ViTables plugin
         # then unexpected errors can occur
+        logger.debug(u'Attempted to load a non plugin module: '
+                       '{}'.format(mod_name))
         return False
     finally:
         if not finding_failed:
             file_obj.close()
+        else:
+            logger.debug(u'Failed to find the module: {}'.format(mod_name))
 
     # Check if module is a plugin
     try:
@@ -94,6 +99,8 @@ def pluginDesc(mod_name, folder=None):
             'folder': folder,}
         return desc
     except AttributeError:
+        # then unexpected errors can occur
+        logger.debug(u'The module is not a plugin: {}'.format(mod_name))
         return False
 
     #######################################################
@@ -191,15 +198,14 @@ class PluginsLoader(object):
 
         :Parameter UID: th UID of the plugin being loaded
         """
-
+        logger = getLogger()
+        file_obj = None
         # Load the module where the plugin lives
         try:
             plugin = self.all_plugins[UID]
-            finding_failed = True
             name = plugin['mod_name']
             file_obj, filepath, desc = \
                 imp.find_module(name, [plugin['folder']])
-            finding_failed = False
     #        module = imp.load_module(name, file_obj, filepath, desc)
             module = imp.load_source(name, filepath, file_obj)
         except (ImportError, ValueError):
@@ -209,8 +215,11 @@ class PluginsLoader(object):
             else:
                 print(u"\nError: plugin {0} cannot be loaded.".format(name))
             return
+        except KeyError:
+            logger.error(u'Enabled module can not be loaded')
+            return
         finally:
-            if not finding_failed:
+            if file_obj is not None:
                 file_obj.close()
 
         # Retrieve the plugin class
