@@ -1,5 +1,5 @@
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved

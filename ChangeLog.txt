@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** February 01, 2013 **
+The shebang/encoding lines of all modules have been updated.
+
+The change ensure consistency with scripts/vitables launcher module.
+
 ** January 30, 2013 **
 The processing of command-line arguments has been upgraded.
 

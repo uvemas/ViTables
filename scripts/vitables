@@ -75,7 +75,7 @@ def main(args):
     # app.installTranslator(vt_translator)
     # app.installTranslator(qt_translator)
 
-    # Parse the command line optional arguments.
+    # Parse the command line optional arguments
     parser = argparse.ArgumentParser(usage='%(prog)s [option]... [h5file]...')
     h5files_group = parser.add_argument_group('h5files')
     logging_group = parser.add_argument_group('logging')
@@ -102,7 +102,8 @@ def main(args):
         # Other options and positional arguments are silently ignored
         args.mode = ''
         args.h5file = []
-    # setup top level logger using command line options
+
+    # Setup top level logger using command line options
     logger = logging.getLogger('vitables')
     file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
     temporary_stderr_handler = logging.StreamHandler()
@@ -122,6 +123,7 @@ def main(args):
         logger.error('Invalid verbosity level: {}'.format(args.verbose))
     # remove stderr handler, by default use logger.Logger object
     logger.removeHandler(temporary_stderr_handler)
+
     # Start the application
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
     vtapp.gui.show()
