@@ -77,11 +77,12 @@ def pluginDesc(mod_name, folder=None):
         finding_failed = False
 #        module = imp.load_module(name, file_obj, filepath, desc)
         module = imp.load_source(mod_name, filepath, file_obj)
-    except (ImportError, Exception):
+    except (ImportError, Exception) as e:
         # Warning! If the module being loaded is not a ViTables plugin
         # then unexpected errors can occur
-        logger.debug(u'Attempted to load a non plugin module: '
-                       '{}'.format(mod_name))
+        logger.debug(u'Failed to load a plugin module '
+                     '{name} from {folder}, exception type: {etype}'.format(
+                         folder=folder, name=mod_name, etype=type(e)))
         return False
     finally:
         if not finding_failed:
@@ -159,6 +160,8 @@ class PluginsLoader(object):
         self.all_plugins = {}
         self.loaded_plugins = {}
 
+        self.logger = getLogger()
+
         # Update plugins information: available plugins, disabled plugins
         self.register()
 
@@ -198,7 +201,7 @@ class PluginsLoader(object):
 
         :Parameter UID: th UID of the plugin being loaded
         """
-        logger = getLogger()
+
         file_obj = None
         # Load the module where the plugin lives
         try:
@@ -216,7 +219,7 @@ class PluginsLoader(object):
                 print(u"\nError: plugin {0} cannot be loaded.".format(name))
             return
         except KeyError:
-            logger.error(u'Enabled module can not be loaded')
+            self.logger.error(u'Enabled module can not be loaded')
             return
         finally:
             if file_obj is not None:
@@ -227,7 +230,7 @@ class PluginsLoader(object):
             class_name = getattr(module, 'plugin_class')
             cls = getattr(module, class_name)
         except AttributeError:
-            self.untrack(plugin)
+            self.untrack(UID)
             print(u"\nError: module {0} is not a valid plugin.".format(name))
             return
 
@@ -240,7 +243,7 @@ class PluginsLoader(object):
             # (for example, the time_series plugin)
             self.loaded_plugins[UID] = instance
         except:
-            self.untrack(plugin)
+            self.untrack(UID)
             print(u"\nError: plugin {0} cannot be loaded.".format(name))
             vitables.utils.formatExceptionInfo()
             return
