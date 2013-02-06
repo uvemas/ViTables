@@ -67,6 +67,7 @@ def pluginDesc(mod_name, folder=None):
 
     :Parameter name: the filename of the module being tested
     """
+
     logger = getLogger() # top level logger
     # Import the module
     if folder is None:

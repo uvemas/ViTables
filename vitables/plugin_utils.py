@@ -27,6 +27,7 @@ import collections
 
 from vitables import utils as vtutils
 
+
 def getLogger(plugin_name=None):
     """Get logger object.
 
@@ -45,12 +46,14 @@ def getLogger(plugin_name=None):
     logger = logging.getLogger(logger_name)
     return logger
 
+
 def getVTGui():
     """Small wrapper to hide the fact that vtapp object contains gui.
 
     :return: main window object
     """
     return vtutils.getVTApp().gui
+
 
 def addToMainMenu(submenu):
     """Add submenu to the main menu bar into one before last position.
@@ -65,6 +68,7 @@ def addToMainMenu(submenu):
     main_menu = vtgui.menuBar()
     last_action = main_menu.actions()[-1]
     main_menu.insertMenu(last_action, submenu)
+
 
 def addToContextMenu(context_menu, actions):
     """Add entries to the given context menu.
@@ -83,6 +87,7 @@ def addToContextMenu(context_menu, actions):
         actions = [actions]
     for a in actions:
         context_menu.addAction(a)
+
 
 def addToLeafContextMenu(actions):
     """Add entries to the leaf context menu.

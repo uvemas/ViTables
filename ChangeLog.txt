@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** February 06, 2013 **
+Pandas time series support added to time series plugin.
+
+In addition, the plugin has been simplified and refactored.
+
 ** February 01, 2013 **
 The shebang/encoding lines of all modules have been updated.
 
