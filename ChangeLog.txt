@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** February 06, 2013 **
+<Thanks To> tab of the About ViTables dialog has been updated.
+
 Pandas time series support added to time series plugin.
 
 In addition, the plugin has been simplified and refactored.

@@ -1183,6 +1183,8 @@ class VTApp(QtCore.QObject):
             'Text of the About ViTables dialog').format(vtconfig.getVersion())
         thanks_text = translate('VTApp', 
             """<qt>
+            Alexey Naydenov for his contributions to the plugins system and for
+            providing logging support to the application.<p>
             Dmitrijs Ledkovs for contributing the new and greatly enhanced
             build system and for making Debian packages.<p>
             Oxygen team for a wonderful icons set.<p>
