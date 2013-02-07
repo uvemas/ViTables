@@ -60,7 +60,7 @@ from vitables.plugins.timeseries.aboutPage import AboutPage
 translate = QtGui.QApplication.translate
 
 
-def findTS(datasheet):
+def findTS(leaf, node_kind):
     """Find out if the inspected leaf contains a time field.
 
     **Existing time fields that cannot be formatted are skipped**:
@@ -79,12 +79,13 @@ def findTS(datasheet):
         - time fields in arrays with more than 2 dimensions
         - time fields in arrays with atom shape other than ()
 
-    :Parameter datasheet: the :meth:`vitables.vtTables.dataSheet.DataSheet`
-      instance being inspected.
+    :Parameters:
+        - `leaf`: the tables.Leaf instance being inspected.
+        - `node_kind`: a LeafNode attribute that indicates the kind of dataset
+
     :Return ts_kind: a flag indicating the kind of time series found
     """
 
-    leaf = datasheet.dbt_leaf.node
     time_types = ['time32', 'time64']
     if isinstance(leaf, tables.Table):
         attrs = leaf._v_attrs
@@ -104,7 +105,7 @@ def findTS(datasheet):
     elif (leaf.atom.type in time_types) and \
     (len(leaf.shape) < 3) and \
     (leaf.atom.shape == ()) and \
-    (datasheet.dbt_leaf.node_kind != u'vlarray'): 
+    (node_kind != u'vlarray'): 
         return 'pytables_ts'
     else:
         return None
@@ -199,13 +200,18 @@ class TSFormatter(object):
           instance being inspected
         """
 
+        # If the node is a soft/external link then dereference it
+        leaf = datasheet.dbt_leaf.node
+        if isinstance(leaf, tables.link.Link):
+            leaf = leaf.__call__()
+
         # Look for formattable time fields in the dataset
-        ts_kind = findTS(datasheet)
+        node_kind = datasheet.dbt_leaf.node_kind
+        ts_kind = findTS(leaf, node_kind)
         if ts_kind is None:
             return
 
         # Get the positions of the time fields
-        leaf = datasheet.dbt_leaf.node
         time_cols = tsPositions(ts_kind, leaf)
         if time_cols == []:
             return
@@ -218,7 +224,6 @@ class TSFormatter(object):
             'ts_freq': tsFrequency(ts_kind, leaf),
             'ts_format': datetimeFormat(),
             }
-        leaf = datasheet.dbt_leaf.node
         if isinstance(leaf, tables.Table):
             leaf_kind = 'table'
         else:
