@@ -72,6 +72,7 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
+import vitables.plugin_utils
 from vitables.vtSite import PLUGINSDIR
 from vitables.plugins.csv.aboutPage import AboutPage
 
@@ -449,7 +450,7 @@ class ImportCSV(QtCore.QObject):
         if self.vtapp is None:
             return
 
-        self.vtgui = self.vtapp.gui
+        self.vtgui = vitables.plugin_utils.getVTGui()
         self.dbt_model = self.vtgui.dbs_tree_model
         self.dbt_view = self.vtgui.dbs_tree_view
 
@@ -514,23 +515,26 @@ class ImportCSV(QtCore.QObject):
                 "Import EArray from plain CSV file", 
                 "Status bar text for File -> Import CSV... -> Import EArray"))
 
+        actions['separator'] = QtGui.QAction(self)
+        actions['separator'].setSeparator(True)
+
         # Add actions to the Import submenu
         keys = ('import_table', 'import_array', 'import_carray', 
             'import_earray')
         vitables.utils.addActions(self.import_submenu, keys, actions)
 
         # Add submenu to file menu before the Close File action
-        for item in self.vtgui.file_menu.actions():
-            if item.objectName() == 'fileClose':
-                self.vtgui.file_menu.insertMenu(item, self.import_submenu)
-                self.vtgui.file_menu.insertSeparator(item)
+        vitables.plugin_utils.insertInMenu(self.vtgui.file_menu,
+            self.import_submenu, 'fileClose')
+        sep = actions['separator']
+        vitables.plugin_utils.insertInMenu(self.vtgui.file_menu, sep,
+            'fileClose')
 
         # Add submenu to file context menu before the Close File action
-        cmenu = self.vtgui.view_cm
-        for item in cmenu.actions():
-            if item.objectName() == 'fileClose':
-                cmenu.insertMenu(item, self.import_submenu)
-                cmenu.insertSeparator(item)
+        vitables.plugin_utils.insertInMenu(self.vtgui.view_cm,
+            self.import_submenu, 'fileClose')
+        vitables.plugin_utils.insertInMenu(self.vtgui.view_cm, sep,
+            'fileClose')
 
 
     def createDestFile(self, filepath):
