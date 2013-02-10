@@ -27,6 +27,8 @@ import collections
 
 from vitables import utils as vtutils
 
+from PyQt4 import QtGui
+
 
 def getLogger(plugin_name=None):
     """Get logger object.
@@ -40,6 +42,7 @@ def getLogger(plugin_name=None):
 
     :return: logger object
     """
+
     logger_name = 'vitables'
     if plugin_name is not None:
         logger_name += '.plugin.' + plugin_name
@@ -55,51 +58,88 @@ def getVTGui():
     return vtutils.getVTApp().gui
 
 
-def addToMainMenu(submenu):
-    """Add submenu to the main menu bar into one before last position.
+def addToMenuBar(menu):
+    """Add menu to the menu bar into one before last position.
 
-    Basically insert a submenu before Help menu.
+    Basically insert a menu before Help menu.
 
-    :parameter submenu: QMenu object
+    :parameter menu: QMenu object
 
     :return: None
     """
+    
     vtgui = getVTGui()
-    main_menu = vtgui.menuBar()
-    last_action = main_menu.actions()[-1]
-    main_menu.insertMenu(last_action, submenu)
+    menu_bar = vtgui.menuBar()
+    last_action = menu_bar.actions()[-1]
+    menu_bar.insertMenu(last_action, menu)
 
 
-def addToContextMenu(context_menu, actions):
-    """Add entries to the given context menu.
+def insertInMenu(menu, entries, uid):
+    """Insert entries to the given menu before the action named uid.
 
-    The function accept a QAction or an iterable. Entries will be
-    separated above items by a line.
+    The function accept a QAction/QMenu or an iterable. The entries will
+    be added before the action whose name is uid.
 
-    :parameter actions: QtGui.QAction object or a list of such objects
+    :Parameters:
+    
+    - `menu`: the menu or context menu being updated
+    - `entries`: QAction/Qmenu object or a list of such objects
+    - `uid`: indicates the insertion position for the new entries
 
     :return: None
-
     """
 
-    context_menu.addSeparator()
-    if not isinstance(actions, collections.Iterable):
-        actions = [actions]
-    for a in actions:
-        context_menu.addAction(a)
+    if not isinstance(entries, collections.Iterable):
+        entries = [entries]
+
+    if isinstance(entries[0], QtGui.QAction):
+        menu.insertEntry = menu.insertAction
+    elif isinstance(entries[0], QtGui.QMenu):
+        menu.insertEntry = menu.insertMenu
+
+    for item in menu.actions():
+        if item.objectName() == uid:
+            for a in entries:
+                menu.insertEntry(item, a)
+
+
+def addToMenu(menu, entries):
+    """Add entries at the end of the given menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
+
+    :Parameters:
+    
+    - `menu`: the menu or context menu being updated
+    - `entries`: QAction/QMenu object or a list of such objects
+
+    :return: None
+    """
+
+    if not isinstance(entries, collections.Iterable):
+        entries = [entries]
+
+    if isinstance(entries[0], QtGui.QAction):
+        menu.addEntry = menu.addAction
+    elif isinstance(entries[0], QtGui.QMenu):
+        menu.addEntry = menu.addMenu
+
+    menu.addSeparator()
+    for a in entries:
+        menu.addEntry(a)
 
 
 def addToLeafContextMenu(actions):
-    """Add entries to the leaf context menu.
+    """Add entries at the end of the leaf context menu.
 
-    The function accept a QAction or an iterable. Entries will be
-    separated above items by a line.
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
 
-    :parameter actions: QtGui.QAction object or a list of such objects
+    :parameter actions: QAction/QMenu object or a list of such objects
 
     :return: None
-
     """
 
-    context_menu = vtutils.getVTApp().gui.leaf_node_cm
-    addToContextMenu(context_menu, actions)
+    context_menu = getVTGui().leaf_node_cm
+    addToMenu(context_menu, actions)

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** February 10, 2013 **
+The plugin utilities module has been updated.
+
 ** February 07, 2013 **
 Time series plugin support for soft/external links has been fixed.
 
