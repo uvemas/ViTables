@@ -40,6 +40,7 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
+import vitables.plugin_utils
 from vitables.vtSite import PLUGINSDIR
 from vitables.plugins.csv.aboutPage import AboutPage
 
@@ -82,13 +83,14 @@ class ExportToCSV(QtCore.QObject):
         if self.vtapp is None:
             return
 
-        self.vtgui = self.vtapp.gui
+        self.vtgui = vitables.plugin_utils.getVTGui()
 
         # Add an entry under the Dataset menu
         self.addEntry()
 
         # Connect signals to slots
         self.vtgui.dataset_menu.aboutToShow.connect(self.updateDatasetMenu)
+        self.vtgui.leaf_node_cm.aboutToShow.connect(self.updateDatasetMenu)
 
 
     def addEntry(self):
@@ -112,14 +114,11 @@ class ExportToCSV(QtCore.QObject):
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
-        menu = self.vtgui.dataset_menu
-        menu.addSeparator()
-        menu.addAction(self.export_action)
+        vitables.plugin_utils.addToMenu(self.vtgui.dataset_menu,
+            self.export_action)
 
         # Add the action to the leaf context menu
-        cmenu = self.vtgui.leaf_node_cm
-        cmenu.addSeparator()
-        cmenu.addAction(self.export_action)
+        vitables.plugin_utils.addToLeafContextMenu(self.export_action)
 
 
     def updateDatasetMenu(self):

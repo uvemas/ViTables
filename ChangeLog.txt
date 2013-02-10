@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** February 10, 2013 **
+Fixed a bug in the Export to CSV plugin.
+
 The plugin utilities module has been updated.
 
 ** February 07, 2013 **
