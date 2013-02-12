@@ -24,10 +24,12 @@ __docformat__ = 'restructuredtext'
 
 import logging
 import collections
+import functools
 
 from vitables import utils as vtutils
 
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 
 
 def getLogger(plugin_name=None):
@@ -143,3 +145,58 @@ def addToLeafContextMenu(actions):
 
     context_menu = getVTGui().leaf_node_cm
     addToMenu(context_menu, actions)
+
+def addToGroupContextMenu(actions):
+    """Add entries at the end of the group context menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
+
+    :parameter actions: QAction/QMenu object or a list of such objects
+
+    :return: None
+    """
+
+    context_menu = getVTGui().group_node_cm
+    addToMenu(context_menu, actions)
+
+def getSelectedLeaf():
+    """Get selected database object.
+
+    :return: pytables object
+    """
+
+    current = getVTGui().dbs_tree_view.currentIndex()
+    leaf = getVTGui().dbs_tree_model.nodeFromIndex(current).node
+    return leaf
+
+
+def long_action(message=None):
+    """Decorator that changes the cursor to the wait cursor.
+
+    Used with functions that take some time finish. The provided
+    message is displayed in the status bar while the function is
+    running (the status bar is cleaned afterwards). If the message is
+    not provided then the status bar is not updated.
+
+    :parameter message: message to be displayed in the status bar
+    while the function is running
+
+    """
+    def _long_action(f):
+        @functools.wraps(f)
+        def __long_action(*args, **kwargs):
+            status_bar = getVTGui().statusBar()
+            if message is not None:
+                status_bar.showMessage(message)
+            QtGui.QApplication.setOverrideCursor(
+                QtGui.QCursor(QtCore.Qt.WaitCursor))
+            try:
+                res = f(*args, **kwargs)
+            finally:
+                QtGui.QApplication.restoreOverrideCursor()
+                if message is not None:
+                    status_bar.clearMessage()
+            return res
+        return __long_action
+    return _long_action
