@@ -1185,6 +1185,7 @@ class VTApp(QtCore.QObject):
             """<qt>
             Alexey Naydenov for his contributions to the plugins system and for
             providing logging support to the application.<p>
+            Kamil Kisiel and Max Bohnet for fixing bugs.<p>
             Dmitrijs Ledkovs for contributing the new and greatly enhanced
             build system and for making Debian packages.<p>
             Oxygen team for a wonderful icons set.<p>
