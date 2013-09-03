@@ -284,7 +284,24 @@ def formatArrayContent(content):
 
     :Parameter content: the ``numpy`` array contained in the view cell
     """
-    return numpy.array2string(content, separator=',')
+
+    if isinstance(content, numpy.string_):
+        try:
+            return content.decode(DEFAULT_ENCODING)
+        except UnicodeDecodeError:
+            pass
+    
+    elif isinstance(content, numpy.ndarray):
+        if content.dtype.char == 'S':
+            sep = ', '
+            try:
+                unicode_content = [('%s' % col).decode(DEFAULT_ENCODING)
+                                for col in content]
+                return '[%s]' % sep.join(unicode_content)
+            except UnicodeDecodeError:
+                pass
+    ret = numpy.array2string(content, separator=',')
+    return ret
 
 
 def formatObjectContent(content):

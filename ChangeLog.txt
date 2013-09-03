@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** September 03, 2013 **
+Bug #22 has been fixed.
+
 Some minor mistakes have been fixed in the Users' Guide.
 
 ** February 10, 2013 **
