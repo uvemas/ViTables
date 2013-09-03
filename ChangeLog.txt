@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 03, 2013 **
+Some minor mistakes have been fixed in the Users' Guide.
+
 ** February 10, 2013 **
 The Import from CSV plugin uses the plugin utilities module now.
 

@@ -37,7 +37,7 @@ from sphinx.setup_command import BuildDoc
 
 
 class BuildSphinx(BuildDoc):
-    """Customise the BuilDoc provided by the sphinx module setup_command.py
+    """Customise the BuildDoc provided by the sphinx module setup_command.py
     """
 
 
@@ -45,7 +45,7 @@ class BuildSphinx(BuildDoc):
         """ Execute the build_sphinx command.
 
         The HTML and PDF docs will be included in the tarball. So this script
-        MUST be executed before creating the distributable tarball via
+        MUST be executed before creating the distributable tarball.
         """
 
         # Build the Users Guide in HTML and TeX format
