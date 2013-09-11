@@ -7,6 +7,10 @@ syntax: glob
 *.fo
 *.pdf
 *.e4*
+.metadata
+.project
+.pydevproject
+.settings
 doc/html
 doc/index.rst
 run_vitables.py

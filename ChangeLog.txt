@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** September 11, 2013 **
+Local branch python3-support has been added.
+
+python3-support branch: shebang lines updated.
+
 ** September 03, 2013 **
 Bug #22 has been fixed.
 
