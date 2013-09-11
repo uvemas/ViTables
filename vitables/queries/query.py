@@ -100,9 +100,9 @@ class Query(QtCore.QObject):
         ftable.flush()
         # Set some user attributes that define this filtered table
         asi = ftable.attrs
-        asi.query_path = self.qdescr[u'src_filepath']
-        asi.query_table = self.qdescr[u'src_path']
-        asi.query_condition = self.qdescr[u'title']
+        asi.query_path = self.qdescr['src_filepath']
+        asi.query_table = self.qdescr['src_path']
+        asi.query_condition = self.qdescr['title']
 
 
     def queryWithIndex(self, src_dict):
@@ -110,7 +110,7 @@ class Query(QtCore.QObject):
         """
 
         # The query range is made of numpy scalars with dtype int64
-        (start, stop, step) = self.qdescr[u'rows_range']
+        (start, stop, step) = self.qdescr['rows_range']
         chunk_size = 10000
         div = numpy.divide(stop - start, chunk_size)
 
@@ -119,14 +119,14 @@ class Query(QtCore.QObject):
         # description dictionary is needed. Int64 values are necessary
         # to keep full 64-bit indices
         ft_dict = \
-            {self.qdescr[u'indices_field_name'].encode('utf_8'): \
+            {self.qdescr['indices_field_name'].encode('utf_8'): \
             tables.Int64Col(pos=-1)}
         ft_dict.update(src_dict)
         f_table = self.tmp_h5file.createTable(\
-            u'/_p_query_results', 
-            self.qdescr[u'ft_name'], 
+            '/_p_query_results', 
+            self.qdescr['ft_name'], 
             ft_dict, 
-            self.qdescr[u'title'])
+            self.qdescr['title'])
 
         # Get the array of rows that fulfil the condition
         # Selection is done in several steps. It saves a *huge*
@@ -140,30 +140,30 @@ class Query(QtCore.QObject):
             if lstop > stop:
                 lstop = stop
             coordinates = self.table.getWhereList(\
-                self.qdescr[u'condition'], 
-                self.qdescr[u'condvars'], 
+                self.qdescr['condition'], 
+                self.qdescr['condvars'], 
                 start=lstart, stop=lstop, step=step)
             selection = self.table.readCoordinates(coordinates)
             if selection.shape == (0, ):
                 continue
 
             coord_dtype = numpy.dtype(\
-                [(str(self.qdescr[u'indices_field_name']), '<i8')])
+                [(str(self.qdescr['indices_field_name']), '<i8')])
             new_dtype = numpy.dtype(\
                 coord_dtype.descr + selection.dtype.descr)
 
             new_buffer = numpy.empty(selection.shape, dtype=new_dtype)
             for field in selection.dtype.fields:
                 new_buffer[field] = selection[field]
-            new_buffer[str(self.qdescr[u'indices_field_name'])] = \
+            new_buffer[str(self.qdescr['indices_field_name'])] = \
                 coordinates
             f_table.append(new_buffer)
             self.flushTable(f_table)
 
         # Move the intermediate table to its final destination
         self.tmp_h5file.moveNode(\
-            u'/_p_query_results/' + self.qdescr[u'ft_name'], 
-            u'/', newname=self.qdescr[u'ft_name'], 
+            '/_p_query_results/' + self.qdescr['ft_name'], 
+            '/', newname=self.qdescr['ft_name'], 
             overwrite=True)
         self.completed = True
 
@@ -173,16 +173,16 @@ class Query(QtCore.QObject):
         """
 
         # The query range is made of numpy scalars with dtype int64
-        (start, stop, step) = self.qdescr[u'rows_range']
+        (start, stop, step) = self.qdescr['rows_range']
         chunk_size = 10000
         div = numpy.divide(stop - start, chunk_size)
 
         # Create the destination table
         f_table = self.tmp_h5file.createTable(\
-            u'/_p_query_results', 
-            self.qdescr[u'ft_name'], 
+            '/_p_query_results', 
+            self.qdescr['ft_name'], 
             src_dict, 
-            self.qdescr[u'title'])
+            self.qdescr['title'])
 
         # Get the array of rows that fulfil the condition
         # Selection is done in several steps. It saves a *huge*
@@ -196,16 +196,16 @@ class Query(QtCore.QObject):
             if lstop > stop:
                 lstop = stop
             selection = self.table.readWhere(\
-                self.qdescr[u'condition'], 
-                self.qdescr[u'condvars'], 
+                self.qdescr['condition'], 
+                self.qdescr['condvars'], 
                 start=lstart, stop=lstop, step=step)
             f_table.append(selection)
             self.flushTable(f_table)
 
         # Move the intermediate table to its final destination
         self.tmp_h5file.moveNode(\
-            u'/_p_query_results/' + self.qdescr[u'ft_name'], 
-            u'/', newname=self.qdescr[u'ft_name'], 
+            '/_p_query_results/' + self.qdescr['ft_name'], 
+            '/', newname=self.qdescr['ft_name'], 
             overwrite=True)
         self.completed = True
 
@@ -217,7 +217,7 @@ class Query(QtCore.QObject):
         try:
             src_dict = self.table.description._v_colObjects
             # Add an `indexes` column to the result table
-            if self.qdescr[u'indices_field_name']:
+            if self.qdescr['indices_field_name']:
                 self.queryWithIndex(src_dict)
             # Do no add an `indexes` column to the result table
             else:
@@ -225,6 +225,6 @@ class Query(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
             self.tmp_h5file.removeNode(\
-                u'/_p_query_results/' + self.qdescr[u'ft_name'])
+                '/_p_query_results/' + self.qdescr['ft_name'])
         else:
             self.tmp_h5file.flush()

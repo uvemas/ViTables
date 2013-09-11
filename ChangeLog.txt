@@ -5,6 +5,8 @@ Local branch python3-support has been added.
 
 python3-support branch: shebang lines updated.
 
+python3-support branch: u'some text' has been replaced with 'some text'.
+
 ** September 03, 2013 **
 Bug #22 has been fixed.
 

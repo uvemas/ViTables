@@ -144,8 +144,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             # type(x) returns numpy.ndarray
             # isinstance(x, int) returns False 
             if isinstance(value, tables.Filters):
-                dtype_name = u'tables.filters.Filters'
-            elif hasattr(value, u'shape'):
+                dtype_name = 'tables.filters.Filters'
+            elif hasattr(value, 'shape'):
                 dtype_name = vitables.utils.toUnicode(value.dtype.name)
             else:
                 # Attributes can be scalar Python objects (PyTables <1.1)
@@ -159,7 +159,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             value_item.setBackground(bg_brush)
             # When the database is in read-only mode the TITLE attribute
             # cannot be edited
-            if (name == u'TITLE') and (info.mode != u'read-only'):
+            if (name == 'TITLE') and (info.mode != 'read-only'):
                 # The position of the TITLE value in the table
                 self.title_row = self.sysattr_model.rowCount()
                 self.title_before = vitables.utils.toUnicode(value_item.text())
@@ -210,16 +210,16 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             dtypes_combo.setEditable(False)
             # In PyTables >=1.1 scalar attributes are stored as numarray arrays
             # In PyTables >= 2.0 scalar attributes are stored as numpy arrays
-            if hasattr(value, u'shape'):
+            if hasattr(value, 'shape'):
                 dtype_name = vitables.utils.toUnicode(value.dtype.name)
-                if dtype_name.startswith(u'string'):
-                    dtype_name = u'string'
-                if dtype_name.startswith(u'unicode'):
-                    dtype_name = u'unicode'
+                if dtype_name.startswith('string'):
+                    dtype_name = 'string'
+                if dtype_name.startswith('unicode'):
+                    dtype_name = 'unicode'
             else:
                 # Attributes can be scalar Python objects (PyTables <1.1)
                 # or non scalar Python objects, e.g. sequences
-                dtype_name = u'python'
+                dtype_name = 'python'
             value_item = QtGui.QStandardItem(vitables.utils.toUnicode(value))
             self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo.setCurrentIndex(dtypes_combo.findText(dtype_name))
@@ -227,16 +227,16 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
 
             # Complex attributes and ND_array attributes need some visual
             # adjustments
-            if dtype_name.startswith(u'complex'):
+            if dtype_name.startswith('complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.
                 if (vitables.utils.toUnicode(value)[0], \
-                    vitables.utils.toUnicode(value)[-1]) == (u'(', u')'):
+                    vitables.utils.toUnicode(value)[-1]) == ('(', ')'):
                     value_item.setText(vitables.utils.toUnicode(value)[1:-1])
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
-            if (hasattr(value, u'shape') and value.shape != ())or\
-            (info.mode == u'read-only'):
+            if (hasattr(value, 'shape') and value.shape != ())or\
+            (info.mode == 'read-only'):
                 editable = False
                 brush = bg_brush
             else:
@@ -257,7 +257,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         self.page_buttons.addButton(self.helpButton, 2)
 
         # If the database is in read-only mode user attributes cannot be edited
-        if info.mode == u'read-only':
+        if info.mode == 'read-only':
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
 
@@ -370,7 +370,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # because the attribute is mandatory in PyTables but not in
         # generic HDF5 files
         self.title_after = None
-        if hasattr(self, u'title_row'):
+        if hasattr(self, 'title_row'):
             self.title_after = \
                 self.sysattr_model.item(self.title_row, 1).text()
             if self.title_before != self.title_after:
@@ -404,7 +404,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
 
         # If the file is in read-only mode or the Attribute Set Instance
         # remains unchanged no attribute needs to be updated
-        if (self.mode == u'read-only') or (not self.asiChanged()):
+        if (self.mode == 'read-only') or (not self.asiChanged()):
             QtGui.QDialog.accept(self)
             return  # This is mandatory!
 

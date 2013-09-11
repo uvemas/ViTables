@@ -48,23 +48,23 @@ def getTableInfo(table):
     :Parameter table: the `tables.Table` instance being queried.
     """
     info = {}
-    info[u'nrows'] = table.nrows
-    info[u'src_filepath'] = unicode(table._v_file.filename)
-    info[u'src_path'] = table._v_pathname
-    info[u'name'] = table._v_name
+    info['nrows'] = table.nrows
+    info['src_filepath'] = unicode(table._v_file.filename)
+    info['src_path'] = table._v_pathname
+    info['name'] = table._v_name
     # Fields info: top level fields names, flat fields shapes and types
-    info[u'col_names'] = frozenset(table.colnames)
-    info[u'col_shapes'] = \
+    info['col_names'] = frozenset(table.colnames)
+    info['col_shapes'] = \
         dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
-    info[u'col_types'] = table.coltypes
+    info['col_types'] = table.coltypes
     # Fields that can be queried
-    info[u'condvars'] = {}
-    info[u'valid_fields'] = []
+    info['condvars'] = {}
+    info['valid_fields'] = []
 
-    if info[u'nrows'] <= 0:
+    if info['nrows'] <= 0:
         print(translate('QueriesManager', 
             "Caveat: table {0} is empty. Nothing to query.", 
-            'Warning message for users').format(info[u'name']))
+            'Warning message for users').format(info['name']))
         return None
 
     # Find out the valid (i.e. searchable) fields and condition variables.
@@ -73,13 +73,13 @@ def getTableInfo(table):
     # with frozensets: set & frozenset returns a set but frozenset & set
     # returns a frozenset
     valid_fields = \
-    set(info[u'col_shapes'].keys()).intersection(info[u'col_names'])
-#    info[u'col_names'].intersection(info[u'col_shapes'].keys())
+    set(info['col_shapes'].keys()).intersection(info['col_names'])
+#    info['col_names'].intersection(info['col_shapes'].keys())
 
     # Then discard fields that aren't scalar and those that are complex
     for name in valid_fields.copy():
-        if (info[u'col_shapes'][name] != ()) or \
-        info[u'col_types'][name].count(u'complex'):
+        if (info['col_shapes'][name] != ()) or \
+        info['col_types'][name].count('complex'):
             valid_fields.remove(name)
 
     # Among the remaining fields, those whose names contain blanks
@@ -88,24 +88,24 @@ def getTableInfo(table):
     index = 0
     for name in valid_fields.copy():
         if name.count(' '):
-            while (u'col{0}'.format(index)) in valid_fields:
+            while ('col{0}'.format(index)) in valid_fields:
                 index = index + 1
-            info[u'condvars'][u'col{0}'.format(index)] = \
+            info['condvars']['col{0}'.format(index)] = \
                 table.cols._f_col(name)
             valid_fields.remove(name)
-            valid_fields.add(u'col{0} ({1})'.format(index, name))
+            valid_fields.add('col{0} ({1})'.format(index, name))
             index = index + 1
-    info[u'valid_fields'] = valid_fields
+    info['valid_fields'] = valid_fields
 
     # If table has not columns suitable to be filtered does nothing
-    if not info[u'valid_fields']:
+    if not info['valid_fields']:
         print(translate('QueriesManager', 
             """\nError: table {0} has no columns suitable to be """
             """queried. All columns are nested, multidimensional or have a """
             """Complex data type.""", 
             'An error when trying to query a table').format(info['name']))
         return None
-    elif len(info[u'valid_fields']) != len(info[u'col_names']):
+    elif len(info['valid_fields']) != len(info['col_names']):
     # Log a message if non selectable fields exist
         print(translate('QueriesManager', 
             """\nWarning: some table columns contain multidimensional, """
@@ -181,9 +181,9 @@ class QueriesManager(QtCore.QObject):
             return
 
         # Update the list of names in use for filtered tables
-        self.ft_names.append(query_description[u'ft_name'])
-        self.last_query = [query_description[u'src_filepath'], 
-            query_description[u'src_path'], query_description[u'condition']]
+        self.ft_names.append(query_description['ft_name'])
+        self.last_query = [query_description['src_filepath'], 
+            query_description['src_path'], query_description['condition']]
 
         # Run the query
         tmp_h5file = self.dbt_model.tmp_dbdoc.h5file
@@ -207,7 +207,7 @@ class QueriesManager(QtCore.QObject):
         # Setup the initial condition
         last_query = self.last_query
         if (last_query[0], last_query[1]) == \
-        (info[u'src_filepath'], info[u'src_path']):
+        (info['src_filepath'], info['src_path']):
             initial_condition = last_query[2]
         else:
             initial_condition = ''
@@ -225,20 +225,20 @@ class QueriesManager(QtCore.QObject):
             del query_dlg
             QtGui.qApp.processEvents()
 
-        if not query_description[u'condition']:
+        if not query_description['condition']:
             return None
 
         # SET THE TITLE OF THE RESULT TABLE
-        title = query_description[u'condition']
-        for name in info[u'valid_fields']:
+        title = query_description['condition']
+        for name in info['valid_fields']:
             # Valid fields can have the format 'fieldname' or 
             # 'varname (name with blanks)' so a single blank shouldn't
             # be used as separator
-            components = name.split(u' (')
+            components = name.split(' (')
             if len(components) > 1:
-                fieldname = u'({0}'.format(components[-1])
+                fieldname = '({0}'.format(components[-1])
                 title = title.replace(components[0], fieldname)
-        query_description[u'title'] = title
+        query_description['title'] = title
 
         return query_description
 

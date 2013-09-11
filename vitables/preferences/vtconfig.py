@@ -322,7 +322,7 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Startup/startupWorkingDir'
-        default_value = u'home'
+        default_value = 'home'
         setting_value = self.value(key)
         if isinstance(setting_value, unicode):
             return setting_value
@@ -427,7 +427,7 @@ class Config(QtCore.QSettings):
             self.setValue(key, value)
             if self.status():
                 raise configException.ConfigFileIOException, \
-                    u'{0}={1}'.format(key, value)
+                    '{0}={1}'.format(key, value)
         except configException.ConfigFileIOException, inst:
             print(inst.error_message)
 
@@ -544,12 +544,12 @@ class Config(QtCore.QSettings):
             # If a new file has been created during the current session
             # then write mode must be replaced by append mode or the file
             # will be created from scratch in the next ViTables session
-            if mode == u'w':
-                mode = u'a'
-            item_path = mode + u'#@#' + path
+            if mode == 'w':
+                mode = 'a'
+            item_path = mode + '#@#' + path
             for view in node_views:
                 if view.dbt_leaf.filepath == path:
-                    item_path = item_path + u'#@#' + view.dbt_leaf.nodepath
+                    item_path = item_path + '#@#' + view.dbt_leaf.nodepath
             session_files_nodes.append(item_path)
 
         # Format the list in a handy way to store it on disk

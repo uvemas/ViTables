@@ -87,7 +87,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
           describing a given node
         """
 
-        if info.node_type == u'root group':
+        if info.node_type == 'root group':
             self.nameLE.setText(info.filename)
             self.pathLE.setText(info.filepath)
             self.pathLE.setToolTip(info.filepath)

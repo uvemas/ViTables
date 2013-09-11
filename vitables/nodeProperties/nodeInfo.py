@@ -83,18 +83,18 @@ class NodeInfo(object):
         self.filename = os.path.basename(self.filepath)
         self.h5file = self.node._v_file
         mode = vitables.utils.toUnicode(self.h5file.mode)
-        if mode == u'a':
-            self.mode = u'append'
-        elif mode == u'r':
-            self.mode = u'read-only'
+        if mode == 'a':
+            self.mode = 'append'
+        elif mode == 'r':
+            self.mode = 'read-only'
         else:
-            self.mode = u'read-write'
+            self.mode = 'read-write'
 
         # The node type is a string with one of the following values:
         # root group, group, table, vlarray, earray, carray, array
         # or unimplemented
         self.node_type = node_item.node_kind
-        self.file_type = self.format + u', ' + self.size
+        self.file_type = self.format + ', ' + self.size
         self.nodename = vitables.utils.toUnicode(node_item.name)
         self.nodepath = vitables.utils.toUnicode(node_item.nodepath)
 
@@ -113,9 +113,9 @@ class NodeInfo(object):
         """The format of the hosting `tables.File` instance"""
 
         if self.h5file._isPTFile:
-            return u'PyTables file'
+            return 'PyTables file'
         else:
-            return u'Generic HDF5 file'
+            return 'Generic HDF5 file'
 
     format = property(fget=_format)
 
@@ -129,15 +129,15 @@ class NodeInfo(object):
         gbytes = mbytes/1024
         tbytes = gbytes/1024
         if kbytes < 1:
-            size = u'{0:.0f} bytes'.format(n_bytes)
+            size = '{0:.0f} bytes'.format(n_bytes)
         elif mbytes < 1:
-            size = u'{0:.1f} KB'.format(kbytes)
+            size = '{0:.1f} KB'.format(kbytes)
         elif gbytes < 1:
-            size = u'{0:.1f} MB'.format(mbytes)
+            size = '{0:.1f} MB'.format(mbytes)
         elif tbytes < 1:
-            size = u'{0:.1f} GB'.format(gbytes)
+            size = '{0:.1f} GB'.format(gbytes)
         else:
-            size = u'{0:.1f} TB'.format(tbytes)
+            size = '{0:.1f} TB'.format(tbytes)
         return size
 
     size = property(fget=_size)
@@ -193,13 +193,13 @@ class NodeInfo(object):
     def _type(self):
         """The `PyTables` data type of the atom for `tables.Leaf` nodes."""
 
-        if self.node_type.count(u'array'):
+        if self.node_type.count('array'):
             try:
                 return vitables.utils.toUnicode(self.node.atom.type)
             except AttributeError:
                 return None
-        elif self.node_type == u'table':
-            return u'record'
+        elif self.node_type == 'table':
+            return 'record'
 
     type = property(fget=_type)
 
@@ -327,7 +327,7 @@ class NodeInfo(object):
 
         if self.target:
             try:
-                link_type = u'external'
+                link_type = 'external'
                 vitables.utils.toUnicode(self.node.extfile)
             except AttributeError:
                 link_type = 'soft'

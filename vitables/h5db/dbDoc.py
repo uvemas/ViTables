@@ -85,8 +85,8 @@ class DBDoc(QtCore.QObject):
         self.hidden_group = None
 
         if is_tmp_dbdoc:
-            self.h5file.createGroup(u'/', u'_p_query_results', 
-                u'Hide the result of queries')
+            self.h5file.createGroup('/', '_p_query_results', 
+                'Hide the result of queries')
             self.h5file.flush()
 
 

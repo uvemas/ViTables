@@ -757,7 +757,7 @@ class VTGUI(QtGui.QMainWindow):
         for item in self.vtapp.config.recent_files:
             index += 1
             (mode, filepath) = item.split('#@#')
-            action = QtGui.QAction(u'{0:>2} {1}.'.format(index, filepath), 
+            action = QtGui.QAction('{0:>2} {1}.'.format(index, filepath), 
                 self, triggered=self.vtapp.openRecentFile)
             action.setData(item)
             if mode == 'r':
@@ -835,7 +835,7 @@ class VTGUI(QtGui.QMainWindow):
             tip = self.dbs_tree_model.data(current, QtCore.Qt.StatusTipRole)
             message = tip
         else:
-            message = u''
+            message = ''
         self.sb_node_info.setText(message)
 
 

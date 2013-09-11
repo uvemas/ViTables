@@ -99,7 +99,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         def_tformat = '%c' 
         try:
             config.read(\
-                os.path.join(os.path.dirname(__file__), u'time_format.ini'))
+                os.path.join(os.path.dirname(__file__), 'time_format.ini'))
             self.tformat = config.get('Timeseries', 'strftime')
         except (IOError, ConfigParser.Error):
             self.tformat = def_tformat
@@ -145,7 +145,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         """
 
         config = ConfigParser.RawConfigParser()
-        filename = os.path.join(os.path.dirname(__file__), u'time_format.ini')
+        filename = os.path.join(os.path.dirname(__file__), 'time_format.ini')
         config.read(filename)
         config.set(\
             'Timeseries', 'strftime', self.tformat_editor.text())

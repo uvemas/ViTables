@@ -64,38 +64,38 @@ class LeafNode(object):
         # icon --> DecorationRole
         self.name = name
         parentpath = parent.nodepath
-        if parentpath.endswith(u'/'):
+        if parentpath.endswith('/'):
             parentpath = parentpath[:-1]
-        self.nodepath = u'{0}/{1}'.format(parentpath, name)
+        self.nodepath = '{0}/{1}'.format(parentpath, name)
         self.filepath = parent.filepath
-        self.as_record = u'{0}->{1}'.format(self.filepath, self.nodepath)
+        self.as_record = '{0}->{1}'.format(self.filepath, self.nodepath)
 
         # Set the node icon
         icons = vitables.utils.getIcons()
         if isinstance(self.node, tables.Table):
-            self.node_kind = u'table'
-            self.icon = icons[u'table']
+            self.node_kind = 'table'
+            self.icon = icons['table']
         elif isinstance(self.node, tables.VLArray):
-            self.node_kind = u'vlarray'
+            self.node_kind = 'vlarray'
             data_type = self.node.atom.type
-            if data_type in [u'vlstring', u'vlunicode']:
-                self.icon = icons[u'vlstring']
-            elif data_type == u'object':
+            if data_type in ['vlstring', 'vlunicode']:
+                self.icon = icons['vlstring']
+            elif data_type == 'object':
                 self.icon = icons['object']
             else:
-                self.icon = icons[u'vlarray']
+                self.icon = icons['vlarray']
         elif isinstance(self.node, tables.EArray):
             self.node_kind = 'earray'
             self.icon = icons['earray']
         elif isinstance(self.node, tables.CArray):
-            self.node_kind = u'carray'
-            self.icon = icons[u'carray']
+            self.node_kind = 'carray'
+            self.icon = icons['carray']
         elif isinstance(self.node, tables.Array):
-            self.node_kind = u'array'
+            self.node_kind = 'array'
             self.icon = icons['array']
         elif isinstance(self.node, tables.UnImplemented):
-            self.node_kind = u'image-missing'
-            self.icon = icons[u'image-missing']
+            self.node_kind = 'image-missing'
+            self.icon = icons['image-missing']
 
 
     def row(self):

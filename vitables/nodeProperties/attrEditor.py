@@ -67,21 +67,21 @@ def formatStrValue(dtype, str_value):
     - str_value: the string representation of a value
     """
 
-    if dtype == u'bool':
+    if dtype == 'bool':
         # Every listed value is valid but none of them would
         # pass the out of range test later so we use a fake
         # valid value.
         # Beware that numpy.array(True).astype('bool')[()] fails
         # with a TypeError so we use '1' as a fake value
-        if str_value in [u'1', u'TRUE', u'True', u'true']:
-            str_value = u'1'
-        elif str_value in [u'0', u'FALSE', u'False', u'false']:
-            str_value = u'0'
+        if str_value in ['1', 'TRUE', 'True', 'true']:
+            str_value = '1'
+        elif str_value in ['0', 'FALSE', 'False', 'false']:
+            str_value = '0'
         else:
             raise ValueError
-    elif dtype.startswith(u'complex'):
+    elif dtype.startswith('complex'):
         # Valid complex literal strings do not have parenthesis
-        if str_value.startswith(u'(') and str_value.endswith(u')'):
+        if str_value.startswith('(') and str_value.endswith(')'):
             str_value = str_value[1:-1]
 
     return str_value
@@ -109,11 +109,11 @@ def checkValue(dtype, str_value):
     """
 
     dtypes_map = {
-        u'int8': numpy.int8, u'int16': numpy.int16,
-        u'int32': numpy.int32, u'int64': numpy.int64,
-        u'uint8': numpy.uint8, u'uint16': numpy.uint16,
-        u'uint32': numpy.uint32, u'uint64': numpy.uint64,
-        u'float32': numpy.float32, u'float64': numpy.float64,
+        'int8': numpy.int8, 'int16': numpy.int16,
+        'int32': numpy.int32, 'int64': numpy.int64,
+        'uint8': numpy.uint8, 'uint16': numpy.uint16,
+        'uint32': numpy.uint32, 'uint64': numpy.uint64,
+        'float32': numpy.float32, 'float64': numpy.float64,
         }
 
     # For Python objects and strings no overflow can occur
@@ -176,7 +176,7 @@ class AttrEditor(object):
 
         # Add the TITLE attribute to the dictionary
         if title is not None:
-            self.edited_attrs[rows] = (u'TITLE', title, u'string', False)
+            self.edited_attrs[rows] = ('TITLE', title, 'string', False)
 
 
     def checkAttributes(self):
@@ -217,7 +217,7 @@ class AttrEditor(object):
             name = self.edited_attrs[row][0]
             # Empty Value cells are acceptable for string attributes
             # but empty Name cells are invalid
-            if name == u'':
+            if name == '':
                 return (False, 
                         translate('AttrEditor', 
                             "\nError: empty field Name in the row {0:d}", 
@@ -274,7 +274,7 @@ class AttrEditor(object):
         """
 
         # Get rid of deleted attributes
-        if u'TITLE' in self.edited_attrs:
+        if 'TITLE' in self.edited_attrs:
             all_attrs = frozenset(self.asi._v_attrnamesuser + [u"TITLE"])
         else:
             all_attrs = frozenset(self.asi._v_attrnamesuser)
@@ -293,8 +293,8 @@ class AttrEditor(object):
             if multidim == True:
                 continue
 
-            if dtype == u'python':
-                value = eval(u'{0}'.format(value))
+            if dtype == 'python':
+                value = eval('{0}'.format(value))
             else:
                 dtype_enc = dtype.encode('utf_8')
                 value = numpy.array(value).astype(dtype_enc)[()]

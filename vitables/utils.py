@@ -78,7 +78,7 @@ def getVTApp():
 
     vtapp = None
     for widget in QtGui.qApp.topLevelWidgets():
-        if widget.objectName() == u'VTGUI':
+        if widget.objectName() == 'VTGUI':
             vtapp = widget.vtapp
             break
 
@@ -176,7 +176,7 @@ def createIcons(large_icons, small_icons, icons_dict):
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR,'16x16', u'{0}.png').format(name))
+                os.path.join(ICONDIR,'16x16', '{0}.png').format(name))
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 
@@ -354,7 +354,7 @@ def formatExceptionInfo(limit=1):
     :Parameter limit: the number of stack trace entries to be printed
     """
 
-    print(u'\n{0}\n'.format(traceback.format_exc(limit)))
+    print('\n{0}\n'.format(traceback.format_exc(limit)))
 
 #
 # Path related functions

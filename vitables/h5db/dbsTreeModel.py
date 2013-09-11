@@ -76,7 +76,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.__openDBs = {}
 
         # Create the temporary database that will contain filtered tables
-        self.tmp_filepath = u''
+        self.tmp_filepath = ''
         self.tmp_dbdoc = self.__createTempDB()
 
         # The Cut/CopiedNodeInfo dictionary
@@ -447,7 +447,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         else:
             dirname = self.getDBDoc(src_filepath).hidden_group
             basename = self.ccni['nodename']
-            src_nodepath = u'{0}/{1}'.format(dirname, basename)
+            src_nodepath = '{0}/{1}'.format(dirname, basename)
 
         return self.getDBDoc(src_filepath).getNode(src_nodepath)
 
@@ -542,14 +542,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         old_nodepath = node.nodepath
         dirname = os.path.split(old_nodepath)[0]
         new_nodepath = \
-            (u'{0}/{1}'.format(dirname, new_name)).replace('//', '/')
+            ('{0}/{1}'.format(dirname, new_name)).replace('//', '/')
         self.setData(index, new_nodepath, QtCore.Qt.UserRole+1)
         if hasattr(node, 'target'):
-            self.setData(index, u'{0}'.format(node.node), 
+            self.setData(index, '{0}'.format(node.node), 
                 QtCore.Qt.StatusTipRole)
         else:
             self.setData(index, 
-                        u'{0}->{1}'.format(node.filepath, new_nodepath), 
+                        '{0}->{1}'.format(node.filepath, new_nodepath), 
                         QtCore.Qt.StatusTipRole)
 
         # Update the item children, if any
@@ -559,11 +559,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                                                         new_nodepath, 1)
             self.setData(child_index, child_nodepath, QtCore.Qt.UserRole+1)
             if hasattr(child_node, 'target'):
-                self.setData(child_index, u'{0}'.format(child_node.node), 
+                self.setData(child_index, '{0}'.format(child_node.node), 
                             QtCore.Qt.StatusTipRole)
             else:
                 self.setData(child_index, 
-                            u'{0}->{1}'.format\
+                            '{0}->{1}'.format\
                             (child_node.filepath, child_node.nodepath), 
                             QtCore.Qt.StatusTipRole)
 
@@ -785,7 +785,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if role == QtCore.Qt.DisplayRole:
             data = node.name
         elif role == QtCore.Qt.ToolTipRole:
-            data = u'{0}: {1}'.format(node.node_kind, 
+            data = '{0}: {1}'.format(node.node_kind, 
                 node.name)
         elif role == QtCore.Qt.StatusTipRole:
             data = node.as_record

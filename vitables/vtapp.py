@@ -138,7 +138,7 @@ class VTApp(QtCore.QObject):
 
         # The File Selector History
         self.file_selector_history = []
-        if self.config.startup_working_directory != u'last':
+        if self.config.startup_working_directory != 'last':
             self.config.last_working_directory = os.getcwdu()
         self.file_selector_history.append(self.config.last_working_directory)
 
@@ -328,7 +328,7 @@ class VTApp(QtCore.QObject):
             - `mode`: the opening mode of the file
         """
 
-        item = mode + u'#@#' + filepath
+        item = mode + '#@#' + filepath
         recent_files = self.config.recent_files
         # Updates the list of recently open files. Most recent goes first.
         if item not in recent_files:
@@ -972,7 +972,7 @@ class VTApp(QtCore.QObject):
         nodename = cni['nodename']
         if cni['nodepath'] == '/':
             nodename = \
-                u'root_group_of_{0}'.format(os.path.basename(cni['filepath']))
+                'root_group_of_{0}'.format(os.path.basename(cni['filepath']))
 
         if cni['is_copied']:
             # Check if pasting a copied node is allowed (pasting a cut

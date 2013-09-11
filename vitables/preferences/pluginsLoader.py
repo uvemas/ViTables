@@ -81,7 +81,7 @@ def pluginDesc(mod_name, folder=None):
     except (ImportError, Exception) as e:
         # Warning! If the module being loaded is not a ViTables plugin
         # then unexpected errors can occur
-        logger.debug(u'Failed to load a plugin module '
+        logger.debug('Failed to load a plugin module '
                      '{name} from {folder}, exception type: {etype}'.format(
                          folder=folder, name=mod_name, etype=type(e)))
         return False
@@ -89,7 +89,7 @@ def pluginDesc(mod_name, folder=None):
         if not finding_failed:
             file_obj.close()
         else:
-            logger.debug(u'Failed to find the module: {}'.format(mod_name))
+            logger.debug('Failed to find the module: {}'.format(mod_name))
 
     # Check if module is a plugin
     try:
@@ -102,7 +102,7 @@ def pluginDesc(mod_name, folder=None):
         return desc
     except AttributeError:
         # then unexpected errors can occur
-        logger.debug(u'The module is not a plugin: {}'.format(mod_name))
+        logger.debug('The module is not a plugin: {}'.format(mod_name))
         return False
 
     #######################################################
@@ -220,7 +220,7 @@ class PluginsLoader(object):
                 print(u"\nError: plugin {0} cannot be loaded.".format(name))
             return
         except KeyError:
-            self.logger.error(u'Enabled module can not be loaded')
+            self.logger.error('Enabled module can not be loaded')
             return
         finally:
             if file_obj is not None:

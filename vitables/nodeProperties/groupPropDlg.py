@@ -71,7 +71,7 @@ class GroupPropDlg(attrPropDlg.AttrPropDlg):
         self.tabw.insertTab(0, general_page, 'General')
         self.tabw.setCurrentIndex(0)
 
-        if info.node_type == u'root group':
+        if info.node_type == 'root group':
             self.setWindowTitle(translate('GroupPropDlg', 'File properties', 
             'Dlg caption'))
         else:

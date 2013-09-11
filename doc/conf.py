@@ -40,8 +40,8 @@ source_encoding = 'utf-8-sig'
 master_doc = 'index'
 
 # General information about the project.
-project = u'ViTables Users\' Guide'
-copyright = u'2013, Vicent Mas'
+project = 'ViTables Users\' Guide'
+copyright = '2013, Vicent Mas'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -178,8 +178,8 @@ latex_paper_size = 'a4'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'UsersGuide.tex', u'ViTables Users\' Guide Documentation',
-   u'Vicent Mas', 'manual'),
+  ('index', 'UsersGuide.tex', 'ViTables Users\' Guide Documentation',
+   'Vicent Mas', 'manual'),
 ]
 
 latex_elements = {'babel': '\\usepackage[english]{babel}', 'classoptions': ', openany'}
@@ -211,8 +211,8 @@ latex_domain_indices = False
 # -- Options for PDF output via rst2pdf --------------------------------------------------
 
 pdf_documents = [
-  ('index', 'UsersGuide', u'ViTables Users\' Guide Documentation',
-   u'Vicent Mas'),
+  ('index', 'UsersGuide', 'ViTables Users\' Guide Documentation',
+   'Vicent Mas'),
 ]
 
 pdf_stylesheets = ['users_guide', 'kerning', 'a4']
@@ -240,6 +240,6 @@ pdf_page_template = 'cutePage'
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'vitablesusersguide', u'ViTables Users\' Guide Documentation',
-     [u'Vicent Mas'], 1)
+    ('index', 'vitablesusersguide', 'ViTables Users\' Guide Documentation',
+     ['Vicent Mas'], 1)
 ]

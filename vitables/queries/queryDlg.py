@@ -91,10 +91,10 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         # Attributes used by slot updateOKState
         #
         self.used_names = ft_names
-        self.col_names = info[u'col_names']
-        self.condvars = info[u'condvars']
+        self.col_names = info['col_names']
+        self.condvars = info['condvars']
         self.source_table = table
-        self.num_rows = info[u'nrows']
+        self.num_rows = info['nrows']
 
         #
         # Attributes used by slot composeQuery
@@ -103,13 +103,13 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         # the caller. If the dialog is accepted then these values will be
         # updated (in the slotAccept method) and returned to the caller
         self.query_info = {}
-        self.query_info[u'condition'] = u''
-        self.query_info[u'rows_range'] = ()
-        self.query_info[u'ft_name'] = u''
-        self.query_info[u'indices_field_name'] = u''
-        self.query_info[u'condvars'] = self.condvars
-        self.query_info[u'src_filepath'] = info[u'src_filepath']
-        self.query_info[u'src_path'] = info[u'src_path']
+        self.query_info['condition'] = ''
+        self.query_info['rows_range'] = ()
+        self.query_info['ft_name'] = ''
+        self.query_info['indices_field_name'] = ''
+        self.query_info['condvars'] = self.condvars
+        self.query_info['src_filepath'] = info['src_filepath']
+        self.query_info['src_path'] = info['src_path']
 
         #
         # Create the dialog and customise the content of some widgets
@@ -118,9 +118,9 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         self.setupUi(self)
 
         self.setWindowTitle(translate('QueryDlg', 'New query on table: {0}',
-            'A dialog caption').format(info[u'name']))
+            'A dialog caption').format(info['name']))
 
-        self.nameLE.setText(u'FilteredTable_{0}'.format(counter))
+        self.nameLE.setText('FilteredTable_{0}'.format(counter))
 
         self.indicesColumnLE.setEnabled(0)
 
@@ -129,19 +129,19 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             self.queryLE.setText(initial_query)
 
         # Fill the combos
-        operators = [u'&', u'|', u'~', u'<', u'<=', u'==', u'!=', u'>', u'>=', 
-            u'+', u'-', u'*', u'/', u'**', u'%']
+        operators = ['&', '|', '~', '<', '<=', '==', '!=', '>', '>=', 
+            '+', '-', '*', '/', '**', '%']
         self.operatorsComboBox.insertItems(0, operators)
-        functions = [u'where', u'sin', u'cos', u'tan', u'arcsin', u'arccos', 
-            u'arctan', u'arctan2', u'sinh', u'cosh', u'tanh', 
-            u'arcsinh', u'arccosh', u'arctanh', u'log', u'log10', u'log1p', 
-            u'exp', u'expm1', u'sqrt', 
-            u'real', u'imag', u'complex']
+        functions = ['where', 'sin', 'cos', 'tan', 'arcsin', 'arccos', 
+            'arctan', 'arctan2', 'sinh', 'cosh', 'tanh', 
+            'arcsinh', 'arccosh', 'arctanh', 'log', 'log10', 'log1p', 
+            'exp', 'expm1', 'sqrt', 
+            'real', 'imag', 'complex']
         self.functionsComboBox.insertItems(0, functions)
-        sorted_fields = [field for field in info[u'valid_fields']]
+        sorted_fields = [field for field in info['valid_fields']]
         sorted_fields.sort()
         self.columnsComboBox.insertItems(0, sorted_fields)
-        self.rstopLE.setText(u'{0}'.format(info[u'nrows']))
+        self.rstopLE.setText('{0}'.format(info['nrows']))
 
         whatsthis_button = self.buttonBox.button(QtGui.QDialogButtonBox.Help)
         whatsthis_button.setText("&What's this")
@@ -190,7 +190,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         :Parameter operator: is the operator in the combobox current item
         """
-        self.queryLE.insert(u' {0} '.format(operator))
+        self.queryLE.insert(' {0} '.format(operator))
 
 
     @QtCore.pyqtSlot("QString", name="on_columnsComboBox_activated")
@@ -206,7 +206,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         :Parameter field_id: is the field identifier in the combobox current item
         """
-        self.queryLE.insert(field_id.split(u' ')[0])
+        self.queryLE.insert(field_id.split(' ')[0])
 
 
     @QtCore.pyqtSlot("QString", name="on_functionsComboBox_activated")
@@ -220,29 +220,29 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         :Parameter text: is the text of the combobox current item
         """
 
-        name2call = {u'where': u'where(B, N, N)', 
-            u'sin': u'sin(F|C)', 
-            u'cos': u'cos(F|C)', 
-            u'tan': u'tan(F|C)', 
-            u'arcsin': u'arcsin(F|C)', 
-            u'arccos': u'arccos(F|C)', 
-            u'arctan': u'arctan(F|C)', 
-            u'arctan2': u'arctan2(F, F)', 
-            u'sinh': u'sinh(F|C)', 
-            u'cosh': u'cosh(F|C)', 
-            u'tanh': u'tanh(F|C)', 
-            u'arcsinh': u'arcsinh(F|C)', 
-            u'arccosh': u'arccosh(F|C)', 
-            u'arctanh': u'arctanh(F|C)', 
-            u'log': u'log(F|C)', 
-            u'log10': u'log10(F|C)', 
-            u'log1p': u'log1p(F|C)', 
-            u'exp': u'exp(F|C)', 
-            u'expm1': u'expm1(F|C)', 
-            u'sqrt': u'sqrt(F|C)', 
-            u'real': u'real(C)', 
-            u'imag': u'imag(C)', 
-            u'complex': u'complex(F, F)'
+        name2call = {'where': 'where(B, N, N)', 
+            'sin': 'sin(F|C)', 
+            'cos': 'cos(F|C)', 
+            'tan': 'tan(F|C)', 
+            'arcsin': 'arcsin(F|C)', 
+            'arccos': 'arccos(F|C)', 
+            'arctan': 'arctan(F|C)', 
+            'arctan2': 'arctan2(F, F)', 
+            'sinh': 'sinh(F|C)', 
+            'cosh': 'cosh(F|C)', 
+            'tanh': 'tanh(F|C)', 
+            'arcsinh': 'arcsinh(F|C)', 
+            'arccosh': 'arccosh(F|C)', 
+            'arctanh': 'arctanh(F|C)', 
+            'log': 'log(F|C)', 
+            'log10': 'log10(F|C)', 
+            'log1p': 'log1p(F|C)', 
+            'exp': 'exp(F|C)', 
+            'expm1': 'expm1(F|C)', 
+            'sqrt': 'sqrt(F|C)', 
+            'real': 'real(C)', 
+            'imag': 'imag(C)', 
+            'complex': 'complex(F, F)'
             }
         self.queryLE.insert(name2call[text])
 
@@ -311,7 +311,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         # Check the condition.
         # If it is an empty string the OK button is not enabled
         condition = self.queryLE.text()
-        if condition.isspace() or (condition in [None, u'']):
+        if condition.isspace() or (condition in [None, '']):
             status_ok = False
 
         # Check the range values
@@ -394,16 +394,16 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         if not self.checkConditionSyntax(condition):
             return
 
-        self.query_info[u'condition'] = condition
+        self.query_info['condition'] = condition
 
         # Get the table name and the name of the column with indices (if any)
-        self.query_info[u'ft_name'] = self.nameLE.text()
+        self.query_info['ft_name'] = self.nameLE.text()
         if self.indicesColumnLE.isEnabled():
-            self.query_info[u'indices_field_name'] = \
+            self.query_info['indices_field_name'] = \
                 self.indicesColumnLE.text()
 
         # Get the range and convert it into a Python range
-        self.query_info[u'rows_range'] = (
+        self.query_info['rows_range'] = (
            numpy.array(self.rstartLE.text()).astype(numpy.int64) - 1,
            numpy.array(self.rstopLE.text()).astype(numpy.int64),
            numpy.array(self.rstep.text()).astype(numpy.int64))

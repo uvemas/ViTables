@@ -230,7 +230,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         # Startup page
-        if self.initial_prefs['Startup/startupWorkingDir'] == u'last':
+        if self.initial_prefs['Startup/startupWorkingDir'] == 'last':
             self.lastDirCB.setChecked(True)
         else:
             self.lastDirCB.setChecked(False)
@@ -246,7 +246,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.sampleTE.setStyleSheet(u"background-color: {0}".
             format(self.initial_prefs['Logger/Paper'].name()))
 
-        self.workspaceLabel.setStyleSheet(u'background-color: {0}'.
+        self.workspaceLabel.setStyleSheet('background-color: {0}'.
             format(self.initial_prefs['Workspace/Background'].color().name()))
 
         index = self.stylesCB.findText(\
@@ -308,9 +308,9 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         if cb_on:
-            self.new_prefs['Startup/startupWorkingDir'] = u'last'
+            self.new_prefs['Startup/startupWorkingDir'] = 'last'
         else:
-            self.new_prefs['Startup/startupWorkingDir'] = u'home'
+            self.new_prefs['Startup/startupWorkingDir'] = 'home'
 
 
     @QtCore.pyqtSlot("bool", name="on_restoreCB_toggled")

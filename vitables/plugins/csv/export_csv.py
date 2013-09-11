@@ -131,7 +131,7 @@ class ExportToCSV(QtCore.QObject):
         current = self.vtgui.dbs_tree_view.currentIndex()
         if current:
             leaf = self.vtgui.dbs_tree_model.nodeFromIndex(current)
-            if leaf.node_kind in (u'group', u'root group'):
+            if leaf.node_kind in ('group', 'root group'):
                 enabled = False
 
         self.export_action.setEnabled(enabled)
@@ -179,7 +179,7 @@ class ExportToCSV(QtCore.QObject):
                 # Update the working directory
                 working_dir = file_selector.directory().canonicalPath()
             else:  # Cancel clicked
-                filepath = working_dir = u''
+                filepath = working_dir = ''
         finally:
             add_header = False
             if is_table:
@@ -272,7 +272,7 @@ class ExportToCSV(QtCore.QObject):
             out_handler = open(filepath, 'w')
             if add_header:
                 header = \
-                    reduce(lambda x, y: u'{0}, {1}'.format(x, y), leaf.colnames)
+                    reduce(lambda x, y: '{0}, {1}'.format(x, y), leaf.colnames)
                 # Ensure consistency with numpy.savetxt i.e. use \n line breaks
                 out_handler.write(header + '\n')
             chunk_size = 10000

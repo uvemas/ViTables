@@ -105,7 +105,7 @@ def findTS(leaf, node_kind):
     elif (leaf.atom.type in time_types) and \
     (len(leaf.shape) < 3) and \
     (leaf.atom.shape == ()) and \
-    (node_kind != u'vlarray'): 
+    (node_kind != 'vlarray'): 
         return 'pytables_ts'
     else:
         return None
@@ -166,7 +166,7 @@ def datetimeFormat():
     def_dtformat = '%c' 
     try:
         config.read(\
-            os.path.join(os.path.dirname(__file__), u'time_format.ini'))
+            os.path.join(os.path.dirname(__file__), 'time_format.ini'))
         datetime_format = config.get('Timeseries', 'strftime')
     except (IOError, ConfigParser.Error):
         datetime_format = def_dtformat

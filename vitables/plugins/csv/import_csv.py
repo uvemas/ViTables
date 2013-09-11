@@ -278,7 +278,7 @@ def askForHelp(first_line):
         """ a table header or regular data?""", 'Message box text')
     itext = ''
     try:
-        dtext = reduce(lambda x, y: u'{0}, {1}'.format(x, y), first_line)
+        dtext = reduce(lambda x, y: '{0}, {1}'.format(x, y), first_line)
     except TypeError:
         # If first_line has only one field reduce raises a TypeError
         dtext = first_line.tostring()
@@ -548,7 +548,7 @@ class ImportCSV(QtCore.QObject):
         try:
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
-            dest_filepath = os.path.join(dirname, u'{0}.h5'.format(root))
+            dest_filepath = os.path.join(dirname, '{0}.h5'.format(root))
             if isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
@@ -634,7 +634,7 @@ class ImportCSV(QtCore.QObject):
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = u"imported_{0}".format(kind)
             atitle = \
-                u'Source CSV file {0}'.format(os.path.basename(filepath))
+                'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createTable('/', dataset_name, descr, 
                 title=atitle, filters=io_filters, expectedrows=nrows)
 
@@ -689,7 +689,7 @@ class ImportCSV(QtCore.QObject):
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = u"imported_{0}".format(kind)
             atitle = \
-                u'Source CSV file {0}'.format(os.path.basename(filepath))
+                'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createEArray('/', dataset_name, atom, 
                 array_shape, title=atitle, filters=io_filters, 
                 expectedrows=nrows)
@@ -744,7 +744,7 @@ class ImportCSV(QtCore.QObject):
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = u"imported_{0}".format(kind)
             atitle = \
-                u'Source CSV file {0}'.format(os.path.basename(filepath))
+                'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createCArray('/', dataset_name, atom, 
                 array_shape, title=atitle, filters=io_filters)
 
@@ -804,7 +804,7 @@ class ImportCSV(QtCore.QObject):
                 if dbdoc is None:
                     return
                 array_name = u"imported_{0}".format(kind)
-                title = u'Imported from CSV file {0}'.\
+                title = 'Imported from CSV file {0}'.\
                     format(os.path.basename(filepath))
                 dbdoc.h5file.createArray('/', array_name, data, title=title)
                 dbdoc.h5file.flush()
