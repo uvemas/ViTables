@@ -275,7 +275,7 @@ class AttrEditor(object):
 
         # Get rid of deleted attributes
         if 'TITLE' in self.edited_attrs:
-            all_attrs = frozenset(self.asi._v_attrnamesuser + [u"TITLE"])
+            all_attrs = frozenset(self.asi._v_attrnamesuser + ["TITLE"])
         else:
             all_attrs = frozenset(self.asi._v_attrnamesuser)
         edited_attrs_names = frozenset([self.edited_attrs[row][0] 

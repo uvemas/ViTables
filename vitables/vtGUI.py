@@ -806,7 +806,7 @@ class VTGUI(QtGui.QMainWindow):
         for window in windows_list:
             title = window.windowTitle()
             if counter < 10:
-                action = wmenu.addAction(u"&{0:d} {1}".format(counter, title))
+                action = wmenu.addAction("&{0:d} {1}".format(counter, title))
                 wmenu.action_group.addAction(action)
             elif counter == 10:
                 wmenu.addSeparator()
@@ -814,7 +814,7 @@ class VTGUI(QtGui.QMainWindow):
                     translate('VTGUI', "&More...", 'A Windows submenu'))
                 action_subgroup = QtGui.QActionGroup(submenu)
             elif counter < 36:
-                atext = u"&{0} {1}".format(chr(counter + ord("@") - 10), title)
+                atext = "&{0} {1}".format(chr(counter + ord("@") - 10), title)
                 action = submenu.addAction(atext)
                 action_subgroup.addAction(action)
 

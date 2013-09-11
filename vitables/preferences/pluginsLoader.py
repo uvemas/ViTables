@@ -215,9 +215,9 @@ class PluginsLoader(object):
         except (ImportError, ValueError):
             self.untrack(UID)
             if finding_failed:
-                print(u"\nError: plugin {0} cannot be found.".format(name))
+                print("\nError: plugin {0} cannot be found.".format(name))
             else:
-                print(u"\nError: plugin {0} cannot be loaded.".format(name))
+                print("\nError: plugin {0} cannot be loaded.".format(name))
             return
         except KeyError:
             self.logger.error('Enabled module can not be loaded')
@@ -232,7 +232,7 @@ class PluginsLoader(object):
             cls = getattr(module, class_name)
         except AttributeError:
             self.untrack(UID)
-            print(u"\nError: module {0} is not a valid plugin.".format(name))
+            print("\nError: module {0} is not a valid plugin.".format(name))
             return
 
         # Load the plugin
@@ -245,7 +245,7 @@ class PluginsLoader(object):
             self.loaded_plugins[UID] = instance
         except:
             self.untrack(UID)
-            print(u"\nError: plugin {0} cannot be loaded.".format(name))
+            print("\nError: plugin {0} cannot be loaded.".format(name))
             vitables.utils.formatExceptionInfo()
             return
 

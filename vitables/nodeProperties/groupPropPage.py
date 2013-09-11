@@ -106,7 +106,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
         table = self.nchildrenTable
         table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
-        table.setStyleSheet(u"background-color: {0}".format(background.name()))
+        table.setStyleSheet("background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()
         self.children_model.setHorizontalHeaderLabels([
             translate('GroupPropPage', 'Child name', 

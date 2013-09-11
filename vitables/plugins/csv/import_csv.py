@@ -632,7 +632,7 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = u"imported_{0}".format(kind)
+            dataset_name = "imported_{0}".format(kind)
             atitle = \
                 'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createTable('/', dataset_name, descr, 
@@ -687,7 +687,7 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = u"imported_{0}".format(kind)
+            dataset_name = "imported_{0}".format(kind)
             atitle = \
                 'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createEArray('/', dataset_name, atom, 
@@ -742,7 +742,7 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = u"imported_{0}".format(kind)
+            dataset_name = "imported_{0}".format(kind)
             atitle = \
                 'Source CSV file {0}'.format(os.path.basename(filepath))
             dataset = dbdoc.h5file.createCArray('/', dataset_name, atom, 
@@ -803,7 +803,7 @@ class ImportCSV(QtCore.QObject):
                 dbdoc = self.createDestFile(filepath)
                 if dbdoc is None:
                     return
-                array_name = u"imported_{0}".format(kind)
+                array_name = "imported_{0}".format(kind)
                 title = 'Imported from CSV file {0}'.\
                     format(os.path.basename(filepath))
                 dbdoc.h5file.createArray('/', array_name, data, title=title)

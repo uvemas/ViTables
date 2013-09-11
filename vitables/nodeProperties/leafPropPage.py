@@ -108,7 +108,7 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
             # QtGui.QPalette.Window constant is 10
             bg_name = table.palette().brush(10).color().name()
-            table.setStyleSheet(u"background-color: {0}".format(bg_name))
+            table.setStyleSheet("background-color: {0}".format(bg_name))
             self.fields_model = QtGui.QStandardItemModel()
             self.fields_model.setHorizontalHeaderLabels([
                 translate('LeafPropPage', 'Field name', 

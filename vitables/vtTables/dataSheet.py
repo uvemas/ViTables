@@ -78,7 +78,7 @@ class DataSheet(QtGui.QMdiSubWindow):
             title = str(leaf.title, 'utf_8')
         else:
             title = leaf.title
-        wtitle = u"{0}\t{1}".format(self.dbt_leaf.name, title)
+        wtitle = "{0}\t{1}".format(self.dbt_leaf.name, title)
         self.setWindowTitle(wtitle)
         self.setWindowIcon(self.dbt_leaf.icon)
 

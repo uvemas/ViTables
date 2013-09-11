@@ -9,6 +9,8 @@ python3-support branch: u'some text' has been replaced with 'some text'.
 
 python3-support branch: calls to unicode() replaced with calls to str()
 
+python3-support branch: remaining old style unicode literals removed.
+
 ** September 03, 2013 **
 Bug #22 has been fixed.
 

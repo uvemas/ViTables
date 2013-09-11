@@ -243,7 +243,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.sampleTE.setCurrentFont(self.initial_prefs['Logger/Font'])
         self.sampleTE.setTextColor(self.initial_prefs['Logger/Text'])
         self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
-        self.sampleTE.setStyleSheet(u"background-color: {0}".
+        self.sampleTE.setStyleSheet("background-color: {0}".
             format(self.initial_prefs['Logger/Paper'].name()))
 
         self.workspaceLabel.setStyleSheet('background-color: {0}'.

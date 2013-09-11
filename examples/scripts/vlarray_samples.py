@@ -98,10 +98,10 @@ vlarray9.append("aaana")
 # Unicode variable length strings
 vlarray10 = fileh.createVLArray(root, 'vlarray10', tables.VLUnicodeAtom(), 
     "Variable Length Unicode String")
-vlarray10.append(u"aaana")
-vlarray10.append(u"")   # The empty string
-vlarray10.append(u"asd")
-vlarray10.append(u"para\u0140lel")
+vlarray10.append("aaana")
+vlarray10.append("")   # The empty string
+vlarray10.append("asd")
+vlarray10.append("para\u0140lel")
 
 # Still more vlarrays...
 N = 100
