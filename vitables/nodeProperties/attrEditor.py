@@ -126,7 +126,7 @@ def checkValue(dtype, str_value):
     # Catches unexpected results from conversions
     # Examples: numpy.array('-23').astype('unint8') -> mismatch dtype
     # or numpy.array('99999').astype('int8') -> overflow
-    if unicode(new_array[()]) != str_value:
+    if str(new_array[()]) != str_value:
         raise RuntimeWarning
     # If no errors are found return the original value
     return str_value

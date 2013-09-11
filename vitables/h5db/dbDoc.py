@@ -203,7 +203,7 @@ class DBDoc(QtCore.QObject):
         Create a hidden group for storing cut nodes.
         """
 
-        group_name = '_p_' + unicode(uuid.uuid4())
+        group_name = '_p_' + str(uuid.uuid4())
         self.hidden_group = '/' + group_name
         self.h5file.createGroup('/', group_name, 'Hide cut nodes')
         self.h5file.flush()

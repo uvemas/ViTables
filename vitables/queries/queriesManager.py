@@ -49,7 +49,7 @@ def getTableInfo(table):
     """
     info = {}
     info['nrows'] = table.nrows
-    info['src_filepath'] = unicode(table._v_file.filename)
+    info['src_filepath'] = table._v_file.filename
     info['src_path'] = table._v_pathname
     info['name'] = table._v_name
     # Fields info: top level fields names, flat fields shapes and types

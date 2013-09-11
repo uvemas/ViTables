@@ -1261,7 +1261,7 @@ class VTApp(QtCore.QObject):
         libs_versions = {
             'title': translate('VTApp', 'Version Numbers',
                 'Caption of the Versions dialog'),
-            'Python': reduce(lambda x,y: '.'.join([unicode(x), unicode(y)]), 
+            'Python': reduce(lambda x,y: '.'.join([str(x), str(y)]), 
                 sys.version_info[:3]),
             'PyTables': tables.__version__ ,
             'NumPy': tables.numpy.__version__,

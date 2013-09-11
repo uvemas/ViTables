@@ -100,7 +100,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
             self.typeLE.setText(info.node_type)
 
         # Number of children label
-        self.nchildrenLE.setText(unicode(len(info.hanging_nodes)))
+        self.nchildrenLE.setText(str(len(info.hanging_nodes)))
 
         # The group's children table
         table = self.nchildrenTable

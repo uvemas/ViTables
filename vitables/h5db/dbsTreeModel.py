@@ -1139,7 +1139,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             if index.isValid():
                 filepath = self.data(index, QtCore.Qt.UserRole)
                 nodepath = self.data(index, QtCore.Qt.UserRole+1)
-                row = unicode(index.row())
+                row = str(index.row())
                 stream.writeQString(filepath)
                 stream.writeQString(nodepath)
                 stream.writeQString(row)

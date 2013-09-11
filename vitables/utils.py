@@ -53,12 +53,12 @@ def toUnicode(thing):
     special care because it can show data with a wide variety of types.
     """
 
-    if isinstance(thing, str):
+    if isinstance(thing, bytes):
         # thing is a byte string, e.g. an attribute whose type is numpy.string_
         try:
-            return unicode(thing, DEFAULT_ENCODING)
+            return str(thing, encoding=DEFAULT_ENCODING)
         except TypeError:
-            return unicode(thing)
+            return thing
     else:
         # thing can be:
         # - a PyQt object or
@@ -67,7 +67,7 @@ def toUnicode(thing):
         # - a numpy scalar object, e.g. an attribute whose
         #   type is numpy.int32
         # - a pure Python object e.g. a sequence
-        return unicode(thing)
+        return thing
 
 
 def getVTApp():
@@ -313,7 +313,7 @@ def formatObjectContent(content):
     Reading a `VLArray` with `object` pseudo atom returns a list of
     Python objects. This method formats that objects as unicode strings.
     str(content) will return an `ASCII` string so it can be converted
-    into a unicode string via `unicode(str(content), 'latin-1')`.
+    into a unicode string via `str(content, encoding='latin-1')`.
     This will fail only if content is a unicode string with some ordinal
     not in `range(128)` (raising a UnicodeEncodeError) but no problem
     because in that case content is already a unicode string and will be
@@ -324,7 +324,7 @@ def formatObjectContent(content):
     """
 
     try:
-        text = unicode(str(content), 'latin-1')
+        text = str(content, encoding='latin-1')
     except UnicodeEncodeError:
         text = content
     return text

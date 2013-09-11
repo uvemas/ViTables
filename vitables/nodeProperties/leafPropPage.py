@@ -92,13 +92,13 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
         self.pathLE.setToolTip(info.nodepath)
         self.typeLE.setText(info.node_type)
 
-        self.dimLE.setText(unicode(len(info.shape)))
-        self.shapeLE.setText(unicode(info.shape))
+        self.dimLE.setText(str(len(info.shape)))
+        self.shapeLE.setText(str(info.shape))
         self.dtypeLE.setText(info.type)
         if info.filters.complib is None:
             self.compressionLE.setText('uncompressed')
         else:
-            self.compressionLE.setText(unicode(info.filters.complib, 
+            self.compressionLE.setText(str(info.filters.complib, 
                 'utf_8'))
 
         # Information about the fields of Table instances
@@ -134,12 +134,12 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
                     shape_item = QtGui.QStandardItem(
                         translate('LeafPropPage', '-'))
                 else:
-                    pathname_item = QtGui.QStandardItem(unicode(pathname, 
+                    pathname_item = QtGui.QStandardItem(str(pathname, 
                                                                 'utf_8'))
                     type_item = QtGui.QStandardItem(\
-                            unicode(info.columns_types[pathname], 'utf_8'))
+                            str(info.columns_types[pathname], 'utf_8'))
                     shape_item = QtGui.QStandardItem(\
-                                        unicode(info.columns_shapes[pathname]))
+                                        str(info.columns_shapes[pathname]))
                 self.fields_model.appendRow([pathname_item, type_item, 
                                             shape_item])
 
