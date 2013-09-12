@@ -88,10 +88,6 @@ class VTGUI(QtGui.QMainWindow):
 
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
-        # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
-
 
     def addComponents(self):
         """Add widgets to the main window.
@@ -130,7 +126,10 @@ class VTGUI(QtGui.QMainWindow):
 
         # Put the logging console in the bottom region of the window
         self.logger = logger.Logger(self.vsplitter)
-        # add self.logger as handler of main logger object
+        # Redirect standard output and standard error to a Logger instance
+        sys.stdout = self.logger
+        sys.stderr = self.logger
+       # add self.logger as handler of main logger object
         vitables_logger = logging.getLogger('vitables')
         stream_handler = logging.StreamHandler(self.logger)
         stream_handler.setFormatter(logging.Formatter(_GUI_LOG_FORMAT))
