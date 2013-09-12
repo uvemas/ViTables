@@ -139,7 +139,7 @@ class VTApp(QtCore.QObject):
         # The File Selector History
         self.file_selector_history = []
         if self.config.startup_working_directory != 'last':
-            self.config.last_working_directory = os.getcwdu()
+            self.config.last_working_directory = os.getcwd()
         self.file_selector_history.append(self.config.last_working_directory)
 
         # List of HelpBrowser instances in memory
@@ -1257,12 +1257,13 @@ class VTApp(QtCore.QObject):
         ``ViTables``.
         """
 
+        svi = sys.version_info
+        pyversion = '.'.join((str(svi.major), str(svi.minor), str(svi.micro)))
         # The libraries versions dictionary
         libs_versions = {
             'title': translate('VTApp', 'Version Numbers',
                 'Caption of the Versions dialog'),
-            'Python': reduce(lambda x,y: '.'.join([str(x), str(y)]), 
-                sys.version_info[:3]),
+            'Python': pyversion,
             'PyTables': tables.__version__ ,
             'NumPy': tables.numpy.__version__,
             'Qt': QtCore.qVersion(),
