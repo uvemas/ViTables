@@ -21,7 +21,7 @@
 
 """Several simple VLArrays."""
 
-import cPickle
+import pickle
 
 import tables
 import numpy
@@ -72,7 +72,7 @@ vlarray5.append(["456", "3"])
 # Binary strings
 vlarray6 = fileh.createVLArray(root, 'vlarray6', tables.UInt8Atom(), 
     "pickled bytes")
-data = cPickle.dumps((["123", "456"], "3"))
+data = pickle.dumps((["123", "456"], "3"))
 vlarray6.append(numpy.ndarray(buffer=data, dtype=numpy.uint8, shape=len(data)))
 
 # The next is a way of doing the same than before
@@ -111,9 +111,9 @@ vlarray11 = fileh.createVLArray(root, 'vlarray11',
     tables.Float64Atom(shape=shape), "ragged array of arrays")
 
 k = 0
-for i in xrange(N):
+for i in range(N):
     l = []
-    for j in xrange(numpy.random.randint(N)):
+    for j in range(numpy.random.randint(N)):
         l.append(numpy.random.randn(*shape))
         k += 1
     vlarray11.append(l)
