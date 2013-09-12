@@ -68,7 +68,7 @@ class DBsTreeView(QtGui.QTreeView):
         self.setItemDelegate(NodeItemDelegate(self))
         self.setObjectName('dbs_tree_view')
 
-        # The frame especification
+        # The frame specification
         self.frame_style = {'shape': self.frameShape(),
             'shadow': self.frameShadow(),
             'lwidth': self.lineWidth(),

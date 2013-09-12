@@ -171,7 +171,7 @@ def createIcons(large_icons, small_icons, icons_dict):
         icon = QtGui.QIcon()
         if name in large_icons:
             pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR, '22x22',u'{0}.png').format(name))
+                os.path.join(ICONDIR, '22x22', '{0}.png').format(name))
             pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
