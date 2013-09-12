@@ -228,7 +228,7 @@ class Config(QtCore.QSettings):
 
         # Check the entry format and value
         styles = QtGui.QStyleFactory.keys()
-        if not isinstance(entry, unicode):
+        if not isinstance(entry, str):
             return default_value
         elif entry not in styles:
             return default_value
@@ -324,7 +324,7 @@ class Config(QtCore.QSettings):
         key = 'Startup/startupWorkingDir'
         default_value = 'home'
         setting_value = self.value(key)
-        if isinstance(setting_value, unicode):
+        if isinstance(setting_value, str):
             return setting_value
         else:
             return default_value
@@ -338,7 +338,7 @@ class Config(QtCore.QSettings):
         key = 'Startup/lastWorkingDir'
         default_value = vitables.utils.getHomeDir()
         setting_value = self.value(key)
-        if isinstance(setting_value, unicode):
+        if isinstance(setting_value, str):
             return setting_value
         else:
             return default_value
@@ -426,9 +426,9 @@ class Config(QtCore.QSettings):
         try:
             self.setValue(key, value)
             if self.status():
-                raise configException.ConfigFileIOException, \
-                    '{0}={1}'.format(key, value)
-        except configException.ConfigFileIOException, inst:
+                raise configException.ConfigFileIOException( \
+                    '{0}={1}'.format(key, value))
+        except configException.ConfigFileIOException as inst:
             print(inst.error_message)
 
 

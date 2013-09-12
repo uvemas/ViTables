@@ -357,22 +357,22 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         syntax_ok = True
         try:
             self.source_table.willQueryUseIndexing(condition, self.condvars)
-        except SyntaxError, error:
+        except SyntaxError as error:
             syntax_ok = False
             print(translate('QueryDlg', """\nError: {0}""",
                 'A logger info message').format(error.__doc__))
             vitables.utils.formatExceptionInfo()
-        except NameError, error:
+        except NameError as error:
             syntax_ok = False
             print(translate('QueryDlg', """\nError: {0}""",
                 'A logger info message').format(error.__doc__))
             vitables.utils.formatExceptionInfo()
-        except ValueError, error:
+        except ValueError as error:
             syntax_ok = False
             print(translate('QueryDlg', """\nError: {0}""",
                 'A logger info message').format(error.__doc__))
             vitables.utils.formatExceptionInfo()
-        except TypeError, error:
+        except TypeError as error:
             syntax_ok = False
             print(translate('QueryDlg', """\nError: {0}""",
                 'A logger info message').format(error.__doc__))

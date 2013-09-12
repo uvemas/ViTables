@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** September 12, 2013 **
 python3-support: fixed minor errors in several modules.
 
+python3-support: fixed some syntax errors in several modules.
+
 ** September 11, 2013 **
 Local branch python3-support has been added.
 

@@ -65,7 +65,7 @@ class Query(QtCore.QObject):
     """
 
 
-    query_completed = QtCore.pyqtSignal(bool, unicode, name="queryCompleted")
+    query_completed = QtCore.pyqtSignal(bool, str, name="queryCompleted")
 
 
     def __init__(self, tmp_h5file, table_uid, table, qdescr):
