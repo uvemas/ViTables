@@ -34,10 +34,10 @@ fileout = "nested_samples.h5"
 colors = tables.Enum(['red', 'green', 'blue'])
 
 def write(h5file, desc, indexed):
-    fileh = tables.openFile(h5file, "w")
-    table = fileh.createTable(fileh.root, 'table', desc)
+    fileh = tables.open_file(h5file, "w")
+    table = fileh.create_table(fileh.root, 'table', desc)
     #for colname in indexed:
-    #    table.colinstances[colname].createIndex()
+    #    table.colinstances[colname].create_index()
 
     row = table.row
     for i in range(10):

@@ -43,17 +43,17 @@ class Particle(tables.IsDescription):
     pressure    = tables.FloatCol(pos=3)
 
 # Open a file in "w"rite mode
-fileh = tables.openFile("large_table.h5", mode = "w")
+fileh = tables.open_file("large_table.h5", mode = "w")
 
 # Get the HDF5 root group
 root = fileh.root
 # Create a group
-group = fileh.createGroup(root, "Particles")
+group = fileh.create_group(root, "Particles")
 
 # Now, create and fill the tables in Particles group
 filters = tables.Filters(complevel=1, complib='lzo', shuffle=1)
 nrows = 10**7
-table = fileh.createTable("/Particles", "TParticle", Particle, 
+table = fileh.create_table("/Particles", "TParticle", Particle, 
     "Sample set of particles ", filters, expectedrows = nrows)
 
 # Number of rows in buffer

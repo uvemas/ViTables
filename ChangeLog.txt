@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** September 16, 2013 **
 Fixed a bug in the cut node operation.
 
+The example scripts have been migrated to PyTables3 syntax with pt2to3.
+
 ** September 03, 2013 **
 Bug #22 has been fixed.
 
