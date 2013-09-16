@@ -146,6 +146,7 @@ def addToLeafContextMenu(actions):
     context_menu = getVTGui().leaf_node_cm
     addToMenu(context_menu, actions)
 
+
 def addToGroupContextMenu(actions):
     """Add entries at the end of the group context menu.
 
@@ -159,6 +160,7 @@ def addToGroupContextMenu(actions):
 
     context_menu = getVTGui().group_node_cm
     addToMenu(context_menu, actions)
+
 
 def getSelectedLeaf():
     """Get selected database object.

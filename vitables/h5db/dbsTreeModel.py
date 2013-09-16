@@ -390,7 +390,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             parent = self.parent(index)
             position = index.row()
             self.removeRows(position, parent=parent)
-            current = self.nodeFromIndex(self.currentIndex())
+            # If position > 0 then the above sibling will be selected
+            # else the parent group will be selected
+            if position == 0:
+                current = parent
+            else:
+                current = self.index(position - 1, 0, parent)
             self.vtgui.dbs_tree_view.selectNode(current)
         finally:
             QtGui.qApp.restoreOverrideCursor()

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 16, 2013 **
+Fixed a bug in the cut node operation.
+
 ** September 03, 2013 **
 Bug #22 has been fixed.
 
