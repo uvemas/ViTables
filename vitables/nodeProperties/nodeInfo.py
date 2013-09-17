@@ -72,17 +72,17 @@ class NodeInfo(object):
     def __init__(self, node_item):
         """Collects information about a given node.
 
-        Some PyTables string attributes are regular Python strings instead
+        Some PyTables2.X string attributes are regular Python strings instead
         of unicode strings and have to be explicitely converted to unicode.
         """
 
         self.node = node_item.node
 
         # The hosting File instance, filepath, filename and opening mode
-        self.filepath = vitables.utils.toUnicode(node_item.filepath)
+        self.filepath = str(node_item.filepath)
         self.filename = os.path.basename(self.filepath)
         self.h5file = self.node._v_file
-        mode = vitables.utils.toUnicode(self.h5file.mode)
+        mode = str(self.h5file.mode)
         if mode == 'a':
             self.mode = 'append'
         elif mode == 'r':
@@ -95,8 +95,8 @@ class NodeInfo(object):
         # or unimplemented
         self.node_type = node_item.node_kind
         self.file_type = self.format + ', ' + self.size
-        self.nodename = vitables.utils.toUnicode(node_item.name)
-        self.nodepath = vitables.utils.toUnicode(node_item.nodepath)
+        self.nodename = str(node_item.name)
+        self.nodepath = str(node_item.nodepath)
 
         # The attributes set instance
         self.asi = self.node._v_attrs
@@ -195,7 +195,7 @@ class NodeInfo(object):
 
         if self.node_type.count('array'):
             try:
-                return vitables.utils.toUnicode(self.node.atom.type)
+                return str(self.node.atom.type)
             except AttributeError:
                 return None
         elif self.node_type == 'table':
@@ -232,7 +232,7 @@ class NodeInfo(object):
         """The type of data object read from the `tables.Leaf` node."""
 
         try:
-            return vitables.utils.toUnicode(self.node.flavor)
+            return str(self.node.flavor)
         except AttributeError:
             return None
 
@@ -293,7 +293,7 @@ class NodeInfo(object):
 
         try:
             coldescrs = self.node.coldescrs
-            return dict((k, v.shape) for (k, v) in coldescrs.iteritems())
+            return dict((k, v.shape) for (k, v) in coldescrs.items())
         except AttributeError:
             return {}
 
@@ -328,7 +328,7 @@ class NodeInfo(object):
         if self.target:
             try:
                 link_type = 'external'
-                vitables.utils.toUnicode(self.node.extfile)
+                self.node.extfile
             except AttributeError:
                 link_type = 'soft'
             return link_type

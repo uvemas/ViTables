@@ -42,7 +42,7 @@ import vitables.utils
 from vitables.nodeProperties import attrEditor
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dynamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_AttrPropDialog = \
@@ -100,8 +100,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         """
 
         # Number of attributes label
-        self.sattrLE.setText(\
-            vitables.utils.toUnicode(len(info.system_attrs)))
+        self.sattrLE.setText(str(len(info.system_attrs)))
 
         # Table of system attributes
         self.sysTable.horizontalHeader().setResizeMode(\
@@ -120,7 +119,6 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         bg_brush = self.sysTable.palette().brush(QtGui.QPalette.Window)
         base_brush = self.sysTable.palette().brush(QtGui.QPalette.Base)
         for name, value in info.system_attrs.items():
-            name = vitables.utils.toUnicode(name)
             name_item = QtGui.QStandardItem(name)
             name_item.setEditable(False)
             name_item.setBackground(bg_brush)
@@ -146,15 +144,15 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             if isinstance(value, tables.Filters):
                 dtype_name = 'tables.filters.Filters'
             elif hasattr(value, 'shape'):
-                dtype_name = vitables.utils.toUnicode(value.dtype.name)
+                dtype_name = value.dtype.name
             else:
                 # Attributes can be scalar Python objects (PyTables <1.1)
                 # or non scalar Python objects, e.g. sequences
-                dtype_name = vitables.utils.toUnicode(type(value))
+                dtype_name = str(type(value))
             dtype_item = QtGui.QStandardItem(dtype_name)
             dtype_item.setEditable(False)
             dtype_item.setBackground(bg_brush)
-            value_item = QtGui.QStandardItem(vitables.utils.toUnicode(value))
+            value_item = QtGui.QStandardItem(str(value))
             value_item.setEditable(False)
             value_item.setBackground(bg_brush)
             # When the database is in read-only mode the TITLE attribute
@@ -162,7 +160,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             if (name == 'TITLE') and (info.mode != 'read-only'):
                 # The position of the TITLE value in the table
                 self.title_row = self.sysattr_model.rowCount()
-                self.title_before = vitables.utils.toUnicode(value_item.text())
+                self.title_before = value_item.text()
                 value_item.setEditable(True)
                 value_item.setBackground(base_brush)
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
@@ -178,8 +176,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         self.user_attrs_before = []
 
         # Number of attributes label
-        self.uattrLE.setText(\
-            vitables.utils.toUnicode(len(info.user_attrs)))
+        self.uattrLE.setText(str(len(info.user_attrs)))
 
         # Table of user attributes
         self.userTable.horizontalHeader().\
@@ -203,7 +200,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         bg_brush = self.userTable.palette().brush(QtGui.QPalette.Window)
         base_brush = self.userTable.palette().brush(QtGui.QPalette.Base)
         for name, value in info.user_attrs.items():
-            name_item = QtGui.QStandardItem(vitables.utils.toUnicode(name))
+            name_item = QtGui.QStandardItem(name)
             dtype_item = QtGui.QStandardItem()
             dtypes_combo = QtGui.QComboBox()
             dtypes_combo.addItems(dtypes_list)
@@ -211,7 +208,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             # In PyTables >=1.1 scalar attributes are stored as numarray arrays
             # In PyTables >= 2.0 scalar attributes are stored as numpy arrays
             if hasattr(value, 'shape'):
-                dtype_name = vitables.utils.toUnicode(value.dtype.name)
+                dtype_name = value.dtype.name
                 if dtype_name.startswith('string'):
                     dtype_name = 'string'
                 if dtype_name.startswith('unicode'):
@@ -220,7 +217,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
                 # Attributes can be scalar Python objects (PyTables <1.1)
                 # or non scalar Python objects, e.g. sequences
                 dtype_name = 'python'
-            value_item = QtGui.QStandardItem(vitables.utils.toUnicode(value))
+            value_item = QtGui.QStandardItem(str(value))
             self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo.setCurrentIndex(dtypes_combo.findText(dtype_name))
             self.userTable.setIndexWidget(dtype_item.index(), dtypes_combo)
@@ -230,9 +227,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             if dtype_name.startswith('complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.
-                if (vitables.utils.toUnicode(value)[0], \
-                    vitables.utils.toUnicode(value)[-1]) == ('(', ')'):
-                    value_item.setText(vitables.utils.toUnicode(value)[1:-1])
+                if (str(value)[0], str(value)[-1]) == ('(', ')'):
+                    value_item.setText(str(value)[1:-1])
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
             if (hasattr(value, 'shape') and value.shape != ())or\

@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** September 17, 2013 **
 python3-support: the tests folder has been removed.
 
+python3-support: the node Properties dialog has been partially reworked.
+
 ** September 12, 2013 **
 python3-support: fixed minor errors in several modules.
 
