@@ -688,10 +688,9 @@ class VTApp(QtCore.QObject):
         # The list of top level items to be removed.
         # The temporary database should be closed at quit time only
         open_files = len(self.gui.dbs_tree_model.root.children) - 1
-        rows_range = range(0, open_files)
+        rows_range = list(range(0, open_files).__reversed__())
         # Reversing is a must because, if we start from 0, row positions
         # change as we delete rows
-        rows_range.reverse()
         for row in rows_range:
             index = self.gui.dbs_tree_model.index(row, 0, QtCore.QModelIndex())
             self.fileClose(index)
@@ -708,7 +707,7 @@ class VTApp(QtCore.QObject):
         if self.doc_browser:
             self.doc_browser.exitBrowser()
         # Save current configuration
-        self.config.saveConfiguration()
+##        self.config.saveConfiguration()
         # Close every user opened file
         self.fileCloseAll()
         # Close the temporary database

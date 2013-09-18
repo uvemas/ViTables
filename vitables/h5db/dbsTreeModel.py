@@ -691,17 +691,19 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         # Iterator over the top level items (i.e. root group nodes) of
         # the tree view
         i = iter(range(0, self.rowCount(parent)))
-        if not i:
+        try:
+            next(i)
+        except StopIteration:
             return
 
         # Recurse the tree view
         try:
-            child = self.index(i.next(), 0, parent)
+            child = self.index(next(i), 0, parent)
             while child:
                 yield child
                 for item in self.traverseTree(child):
                     yield item
-                child = self.index(i.next(), 0, parent)
+                child = self.index(next(i), 0, parent)
         except StopIteration:
             pass
 

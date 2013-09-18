@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 18, 2013 **
+python3-support: the use of range has been reviewed.
+
 ** September 17, 2013 **
 python3-support: the tests folder has been removed.
 

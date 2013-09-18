@@ -243,7 +243,7 @@ def homogeneousTableInfo(input_handler, first_line, data):
     # scalar array and cannot be iterated so we reshape it
     if first_line.shape == ():
         first_line = first_line.reshape(1,)
-    indices = range(0, first_line.shape[0])
+    indices = list(range(0, first_line.shape[0]))
 
     if has_header:
         if data.dtype.name.startswith('string'):

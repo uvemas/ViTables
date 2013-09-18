@@ -59,7 +59,7 @@ table = fileh.createTable("/Particles", "TParticle", Particle,
 # Number of rows in buffer
 nrowsbuf = 10000
 # Fill the table with 10**N particles
-for i in xrange(0, nrows, nrowsbuf):
+for i in range(0, nrows, nrowsbuf):
     if i + nrowsbuf > nrows:
         nrapp = nrows - i
     else:
@@ -76,4 +76,4 @@ for i in xrange(0, nrows, nrowsbuf):
 fileh.close()
 
 tsec = round((time.time() - t0), 3)
-print 'Last of the run: %s s' % (tsec)
+print('Last of the run: {0} s'.format(tsec))
