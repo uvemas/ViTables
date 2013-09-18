@@ -112,6 +112,11 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
         file_selector.setLabelText(QtGui.QFileDialog.Accept, 
             settings['label'])
 
+    # Uncomment next line if you want native dialogs. Removing the comment
+    # comes at the price of an annoying KDE warning in your console. See the
+    # thread "A die warning message" (July, 2011) in the pyQt4 mailing list
+    # for details.
+    #file_selector.setOption(QtGui.QFileDialog.DontUseNativeDialog)
     return file_selector
 
 

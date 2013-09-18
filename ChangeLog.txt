@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** September 18, 2013 **
 python3-support: the use of range has been reviewed.
 
+python3-support: a workaround for an annoying KDE bug has been applied.
+
 ** September 17, 2013 **
 python3-support: the tests folder has been removed.
 

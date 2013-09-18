@@ -273,7 +273,7 @@ class QueriesManager(QtCore.QObject):
         model_rows = self.dbt_model.rowCount(QtCore.QModelIndex())
         tmp_index = self.dbt_model.index(model_rows - 1, 0, 
             QtCore.QModelIndex())
-        rows_range = list(range(0, self.dbt_model.rowCount(tmp_index)).__reversed()__)
+        rows_range = list(range(0, self.dbt_model.rowCount(tmp_index)).__reversed__())
         for row in rows_range:
             index = self.dbt_model.index(row, 0, tmp_index)
             self.vtapp.nodeDelete(index, force=True)

@@ -610,7 +610,7 @@ class VTApp(QtCore.QObject):
             fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen, 
                 'file_mode': QtGui.QFileDialog.ExistingFile, 
                 'history': self.file_selector_history, 
-                'label': 
+                'label':
                     translate('VTApp', 'Open', 'Accept text for QFileDialog')}
             filepath, working_dir = vitables.utils.getFilepath(
                 self.gui, 
