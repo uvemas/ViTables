@@ -30,6 +30,7 @@ import sys
 import os
 import traceback
 import locale
+import logging
 
 import numpy
 
@@ -43,7 +44,6 @@ from vitables.vtSite import ICONDIR, DOCDIR
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
 DEFAULT_ENCODING = locale.getdefaultlocale()[1]
-
 
 def toUnicode(thing):
     """Convert byte strings into unicode strings using the default locale.
@@ -114,7 +114,7 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
 
     # Uncomment next line if you want native dialogs. Removing the comment
     # comes at the price of an annoying KDE warning in your console. See the
-    # thread "A die warning message" (July, 2011) in the pyQt4 mailing list
+    # thread "A dire warning message" (July, 2011) in the pyQt4 mailing list
     # for details.
     #file_selector.setOption(QtGui.QFileDialog.DontUseNativeDialog)
     return file_selector
@@ -296,15 +296,6 @@ def formatArrayContent(content):
         except UnicodeDecodeError:
             pass
     
-    elif isinstance(content, numpy.ndarray):
-        if content.dtype.char == 'S':
-            sep = ', '
-            try:
-                unicode_content = [('%s' % col).decode(DEFAULT_ENCODING)
-                                for col in content]
-                return '[%s]' % sep.join(unicode_content)
-            except UnicodeDecodeError:
-                pass
     ret = numpy.array2string(content, separator=',')
     return ret
 
@@ -316,20 +307,14 @@ def formatObjectContent(content):
     Used in `VLArrays` with `object` pseudo atoms.
 
     Reading a `VLArray` with `object` pseudo atom returns a list of
-    Python objects. This method formats that objects as unicode strings.
-    str(content) will return an `ASCII` string so it can be converted
-    into a unicode string via `str(content, encoding='latin-1')`.
-    This will fail only if content is a unicode string with some ordinal
-    not in `range(128)` (raising a UnicodeEncodeError) but no problem
-    because in that case content is already a unicode string and will be
-    returned as is. So this method always returns the read object as a
-    unicode string.
+    Python objects. This method formats that objects as unicode strings
+    via str(content).
 
     :Parameter content: the Python list contained in the view cell
     """
 
     try:
-        text = str(content, encoding='latin-1')
+        text = str(content)
     except UnicodeEncodeError:
         text = content
     return text
@@ -340,13 +325,22 @@ def formatStringContent(content):
     Nicely format the contents of a view (table widget) cell.
 
     Used in `VLArrays` with `vlstring` or `vlunicode` pseudo atoms.
-    If the pseudo atom is `vlstring` the method return a string. If
+    If the pseudo atom is `vlstring` the method return a encoded string. If
     the pseudo atom is `vlunicode` then a unicode string is returned.
 
     :Parameter content: the Python list contained in the view cell
     """
 
-    return content
+    # Content is a encoded string i.e. a sequence of raw bytes
+    if isinstance(content, bytes):
+        try:
+            fcontent = str(content, encoding=DEFAULT_ENCODING)
+            return fcontent
+        except UnicodeDecodeError:
+            pass
+    elif isinstance(content, str):
+        # Content is a unicode string
+        return content
 
 
 def formatExceptionInfo(limit=1):

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 19, 2013 **
+python3-support: data presentation has been debugged and simplified.
+
 ** September 18, 2013 **
 python3-support: the use of range has been reviewed.
 
