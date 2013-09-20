@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 20, 2013 **
+data presentation of EArray has been debugged and simplified.
+
 ** September 16, 2013 **
 Fixed a bug in the cut node operation.
 

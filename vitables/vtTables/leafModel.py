@@ -74,6 +74,8 @@ class LeafModel(QtCore.QAbstractTableModel):
         if isinstance(self.data_source, tables.Table):
             # Leaf is a PyTables table
             self.numcols = len(self.data_source.colnames)
+        elif isinstance(self.data_source, tables.EArray):
+            self.numcols = 1
         else:
             # Leaf is some kind of PyTables array
             shape = self.data_source.shape
