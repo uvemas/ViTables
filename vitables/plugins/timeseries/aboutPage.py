@@ -30,7 +30,7 @@ dialog selector tree.
 __docformat__ = 'restructuredtext'
 
 import os.path
-import ConfigParser
+import configparser
 import datetime
 
 from PyQt4 import QtGui
@@ -95,13 +95,13 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         self.save_button.setText('Save format')
 
         # Setup initial configuration
-        config = ConfigParser.RawConfigParser()
+        config = configparser.ConfigParser()
         def_tformat = '%c' 
         try:
             config.read(\
                 os.path.join(os.path.dirname(__file__), 'time_format.ini'))
-            self.tformat = config.get('Timeseries', 'strftime')
-        except (IOError, ConfigParser.Error):
+            self.tformat = config['Timeseries']['strftime']
+        except (IOError, configparser.Error):
             self.tformat = def_tformat
 
         self.tformat_editor.setText(self.tformat)
@@ -138,16 +138,13 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         self.today_label.setText(today)
 
 
-
-
     def saveFormat(self):
         """Slot for saving the entered time format.
         """
 
-        config = ConfigParser.RawConfigParser()
+        config = configparser.ConfigParser()
         filename = os.path.join(os.path.dirname(__file__), 'time_format.ini')
         config.read(filename)
-        config.set(\
-            'Timeseries', 'strftime', self.tformat_editor.text())
+        config['Timeseries']['strftime'] = self.tformat_editor.text()
         with open(filename, 'wb') as ini_file:
             config.write(ini_file)

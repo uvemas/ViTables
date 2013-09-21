@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 21, 2013 **
+python3-support: some modules regarding plugins have been debugged.
+
 ** September 19, 2013 **
 python3-support: data presentation has been debugged and simplified.
 

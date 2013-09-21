@@ -32,7 +32,7 @@ comment = 'Display time series in a human friendly format'
 
 import time
 import os
-import ConfigParser
+import configparser
 import datetime
 
 import tables
@@ -162,13 +162,13 @@ def datetimeFormat():
     """The format string to be used when rendering the time series.
     """
 
-    config = ConfigParser.RawConfigParser()
+    config = configparser.ConfigParser()
     def_dtformat = '%c' 
     try:
         config.read(\
             os.path.join(os.path.dirname(__file__), 'time_format.ini'))
-        datetime_format = config.get('Timeseries', 'strftime')
-    except (IOError, ConfigParser.Error):
+        datetime_format = config['Timeseries']['strftime']
+    except (IOError, configparser.Error):
         datetime_format = def_dtformat
     
     return datetime_format
@@ -191,7 +191,6 @@ class TSFormatter(object):
 
         self.vtapp = vitables.utils.getVTApp()
         self.vtapp.leaf_model_created.connect(self.customiseModel)
-
 
     def customiseModel(self, datasheet):
         """Inspect a leaf model and customise it if a time series is found.
@@ -406,7 +405,7 @@ class TSLeafModel(object):
         :Parameter content: the content of the table cell being formatted
         """
 
-        date = pd.Timestamp(long(content))
+        date = pd.Timestamp(int(content))
         try:
             return date.strftime(self.ts_format)
         except ValueError:

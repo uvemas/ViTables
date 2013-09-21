@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
@@ -76,7 +76,6 @@ def pluginDesc(mod_name, folder=None):
         finding_failed = True
         file_obj, filepath, desc = imp.find_module(mod_name, [folder])
         finding_failed = False
-#        module = imp.load_module(name, file_obj, filepath, desc)
         module = imp.load_source(mod_name, filepath, file_obj)
     except (ImportError, Exception) as e:
         # Warning! If the module being loaded is not a ViTables plugin
@@ -102,7 +101,6 @@ def pluginDesc(mod_name, folder=None):
         return desc
     except AttributeError:
         # then unexpected errors can occur
-        logger.debug('The module is not a plugin: {}'.format(mod_name))
         return False
 
     #######################################################
@@ -161,8 +159,6 @@ class PluginsLoader(object):
         self.all_plugins = {}
         self.loaded_plugins = {}
 
-        self.logger = getLogger()
-
         # Update plugins information: available plugins, disabled plugins
         self.register()
 
@@ -208,9 +204,10 @@ class PluginsLoader(object):
         try:
             plugin = self.all_plugins[UID]
             name = plugin['mod_name']
+            finding_failed = True
             file_obj, filepath, desc = \
                 imp.find_module(name, [plugin['folder']])
-    #        module = imp.load_module(name, file_obj, filepath, desc)
+            finding_failed = False
             module = imp.load_source(name, filepath, file_obj)
         except (ImportError, ValueError):
             self.untrack(UID)
