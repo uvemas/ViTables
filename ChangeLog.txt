@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** September 21, 2013 **
 python3-support: some modules regarding plugins have been debugged.
 
+python3-support: fixed a small bug in the timeseries plugin.
+
 ** September 19, 2013 **
 python3-support: data presentation has been debugged and simplified.
 
