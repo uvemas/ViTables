@@ -187,6 +187,9 @@ class AttrEditor(object):
         attribute type or out of range values are found then an error is
         reported. If the table is OK the node `ASI` is updated and the
         Properties dialog is closed.
+
+        The attributes checked here are those of self.edited_attrs dict so the
+        values are all string
         """
 
         # Error message for mismatching value/type pairs
@@ -244,6 +247,10 @@ class AttrEditor(object):
                 # Check the syntax of the Python expression
                 if not checkSyntax(value):
                     return (False, syntax_error.format(name))
+            elif dtype == 'string':
+                dtype = 'str'
+            elif dtype == 'bytes':
+                pass
             else:
                 # Format properly the string representation of value
                 # and check for dtype and overflow errors
@@ -268,7 +275,7 @@ class AttrEditor(object):
         """
         Update edited attributes.
 
-        This method is called when the user has succesfuly edited some
+        This method is called when the user has successfully edited some
         attribute in the Properties dialog. If it happens then this method
         updates the `ASI` of the inspected `PyTables` node.
         """
@@ -295,9 +302,12 @@ class AttrEditor(object):
 
             if dtype == 'python':
                 value = eval('{0}'.format(value))
+            elif dtype == 'bytes':
+                # Remove the prefix and enclosing quotes
+                value = value[2:-1]
+                value = numpy.array(value).astype(dtype)[()]
             else:
-                dtype_enc = dtype.encode('utf_8')
-                value = numpy.array(value).astype(dtype_enc)[()]
+                value = numpy.array(value).astype(dtype)[()]
 
             # Updates the ASI
             try:

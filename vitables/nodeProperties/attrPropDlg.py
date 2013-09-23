@@ -65,8 +65,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     user attributes in a tabular way.
 
     Beware that data types shown in the General page are `PyTables` data
-    types so we can deal with `enum`, `time64` and `pseudoatoms` (none of them
-    are supported by ``numpy``).
+    types so we can deal with `bytes`, `enum`, `time64` and `pseudoatoms`
+    (not all of them are supported by ``numpy``).
     However data types shown in the System and User attributes pages are
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
@@ -135,7 +135,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             # type(asi.test2) returns numpy.string_ 
             # isinstance(asi.test2, str) returns True
             # asi.test2.shape returns ()
-            # Beware that objects whose shape is () are not warrantied
+            # Beware that objects whose shape is () are not warranted
             # to be Python objects, for instance
             # x = numpy.array(3) ->
             # x.shape returns ()
@@ -195,12 +195,14 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # The Data Type cell is a combobox with static content
         dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 
             'uint32', 'uint64', 'float32', 'float64', 'complex64', 
-            'complex128', 'bool', 'string', 'unicode', 'python']
+            'complex128', 'bool', 'bytes', 'string', 'python']
 
+        # Brushes used for read-only and writable cells
         bg_brush = self.userTable.palette().brush(QtGui.QPalette.Window)
         base_brush = self.userTable.palette().brush(QtGui.QPalette.Base)
         for name, value in info.user_attrs.items():
             name_item = QtGui.QStandardItem(name)
+            value_item = QtGui.QStandardItem(str(value))
             dtype_item = QtGui.QStandardItem()
             dtypes_combo = QtGui.QComboBox()
             dtypes_combo.addItems(dtypes_list)
@@ -209,15 +211,14 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             # In PyTables >= 2.0 scalar attributes are stored as numpy arrays
             if hasattr(value, 'shape'):
                 dtype_name = value.dtype.name
-                if dtype_name.startswith('string'):
+                if dtype_name.startswith('bytes'):
+                    dtype_name = 'bytes'
+                elif dtype_name.startswith('str'):
                     dtype_name = 'string'
-                if dtype_name.startswith('unicode'):
-                    dtype_name = 'unicode'
             else:
                 # Attributes can be scalar Python objects (PyTables <1.1)
                 # or non scalar Python objects, e.g. sequences
                 dtype_name = 'python'
-            value_item = QtGui.QStandardItem(str(value))
             self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo.setCurrentIndex(dtypes_combo.findText(dtype_name))
             self.userTable.setIndexWidget(dtype_item.index(), dtypes_combo)
@@ -244,19 +245,19 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             value_item.setBackground(brush)
             self.user_attrs_before.append((name_item.text(), 
                 value_item.text(), dtypes_combo.currentText()))
-        self.user_attrs_before.sort()
-
+        self.user_attrs_before = sorted(self.user_attrs_before[:])
+ 
         # The group of buttons Add, Delete, What's This
         self.page_buttons = QtGui.QButtonGroup(self.userattrs_page)
         self.page_buttons.addButton(self.addButton, 0)
         self.page_buttons.addButton(self.delButton, 1)
         self.page_buttons.addButton(self.helpButton, 2)
-
+ 
         # If the database is in read-only mode user attributes cannot be edited
         if info.mode == 'read-only':
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
-
+ 
         self.helpButton.clicked.connect(QtGui.QWhatsThis.enterWhatsThisMode)
 
 
@@ -283,18 +284,18 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     def addAttribute(self):
         """Add a new attribute to the user's attributes table."""
 
-        name_item = QtGui.QStandardItem()
-        value_item = QtGui.QStandardItem()
-        dtype_item = QtGui.QStandardItem()
-        self.userattr_model.appendRow([name_item, value_item, dtype_item])
-
         # The Data Type cell is a combobox with static content
         dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 
             'uint32', 'uint64', 'float32', 'float64', 'complex64', 
-            'complex128', 'bool', 'string', 'unicode', 'python']
+            'complex128', 'bool', 'bytes', 'string', 'python']
+
+        name_item = QtGui.QStandardItem()
+        value_item = QtGui.QStandardItem()
+        dtype_item = QtGui.QStandardItem()
         dtypes_combo = QtGui.QComboBox()
         dtypes_combo.addItems(dtypes_list)
         dtypes_combo.setEditable(False)
+        self.userattr_model.appendRow([name_item, value_item, dtype_item])
         self.userTable.setIndexWidget(dtype_item.index(), dtypes_combo)
 
         # Start editing the proper cell. If not, clicking Add+Delete
@@ -382,8 +383,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             dtype_after = dtype_combo.currentText()
             self.user_attrs_after.append((name_after, value_after, 
                 dtype_after))
-        self.user_attrs_after.sort()
-        if self.user_attrs_before != self.user_attrs_after:
+        if sorted(self.user_attrs_before) != sorted(self.user_attrs_after) :
             return True
 
         return False
