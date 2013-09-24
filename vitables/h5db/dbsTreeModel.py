@@ -131,7 +131,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         The temporary database is not included in the list.
         """
 
-        filepaths = self.__openDBs.keys()
+        filepaths = list(self.__openDBs.keys())
         try:
             filepaths.remove(self.tmp_filepath)
         except ValueError:

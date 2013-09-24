@@ -22,7 +22,7 @@
 """
 This module manages the ``ViTables`` configuration.
 
-The module provides methods for reading and writting settings. Whether the 
+The module provides methods for reading and writing settings. Whether the 
 settings are stored in a plain text file or in a Windows registry is
 transparent for this module because it deals with settings via 
 `QtCore.QSettings`.
@@ -124,7 +124,7 @@ class Config(QtCore.QSettings):
         under the HKCU\Software\ViTables\__version__ key
         Mac OS X saves settings in a properties list stored in a
         standard location, either on a global or user basis (see
-        docstring.for more information).
+        docstring for more information).
 
         In all platforms QSettings format is NativeFormat and scope
         is UserScope.
@@ -224,16 +224,16 @@ class Config(QtCore.QSettings):
         default_value = self.default_style
 
         # Read the entry from the configuration file/registry
-        entry = self.value(key)
+        setting_value = self.value(key)
 
         # Check the entry format and value
         styles = QtGui.QStyleFactory.keys()
-        if not isinstance(entry, str):
+        if not isinstance(setting_value, str):
             return default_value
-        elif entry not in styles:
+        elif setting_value not in styles:
             return default_value
         else:
-            return entry
+            return setting_value
 
 
     def windowPosition(self):
@@ -316,6 +316,9 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
+
+
+    #TODO: remove this setting
     def startupWorkingDir(self):
         """
         Returns the `Startup working directory` setting.
@@ -516,7 +519,7 @@ class Config(QtCore.QSettings):
         self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
         # The list of enabled plugins
         self.writeValue('Plugins/Enabled', 
-            self.vtapp.plugins_mgr.enabled_plugins)
+                        self.vtapp.plugins_mgr.enabled_plugins)
         self.sync()
 
 
@@ -539,6 +542,7 @@ class Config(QtCore.QSettings):
         dbt_model = self.vtapp.gui.dbs_tree_model
         session_files_nodes = []
         filepaths = dbt_model.getDBList()
+
         for path in filepaths:
             mode = dbt_model.getDBDoc(path).mode
             # If a new file has been created during the current session
@@ -564,7 +568,7 @@ class Config(QtCore.QSettings):
         Settings dialog and `internal settings` to the rest of settings.
 
         At startup all settings will be loaded. At any time later the
-        `users settings` can be explicitely changed via Settings dialog.
+        `users settings` can be explicitly changed via Settings dialog.
 
         :Parameter config: a dictionary with the settings to be (re)loaded
         """

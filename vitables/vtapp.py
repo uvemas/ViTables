@@ -209,6 +209,7 @@ class VTApp(QtCore.QObject):
             'mode#@#filepath2#@#nodepath1#@#nodepath2, ...', ...]
         """
 
+        # Get the list of open files (temporary database is not included)
         for file_data in self.config.session_files_nodes:
             item = file_data.split('#@#')
             # item looks like [mode, filepath1, nodepath1, nodepath2, ...]
@@ -707,7 +708,7 @@ class VTApp(QtCore.QObject):
         if self.doc_browser:
             self.doc_browser.exitBrowser()
         # Save current configuration
-##        self.config.saveConfiguration()
+        self.config.saveConfiguration()
         # Close every user opened file
         self.fileCloseAll()
         # Close the temporary database

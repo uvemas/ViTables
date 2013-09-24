@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 24, 2013 **
+python3-support: several small typos have been fixed.
+
 ** September 23, 2013 **
 python3-support: added support for raw strings attributes.
 

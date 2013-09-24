@@ -92,7 +92,7 @@ def findTS(leaf, node_kind):
         coltypes = leaf.coltypes
         # Check for Pandas timeseries
         if pd and hasattr(attrs, 'index_kind') and \
-        (attrs.index_kind in (b'datetime64', b'datetime32')):
+        (attrs.index_kind in ('datetime64', 'datetime32')):
             return 'pandas_ts'
         # Check for scikits.timeseries timeseries
         if ts and hasattr(attrs, 'CLASS') and \
