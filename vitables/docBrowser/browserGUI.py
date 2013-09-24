@@ -289,7 +289,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         controller, :meth:`vitables.docBrowser.helpBrowser.HelpBrowser`.
         """
 
-        self.combo_history.activated[unicode].connect(\
+        self.combo_history.activated[str].connect(\
             self.browser.displaySrc)
 
         # This is the most subtle connection. It encompasses source
