@@ -33,8 +33,8 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
-from vitables.docBrowser import bookmarksDlg
-from vitables.docBrowser import browserGUI
+from vitables.docbrowser import bookmarksDlg
+from vitables.docbrowser import browserGUI
 
 translate = QtGui.QApplication.translate
 
@@ -88,7 +88,7 @@ class HelpBrowser(QtCore.QObject) :
 
         This slot is called when:
 
-            - :meth:`vitables.docBrowser.bookmarksDlg.BookmarksDlg.displayBookmark` is launched
+            - :meth:`vitables.docbrowser.bookmarksDlg.BookmarksDlg.displayBookmark` is launched
             - a new item is activated in the `History` combo
             - an entry is selected in the `Bookmarks` menu
 

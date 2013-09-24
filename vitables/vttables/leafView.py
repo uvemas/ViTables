@@ -39,8 +39,8 @@ import numpy
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-import vitables.vtTables.scrollBar as scrollBar
-import vitables.vtTables.leafDelegate as leafDelegate
+import vitables.vttables.scrollBar as scrollBar
+import vitables.vttables.leafDelegate as leafDelegate
 
 class LeafView(QtGui.QTableView):
     """

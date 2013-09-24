@@ -37,7 +37,7 @@ import numpy
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-import vitables.vtWidgets.renameDlg as renameDlg
+import vitables.vtwidgets.renameDlg as renameDlg
 from vitables.vtSite import ICONDIR, DOCDIR
 
 

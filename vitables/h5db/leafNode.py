@@ -30,8 +30,8 @@ import tables
 
 import vitables.utils
 from vitables.h5db import tnodeEditor
-from vitables.nodeProperties import nodeInfo
-from vitables.nodeProperties import leafPropDlg
+from vitables.nodeprops import nodeInfo
+from vitables.nodeprops import leafPropDlg
 
 class LeafNode(object):
     """

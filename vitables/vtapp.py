@@ -51,13 +51,13 @@ import vitables.h5db.dbsTreeView as dbsTreeView
 
 import vitables.queries.queriesManager as qmgr
 
-import vitables.vtWidgets.inputNodeName as inputNodeName
-import vitables.vtWidgets.renameDlg as renameDlg
+import vitables.vtwidgets.inputNodeName as inputNodeName
+import vitables.vtwidgets.renameDlg as renameDlg
 
-from vitables.docBrowser import helpBrowser
+from vitables.docbrowser import helpBrowser
 
-import vitables.vtTables.buffer as rbuffer
-import vitables.vtTables.dataSheet as dataSheet
+import vitables.vttables.buffer as rbuffer
+import vitables.vttables.dataSheet as dataSheet
 
 import vitables.vtGUI as vtGUI
 

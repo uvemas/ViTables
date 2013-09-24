@@ -21,7 +21,7 @@
 
 """
 A form with tables.Group information collected by the
-:mod:`vitables.nodeProperties.nodeInfo` module.
+:mod:`vitables.nodeprops.nodeInfo` module.
 """
 
 __docformat__ = 'restructuredtext'
@@ -63,7 +63,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
       describing a given node
     """
 
@@ -83,7 +83,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
 
         The page contains two groupboxes that are laid out vertically.
 
-        :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
           describing a given node
         """
 
