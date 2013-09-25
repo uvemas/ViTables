@@ -1,166 +1,166 @@
 ViTables ChangeLog
 ==================
 ** September 25, 2013 **
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 nodeInfo.py -> nodeinfo.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 linkPropDlg.py -> linkpropdlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 leafPropPage.py -> leafproppage.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 leafPropDlg.py -> leafpropdlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 groupPropPage.py -> groupproppage.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 groupPropDlg.py -> grouppropdlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 attrPropDlg.py -> attrpropdlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 attrEditor.py -> attreditor.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 tnodeEditor.py -> tnode_editor.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 tlinkEditor.py -> tlink_editor.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 rootGroupNode.py -> rootgroupnode.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 nodeItemDelegate.py -> nodeitemdelegate.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 linkNode.py -> linknode.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 leafNode.py -> leafnode.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 groupNode.py -> groupnode.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 dbsTreeView.py -> dbstreeview.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 dbsTreeModel.py -> dbstreemodel.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 bookmarksDlg.py -> bookmarksdlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 browserGUI.py -> browsergui.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 helpBrowser.py -> helpbrowser.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 dbDoc.py -> dbdoc.py
 
-python3-support: fixed a typo made during the renaming of vtgui.py module.
+fixed a typo made during the renaming of vtgui.py module.
 
-python3-support: removed some calls to methods non required with Python3.
+removed some calls to methods non required with Python3.
 
 ** September 24, 2013 **
-python3-support: several small typos have been fixed.
+several small typos have been fixed.
 
-python3-support: removed some non required code and fixed an small bug.
+removed some non required code and fixed an small bug.
 
-python3-support: refactoring package names to follow PEP 8.
+refactoring package names to follow PEP 8.
 docBrowser -> docbrowser
 
-python3-support: refactoring package names to follow PEP 8.
+refactoring package names to follow PEP 8.
 nodeProperties -> nodeprops
 
-python3-support: refactoring package names to follow PEP 8.
+refactoring package names to follow PEP 8.
 vtTables -> vttables
 
-python3-support: refactoring package names to follow PEP 8.
+refactoring package names to follow PEP 8.
 vtWidgets -> vtwidgets
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 vtSite -> vtsite
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 vtGUI -> vtgui
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 zoomCell -> zoom_cell
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 rename_dlg.py -> renamedlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 inputNodeName.py -> nodenamedlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 scrollBar.py -> scrollbar.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 leafView.py -> leaf_view.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 leafModel.py -> leaf_model.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 leafDelegate.py -> leaf_delegate.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 dataSheeet.py -> datasheet.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 queryDlg.py -> querydlg.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 queriesManager.py -> querymgr.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 pluginsLoader.py -> pluginsloader.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 configException.py -> cfgexception.py
 
-python3-support: refactoring module names to follow PEP 8.
+refactoring module names to follow PEP 8.
 aboutPage.py -> aboutpage.py
 
 ** September 23, 2013 **
-python3-support: added support for raw strings attributes.
+added support for raw strings attributes.
 
 ** September 21, 2013 **
-python3-support: some modules regarding plugins have been debugged.
+some modules regarding plugins have been debugged.
 
-python3-support: fixed a small bug in the timeseries plugin.
+fixed a small bug in the timeseries plugin.
 
 ** September 19, 2013 **
-python3-support: data presentation has been debugged and simplified.
+data presentation has been debugged and simplified.
 
 ** September 18, 2013 **
-python3-support: the use of range has been reviewed.
+the use of range has been reviewed.
 
-python3-support: a workaround for an annoying KDE bug has been applied.
+a workaround for an annoying KDE bug has been applied.
 
 ** September 17, 2013 **
-python3-support: the tests folder has been removed.
+the tests folder has been removed.
 
-python3-support: the node Properties dialog has been partially reworked.
+the node Properties dialog has been partially reworked.
 
 ** September 12, 2013 **
-python3-support: fixed minor errors in several modules.
+fixed minor errors in several modules.
 
-python3-support: fixed some syntax errors in several modules.
+fixed some syntax errors in several modules.
 
-python3-support: fixed the use of the logger console by the logging module.
+fixed the use of the logger console by the logging module.
 
-python3-support: new syntax used in a couple of methods in vtapp.py.
+new syntax used in a couple of methods in vtapp.py.
 
-python3-support: the examples directory has been updated.
+the examples directory has been updated.
 
 ** September 11, 2013 **
 Local branch python3-support has been added.
