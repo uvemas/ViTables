@@ -188,7 +188,7 @@ class DBDoc(QtCore.QObject):
         """
 
         try:
-            self.h5file.copyFile(dst_filepath.encode('utf_8'), overwrite=True)
+            self.h5file.copyFile(dst_filepath, overwrite=True)
         except tables.exceptions.HDF5ExtError:
             print(translate('DBDoc', 
                 """\nError: unable to save the file {0} as """

@@ -55,7 +55,7 @@ def getTableInfo(table):
     # Fields info: top level fields names, flat fields shapes and types
     info['col_names'] = frozenset(table.colnames)
     info['col_shapes'] = \
-        dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
+        dict((k, v.shape) for (k, v) in table.coldescrs.items())
     info['col_types'] = table.coltypes
     # Fields that can be queried
     info['condvars'] = {}

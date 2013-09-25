@@ -120,9 +120,7 @@ def checkValue(dtype, str_value):
     if dtype not in dtypes_map:
         return str_value
 
-    # astype() doesn't support unicode arguments
-    dtype_enc = dtype.encode('utf_8')
-    new_array = numpy.array(str_value).astype(dtype_enc)
+    new_array = numpy.array(str_value).astype(dtype)
     # Catches unexpected results from conversions
     # Examples: numpy.array('-23').astype('unint8') -> mismatch dtype
     # or numpy.array('99999').astype('int8') -> overflow

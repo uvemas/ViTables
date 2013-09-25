@@ -66,6 +66,8 @@ dbDoc.py -> dbdoc.py
 
 python3-support: fixed a typo made during the renaming of vtgui.py module.
 
+python3-support: removed some calls to methods non required with Python3.
+
 ** September 24, 2013 **
 python3-support: several small typos have been fixed.
 

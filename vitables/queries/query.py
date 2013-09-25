@@ -27,6 +27,7 @@ executes the query.
 """
 
 __docformat__ = 'restructuredtext'
+import logging
 
 import tables
 import numpy
@@ -119,7 +120,7 @@ class Query(QtCore.QObject):
         # description dictionary is needed. Int64 values are necessary
         # to keep full 64-bit indices
         ft_dict = \
-            {self.qdescr['indices_field_name'].encode('utf_8'): \
+            {self.qdescr['indices_field_name']: \
             tables.Int64Col(pos=-1)}
         ft_dict.update(src_dict)
         f_table = self.tmp_h5file.createTable(\
