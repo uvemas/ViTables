@@ -385,7 +385,7 @@ class VTGUI(QtGui.QMainWindow):
         actions['helpUsersGuide'] = QtGui.QAction(
             translate('VTGUI', "&User's Guide", 'Help -> Users Guide'), self, 
             shortcut=QtGui.QKeySequence.HelpContents, 
-            triggered=self.vtapp.helpbrowser, 
+            triggered=self.vtapp.helpBrowser, 
             icon=self.icons_dictionary['help-contents'], 
             statusTip=translate('VTGUI', "Open the ViTables User's Guide",
                     'Status bar text for the Help -> Users Guide action'))

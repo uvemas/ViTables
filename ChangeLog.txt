@@ -64,6 +64,8 @@ helpBrowser.py -> helpbrowser.py
 python3-support: refactoring module names to follow PEP 8.
 dbDoc.py -> dbdoc.py
 
+python3-support: fixed a typo made during the renaming of vtgui.py module.
+
 ** September 24, 2013 **
 python3-support: several small typos have been fixed.
 
