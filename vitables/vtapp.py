@@ -40,26 +40,26 @@ from PyQt4 import QtGui
 
 import vitables.utils
 import vitables.vtsplash
-from vitables.vtSite import ICONDIR
+from vitables.vtsite import ICONDIR
 
 from  vitables.preferences import vtconfig
-import vitables.preferences.pluginsLoader as pluginsLoader
+import vitables.preferences.pluginsloader as pluginsloader
 from  vitables.preferences import preferences
 
-import vitables.h5db.dbsTreeModel as dbsTreeModel
-import vitables.h5db.dbsTreeView as dbsTreeView
+import vitables.h5db.dbstreemodel as dbstreemodel
+import vitables.h5db.dbstreeview as dbstreeview
 
-import vitables.queries.queriesManager as qmgr
+import vitables.queries.querymgr as qmgr
 
-import vitables.vtwidgets.inputNodeName as inputNodeName
-import vitables.vtwidgets.renameDlg as renameDlg
+import vitables.vtwidgets.nodenamedlg as nodenamedlg
+import vitables.vtwidgets.renamedlg as renamedlg
 
-from vitables.docbrowser import helpBrowser
+from vitables.docbrowser import helpbrowser
 
 import vitables.vttables.buffer as rbuffer
-import vitables.vttables.dataSheet as dataSheet
+import vitables.vttables.datasheet as datasheet
 
-import vitables.vtGUI as vtGUI
+import vitables.vtgui as vtgui
 
 translate = QtGui.QApplication.translate
 
@@ -110,9 +110,9 @@ class VTApp(QtCore.QObject):
         # - setup the main window
         splash.drawMessage(translate('VTApp', 'Creating the GUI...',
             'A splash screen message'))
-        self.gui = vtGUI.VTGUI(self, vtconfig.getVersion())
-        dbs_tmodel = dbsTreeModel.DBsTreeModel(self)
-        dbsTreeView.DBsTreeView(self, dbs_tmodel)
+        self.gui = vtgui.VTGUI(self, vtconfig.getVersion())
+        dbs_tmodel = dbstreemodel.DBsTreeModel(self)
+        dbstreeview.DBsTreeView(self, dbs_tmodel)
 
         # The queries manager
         self.queries_mgr = qmgr.QueriesManager()
@@ -151,7 +151,7 @@ class VTApp(QtCore.QObject):
         # Some plugins modify datasets displaying so plugins must be loaded
         # before opening any file.
         self.plugins_mgr = \
-            pluginsLoader.PluginsLoader(self.config.enabled_plugins)
+            pluginsloader.PluginsLoader(self.config.enabled_plugins)
         self.plugins_mgr.loadAll()
         self.pluginsLoaded.emit()
 
@@ -504,7 +504,7 @@ class VTApp(QtCore.QObject):
                     trier_filename)
                 pattern = "[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
 
-            dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
+            dialog = renamedlg.RenameDlg(trier_filename, pattern, info)
             if dialog.exec_():
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
@@ -771,7 +771,7 @@ class VTApp(QtCore.QObject):
         # Create a view and announce it.
         # Announcing is potentially helpful for plugins in charge of
         # datasets customisations (for instance, additional formatting)
-        subwindow = dataSheet.DataSheet(index)
+        subwindow = datasheet.DataSheet(index)
         subwindow.show()
         self.leaf_model_created.emit(subwindow)
 
@@ -808,7 +808,7 @@ class VTApp(QtCore.QObject):
         parent = self.gui.dbs_tree_model.nodeFromIndex(current)
 
         # Get the new group name
-        dialog = inputNodeName.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(\
             translate('VTApp', 'Creating a new group', 'A dialog caption'), 
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n ', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 
@@ -865,7 +865,7 @@ class VTApp(QtCore.QObject):
         parent = child.parent
 
         # Get the new nodename
-        dialog = inputNodeName.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(\
             translate('VTApp', 'Renaming a node', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 
@@ -1157,7 +1157,7 @@ class VTApp(QtCore.QObject):
         """
         Open the documentation browser.
         """
-        self.doc_browser = helpBrowser.HelpBrowser()
+        self.doc_browser = helpbrowser.HelpBrowser()
 
 
     def helpAbout(self):

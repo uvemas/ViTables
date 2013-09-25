@@ -35,7 +35,7 @@ from PyQt4 import QtGui
 from PyQt4.uic import loadUiType
 
 import vitables.utils
-from vitables.vtSite import PLUGINSDIR
+from vitables.vtsite import PLUGINSDIR
 
 translate = QtGui.QApplication.translate
 

@@ -56,7 +56,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 import vitables.plugins
-from vitables.vtSite import PLUGINSDIR
+from vitables.vtsite import PLUGINSDIR
 from vitables.plugin_utils import getLogger
 
 translate = QtGui.QApplication.translate

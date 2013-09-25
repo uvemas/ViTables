@@ -17,5 +17,5 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["attrEditor", "attrPropDlg", "groupPropDlg", "groupPropPage", 
-    "leafPropDlg", "leafPropPage", "linkPropDlg", "nodeInfo"]
+__all__ = ["attreditor", "attrpropdlg", "grouppropdlg", "groupproppage", 
+    "leafpropdlg", "leafproppage", "linkpropdlg", "nodeinfo"]

@@ -21,7 +21,7 @@
 """
 A custom delegate for rendering selected cells.
 
-As explained in the leafView module the current cell must be rendered
+As explained in the leaf_view module the current cell must be rendered
 differently depending on the buffer being displayed. If the dataset row of the
 current/selected cell is in the range of rows being displayed then the cell
 should be rendered in the standard way. If it is not then it should always be

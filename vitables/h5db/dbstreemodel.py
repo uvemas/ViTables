@@ -24,8 +24,8 @@ This module defines a model (in the `MVC` sense) representing the tree of
 databases.
 
 The model is populated using data structures defined in the 
-:mod:`vitables.h5db.rootGroupNode`, :mod:`vitables.h5db.groupNode` and
-:mod:`vitables.h5db.leafNode` modules.
+:mod:`vitables.h5db.rootgroupnode`, :mod:`vitables.h5db.groupnode` and
+:mod:`vitables.h5db.leafnode` modules.
 """
 
 __docformat__ = 'restructuredtext'
@@ -42,13 +42,13 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
-from vitables.h5db import dbDoc
-from vitables.h5db import rootGroupNode
-from vitables.h5db import groupNode
-from vitables.h5db import leafNode
-from vitables.h5db import linkNode
-from vitables.h5db import tnodeEditor
-from vitables.h5db import tlinkEditor
+from vitables.h5db import dbdoc
+from vitables.h5db import rootgroupnode
+from vitables.h5db import groupnode
+from vitables.h5db import leafnode
+from vitables.h5db import linknode
+from vitables.h5db import tnode_editor
+from vitables.h5db import tlink_editor
 
 translate = QtGui.QApplication.translate
 
@@ -68,7 +68,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         # The underlying data structure used to populate the model
-        self.root = rootGroupNode.RootGroupNode(self)
+        self.root = rootgroupnode.RootGroupNode(self)
 
         super(DBsTreeModel, self).__init__(parent=None)
 
@@ -95,18 +95,18 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
 
     def mapDB(self, filepath, db_doc):
-        """Maps a file path with a :meth:`dbDoc.DBDoc` instance.
+        """Maps a file path with a :meth:`dbdoc.DBDoc` instance.
 
         :Parameters:
 
         - `filepath`: the full path of an open database.
-        - `db_doc`: a :meth:`dbDoc.DBDoc` instance.
+        - `db_doc`: a :meth:`dbdoc.DBDoc` instance.
         """
         self.__openDBs[filepath] = db_doc
 
 
     def removeMappedDB(self, filepath):
-        """Remove a :meth:`dbDoc.DBDoc` instance from the tracking dict.
+        """Remove a :meth:`dbdoc.DBDoc` instance from the tracking dict.
 
         :Parameter filepath: the full path of the database being untracked
         """
@@ -206,11 +206,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         is_open = False
         if self.checkOpening(filepath):
             # Open the database and add it to the tracking system
-            db_doc = dbDoc.DBDoc(filepath, mode)
+            db_doc = dbdoc.DBDoc(filepath, mode)
             self.mapDB(filepath, db_doc)
 
             # Populate the model with the dbdoc
-            root_node = rootGroupNode.RootGroupNode(self, db_doc, self.root)
+            root_node = rootgroupnode.RootGroupNode(self, db_doc, self.root)
             self.fdelta = frozenset([root_node])
             self.gdelta = frozenset([])
             self.ldelta = frozenset([])
@@ -256,7 +256,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
     def createDBDoc(self, filepath, is_tmp_db=False):
         """
-        Create a new, empty database (:meth:`vitables.h5db.dbDoc.DBDoc` 
+        Create a new, empty database (:meth:`vitables.h5db.dbdoc.DBDoc` 
         instance).
 
         :Parameters:
@@ -269,7 +269,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             QtGui.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
             # Create the dbdoc
             try:
-                db_doc = dbDoc.DBDoc(filepath, 'w', is_tmp_db)
+                db_doc = dbdoc.DBDoc(filepath, 'w', is_tmp_db)
             except:
                 db_doc = None
                 print(translate('DBsTreeModel', 
@@ -284,7 +284,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             self.mapDB(filepath, db_doc)
 
             # Populate the model with the dbdoc
-            root = rootGroupNode.RootGroupNode(self, db_doc, self.root, 
+            root = rootgroupnode.RootGroupNode(self, db_doc, self.root, 
                 is_tmp_db)
             self.fdelta = frozenset([root])
             self.gdelta = frozenset([])
@@ -420,9 +420,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Paste the copied/cut node in the destination database
             dbdoc = self.getDBDoc(parent.filepath)
             if self.ccni['target']:
-                editor = tlinkEditor.TLinkEditor(dbdoc)
+                editor = tlink_editor.TLinkEditor(dbdoc)
             else:
-                editor = tnodeEditor.TNodeEditor(dbdoc)
+                editor = tnode_editor.TNodeEditor(dbdoc)
 
             src_node = self.copiedNode()
             editor.paste(src_node, parent.node, childname)
@@ -603,9 +603,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             pt_node = self.getDBDoc(src_filepath).getNode(childpath)
             dbdoc = self.getDBDoc(src_filepath)
             if hasattr(pt_node, 'target'):
-                editor = tlinkEditor.TLinkEditor(dbdoc)
+                editor = tlink_editor.TLinkEditor(dbdoc)
             else:
-                editor = tnodeEditor.TNodeEditor(dbdoc)
+                editor = tnode_editor.TNodeEditor(dbdoc)
             movedname = editor.move(childpath, self.getDBDoc(dst_filepath), 
                 parentpath, nodename)
         finally:
@@ -901,7 +901,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         for expanding/collpasing the node. In principle, it is painted
         only if the node's children have been added.
         As we populate our model in a lazy way (see :meth:`lazyAddChildren`
-        and :meth:`vitables.h5db.dbsTreeView.DBsTreeView.updateExpandedGroup` 
+        and :meth:`vitables.h5db.dbstreeview.DBsTreeView.updateExpandedGroup` 
         methods) we want the decoration to be painted whenever the node has 
         children, *even if the children have not been added to the model yet 
         (so we can't use the underlying data store, we must use the data 
@@ -1036,13 +1036,13 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         for file_node in self.fdelta:
             self.root.insertChild(file_node, position)
         for name in self.gdelta:
-            group = groupNode.GroupNode(self, node, name)
+            group = groupnode.GroupNode(self, node, name)
             node.insertChild(group, position)
         for name in self.ldelta:
-            leaf = leafNode.LeafNode(self, node, name)
+            leaf = leafnode.LeafNode(self, node, name)
             node.insertChild(leaf, position)
         for name in self.links_delta:
-            link = linkNode.LinkNode(self, node, name)
+            link = linknode.LinkNode(self, node, name)
             node.insertChild(link, position)
         self.dataChanged.emit(parent, parent)
         self.endInsertRows()

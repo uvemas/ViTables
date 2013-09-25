@@ -95,9 +95,9 @@ import sys
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-from vitables.preferences import configException
+from vitables.preferences import cfgexception
 import vitables.utils
-import vitables.vttables.dataSheet as dataSheet
+import vitables.vttables.datasheet as datasheet
 
 translate = QtGui.QApplication.translate
 
@@ -429,9 +429,9 @@ class Config(QtCore.QSettings):
         try:
             self.setValue(key, value)
             if self.status():
-                raise configException.ConfigFileIOException( \
+                raise cfgexception.ConfigFileIOException( \
                     '{0}={1}'.format(key, value))
-        except configException.ConfigFileIOException as inst:
+        except cfgexception.ConfigFileIOException as inst:
             print(inst.error_message)
 
 
@@ -536,7 +536,7 @@ class Config(QtCore.QSettings):
         # Get the list of views
         workspace = self.vtapp.gui.workspace
         node_views = [window for window in workspace.subWindowList() \
-                        if isinstance(window, dataSheet.DataSheet)]
+                        if isinstance(window, datasheet.DataSheet)]
 
         # Get the list of open files (temporary database is not included)
         dbt_model = self.vtapp.gui.dbs_tree_model

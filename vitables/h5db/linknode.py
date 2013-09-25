@@ -29,9 +29,9 @@ __docformat__ = 'restructuredtext'
 import tables
 
 import vitables.utils
-from vitables.h5db import tlinkEditor
-from vitables.nodeprops import nodeInfo
-from vitables.nodeprops import linkPropDlg
+from vitables.h5db import tlink_editor
+from vitables.nodeprops import nodeinfo
+from vitables.nodeprops import linkpropdlg
 
 class LinkNode(object):
     """
@@ -117,12 +117,12 @@ class LinkNode(object):
     def editor(self):
         """Return an instance of `TLinkEditor`.
         """
-        return tlinkEditor.TLinkEditor(self.dbt_model.getDBDoc(self.filepath))
+        return tlink_editor.TLinkEditor(self.dbt_model.getDBDoc(self.filepath))
 
 
     def properties(self):
         """The Properties dialog for this node.
         """
 
-        info = nodeInfo.NodeInfo(self)
-        linkPropDlg.LinkPropDlg(info)
+        info = nodeinfo.NodeInfo(self)
+        linkpropdlg.LinkPropDlg(info)

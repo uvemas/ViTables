@@ -33,8 +33,8 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
-from vitables.docbrowser import bookmarksDlg
-from vitables.docbrowser import browserGUI
+from vitables.docbrowser import bookmarksdlg
+from vitables.docbrowser import browsergui
 
 translate = QtGui.QApplication.translate
 
@@ -71,7 +71,7 @@ class HelpBrowser(QtCore.QObject) :
         self.history = self.vtapp.config.hb_history
 
         # create the GUI
-        self.gui = browserGUI.HelpBrowserGUI(self)
+        self.gui = browsergui.HelpBrowserGUI(self)
 
         # The working directory used in QFileDialog calls
         self.working_dir = vitables.utils.getHomeDir()
@@ -88,7 +88,7 @@ class HelpBrowser(QtCore.QObject) :
 
         This slot is called when:
 
-            - :meth:`vitables.docbrowser.bookmarksDlg.BookmarksDlg.displayBookmark` is launched
+            - :meth:`vitables.docbrowser.bookmarksdlg.BookmarksDlg.displayBookmark` is launched
             - a new item is activated in the `History` combo
             - an entry is selected in the `Bookmarks` menu
 
@@ -203,7 +203,7 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         # update bookmarks list
-        edit_dlg = bookmarksDlg.BookmarksDlg(self.bookmarks, self.gui)
+        edit_dlg = bookmarksdlg.BookmarksDlg(self.bookmarks, self.gui)
         edit_dlg.exec_()
 
 

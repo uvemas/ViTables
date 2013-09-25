@@ -51,7 +51,7 @@ class BookmarksDlg(QtGui.QDialog):
 
     - `blist`: the bookmarks list
     - `hbgui`: an instance of 
-      :meth:`vitables.docbrowser.browserGUI.HelpBrowserGUI` (the parent widget)
+      :meth:`vitables.docbrowser.browsergui.HelpBrowserGUI` (the parent widget)
     """
 
     def __init__(self, blist, hbgui):

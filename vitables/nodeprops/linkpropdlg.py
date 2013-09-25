@@ -21,7 +21,7 @@
 
 """
 This module displays in a dialog the link information collected by the
-:mod:`vitables.nodeprops.nodeInfo` module.
+:mod:`vitables.nodeprops.nodeinfo` module.
 """
 
 __docformat__ = 'restructuredtext'
@@ -55,7 +55,7 @@ class LinkPropDlg(QtGui.QDialog, Ui_LinkPropDialog):
     This class displays a simple dialog that shows some properties of
     the selected link: name, path, type and target.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
       describing a given node
     """
 
@@ -80,7 +80,7 @@ class LinkPropDlg(QtGui.QDialog, Ui_LinkPropDialog):
     def fillPage(self, info):
         """Fill the dialog with info regarding the given link.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
           describing a given node
         """
 

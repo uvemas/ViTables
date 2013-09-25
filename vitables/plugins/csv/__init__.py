@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['aboutPage', 'export_csv', 'import_csv']
+__all__ = ['aboutpage', 'export_csv', 'import_csv']

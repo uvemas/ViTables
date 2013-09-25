@@ -31,10 +31,10 @@ __docformat__ = 'restructuredtext'
 from PyQt4 import QtCore, QtGui
 
 import vitables.utils
-import vitables.nodeprops.nodeInfo as nodeInfo
-import vitables.vtwidgets.zoomCell as zoomCell
-import vitables.vttables.leafModel as leafModel
-import vitables.vttables.leafView as leafView
+import vitables.nodeprops.nodeinfo as nodeinfo
+import vitables.vtwidgets.zoom_cell as zoom_cell
+import vitables.vttables.leaf_model as leaf_model
+import vitables.vttables.leaf_view as leaf_view
 import vitables.vttables.buffer as readBuffer
 
 class DataSheet(QtGui.QMdiSubWindow):
@@ -66,8 +66,8 @@ class DataSheet(QtGui.QMdiSubWindow):
             leaf = pt_node
 
         rbuffer = readBuffer.Buffer(leaf)
-        self.leaf_model = leafModel.LeafModel(rbuffer)
-        self.leaf_view = leafView.LeafView(self.leaf_model)
+        self.leaf_model = leaf_model.LeafModel(rbuffer)
+        self.leaf_view = leaf_view.LeafView(self.leaf_model)
 
         super(DataSheet, self).__init__(self.vtgui.workspace)
         self.setWidget(self.leaf_view)
@@ -155,7 +155,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # The title of the zoomed view
         node = self.dbt_leaf
-        info = nodeInfo.NodeInfo(node)
+        info = nodeinfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
             title = '{0}: {1}[{2}]'.format(node.name, col, 
@@ -164,5 +164,5 @@ class DataSheet(QtGui.QMdiSubWindow):
             title = '{0}: ({1},{2})'.format(node.name, 
                 tmodel.rbuffer.start + row + 1, column + 1)
 
-        zoomCell.ZoomCell(data, title, self.vtgui.workspace, 
+        zoom_cell.ZoomCell(data, title, self.vtgui.workspace, 
                           self.dbt_leaf)

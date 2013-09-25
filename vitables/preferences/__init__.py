@@ -17,5 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["configException", "pluginsLoader", "preferences", "settingsUI", 
-    "vtconfig"]
+__all__ = ["cfgexception", "pluginsloader", "preferences", "vtconfig"]

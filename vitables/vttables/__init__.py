@@ -17,4 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["buffer", "dataSheet", "leafDelegate", "leafModel", "leafView", "scrollBar"]
+__all__ = ["buffer", "datasheet", "leaf_delegate", "leaf_model", "leaf_view", "scrollbar"]

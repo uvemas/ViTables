@@ -29,9 +29,9 @@ __docformat__ = 'restructuredtext'
 import tables
 
 import vitables.utils
-from vitables.h5db import tnodeEditor
-from vitables.nodeprops import nodeInfo
-from vitables.nodeprops import leafPropDlg
+from vitables.h5db import tnode_editor
+from vitables.nodeprops import nodeinfo
+from vitables.nodeprops import leafpropdlg
 
 class LeafNode(object):
     """
@@ -111,12 +111,12 @@ class LeafNode(object):
     def editor(self):
         """Return an instance of `TNodeEditor`.
         """
-        return tnodeEditor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))
+        return tnode_editor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))
 
 
     def properties(self):
         """The Properties dialog for this node.
         """
 
-        info = nodeInfo.NodeInfo(self)
-        leafPropDlg.LeafPropDlg(info)
+        info = nodeinfo.NodeInfo(self)
+        leafpropdlg.LeafPropDlg(info)

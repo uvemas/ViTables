@@ -21,7 +21,7 @@
 
 """
 This module displays in a dialog the node information collected by the
-:mod:`vitables.nodeprops.nodeInfo` module.
+:mod:`vitables.nodeprops.nodeinfo` module.
 
 Users' attributes can be edited if the database has been opened in read-write 
 mode. Otherwise all shown information is read-only.
@@ -39,7 +39,7 @@ from PyQt4 import QtGui
 from PyQt4.uic import loadUiType
 
 import vitables.utils
-from vitables.nodeprops import attrEditor
+from vitables.nodeprops import attreditor
 
 translate = QtGui.QApplication.translate
 # This method of the PyQt4.uic module allows for dynamically loading user 
@@ -71,7 +71,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
       describing a given node
     """
 
@@ -95,7 +95,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     def fillSysAttrsPage(self, info):
         """Fill the page of system attributes.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
           describing a given node
         """
 
@@ -169,7 +169,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     def fillUserAttrsPage(self, info):
         """Fill the page of user attributes.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
           describing a given node
         """
 
@@ -405,7 +405,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             return  # This is mandatory!
 
         # Check the editable attributes
-        aeditor = attrEditor.AttrEditor(self.asi, self.title_after, 
+        aeditor = attreditor.AttrEditor(self.asi, self.title_after, 
             self.userTable)
         attrs_are_ok, error = aeditor.checkAttributes()
         # If the attributes pass correctness checks then update the
