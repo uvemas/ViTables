@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 import vitables.nodeprops.nodeInfo as nodeInfo
-import vitables.vtwidgets.zoomCell as zoomCell
+import vitables.vtwidgets.zoom_cell as zoom_cell
 import vitables.vttables.leafModel as leafModel
 import vitables.vttables.leafView as leafView
 import vitables.vttables.buffer as readBuffer
@@ -164,5 +164,5 @@ class DataSheet(QtGui.QMdiSubWindow):
             title = u'{0}: ({1},{2})'.format(node.name, 
                 tmodel.rbuffer.start + row + 1, column + 1)
 
-        zoomCell.ZoomCell(data, title, self.vtgui.workspace, 
+        zoom_cell.ZoomCell(data, title, self.vtgui.workspace, 
                           self.dbt_leaf)
