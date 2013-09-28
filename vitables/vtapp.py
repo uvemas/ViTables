@@ -54,7 +54,7 @@ import vitables.queries.queriesManager as qmgr
 import vitables.vtwidgets.inputNodeName as inputNodeName
 import vitables.vtwidgets.renameDlg as renameDlg
 
-from vitables.docBrowser import helpBrowser
+from vitables.docbrowser import helpBrowser
 
 import vitables.vttables.buffer as rbuffer
 import vitables.vttables.dataSheet as dataSheet

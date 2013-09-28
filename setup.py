@@ -95,7 +95,7 @@ setup(name = 'ViTables', # The name of the distribution
     'Operating System :: POSIX', 
     'Programming Language :: Python'], 
     scripts = ['scripts/vitables'], 
-    packages = ['vitables', 'vitables.docBrowser', 'vitables.h5db', 
+    packages = ['vitables', 'vitables.docbrowser', 'vitables.h5db', 
         'vitables.nodeprops', 'vitables.queries', 'vitables.preferences', 
         'vitables.vttables', 'vitables.vtwidgets', 'vitables.plugins', 
         'vitables.plugins.csv', 'vitables.plugins.timeseries'], 

@@ -46,7 +46,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
     :Parameters:
 
     - `browser`: an instance of the docs browser controller
-      :meth:`vitables.docBrowser.helpBrowser.HelpBrowser`
+      :meth:`vitables.docbrowser.helpBrowser.HelpBrowser`
     - `parent`: the parent widget.
     """
 
@@ -286,7 +286,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         Connect signals to slots.
 
         Signals coming from GUI are connected to slots in the docs browser
-        controller, :meth:`vitables.docBrowser.helpBrowser.HelpBrowser`.
+        controller, :meth:`vitables.docbrowser.helpBrowser.HelpBrowser`.
         """
 
         self.combo_history.activated[unicode].connect(\
