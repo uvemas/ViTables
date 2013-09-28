@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 import vitables.utils
 import vitables.nodeProperties.nodeInfo as nodeInfo
-import vitables.vtWidgets.zoomCell as zoomCell
+import vitables.vtwidgets.zoomCell as zoomCell
 import vitables.vtTables.leafModel as leafModel
 import vitables.vtTables.leafView as leafView
 import vitables.vtTables.buffer as readBuffer

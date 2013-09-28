@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 28, 2013 **
+The package vtWidgets has been renamed accordingly to PEP 8.
+
 ** September 20, 2013 **
 data presentation of EArray has been debugged and simplified.
 
