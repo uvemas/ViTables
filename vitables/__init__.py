@@ -19,5 +19,5 @@
 
 __version__ = '2.1'
 __all__ = ["docBrowser", "h5db", "logger", "nodeProperties", 
-    "plugins", "queries", "preferences", "vtTables", "vtwidgets",
+    "plugins", "queries", "preferences", "vttables", "vtwidgets",
     "utils", "vtSite", "vtapp", "vtGUI", "vtsplash"]

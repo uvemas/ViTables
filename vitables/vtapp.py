@@ -56,8 +56,8 @@ import vitables.vtwidgets.renameDlg as renameDlg
 
 from vitables.docBrowser import helpBrowser
 
-import vitables.vtTables.buffer as rbuffer
-import vitables.vtTables.dataSheet as dataSheet
+import vitables.vttables.buffer as rbuffer
+import vitables.vttables.dataSheet as dataSheet
 
 import vitables.vtGUI as vtGUI
 

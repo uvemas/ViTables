@@ -185,7 +185,7 @@ class TSFormatter(object):
         """Class constructor.
 
         Dynamically finds new instances of 
-        :meth:`vitables.vtTables.leafModel.LeafModel` and customises them if
+        :meth:`vitables.vttables.leafModel.LeafModel` and customises them if
         they contain time fields.
         """
 
@@ -196,7 +196,7 @@ class TSFormatter(object):
     def customiseModel(self, datasheet):
         """Inspect a leaf model and customise it if a time series is found.
 
-        :Parameter subwindow: the :meth:`vitables.vtTables.dataSheet.DataSheet`
+        :Parameter subwindow: the :meth:`vitables.vttables.dataSheet.DataSheet`
           instance being inspected
         """
 
@@ -286,7 +286,7 @@ class TSLeafModel(object):
     tables content is not homogeneous and columns with time series have to
     be formatted in a different way to the rest of columns.
     """
-    
+
 
 
     def __init__(self, model_info, ts_info, parent=None):

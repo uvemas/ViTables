@@ -97,7 +97,7 @@ setup(name = 'ViTables', # The name of the distribution
     scripts = ['scripts/vitables'], 
     packages = ['vitables', 'vitables.docBrowser', 'vitables.h5db', 
         'vitables.nodeProperties', 'vitables.queries', 'vitables.preferences', 
-        'vitables.vtTables', 'vitables.vtwidgets', 'vitables.plugins', 
+        'vitables.vttables', 'vitables.vtwidgets', 'vitables.plugins', 
         'vitables.plugins.csv', 'vitables.plugins.timeseries'], 
     package_data = {
         'vitables.nodeProperties': ['*.ui'], 

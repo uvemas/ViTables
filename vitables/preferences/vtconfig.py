@@ -97,7 +97,7 @@ from PyQt4 import QtGui
 
 from vitables.preferences import configException
 import vitables.utils
-import vitables.vtTables.dataSheet as dataSheet
+import vitables.vttables.dataSheet as dataSheet
 
 translate = QtGui.QApplication.translate
 
