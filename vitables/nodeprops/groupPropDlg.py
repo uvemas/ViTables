@@ -21,7 +21,7 @@
 
 """
 This module displays in a dialog tables.Group information collected by the
-:mod:`vitables.nodeProperties.nodeInfo` module.
+:mod:`vitables.nodeprops.nodeInfo` module.
 
 Users' attributes can be edited if the database has been opened in read-write 
 mode. Otherwise all shown information is read-only.
@@ -31,8 +31,8 @@ __docformat__ = 'restructuredtext'
 
 from PyQt4 import QtGui
 
-from vitables.nodeProperties import attrPropDlg
-from vitables.nodeProperties import groupPropPage
+from vitables.nodeprops import attrPropDlg
+from vitables.nodeprops import groupPropPage
 
 translate = QtGui.QApplication.translate
 
@@ -58,7 +58,7 @@ class GroupPropDlg(attrPropDlg.AttrPropDlg):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeProperties.nodeInfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
       describing a given node
     """
 

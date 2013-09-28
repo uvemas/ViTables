@@ -30,8 +30,8 @@ import tables
 
 import vitables.utils
 from vitables.h5db import tlinkEditor
-from vitables.nodeProperties import nodeInfo
-from vitables.nodeProperties import linkPropDlg
+from vitables.nodeprops import nodeInfo
+from vitables.nodeprops import linkPropDlg
 
 class LinkNode(object):
     """
