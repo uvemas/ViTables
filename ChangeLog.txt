@@ -11,6 +11,8 @@ The package docBrowser has been renamed accordingly to PEP 8.
 
 The module zoomCell has been renamed accordingly to PEP 8.
 
+The module inputNodeName has been renamed accordingly to PEP 8.
+
 ** September 20, 2013 **
 data presentation of EArray has been debugged and simplified.
 

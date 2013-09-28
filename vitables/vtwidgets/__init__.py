@@ -17,4 +17,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ["inputNodeName", "renameDlg", "zoom_cell"]
+__all__ = ["nodenamedlg", "renamedlg", "zoom_cell"]

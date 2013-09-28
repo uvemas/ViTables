@@ -51,8 +51,8 @@ import vitables.h5db.dbsTreeView as dbsTreeView
 
 import vitables.queries.queriesManager as qmgr
 
-import vitables.vtwidgets.inputNodeName as inputNodeName
-import vitables.vtwidgets.renameDlg as renameDlg
+import vitables.vtwidgets.nodenamedlg as nodenamedlg
+import vitables.vtwidgets.renamedlg as renamedlg
 
 from vitables.docbrowser import helpBrowser
 
@@ -503,7 +503,7 @@ class VTApp(QtCore.QObject):
                     trier_filename)
                 pattern = "[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
 
-            dialog = renameDlg.RenameDlg(trier_filename, pattern, info)
+            dialog = renamedlg.RenameDlg(trier_filename, pattern, info)
             if dialog.exec_():
                 trier_filename = dialog.action['new_name']
                 trier_filepath = os.path.join(trier_dirname, trier_filename)
@@ -808,7 +808,7 @@ class VTApp(QtCore.QObject):
         parent = self.gui.dbs_tree_model.nodeFromIndex(current)
 
         # Get the new group name
-        dialog = inputNodeName.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(\
             translate('VTApp', 'Creating a new group', 'A dialog caption'), 
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n ', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 
@@ -865,7 +865,7 @@ class VTApp(QtCore.QObject):
         parent = child.parent
 
         # Get the new nodename
-        dialog = inputNodeName.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(\
             translate('VTApp', 'Renaming a node', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n', 
                 'A dialog label').format(parent.filepath, parent.nodepath), 

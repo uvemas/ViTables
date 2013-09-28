@@ -36,7 +36,7 @@ import numpy
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-import vitables.vtwidgets.renameDlg as renameDlg
+import vitables.vtwidgets.renamedlg as renamedlg
 from vitables.vtSite import ICONDIR, DOCDIR
 
 
@@ -458,7 +458,7 @@ def getFinalName(nodename, sibling, pattern, info):
     nodename_in_sibling = nodename in sibling
     # If repeated, ask for a new nodename
     while nodename_in_sibling:
-        dialog = renameDlg.RenameDlg(nodename, pattern, info)
+        dialog = renamedlg.RenameDlg(nodename, pattern, info)
         if dialog.exec_():
             nodename = dialog.action['new_name']
             overwrite = dialog.action['overwrite']
