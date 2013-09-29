@@ -95,7 +95,7 @@ import sys
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-from vitables.preferences import configException
+from vitables.preferences import cfgexception
 import vitables.utils
 import vitables.vttables.datasheet as datasheet
 

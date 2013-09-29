@@ -19,6 +19,8 @@ The module configIOException has been renamed accordingly to PEP 8.
 
 Some minor changes done.
 
+Some changes that should have been added 2 commits ago :-(
+
 ** September 28, 2013 **
 The package vtWidgets has been renamed accordingly to PEP 8.
 
