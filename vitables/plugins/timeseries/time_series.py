@@ -185,7 +185,7 @@ class TSFormatter(object):
         """Class constructor.
 
         Dynamically finds new instances of 
-        :meth:`vitables.vttables.leafModel.LeafModel` and customises them if
+        :meth:`vitables.vttables.leaf_model.LeafModel` and customises them if
         they contain time fields.
         """
 
