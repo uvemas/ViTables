@@ -54,7 +54,7 @@ import vitables.queries.querymgr as qmgr
 import vitables.vtwidgets.nodenamedlg as nodenamedlg
 import vitables.vtwidgets.renamedlg as renamedlg
 
-from vitables.docbrowser import helpBrowser
+from vitables.docbrowser import helpbrowser
 
 import vitables.vttables.buffer as rbuffer
 import vitables.vttables.datasheet as datasheet
@@ -1157,7 +1157,7 @@ class VTApp(QtCore.QObject):
         """
         Open the documentation browser.
         """
-        self.doc_browser = helpBrowser.HelpBrowser()
+        self.doc_browser = helpbrowser.HelpBrowser()
 
 
     def helpAbout(self):

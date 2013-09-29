@@ -27,6 +27,8 @@ Modules in the nodeprops package have been renamed accordingly to PEP 8.
 
 Modules in the h5db package have been renamed accordingly to PEP 8.
 
+Modules in the docBrowser package have been renamed accordingly to PEP 8.
+
 ** September 28, 2013 **
 The package vtWidgets has been renamed accordingly to PEP 8.
 
