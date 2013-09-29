@@ -9,6 +9,8 @@ The module leafView has been renamed accordingly to PEP 8.
 
 The module leafModel has been renamed accordingly to PEP 8.
 
+The module leafDelegate has been renamed accordingly to PEP 8.
+
 ** September 28, 2013 **
 The package vtWidgets has been renamed accordingly to PEP 8.
 
