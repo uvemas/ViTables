@@ -30,8 +30,8 @@ import tables
 
 import vitables.utils
 from vitables.h5db import tnodeEditor
-from vitables.nodeprops import nodeInfo
-from vitables.nodeprops import leafPropDlg
+from vitables.nodeprops import nodeinfo
+from vitables.nodeprops import leafpropdlg
 
 class LeafNode(object):
     """
@@ -118,5 +118,5 @@ class LeafNode(object):
         """The Properties dialog for this node.
         """
 
-        info = nodeInfo.NodeInfo(self)
-        leafPropDlg.LeafPropDlg(info)
+        info = nodeinfo.NodeInfo(self)
+        leafpropdlg.LeafPropDlg(info)

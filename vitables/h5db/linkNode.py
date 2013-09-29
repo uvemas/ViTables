@@ -30,8 +30,8 @@ import tables
 
 import vitables.utils
 from vitables.h5db import tlinkEditor
-from vitables.nodeprops import nodeInfo
-from vitables.nodeprops import linkPropDlg
+from vitables.nodeprops import nodeinfo
+from vitables.nodeprops import linkpropdlg
 
 class LinkNode(object):
     """
@@ -124,5 +124,5 @@ class LinkNode(object):
         """The Properties dialog for this node.
         """
 
-        info = nodeInfo.NodeInfo(self)
-        linkPropDlg.LinkPropDlg(info)
+        info = nodeinfo.NodeInfo(self)
+        linkpropdlg.LinkPropDlg(info)

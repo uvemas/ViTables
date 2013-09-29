@@ -20,8 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module displays in a dialog tables.Leaf information collected by the
-:mod:`vitables.nodeprops.nodeInfo` module.
+This module displays in a dialog tables.Group information collected by the
+:mod:`vitables.nodeprops.nodeinfo` module.
 
 Users' attributes can be edited if the database has been opened in read-write 
 mode. Otherwise all shown information is read-only.
@@ -31,15 +31,15 @@ __docformat__ = 'restructuredtext'
 
 from PyQt4 import QtGui
 
-from vitables.nodeprops import attrPropDlg
-from vitables.nodeprops import leafPropPage
+from vitables.nodeprops import attrpropdlg
+from vitables.nodeprops import groupproppage
 
 translate = QtGui.QApplication.translate
 
 
-class LeafPropDlg(attrPropDlg.AttrPropDlg):
+class GroupPropDlg(attrpropdlg.AttrPropDlg):
     """
-    Leaf properties dialog.
+    Group properties dialog.
 
     By loading UI files at runtime we can:
 
@@ -58,26 +58,26 @@ class LeafPropDlg(attrPropDlg.AttrPropDlg):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
       describing a given node
     """
 
     def __init__(self, info):
         """Setup the Properties dialog."""
 
-        super(LeafPropDlg, self).__init__(info)
+        super(GroupPropDlg, self).__init__(info)
 
-        general_page = leafPropPage.LeafPropPage(info)
+        general_page = groupproppage.GroupPropPage(info)
         self.tabw.insertTab(0, general_page, 'General')
         self.tabw.setCurrentIndex(0)
 
-        if info.node_type == 'table':
-            self.setWindowTitle(translate('LeafPropDlg', 'Table properties', 
+        if info.node_type == u'root group':
+            self.setWindowTitle(translate('GroupPropDlg', 'File properties', 
             'Dlg caption'))
         else:
-            self.setWindowTitle(translate('LeafPropDlg', 'Array properties', 
+            self.setWindowTitle(translate('GroupPropDlg', 'Group properties', 
                 'Dlg caption'))
-            general_page.arrayPage()
+            general_page.regularGroupPage()
 
         self.show()
 

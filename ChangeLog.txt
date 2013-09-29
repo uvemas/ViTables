@@ -23,6 +23,8 @@ Some changes that should have been added 2 commits ago :-(
 
 Modules queriesManager and queryDlg have been renamed accordingly to PEP 8.
 
+Modules in the nodeprops package have been renamed accordingly to PEP 8.
+
 ** September 28, 2013 **
 The package vtWidgets has been renamed accordingly to PEP 8.
 

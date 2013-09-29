@@ -31,7 +31,7 @@ __docformat__ = 'restructuredtext'
 from PyQt4 import QtCore, QtGui
 
 import vitables.utils
-import vitables.nodeprops.nodeInfo as nodeInfo
+import vitables.nodeprops.nodeinfo as nodeinfo
 import vitables.vtwidgets.zoom_cell as zoom_cell
 import vitables.vttables.leaf_model as leaf_model
 import vitables.vttables.leaf_view as leaf_view
@@ -155,7 +155,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # The title of the zoomed view
         node = self.dbt_leaf
-        info = nodeInfo.NodeInfo(node)
+        info = nodeinfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
             title = u'{0}: {1}[{2}]'.format(node.name, col, 

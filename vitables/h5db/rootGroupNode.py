@@ -29,8 +29,8 @@ __docformat__ = 'restructuredtext'
 
 import vitables.utils
 from vitables.h5db import tnodeEditor
-from vitables.nodeprops import nodeInfo
-from vitables.nodeprops import groupPropDlg
+from vitables.nodeprops import nodeinfo
+from vitables.nodeprops import grouppropdlg
 
 class RootGroupNode(object):
     """
@@ -159,5 +159,5 @@ class RootGroupNode(object):
         """The Properties dialog for this node.
         """
 
-        info = nodeInfo.NodeInfo(self)
-        groupPropDlg.GroupPropDlg(info)
+        info = nodeinfo.NodeInfo(self)
+        grouppropdlg.GroupPropDlg(info)
