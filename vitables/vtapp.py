@@ -46,8 +46,8 @@ from  vitables.preferences import vtconfig
 import vitables.preferences.pluginsloader as pluginsloader
 from  vitables.preferences import preferences
 
-import vitables.h5db.dbsTreeModel as dbsTreeModel
-import vitables.h5db.dbsTreeView as dbsTreeView
+import vitables.h5db.dbstreemodel as dbstreemodel
+import vitables.h5db.dbstreeview as dbstreeview
 
 import vitables.queries.querymgr as qmgr
 
@@ -111,8 +111,8 @@ class VTApp(QtCore.QObject):
         splash.drawMessage(translate('VTApp', 'Creating the GUI...',
             'A splash screen message'))
         self.gui = vtGUI.VTGUI(self, vtconfig.getVersion())
-        dbs_tmodel = dbsTreeModel.DBsTreeModel(self)
-        dbsTreeView.DBsTreeView(self, dbs_tmodel)
+        dbs_tmodel = dbstreemodel.DBsTreeModel(self)
+        dbstreeview.DBsTreeView(self, dbs_tmodel)
 
         # The queries manager
         self.queries_mgr = qmgr.QueriesManager()

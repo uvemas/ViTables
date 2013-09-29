@@ -21,71 +21,60 @@
 
 """
 This module defines a data structure to be used for the model of the databases 
-tree. The data structure is equivalent to a root group node in a `PyTables` 
-file.
+tree. The data structure is equivalent to a (non root) group node in a 
+`PyTables` file.
 """
 
 __docformat__ = 'restructuredtext'
 
 import vitables.utils
-from vitables.h5db import tnodeEditor
+from vitables.h5db import tnode_editor
 from vitables.nodeprops import nodeinfo
 from vitables.nodeprops import grouppropdlg
 
-class RootGroupNode(object):
+class GroupNode(object):
     """
-    A root group node in the tree of databases model.
-
-    Root group nodes are top level nodes (i.e., they have no parent).
+    A group node in the tree of databases model.
 
     :Parameters:
 
-    - `data_source`: the data source of the node.
     - `parent`: the parent of the node.
-    - `tmp_db`: True if the node is tied to the temporary database
+    - `name`: the name of the node
     """
 
-    def __init__(self, model, data_source=None, parent=None, tmp_db=False):
-        """Create the root group node for the tree of databases model.
+    def __init__(self, model, parent, name):
+        """Create a group node for the tree of databases model.
 
-        The root of the tree of databases model is a RootGroupNode with
-        no parent and no data source. Any other RootGroupNode represents
-        a root group of a HDF5 file and has a parent (the root of the
-        tree of databases model) and a data source (the HDF5 file).
+        A GroupNode represents a (non root) group of a `HDF5` file and has
+        a parent (another group node of the tree of databases model) and
+        a name.
         """
 
         self.dbt_model = model
         self.updated = False
         self.children = []
         self.parent = parent
-        self.name = u'root node'
-        self.filepath = None
-        if data_source:
-            self.node = data_source.getNode(u'/')
-            self.node_kind = u'root group'
+        self.node = parent.node._f_getChild(name)
+        self.node_kind = u'group'
 
-            self.has_view = False
+        self.has_view = False
 
-            # Attributes that the tree of databases view will use
-            # name --> DisplayRole
-            # nodepath --> ToolTipRole
-            # as_record --> StatusTipRole
-            # icon --> DecorationRole
-            if tmp_db:
-                self.name = u'Query results'
-            else:
-                self.name = data_source.filename
-            self.nodepath = u'/'
-            self.filepath = data_source.filepath
-            self.as_record = u'{0}->{1}'.format(self.filepath, self.nodepath)
-            self.mode = data_source.mode
-            icons = vitables.utils.getIcons()
-            if tmp_db:
-                self.icon = icons[u'dbfilters']
-            elif self.mode == u'r':
-                self.icon = icons[u'file_ro']
-            else:
-                self.icon = icons[u'file_rw']
+        # Attributes that the tree of databases view will use
+        # name --> DisplayRole
+        # nodepath --> ToolTipRole
+        # as_record --> StatusTipRole
+        # icon --> DecorationRole
+        self.name = name
+        parentpath = parent.nodepath
+        if parentpath.endswith(u'/'):
+            parentpath = parentpath[:-1]
+        self.nodepath = u'{0}/{1}'.format(parentpath, name)
+        self.filepath = parent.filepath
+        self.as_record = u'{0}->{1}'.format(self.filepath, self.nodepath)
+        icons = vitables.utils.getIcons()
+        self.closed_folder = icons[u'folder']
+        self.open_folder = icons[u'document-open-folder']
+        self.icon = icons[u'folder']
 
 
     def __len__(self):
@@ -123,6 +112,7 @@ class RootGroupNode(object):
         for pos, node in enumerate(self.children):
             if node == child:
                 return pos
+                break
         return -1
 
 
@@ -152,7 +142,7 @@ class RootGroupNode(object):
     def editor(self):
         """Return an instance of `TNodeEditor`.
         """
-        return tnodeEditor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))
+        return tnode_editor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))
 
 
     def properties(self):

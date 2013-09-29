@@ -21,7 +21,7 @@
 
 """
 This module defines a data structure to be used for the model of the databases 
-tree. The data structure is equivalent to a leaf node in a `PyTables` file.
+tree. The data structure is equivalent to a link node in a `PyTables` file.
 """
 
 __docformat__ = 'restructuredtext'
@@ -29,11 +29,11 @@ __docformat__ = 'restructuredtext'
 import tables
 
 import vitables.utils
-from vitables.h5db import tnodeEditor
+from vitables.h5db import tlink_editor
 from vitables.nodeprops import nodeinfo
-from vitables.nodeprops import leafpropdlg
+from vitables.nodeprops import linkpropdlg
 
-class LeafNode(object):
+class LinkNode(object):
     """
     A leaf node in the tree of databases model.
 
@@ -44,11 +44,11 @@ class LeafNode(object):
     """
 
     def __init__(self, model, parent, name):
-        """Create a leaf node for the tree of databases model.
+        """Create a link node for the tree of databases model.
 
-        A LeafNode represents a leaf of a `HDF5` file and has
-        a parent (a group node of the tree of databases model) and
-        a name.
+        A LinkNode represents a link (soft or external) of a `PyTables`
+        file and has a parent (a group node of the tree of databases
+        model) and a name.
         """
 
         self.dbt_model = model
@@ -56,6 +56,12 @@ class LeafNode(object):
         self.node = parent.node._f_getChild(name)
 
         self.has_view = False
+
+        self.target = self.node.target
+        if hasattr(self.target, 'extfile'):
+            self.link_type = 'external'
+        else:
+            self.link_type = 'soft'
 
         # Attributes that the tree of databases view will use
         # name --> DisplayRole
@@ -68,32 +74,32 @@ class LeafNode(object):
             parentpath = parentpath[:-1]
         self.nodepath = u'{0}/{1}'.format(parentpath, name)
         self.filepath = parent.filepath
-        self.as_record = u'{0}->{1}'.format(self.filepath, self.nodepath)
+        self.as_record = u'{0}'.format(self.node)
 
         # Set the node icon
         icons = vitables.utils.getIcons()
-        if isinstance(self.node, tables.Table):
+        if isinstance(self.node(), tables.Table):
             self.node_kind = u'table'
-            self.icon = icons[u'table']
-        elif isinstance(self.node, tables.VLArray):
+            self.icon = icons[u'link_table']
+        elif isinstance(self.node(), tables.VLArray):
             self.node_kind = u'vlarray'
-            data_type = self.node.atom.type
+            data_type = self.node().atom.type
             if data_type in [u'vlstring', u'vlunicode']:
                 self.icon = icons[u'vlstring']
             elif data_type == u'object':
                 self.icon = icons['object']
             else:
-                self.icon = icons[u'vlarray']
-        elif isinstance(self.node, tables.EArray):
+                self.icon = icons[u'link_vlarray']
+        elif isinstance(self.node(), tables.EArray):
             self.node_kind = 'earray'
-            self.icon = icons['earray']
-        elif isinstance(self.node, tables.CArray):
+            self.icon = icons['link_earray']
+        elif isinstance(self.node(), tables.CArray):
             self.node_kind = u'carray'
-            self.icon = icons[u'carray']
-        elif isinstance(self.node, tables.Array):
+            self.icon = icons[u'link_carray']
+        elif isinstance(self.node(), tables.Array):
             self.node_kind = u'array'
-            self.icon = icons['array']
-        elif isinstance(self.node, tables.UnImplemented):
+            self.icon = icons['link_array']
+        elif isinstance(self.node(), tables.UnImplemented):
             self.node_kind = u'image-missing'
             self.icon = icons[u'image-missing']
 
@@ -109,9 +115,9 @@ class LeafNode(object):
 
 
     def editor(self):
-        """Return an instance of `TNodeEditor`.
+        """Return an instance of `TLinkEditor`.
         """
-        return tnodeEditor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))
+        return tlink_editor.TLinkEditor(self.dbt_model.getDBDoc(self.filepath))
 
 
     def properties(self):
@@ -119,4 +125,4 @@ class LeafNode(object):
         """
 
         info = nodeinfo.NodeInfo(self)
-        leafpropdlg.LeafPropDlg(info)
+        linkpropdlg.LinkPropDlg(info)
