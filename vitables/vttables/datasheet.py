@@ -34,7 +34,7 @@ import vitables.utils
 import vitables.nodeprops.nodeInfo as nodeInfo
 import vitables.vtwidgets.zoom_cell as zoom_cell
 import vitables.vttables.leafModel as leafModel
-import vitables.vttables.leafView as leafView
+import vitables.vttables.leaf_view as leaf_view
 import vitables.vttables.buffer as readBuffer
 
 class DataSheet(QtGui.QMdiSubWindow):
@@ -67,7 +67,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         rbuffer = readBuffer.Buffer(leaf)
         self.leaf_model = leafModel.LeafModel(rbuffer)
-        self.leaf_view = leafView.LeafView(self.leaf_model)
+        self.leaf_view = leaf_view.LeafView(self.leaf_model)
 
         super(DataSheet, self).__init__(self.vtgui.workspace)
         self.setWidget(self.leaf_view)
