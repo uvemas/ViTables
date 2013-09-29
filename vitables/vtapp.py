@@ -43,7 +43,7 @@ import vitables.vtsplash
 from vitables.vtSite import ICONDIR
 
 from  vitables.preferences import vtconfig
-import vitables.preferences.pluginsLoader as pluginsLoader
+import vitables.preferences.pluginsloader as pluginsloader
 from  vitables.preferences import preferences
 
 import vitables.h5db.dbsTreeModel as dbsTreeModel
@@ -151,7 +151,7 @@ class VTApp(QtCore.QObject):
         # Some plugins modify datasets displaying so plugins must be loaded
         # before opening any file.
         self.plugins_mgr = \
-            pluginsLoader.PluginsLoader(self.config.enabled_plugins)
+            pluginsloader.PluginsLoader(self.config.enabled_plugins)
         self.plugins_mgr.loadAll()
         self.pluginsLoaded.emit()
 
