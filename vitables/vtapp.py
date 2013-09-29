@@ -49,7 +49,7 @@ from  vitables.preferences import preferences
 import vitables.h5db.dbsTreeModel as dbsTreeModel
 import vitables.h5db.dbsTreeView as dbsTreeView
 
-import vitables.queries.queriesManager as qmgr
+import vitables.queries.querymgr as qmgr
 
 import vitables.vtwidgets.nodenamedlg as nodenamedlg
 import vitables.vtwidgets.renamedlg as renamedlg

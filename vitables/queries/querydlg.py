@@ -40,12 +40,12 @@ from PyQt4.uic import loadUiType
 import vitables.utils
 
 translate = QtGui.QApplication.translate
+
 # This method of the PyQt4.uic module allows for dinamically loading user 
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_QueryDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'query_dlg.ui'))[0]
-
 
 
 class QueryDlg(QtGui.QDialog, Ui_QueryDialog):

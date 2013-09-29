@@ -36,7 +36,7 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
-import vitables.queries.queryDlg as queryDlg
+import vitables.queries.querydlg as querydlg
 import vitables.queries.query as query
 
 translate = QtGui.QApplication.translate
@@ -216,7 +216,7 @@ class QueriesManager(QtCore.QObject):
         # Get a complete query description from user input: condition to
         # be applied, involved range of rows, name of the
         # filtered table and name of the column of returned indices
-        query_dlg = queryDlg.QueryDlg(info, self.ft_names, 
+        query_dlg = querydlg.QueryDlg(info, self.ft_names, 
             self.counter, initial_condition, table)
         try:
             query_dlg.exec_()
