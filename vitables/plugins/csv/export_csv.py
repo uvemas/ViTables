@@ -42,7 +42,7 @@ from PyQt4 import QtGui
 import vitables.utils
 import vitables.plugin_utils
 from vitables.vtSite import PLUGINSDIR
-from vitables.plugins.csv.aboutPage import AboutPage
+from vitables.plugins.csv.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate
 

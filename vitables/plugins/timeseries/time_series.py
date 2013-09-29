@@ -55,7 +55,7 @@ from PyQt4 import QtGui
 import vitables.utils
 import vitables.plugin_utils
 from vitables.vtSite import PLUGINSDIR
-from vitables.plugins.timeseries.aboutPage import AboutPage
+from vitables.plugins.timeseries.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate
 

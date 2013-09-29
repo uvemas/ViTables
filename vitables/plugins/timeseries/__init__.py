@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['aboutPage', 'time_series']
+__all__ = ['aboutpage', 'time_series']
