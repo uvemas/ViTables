@@ -39,7 +39,7 @@ import numpy
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-import vitables.vttables.scrollBar as scrollBar
+import vitables.vttables.scrollbar as scrollbar
 import vitables.vttables.leafDelegate as leafDelegate
 
 class LeafView(QtGui.QTableView):
@@ -76,7 +76,7 @@ class LeafView(QtGui.QTableView):
             self.setItemDelegate(leafDelegate.LeafDelegate())
             self.rbuffer_fault = False
             self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-            self.tricky_vscrollbar = scrollBar.ScrollBar(self)
+            self.tricky_vscrollbar = scrollbar.ScrollBar(self)
             self.max_value = self.tvsMaxValue()
             self.tricky_vscrollbar.setMaximum(self.max_value)
             self.tricky_vscrollbar.setMinimum(0)

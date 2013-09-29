@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** September 29, 2013 **
 The module dataSheet has been renamed accordingly to PEP 8.
 
+The module scrollBar has been renamed accordingly to PEP 8.
+
 ** September 28, 2013 **
 The package vtWidgets has been renamed accordingly to PEP 8.
 
