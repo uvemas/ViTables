@@ -196,7 +196,7 @@ class TSFormatter(object):
     def customiseModel(self, datasheet):
         """Inspect a leaf model and customise it if a time series is found.
 
-        :Parameter subwindow: the :meth:`vitables.vttables.dataSheet.DataSheet`
+        :Parameter subwindow: the :meth:`vitables.vttables.datasheet.DataSheet`
           instance being inspected
         """
 

@@ -57,7 +57,7 @@ import vitables.vtwidgets.renamedlg as renamedlg
 from vitables.docbrowser import helpBrowser
 
 import vitables.vttables.buffer as rbuffer
-import vitables.vttables.dataSheet as dataSheet
+import vitables.vttables.datasheet as datasheet
 
 import vitables.vtGUI as vtGUI
 
@@ -771,7 +771,7 @@ class VTApp(QtCore.QObject):
         # Create a view and announce it.
         # Announcing is potentially helpful for plugins in charge of
         # datasets customisations (for instance, additional formatting)
-        subwindow = dataSheet.DataSheet(index)
+        subwindow = datasheet.DataSheet(index)
         subwindow.show()
         self.leaf_model_created.emit(subwindow)
 
