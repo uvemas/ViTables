@@ -426,9 +426,9 @@ class Config(QtCore.QSettings):
         try:
             self.setValue(key, value)
             if self.status():
-                raise configException.ConfigFileIOException, \
+                raise cfgexception.ConfigFileIOException, \
                     u'{0}={1}'.format(key, value)
-        except configException.ConfigFileIOException, inst:
+        except cfgexception.ConfigFileIOException, inst:
             print(inst.error_message)
 
 

@@ -61,8 +61,6 @@ translate = QtGui.QApplication.translate
 Ui_RenameNodeDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'rename_dlg.ui'))[0]
 
-
-
 class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
     """
     Ask user for help when a name issue raises.

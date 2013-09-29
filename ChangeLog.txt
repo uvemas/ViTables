@@ -11,11 +11,13 @@ The module leafModel has been renamed accordingly to PEP 8.
 
 The module leafDelegate has been renamed accordingly to PEP 8.
 
-The modules aboutPage has been renamed accordingly to PEP 8.
+The modules aboutPage have been renamed accordingly to PEP 8.
 
 The modules aboutPage has been renamed accordingly to PEP 8.
 
 The module configIOException has been renamed accordingly to PEP 8.
+
+Some minor changes done.
 
 ** September 28, 2013 **
 The package vtWidgets has been renamed accordingly to PEP 8.

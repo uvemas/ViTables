@@ -30,6 +30,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 
+
 class ZoomCell(QtGui.QMdiSubWindow):
     """
     Display an array/table cell on its own view (table widget).
