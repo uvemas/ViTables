@@ -115,7 +115,7 @@ class HelpBrowser(QtCore.QObject) :
         Quit the `HelpBrowser`.
 
         Before quitting this slot saves session and bookmarks. Then all browser
-        windows are closed. The saved state corresponds to the window on which 
+        windows are closed. The saved state corresponds to the window on which
         Exit is invoqued.
         """
 
@@ -237,7 +237,7 @@ class HelpBrowser(QtCore.QObject) :
         - a link is clicked in the current document
         - a bookmark is opened
 
-        The history combobox is a visual representation of the `history list`, 
+        The history combobox is a visual representation of the `history list`,
         so entries will occupy the same position in both, the list and the combo.
 
         :Parameter src: the path being added to the combo
@@ -264,7 +264,7 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         QtGui.QMessageBox.information(self.gui, \
-            translate('HelpBrowser', 'About HelpBrowser', 'A dialog caption'), 
+            translate('HelpBrowser', 'About HelpBrowser', 'A dialog caption'),
             translate('HelpBrowser', """<html><h3>HelpBrowser</h3>
                 HelpBrowser is a very simple tool for displaying the HTML
                 version of the ViTables' Guide without using external programs.

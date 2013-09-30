@@ -41,16 +41,16 @@ class BookmarksDlg(QtGui.QDialog):
     The dialog for deleting bookmarks.
 
     The class defines a modal dialog used to delete entries from the
-    bookmarks list. Bookmarks are displayed in a tree view. As a bonus, they 
-    can be visited directly from this dialog by double clicking them in the 
-    tree. At the bottom there is a group of buttons made of the ``Delete``, 
+    bookmarks list. Bookmarks are displayed in a tree view. As a bonus, they
+    can be visited directly from this dialog by double clicking them in the
+    tree. At the bottom there is a group of buttons made of the ``Delete``,
     ``OK`` and ``Cancel`` buttons.
-    ``Delete`` removes checked items from the bookmarks list. 
+    ``Delete`` removes checked items from the bookmarks list.
 
     :Parameters:
 
     - `blist`: the bookmarks list
-    - `hbgui`: an instance of 
+    - `hbgui`: an instance of
       :meth:`vitables.docbrowser.browsergui.HelpBrowserGUI` (the parent widget)
     """
 
@@ -72,22 +72,22 @@ class BookmarksDlg(QtGui.QDialog):
         self.tmodel = QtGui.QStandardItemModel()
         self.tree.setModel(self.tmodel)
         self.tmodel.setHorizontalHeaderLabels([
-            translate('BookmarksDlg', 'Bookmark', 
-            'First column header of the bookmarks table'), 
-            translate('BookmarksDlg', 'URL', 
+            translate('BookmarksDlg', 'Bookmark',
+            'First column header of the bookmarks table'),
+            translate('BookmarksDlg', 'URL',
             'Second column header of the bookmarks table')])
         dlg_layout.addWidget(self.tree)
 
         # Add a group of buttons
         self.button_group = QtGui.QDialogButtonBox(self)
         self.ok_button = self.button_group.addButton(
-            translate('BookmarksDlg', '&OK', 'Button label'), 
+            translate('BookmarksDlg', '&OK', 'Button label'),
             QtGui.QDialogButtonBox.AcceptRole)
         self.del_button = self.button_group.addButton(
-            translate('BookmarksDlg', '&Delete', 'Button label'), 
+            translate('BookmarksDlg', '&Delete', 'Button label'),
             QtGui.QDialogButtonBox.ActionRole)
         self.cancel_button = self.button_group.addButton(
-            translate('BookmarksDlg', '&Cancel', 'Button label'), 
+            translate('BookmarksDlg', '&Cancel', 'Button label'),
             QtGui.QDialogButtonBox.RejectRole)
         dlg_layout.addWidget(self.button_group)
 
@@ -151,7 +151,7 @@ class BookmarksDlg(QtGui.QDialog):
 
         The state of the ``Delete`` button depends on the presence/abscence
         of checked items in the bookmarks list. Every time an item is
-        clicked the whole bookmarks tree is traversed looking for checked 
+        clicked the whole bookmarks tree is traversed looking for checked
         items. The``Delete`` button state is updated accordingly.
 
         :Parameter item: the bookmarks tree item checked/unchecked
