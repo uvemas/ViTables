@@ -72,7 +72,7 @@ class DBsTreeView(QtGui.QTreeView):
         self.frame_style = {'shape': self.frameShape(),
             'shadow': self.frameShadow(),
             'lwidth': self.lineWidth(),
-            'foreground': self.palette().color(QtGui.QPalette.Active, 
+            'foreground': self.palette().color(QtGui.QPalette.Active,
                 QtGui.QPalette.WindowText)}
 
         # Setup drag and drop
@@ -85,10 +85,10 @@ class DBsTreeView(QtGui.QTreeView):
         self.setRootIsDecorated(True)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.setWhatsThis(translate('DBsTreeView', 
+        self.setWhatsThis(translate('DBsTreeView',
             """<qt>
             <h3>The Tree of databases</h3>
-            For every open database this widget shows the object tree, 
+            For every open database this widget shows the object tree,
             a graphical representation<br>of the data hierarchy stored
             in the database.</qt>""",
             'WhatsThis help for the tree pane'))
@@ -110,10 +110,10 @@ class DBsTreeView(QtGui.QTreeView):
 
         This is a subtle method. As the tree view has only 1 column its
         width and the width of the viewport are always the same so the
-        horizontal scrollbar is never shown. As the contents width  
-        changes every time the layout changes (rows are inserted or 
-        deleted) by resizing column to contents when it happens we 
-        ensure that the column and the viewport will have different 
+        horizontal scrollbar is never shown. As the contents width
+        changes every time the layout changes (rows are inserted or
+        deleted) by resizing column to contents when it happens we
+        ensure that the column and the viewport will have different
         width and the scrollbar will indeed be added as needed.
         """
         self.resizeColumnToContents(0)
@@ -157,10 +157,10 @@ class DBsTreeView(QtGui.QTreeView):
 
         node = self.dbt_model.nodeFromIndex(index)
         if node.node_kind == 'group':
-            self.dbt_model.setData(index, node.closed_folder, 
+            self.dbt_model.setData(index, node.closed_folder,
                 QtCore.Qt.DecorationRole)
         self.smodel.clearSelection()
-        self.smodel.setCurrentIndex(index, 
+        self.smodel.setCurrentIndex(index,
             QtGui.QItemSelectionModel.SelectCurrent)
         self.update(index)
 
@@ -182,14 +182,14 @@ class DBsTreeView(QtGui.QTreeView):
         node = self.dbt_model.nodeFromIndex(index)
         node_kind = node.node_kind
         if node_kind == 'group':
-            self.dbt_model.setData(index, node.open_folder, 
+            self.dbt_model.setData(index, node.open_folder,
                 QtCore.Qt.DecorationRole)
         if node_kind in ['group', 'root group']:
             if not node.updated:
                 self.dbt_model.lazyAddChildren(index)
                 node.updated = True
                 self.smodel.clearSelection()
-                self.smodel.setCurrentIndex(index, 
+                self.smodel.setCurrentIndex(index,
                     QtGui.QItemSelectionModel.SelectCurrent)
 
 
@@ -250,7 +250,7 @@ class DBsTreeView(QtGui.QTreeView):
         """
 
         self.smodel.clearSelection()
-        self.smodel.setCurrentIndex(index, 
+        self.smodel.setCurrentIndex(index,
             QtGui.QItemSelectionModel.SelectCurrent)
 
 
@@ -322,8 +322,8 @@ class DBsTreeView(QtGui.QTreeView):
         """
         Event handler for `QDragMoveEvent` events.
 
-        Dragging files from the Desktop onto the tree view is supported. If the 
-        icon being dragged is placed over a tree view item then drop operations 
+        Dragging files from the Desktop onto the tree view is supported. If the
+        icon being dragged is placed over a tree view item then drop operations
         are not allowed (dragging icon is a slashed circle).
 
         :Parameter event: the event being processed.
@@ -340,8 +340,9 @@ class DBsTreeView(QtGui.QTreeView):
     def focusInEvent(self, event):
         """Specialised handler for focus events.
 
-        Repaint differently the databases tree view frame when it gets the keyboard
-        focus so that users can realize easily about this focus change.
+        Repaint differently the databases tree view frame when it gets the
+        keyboard focus so that users can realize easily about this focus
+        change.
 
         :Parameter event: the event being processed
         """
@@ -349,7 +350,7 @@ class DBsTreeView(QtGui.QTreeView):
         self.setLineWidth(2)
         self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
         pal = self.palette()
-        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             QtCore.Qt.darkBlue)
         QtGui.QTreeView.focusInEvent(self, event)
 
@@ -357,8 +358,8 @@ class DBsTreeView(QtGui.QTreeView):
     def focusOutEvent(self, event):
         """Specialised handler for focus events.
 
-        Repaint differently the databases tree view frame when it looses the 
-        keyboard focus so that users can realize easily about this focus 
+        Repaint differently the databases tree view frame when it looses the
+        keyboard focus so that users can realize easily about this focus
         change.
 
         :Parameter event: the event being processed
@@ -368,7 +369,7 @@ class DBsTreeView(QtGui.QTreeView):
         self.setFrameShape(self.frame_style['shape'])
         self.setFrameShadow(self.frame_style['shadow'])
         pal = self.palette()
-        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             self.frame_style['foreground'])
         QtGui.QTreeView.focusOutEvent(self, event)
 

@@ -49,7 +49,7 @@ class DBDoc(QtCore.QObject):
     :Parameters:
 
     - `filePath`: full path of the DB
-    - `mode`: indicate the open mode of the database file. It can be 
+    - `mode`: indicate the open mode of the database file. It can be
       'r'ead-only or 'a'ppend
     - `is_tmp_dbdoc`: True if this object represents the temporary database
     """
@@ -85,7 +85,7 @@ class DBDoc(QtCore.QObject):
         self.hidden_group = None
 
         if is_tmp_dbdoc:
-            self.h5file.createGroup('/', '_p_query_results', 
+            self.h5file.createGroup('/', '_p_query_results',
                 'Hide the result of queries')
             self.h5file.flush()
 
@@ -98,20 +98,20 @@ class DBDoc(QtCore.QObject):
         if self.mode != 'r' and os.path.isfile(self.filepath):
             if not os.access(self.filepath, os.W_OK):
                 self.mode = 'r'
-                print(translate('DBDoc', 
+                print(translate('DBDoc',
                     """\nWarning: file access in read-write mode"""
-                    """ is denied. It will be opened in read-only mode.""", 
+                    """ is denied. It will be opened in read-only mode.""",
                     'A logger error message'))
 
         try:
             h5file = tables.openFile(self.filepath, self.mode)
         except IOError as inst:
-            print(translate('DBDoc', 
+            print(translate('DBDoc',
                 "\nError: {0}.", 'A logger error message').format(inst))
         except:
             vitables.utils.formatExceptionInfo()
-            print(translate('DBDoc', 
-                "Please, if you think it is a bug, report it to developers.", 
+            print(translate('DBDoc',
+                "Please, if you think it is a bug, report it to developers.",
                 'A logger error message'))
 
         return h5file
@@ -122,7 +122,7 @@ class DBDoc(QtCore.QObject):
 
         try:
             self.h5file.close()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -135,14 +135,14 @@ class DBDoc(QtCore.QObject):
 
         :Returns: the format of the database file
         """
-        format = None
+        file_format = None
         if self.h5file:
             if self.h5file._isPTFile:
-                format = 'PyTables file'
+                file_format = 'PyTables file'
             else:
-                format = 'Generic HDF5 file'
+                file_format = 'Generic HDF5 file'
 
-        return format
+        return file_format
 
 
     def getNode(self, where):
@@ -156,7 +156,7 @@ class DBDoc(QtCore.QObject):
             node = self.h5file.getNode(where)
             return node
         except tables.exceptions.NoSuchNodeError:
-            print(translate('DBDoc', 
+            print(translate('DBDoc',
                 """\nError: cannot open node {0} in file {1} """,
                 'Error message').format(where, self.filepath))
             vitables.utils.formatExceptionInfo()
@@ -167,16 +167,16 @@ class DBDoc(QtCore.QObject):
         """:Returns: the recursive list of full nodepaths for the file"""
         return [node._v_pathname for node in self.h5file.walkNodes('/')]
 
-    # 
+    #
     # Editing databases
-    # 
+    #
 
     def copyFile(self, dst_filepath):
         """
         Copy the contents of this file to another one.
 
-        .. Note:: Given two open files in a ``ViTables`` session, overwriting 
-          one of them via ``File --> Save As...`` command may work or not. It 
+        .. Note:: Given two open files in a ``ViTables`` session, overwriting
+          one of them via ``File --> Save As...`` command may work or not. It
           depends on the operating system. On Unices it works because a process
           can delete or truncate a file open by a different process (unless
           file is blocked). On Windows it seems to work fine too.
@@ -190,7 +190,7 @@ class DBDoc(QtCore.QObject):
         try:
             self.h5file.copyFile(dst_filepath, overwrite=True)
         except tables.exceptions.HDF5ExtError:
-            print(translate('DBDoc', 
+            print(translate('DBDoc',
                 """\nError: unable to save the file {0} as """
                 """{1}. Beware that only closed files can be safely """
                 """overwritten via Save As...""",

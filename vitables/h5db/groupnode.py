@@ -20,8 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module defines a data structure to be used for the model of the databases 
-tree. The data structure is equivalent to a (non root) group node in a 
+This module defines a data structure to be used for the model of the databases
+tree. The data structure is equivalent to a (non root) group node in a
 `PyTables` file.
 """
 
@@ -112,7 +112,6 @@ class GroupNode(object):
         for pos, node in enumerate(self.children):
             if node == child:
                 return pos
-                break
         return -1
 
 
@@ -135,7 +134,6 @@ class GroupNode(object):
         for node in self.children:
             if node.name == childname:
                 return node
-                break
         return None
 
 

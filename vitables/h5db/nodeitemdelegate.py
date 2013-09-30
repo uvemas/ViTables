@@ -100,16 +100,16 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         # rename dialog via method argument and simplifies the code
         pattern = """(^{0}$)|""" \
             """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(self.current_name)
-        info = [translate('NodeItemDelegate', 
-            'Renaming a node: name already in use', 
-            'A dialog caption'), 
-            translate('NodeItemDelegate', 
+        info = [translate('NodeItemDelegate',
+            'Renaming a node: name already in use',
+            'A dialog caption'),
+            translate('NodeItemDelegate',
                 """Source file: {0}\nParent group: {1}\n\nThere is """
-                """already a node named '{2}' in that parent group.\n""", 
+                """already a node named '{2}' in that parent group.\n""",
                 'A dialog label').format\
                     (parent.filepath, parent.nodepath, suggested_nodename)]
         # Validate the nodename
-        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename, 
+        nodename, overwrite = vitables.utils.getFinalName(suggested_nodename,
             sibling, pattern, info)
         if nodename is None:
             editor.setText(self.current_name)
