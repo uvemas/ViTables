@@ -40,7 +40,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 import vitables.vtsplash
-from vitables.vtSite import ICONDIR
+from vitables.vtsite import ICONDIR
 
 from  vitables.preferences import vtconfig
 import vitables.preferences.pluginsloader as pluginsloader
@@ -59,7 +59,7 @@ from vitables.docbrowser import helpbrowser
 import vitables.vttables.buffer as rbuffer
 import vitables.vttables.datasheet as datasheet
 
-import vitables.vtGUI as vtGUI
+import vitables.vtgui as vtgui
 
 translate = QtGui.QApplication.translate
 
@@ -110,7 +110,7 @@ class VTApp(QtCore.QObject):
         # - setup the main window
         splash.drawMessage(translate('VTApp', 'Creating the GUI...',
             'A splash screen message'))
-        self.gui = vtGUI.VTGUI(self, vtconfig.getVersion())
+        self.gui = vtgui.VTGUI(self, vtconfig.getVersion())
         dbs_tmodel = dbstreemodel.DBsTreeModel(self)
         dbstreeview.DBsTreeView(self, dbs_tmodel)
 

@@ -34,7 +34,7 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
-from vitables.vtSite import DOCDIR
+from vitables.vtsite import DOCDIR
 
 translate = QtGui.QApplication.translate
 

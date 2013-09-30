@@ -35,7 +35,7 @@ from PyQt4 import QtGui
 
 from PyQt4.uic import loadUiType
 
-from vitables.vtSite import ICONDIR
+from vitables.vtsite import ICONDIR
 import vitables.utils
 
 translate = QtGui.QApplication.translate
