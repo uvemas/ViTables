@@ -1,177 +1,182 @@
 ViTables ChangeLog
 ==================
-** September 25, 2013 **
+** September 30, 2013 **
 refactoring module names to follow PEP 8.
+
+Checking modules directly under the vitables package with pylint.
+
+** September 25, 2013 **
+Refactoring module names to follow PEP 8.
 nodeInfo.py -> nodeinfo.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 linkPropDlg.py -> linkpropdlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 leafPropPage.py -> leafproppage.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 leafPropDlg.py -> leafpropdlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 groupPropPage.py -> groupproppage.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 groupPropDlg.py -> grouppropdlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 attrPropDlg.py -> attrpropdlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 attrEditor.py -> attreditor.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 tnodeEditor.py -> tnode_editor.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 tlinkEditor.py -> tlink_editor.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 rootGroupNode.py -> rootgroupnode.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 nodeItemDelegate.py -> nodeitemdelegate.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 linkNode.py -> linknode.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 leafNode.py -> leafnode.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 groupNode.py -> groupnode.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 dbsTreeView.py -> dbstreeview.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 dbsTreeModel.py -> dbstreemodel.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 bookmarksDlg.py -> bookmarksdlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 browserGUI.py -> browsergui.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 helpBrowser.py -> helpbrowser.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 dbDoc.py -> dbdoc.py
 
-fixed a typo made during the renaming of vtgui.py module.
+Fixed a typo made during the renaming of vtgui.py module.
 
-removed some calls to methods non required with Python3.
+Removed some calls to methods non required with Python3.
 
 ** September 24, 2013 **
-several small typos have been fixed.
+Several small typos have been fixed.
 
-removed some non required code and fixed an small bug.
+Removed some non required code and fixed an small bug.
 
-refactoring package names to follow PEP 8.
+Refactoring package names to follow PEP 8.
 docBrowser -> docbrowser
 
-refactoring package names to follow PEP 8.
+Refactoring package names to follow PEP 8.
 nodeProperties -> nodeprops
 
-refactoring package names to follow PEP 8.
+Refactoring package names to follow PEP 8.
 vtTables -> vttables
 
-refactoring package names to follow PEP 8.
+Refactoring package names to follow PEP 8.
 vtWidgets -> vtwidgets
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 vtSite -> vtsite
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 vtGUI -> vtgui
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 zoomCell -> zoom_cell
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 rename_dlg.py -> renamedlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 inputNodeName.py -> nodenamedlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 scrollBar.py -> scrollbar.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 leafView.py -> leaf_view.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 leafModel.py -> leaf_model.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 leafDelegate.py -> leaf_delegate.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 dataSheeet.py -> datasheet.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 queryDlg.py -> querydlg.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 queriesManager.py -> querymgr.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 pluginsLoader.py -> pluginsloader.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 configException.py -> cfgexception.py
 
-refactoring module names to follow PEP 8.
+Refactoring module names to follow PEP 8.
 aboutPage.py -> aboutpage.py
 
 ** September 23, 2013 **
-added support for raw strings attributes.
+Added support for raw strings attributes.
 
 ** September 21, 2013 **
-some modules regarding plugins have been debugged.
+Some modules regarding plugins have been debugged.
 
-fixed a small bug in the timeseries plugin.
+Fixed a small bug in the timeseries plugin.
 
 ** September 19, 2013 **
-data presentation has been debugged and simplified.
+Data presentation has been debugged and simplified.
 
 ** September 18, 2013 **
-the use of range has been reviewed.
+The use of range has been reviewed.
 
-a workaround for an annoying KDE bug has been applied.
+A workaround for an annoying KDE bug has been applied.
 
 ** September 17, 2013 **
-the tests folder has been removed.
+The tests folder has been removed.
 
-the node Properties dialog has been partially reworked.
+The node Properties dialog has been partially reworked.
 
 ** September 12, 2013 **
-fixed minor errors in several modules.
+Fixed minor errors in several modules.
 
-fixed some syntax errors in several modules.
+Fixed some syntax errors in several modules.
 
-fixed the use of the logger console by the logging module.
+Fixed the use of the logger console by the logging module.
 
-new syntax used in a couple of methods in vtapp.py.
+New syntax used in a couple of methods in vtapp.py.
 
-the examples directory has been updated.
+The examples directory has been updated.
 
 ** September 11, 2013 **
 Local branch python3-support has been added.
 
-python3-support branch: shebang lines updated.
+Shebang lines updated.
 
-python3-support branch: u'some text' has been replaced with 'some text'.
+Old style u'some text' has been replaced with 'some text'.
 
-python3-support branch: calls to unicode() replaced with calls to str()
+Calls to unicode() replaced with calls to str()
 
-python3-support branch: remaining old style unicode literals removed.
+Remaining old style unicode literals removed.
 
 ** September 03, 2013 **
 Bug #22 has been fixed.

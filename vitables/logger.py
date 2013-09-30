@@ -63,7 +63,7 @@ class Logger(QtGui.QTextEdit):
         self.setReadOnly(1)
         self.setMinimumHeight(50)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setWhatsThis(translate('Logger', 
+        self.setWhatsThis(translate('Logger',
             """<qt>
             <h3>The Logger</h3>
             This is the screen region where info about the currently
@@ -80,7 +80,7 @@ class Logger(QtGui.QTextEdit):
         self.frame_style = {'shape': self.frameShape(),
             'shadow': self.frameShadow(),
             'lwidth': self.lineWidth(),
-            'foreground': self.palette().color(QtGui.QPalette.Active, 
+            'foreground': self.palette().color(QtGui.QPalette.Active,
                 QtGui.QPalette.WindowText)}
 
         # Connect signals to slots
@@ -139,24 +139,24 @@ class Logger(QtGui.QTextEdit):
         edit_menu.setStyleSheet("background-color: {0}".format(10))
 
         self.copy_action = QtGui.QAction(
-            translate('Logger', "&Copy", 'Logger menu entry'), self, 
-            shortcut=QtGui.QKeySequence.Copy, triggered=vtapp.gui.makeCopy, 
-            statusTip=translate('Logger', 'Copy selected text to clipboard', 
+            translate('Logger', "&Copy", 'Logger menu entry'), self,
+            shortcut=QtGui.QKeySequence.Copy, triggered=vtapp.gui.makeCopy,
+            statusTip=translate('Logger', 'Copy selected text to clipboard',
                 'Status bar text for the logger context menu -> Copy action'))
         edit_menu.addAction(self.copy_action)
 
         self.clear_action = QtGui.QAction(
-            translate('Logger', "Cl&ear All", 'Logger menu entry'), self, 
-            triggered=self.clear, 
-            statusTip=translate('Logger', 'Empty the Logger', 
+            translate('Logger', "Cl&ear All", 'Logger menu entry'), self,
+            triggered=self.clear,
+            statusTip=translate('Logger', 'Empty the Logger',
                 'Status bar text for the logger context menu -> Clear action'))
         edit_menu.addAction(self.clear_action)
         edit_menu.addSeparator()
 
         self.select_action = QtGui.QAction(
-            translate('Logger', "Select &All", 'Logger menu entry'), self, 
-            triggered=self.selectAll, 
-            statusTip=translate('Logger', 'Select the whole Logger contents', 
+            translate('Logger', "Select &All", 'Logger menu entry'), self,
+            triggered=self.selectAll,
+            statusTip=translate('Logger', 'Select the whole Logger contents',
                 'Status bar text for the logger context menu -> Select All'))
         edit_menu.addAction(self.select_action)
 
@@ -180,7 +180,7 @@ class Logger(QtGui.QTextEdit):
     def focusInEvent(self, event):
         """Specialised handler for focus events.
 
-        Repaint differently the `Logger` frame when it gets the keyboard focus 
+        Repaint differently the `Logger` frame when it gets the keyboard focus
         so that users can realize easily about this focus change.
 
         :Parameter event: the event being processed
@@ -189,7 +189,7 @@ class Logger(QtGui.QTextEdit):
         self.setLineWidth(2)
         self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
         pal = self.palette()
-        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             QtCore.Qt.darkBlue)
         QtGui.QTextEdit.focusInEvent(self, event)
 
@@ -197,7 +197,7 @@ class Logger(QtGui.QTextEdit):
     def focusOutEvent(self, event):
         """Specialised handler for focus events.
 
-        Repaint differently the `Logger` frame when it looses the keyboard 
+        Repaint differently the `Logger` frame when it looses the keyboard
         focus so that users can realize easily about this focus change.
 
         :Parameter event: the event being processed
@@ -207,7 +207,7 @@ class Logger(QtGui.QTextEdit):
         self.setFrameShape(self.frame_style['shape'])
         self.setFrameShadow(self.frame_style['shadow'])
         pal = self.palette()
-        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText, 
+        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             self.frame_style['foreground'])
         QtGui.QTextEdit.focusOutEvent(self, event)
 
