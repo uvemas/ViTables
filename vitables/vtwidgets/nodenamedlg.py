@@ -36,7 +36,7 @@ from PyQt4.uic import loadUiType
 
 import vitables.utils
 
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_InputNodenameDialog = \
@@ -54,7 +54,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
     This dialog is called when a new group is being created and also when
     a node of any kind is being renamed.
 
-    Regular Qt class QInputDialog is not used because, at least apparently, 
+    Regular Qt class QInputDialog is not used because, at least apparently,
     it doesn't provide a way for customizing buttons text.
 
     :Parameters:
@@ -78,7 +78,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
         self.generalInfo.setText(info)
 
         # The Create/Rename button
-        self.edit_button = self.buttonsBox.addButton(action, 
+        self.edit_button = self.buttonsBox.addButton(action,
             QtGui.QDialogButtonBox.AcceptRole)
 
         # Setup a validator for checking the entered node name

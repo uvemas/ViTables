@@ -9,6 +9,8 @@ The package h5db has been analyzed with pylint.
 
 The package nodeprops has been analyzed with pylint.
 
+The package vtwidgets has been analyzed with pylint.
+
 ** September 30, 2013 **
 The modules vtSite and vtGUI hav been renamed accordingly to PEP 8.
 
