@@ -23,7 +23,7 @@
 This module displays in a dialog tables.Leaf information collected by the
 :mod:`vitables.nodeprops.nodeinfo` module.
 
-Users' attributes can be edited if the database has been opened in read-write 
+Users' attributes can be edited if the database has been opened in read-write
 mode. Otherwise all shown information is read-only.
 """
 
@@ -58,7 +58,7 @@ class LeafPropDlg(attrpropdlg.AttrPropDlg):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
       describing a given node
     """
 
@@ -72,10 +72,10 @@ class LeafPropDlg(attrpropdlg.AttrPropDlg):
         self.tabw.setCurrentIndex(0)
 
         if info.node_type == 'table':
-            self.setWindowTitle(translate('LeafPropDlg', 'Table properties', 
+            self.setWindowTitle(translate('LeafPropDlg', 'Table properties',
             'Dlg caption'))
         else:
-            self.setWindowTitle(translate('LeafPropDlg', 'Array properties', 
+            self.setWindowTitle(translate('LeafPropDlg', 'Array properties',
                 'Dlg caption'))
             general_page.arrayPage()
 

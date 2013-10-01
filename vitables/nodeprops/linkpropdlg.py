@@ -35,7 +35,7 @@ from PyQt4.uic import loadUiType
 import vitables.utils
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_LinkPropDialog = \
@@ -55,7 +55,7 @@ class LinkPropDlg(QtGui.QDialog, Ui_LinkPropDialog):
     This class displays a simple dialog that shows some properties of
     the selected link: name, path, type and target.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
       describing a given node
     """
 
@@ -66,7 +66,7 @@ class LinkPropDlg(QtGui.QDialog, Ui_LinkPropDialog):
         super(LinkPropDlg, self).__init__(vtapp.gui)
         self.setupUi(self)
 
-        self.setWindowTitle(translate('LinkPropDlg', 'Link properties', 
+        self.setWindowTitle(translate('LinkPropDlg', 'Link properties',
             'Dlg caption'))
 
         # Customise the dialog's pages
@@ -80,7 +80,7 @@ class LinkPropDlg(QtGui.QDialog, Ui_LinkPropDialog):
     def fillPage(self, info):
         """Fill the dialog with info regarding the given link.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
           describing a given node
         """
 

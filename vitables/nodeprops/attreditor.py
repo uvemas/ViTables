@@ -20,8 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-When a user edits the attributes of a node using the Properties dialog and 
-presses `OK` the attributes correctness is checked by this module. Datatypes 
+When a user edits the attributes of a node using the Properties dialog and
+presses `OK` the attributes correctness is checked by this module. Datatypes
 and overflow conditions are checked. If no errors are detected the new set of
 attributes is stored in the `PyTables` node. Otherwise the user is reported
 about the error and the dialog remains open so the user can fix her mistake.
@@ -29,6 +29,7 @@ about the error and the dialog remains open so the user can fix her mistake.
 
 __docformat__ = 'restructuredtext'
 
+import tables
 import numpy
 
 from PyQt4 import QtGui
@@ -49,7 +50,7 @@ def checkSyntax(value):
         return False
     try:
         eval(value)
-    except:
+    except (ValueError, SyntaxError):
         return False
     else:
         return True
@@ -145,7 +146,8 @@ class AttrEditor(object):
 
     - `asi`: the Attributes Set Instance being updated
     - `title`: the TITLE attribute entered by the user in the Properties dialog
-    - `user_table`: the table of user attributes edited by the user in the Properties dialog
+    - `user_table`: the table of user attributes edited by the user in the
+        Properties dialog
     """
 
     def __init__(self, asi, title, user_table):
@@ -169,7 +171,7 @@ class AttrEditor(object):
             name = model.item(row, 0).text()
             value = model.item(row, 1).text()
             dtype_index = model.indexFromItem(model.item(row, 2))
-            dtype = user_table.indexWidget(dtype_index).currentText() 
+            dtype = user_table.indexWidget(dtype_index).currentText()
             self.edited_attrs[row] = (name, value, dtype, multidim)
 
         # Add the TITLE attribute to the dictionary
@@ -219,9 +221,9 @@ class AttrEditor(object):
             # Empty Value cells are acceptable for string attributes
             # but empty Name cells are invalid
             if name == '':
-                return (False, 
-                        translate('AttrEditor', 
-                            "\nError: empty field Name in the row {0:d}", 
+                return (False,
+                        translate('AttrEditor',
+                            "\nError: empty field Name in the row {0:d}",
                             'User attrs editing error').format(int(row + 1)))
 
         # Check for repeated names
@@ -231,9 +233,9 @@ class AttrEditor(object):
             if not name in names_list:
                 names_list.append(name)
             else:
-                return (False, 
-                        translate('AttrEditor', 
-                            '\nError: attribute name "{0}" is repeated.', 
+                return (False,
+                        translate('AttrEditor',
+                            '\nError: attribute name "{0}" is repeated.',
                             'User attrs table editing error').format(name))
 
         # Check for dtype, range and syntax correctness of scalar attributes
@@ -283,12 +285,12 @@ class AttrEditor(object):
             all_attrs = frozenset(self.asi._v_attrnamesuser + ["TITLE"])
         else:
             all_attrs = frozenset(self.asi._v_attrnamesuser)
-        edited_attrs_names = frozenset([self.edited_attrs[row][0] 
+        edited_attrs_names = frozenset([self.edited_attrs[row][0]
                                         for row in self.edited_attrs.keys()])
         for attr in (all_attrs - edited_attrs_names):
             try:
                 self.asi._v_node._f_delAttr(attr)
-            except:
+            except (tables.NodeError, AttributeError):
                 vitables.utils.formatExceptionInfo()
 
         for row in self.edited_attrs.keys():
@@ -310,5 +312,5 @@ class AttrEditor(object):
             # Updates the ASI
             try:
                 setattr(self.asi, name, value)
-            except:
+            except AttributeError:
                 vitables.utils.formatExceptionInfo()

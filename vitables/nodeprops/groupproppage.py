@@ -34,7 +34,7 @@ from PyQt4.uic import loadUiType
 import vitables.utils
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_GroupPropPage = \
@@ -63,7 +63,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
       describing a given node
     """
 
@@ -83,7 +83,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
 
         The page contains two groupboxes that are laid out vertically.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
           describing a given node
         """
 
@@ -109,14 +109,14 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
         table.setStyleSheet("background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()
         self.children_model.setHorizontalHeaderLabels([
-            translate('GroupPropPage', 'Child name', 
-            'First column header of the table'), 
-            translate('GroupPropPage', 'Type', 
+            translate('GroupPropPage', 'Child name',
+            'First column header of the table'),
+            translate('GroupPropPage', 'Type',
             'Second column header of the table')])
         table.setModel(self.children_model)
         for name in info.hanging_groups.keys():
             name_item = QtGui.QStandardItem(name)
-            type_item = QtGui.QStandardItem(translate('GroupPropPage', 
+            type_item = QtGui.QStandardItem(translate('GroupPropPage',
                 'group'))
             self.children_model.appendRow([name_item, type_item])
         for name in info.hanging_leaves.keys():
@@ -140,5 +140,5 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
         self.modeLE.deleteLater()
 
         # Change the title of the group box
-        self.bottomGB.setTitle(translate('GroupPropPage', 'Group', 
+        self.bottomGB.setTitle(translate('GroupPropPage', 'Group',
             'Title of the group box'))
