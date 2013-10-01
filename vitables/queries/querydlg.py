@@ -21,8 +21,8 @@
 
 """
 This module provides a dialog for querying (filtering) `tables.Table` nodes.
-The result of the query is stored in other `tables.Table` node, referred as a 
-filtered table, which will live in the temporary database (labeled as `Query 
+The result of the query is stored in other `tables.Table` node, referred as a
+filtered table, which will live in the temporary database (labeled as `Query
 results` in the databases tree).
 """
 
@@ -40,7 +40,7 @@ from PyQt4.uic import loadUiType
 import vitables.utils
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_QueryDialog = \
@@ -129,13 +129,13 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             self.queryLE.setText(initial_query)
 
         # Fill the combos
-        operators = ['&', '|', '~', '<', '<=', '==', '!=', '>', '>=', 
+        operators = ['&', '|', '~', '<', '<=', '==', '!=', '>', '>=',
             '+', '-', '*', '/', '**', '%']
         self.operatorsComboBox.insertItems(0, operators)
-        functions = ['where', 'sin', 'cos', 'tan', 'arcsin', 'arccos', 
-            'arctan', 'arctan2', 'sinh', 'cosh', 'tanh', 
-            'arcsinh', 'arccosh', 'arctanh', 'log', 'log10', 'log1p', 
-            'exp', 'expm1', 'sqrt', 
+        functions = ['where', 'sin', 'cos', 'tan', 'arcsin', 'arccos',
+            'arctan', 'arctan2', 'sinh', 'cosh', 'tanh',
+            'arcsinh', 'arccosh', 'arctanh', 'log', 'log10', 'log1p',
+            'exp', 'expm1', 'sqrt',
             'real', 'imag', 'complex']
         self.functionsComboBox.insertItems(0, functions)
         sorted_fields = [field for field in info['valid_fields']]
@@ -174,7 +174,8 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         to the table produced by the filtering process. Moreover the
         user can set the name of this column.
 
-        :Parameter cb_on: a boolean that indicates if the checkbox is down or not.
+        :Parameter cb_on: a boolean that indicates if the checkbox is down
+            or not.
     """
 
         if cb_on:
@@ -204,7 +205,8 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         In this case only the condvar name will be inserted in the query
         line editor.
 
-        :Parameter field_id: is the field identifier in the combobox current item
+        :Parameter field_id: is the field identifier in the combobox current
+            item
         """
         self.queryLE.insert(field_id.split(' ')[0])
 
@@ -220,28 +222,28 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         :Parameter text: is the text of the combobox current item
         """
 
-        name2call = {'where': 'where(B, N, N)', 
-            'sin': 'sin(F|C)', 
-            'cos': 'cos(F|C)', 
-            'tan': 'tan(F|C)', 
-            'arcsin': 'arcsin(F|C)', 
-            'arccos': 'arccos(F|C)', 
-            'arctan': 'arctan(F|C)', 
-            'arctan2': 'arctan2(F, F)', 
-            'sinh': 'sinh(F|C)', 
-            'cosh': 'cosh(F|C)', 
-            'tanh': 'tanh(F|C)', 
-            'arcsinh': 'arcsinh(F|C)', 
-            'arccosh': 'arccosh(F|C)', 
-            'arctanh': 'arctanh(F|C)', 
-            'log': 'log(F|C)', 
-            'log10': 'log10(F|C)', 
-            'log1p': 'log1p(F|C)', 
-            'exp': 'exp(F|C)', 
-            'expm1': 'expm1(F|C)', 
-            'sqrt': 'sqrt(F|C)', 
-            'real': 'real(C)', 
-            'imag': 'imag(C)', 
+        name2call = {'where': 'where(B, N, N)',
+            'sin': 'sin(F|C)',
+            'cos': 'cos(F|C)',
+            'tan': 'tan(F|C)',
+            'arcsin': 'arcsin(F|C)',
+            'arccos': 'arccos(F|C)',
+            'arctan': 'arctan(F|C)',
+            'arctan2': 'arctan2(F, F)',
+            'sinh': 'sinh(F|C)',
+            'cosh': 'cosh(F|C)',
+            'tanh': 'tanh(F|C)',
+            'arcsinh': 'arcsinh(F|C)',
+            'arccosh': 'arccosh(F|C)',
+            'arctanh': 'arctanh(F|C)',
+            'log': 'log(F|C)',
+            'log10': 'log10(F|C)',
+            'log1p': 'log1p(F|C)',
+            'exp': 'exp(F|C)',
+            'expm1': 'expm1(F|C)',
+            'sqrt': 'sqrt(F|C)',
+            'real': 'real(C)',
+            'imag': 'imag(C)',
             'complex': 'complex(F, F)'
             }
         self.queryLE.insert(name2call[text])
@@ -259,7 +261,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         Every time that the table name text box changes the new
         content is checked. If it is empty, then the `OK` button is
         disabled.
-        If the indices checkbox is checked, every time that the indices column 
+        If the indices checkbox is checked, every time that the indices column
         name text box changes the
         new content is checked. If it is empty, then the `OK` button
         is disabled.
@@ -283,7 +285,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             status_ok = False
         elif ft_name in self.used_names:
             status_ok = False
-            print(translate('QueryDlg', 
+            print(translate('QueryDlg',
                 """The chosen name is already in use. Please,"""
                 """ choose another one.""", 'A logger info message'))
 
@@ -292,20 +294,20 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         if self.indicesColumnLE.isEnabled():
             if indices_colname == '':
                 status_ok = False
-                print(translate('QueryDlg', 
-                    "Enter a name for the column of indices, please", 
+                print(translate('QueryDlg',
+                    "Enter a name for the column of indices, please",
                     'A logger info message'))
             elif indices_colname.count('/'):
                 status_ok = False
-                print(translate('QueryDlg', 
+                print(translate('QueryDlg',
                     """The chosen name for the column of indices"""
-                    """is not valid. It contains '/' characters""", 
+                    """is not valid. It contains '/' characters""",
                     'A logger info message'))
             elif indices_colname in self.col_names:
                 status_ok = False
-                print(translate('QueryDlg', 
+                print(translate('QueryDlg',
                     """The chosen name for the column of indices"""
-                    """ is already in use. Please, choose another one.""", 
+                    """ is already in use. Please, choose another one.""",
                     'A logger info message'))
 
         # Check the condition.
@@ -324,20 +326,20 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             stop = numpy.array(stop_str).astype(numpy.int64)
             if stop > self.num_rows:
                 status_ok = False
-                print(translate('QueryDlg', 
+                print(translate('QueryDlg',
                     """The stop value is greater than the number of """
-                    """rows. Please, choose another one.""", 
+                    """rows. Please, choose another one.""",
                     'A logger info message'))
             elif start > stop:
                 status_ok = False
-                print(translate('QueryDlg', 
+                print(translate('QueryDlg',
                     """The start value is greater than the """
-                    """stop value. Please, choose another one.""", 
+                    """stop value. Please, choose another one.""",
                     'A logger info message'))
             elif start < 1:
                 status_ok = False
-                print(translate('QueryDlg', 
-                    "The start value must be greater than 0.", 
+                print(translate('QueryDlg',
+                    "The start value must be greater than 0.",
                     'A logger info message'))
 
         # Enable/disable the OK button

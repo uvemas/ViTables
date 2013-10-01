@@ -22,7 +22,7 @@
 """
 This module implements a controller for managing the queries.
 
-The manager tracks the existing filtered tables and their names, launches the 
+The manager tracks the existing filtered tables and their names, launches the
 Query dialog and executes the queries at low level (i.e. `PyTables` level).
 It also keeps a description of the last executed query and tracks the tables
 currently being queried, in order to ensure that no more than 1 query at a time
@@ -62,8 +62,8 @@ def getTableInfo(table):
     info['valid_fields'] = []
 
     if info['nrows'] <= 0:
-        print(translate('QueriesManager', 
-            "Caveat: table {0} is empty. Nothing to query.", 
+        print(translate('QueriesManager',
+            "Caveat: table {0} is empty. Nothing to query.",
             'Warning message for users').format(info['name']))
         return None
 
@@ -99,18 +99,18 @@ def getTableInfo(table):
 
     # If table has not columns suitable to be filtered does nothing
     if not info['valid_fields']:
-        print(translate('QueriesManager', 
+        print(translate('QueriesManager',
             """\nError: table {0} has no columns suitable to be """
             """queried. All columns are nested, multidimensional or have a """
-            """Complex data type.""", 
+            """Complex data type.""",
             'An error when trying to query a table').format(info['name']))
         return None
     elif len(info['valid_fields']) != len(info['col_names']):
     # Log a message if non selectable fields exist
-        print(translate('QueriesManager', 
+        print(translate('QueriesManager',
             """\nWarning: some table columns contain multidimensional, """
             """nested or Complex data. They cannot be queried so are not """
-            """included in the Column selector of the query dialog.""", 
+            """included in the Column selector of the query dialog.""",
            'An informational note for users'))
 
     return info
@@ -182,12 +182,12 @@ class QueriesManager(QtCore.QObject):
 
         # Update the list of names in use for filtered tables
         self.ft_names.append(query_description['ft_name'])
-        self.last_query = [query_description['src_filepath'], 
+        self.last_query = [query_description['src_filepath'],
             query_description['src_path'], query_description['condition']]
 
         # Run the query
         tmp_h5file = self.dbt_model.tmp_dbdoc.h5file
-        new_query = query.Query(tmp_h5file, table_uid, table, 
+        new_query = query.Query(tmp_h5file, table_uid, table,
             query_description)
         new_query.query_completed.connect(self.addQueryResult)
         QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -216,7 +216,7 @@ class QueriesManager(QtCore.QObject):
         # Get a complete query description from user input: condition to
         # be applied, involved range of rows, name of the
         # filtered table and name of the column of returned indices
-        query_dlg = querydlg.QueryDlg(info, self.ft_names, 
+        query_dlg = querydlg.QueryDlg(info, self.ft_names,
             self.counter, initial_condition, table)
         try:
             query_dlg.exec_()
@@ -231,7 +231,7 @@ class QueriesManager(QtCore.QObject):
         # SET THE TITLE OF THE RESULT TABLE
         title = query_description['condition']
         for name in info['valid_fields']:
-            # Valid fields can have the format 'fieldname' or 
+            # Valid fields can have the format 'fieldname' or
             # 'varname (name with blanks)' so a single blank shouldn't
             # be used as separator
             components = name.split(' (')
@@ -248,20 +248,20 @@ class QueriesManager(QtCore.QObject):
         Delete all nodes under the `Query results` node of the databases tree.
         """
 
-        title = translate('QueriesManager', 'Cleaning the Query results file', 
+        title = translate('QueriesManager', 'Cleaning the Query results file',
             'Caption of the QueryDeleteAll dialog')
-        text = translate('QueriesManager', 
-            "\n\nYou are about to delete all nodes under Query results\n\n", 
+        text = translate('QueriesManager',
+            "\n\nYou are about to delete all nodes under Query results\n\n",
             'Ask for confirmation')
         itext = ''
         dtext = ''
         buttons = {
-            'Delete': 
-                (translate('QueriesManager', 'Delete', 'Button text'), 
-                QtGui.QMessageBox.YesRole), 
-            'Cancel': 
-                (translate('QueriesManager', 'Cancel', 'Button text'), 
-                QtGui.QMessageBox.NoRole), 
+            'Delete':
+                (translate('QueriesManager', 'Delete', 'Button text'),
+                QtGui.QMessageBox.YesRole),
+            'Cancel':
+                (translate('QueriesManager', 'Cancel', 'Button text'),
+                QtGui.QMessageBox.NoRole),
             }
 
         # Ask for confirmation
@@ -271,9 +271,10 @@ class QueriesManager(QtCore.QObject):
 
         # Remove every filtered table from the tree of databases model/view
         model_rows = self.dbt_model.rowCount(QtCore.QModelIndex())
-        tmp_index = self.dbt_model.index(model_rows - 1, 0, 
+        tmp_index = self.dbt_model.index(model_rows - 1, 0,
             QtCore.QModelIndex())
-        rows_range = list(range(0, self.dbt_model.rowCount(tmp_index)).__reversed__())
+        rows_range = list(
+            range(0, self.dbt_model.rowCount(tmp_index)).__reversed__())
         for row in rows_range:
             index = self.dbt_model.index(row, 0, tmp_index)
             self.vtapp.nodeDelete(index, force=True)
@@ -297,13 +298,13 @@ class QueriesManager(QtCore.QObject):
 
         QtGui.qApp.restoreOverrideCursor()
         if not completed:
-            print(translate('QueriesManager', 'Query on table {0} failed!', 
+            print(translate('QueriesManager', 'Query on table {0} failed!',
                 'Warning log message about a failed query').format(table_uid))
             return
 
         # Update temporary database view i.e. call lazyAddChildren
         model_rows = self.dbt_model.rowCount(QtCore.QModelIndex())
-        tmp_index = self.dbt_model.index(model_rows - 1, 0, 
+        tmp_index = self.dbt_model.index(model_rows - 1, 0,
             QtCore.QModelIndex())
         self.dbt_model.lazyAddChildren(tmp_index)
 
