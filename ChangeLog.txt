@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** October 01, 2013**
+Checking modules directly under the vitables package with pylint.
+
 ** September 30, 2013 **
 The modules vtSite and vtGUI hav been renamed accordingly to PEP 8.
 

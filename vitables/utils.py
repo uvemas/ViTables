@@ -62,7 +62,7 @@ def toUnicode(thing):
     else:
         # thing can be:
         # - a PyQt object or
-        # - a numpy array, eg. a multidimensional attribute 
+        # - a numpy array, eg. a multidimensional attribute
         #   like in examples/misc/MDobjects.h5
         # - a numpy scalar object, e.g. an attribute whose
         #   type is numpy.int32
@@ -94,7 +94,7 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     - `caption`: the dialog caption
     - `dfilter`: filters used to display files and folders
     - `filepath`: the filepath initially selected
-    - `settings`: dictionary with keys `label` (Accept button text), 
+    - `settings`: dictionary with keys `label` (Accept button text),
         `history` (file selector history) , `accept_mode` and `file_mode`
     """
 
@@ -109,7 +109,7 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     if filepath:
         file_selector.selectFile(filepath)
     if settings['label'] != '':
-        file_selector.setLabelText(QtGui.QFileDialog.Accept, 
+        file_selector.setLabelText(QtGui.QFileDialog.Accept,
             settings['label'])
 
     # Uncomment next line if you want native dialogs. Removing the comment
@@ -129,7 +129,7 @@ def getFilepath(parent, caption, dfilter, filepath='', settings=None):
     - `caption`: the dialog caption
     - `dfilter`: filters used to display files and folders
     - `filepath`: the filepath initially selected
-    - `settings`: dictionary with keys `label` (Accept button text), 
+    - `settings`: dictionary with keys `label` (Accept button text),
         `history` (file selector history) , `accept_mode` and `file_mode`
     """
 
@@ -150,6 +150,25 @@ def getFilepath(parent, caption, dfilter, filepath='', settings=None):
     finally:
         del file_selector
     return filepath, working_dir
+
+def checkFileExtension(self, filepath):
+    """
+    Check the filename extension of a given file.
+
+    If the filename has no extension this method adds `.h5`
+    extension to it. This is useful when a file is being created or
+    saved.
+
+    :Parameter filepath: the full path of the file.
+
+    :Returns: the filepath with the proper extension.
+    """
+
+    if not re.search('\.(.+)$', os.path.basename(filepath)):
+        ext = '.h5'
+        filepath = filepath + ext
+    return filepath
+
 
 #
 # Icons related functions
@@ -199,32 +218,32 @@ def getIcons():
     if not ICONS_DICT:
         large_icons = frozenset([
             # Icons for toolbars
-            'document-close', 'document-new', 'document-open', 
-            'document-save-as', 'application-exit', 'folder-new', 
-            'edit-copy', 'edit-cut', 'edit-delete','edit-paste', 
-            'help-contents', 
-            'view-filter', 'delete_filters', 
+            'document-close', 'document-new', 'document-open',
+            'document-save-as', 'application-exit', 'folder-new',
+            'edit-copy', 'edit-cut', 'edit-delete','edit-paste',
+            'help-contents',
+            'view-filter', 'delete_filters',
             # Icons for tree pane items
-            'file_ro', 'file_rw', 'dbfilters', 'folder', 
+            'file_ro', 'file_rw', 'dbfilters', 'folder',
             'document-open-folder'])
 
         small_icons = frozenset([
             # Icons for menu items
-            'document-close', 'document-new', 'document-open', 
-            'document-save-as', 'document-open-recent', 'application-exit', 
-            'edit-cut', 'edit-copy','edit-delete','edit-paste', 
-            'edit-rename', 
-            'folder-new', 
+            'document-close', 'document-new', 'document-open',
+            'document-save-as', 'document-open-recent', 'application-exit',
+            'edit-cut', 'edit-copy','edit-delete','edit-paste',
+            'edit-rename',
+            'folder-new',
             'view-filter', 'delete_filters',
-            'configure', 
-            'help-about', 'help-contents', 
+            'configure',
+            'help-about', 'help-contents',
             # Icons for tree pane items
-            'image-missing', 'object', 'vlstring', 
-            'array', 'link_array', 'carray', 'link_carray', 
-            'earray', 'link_earray', 'vlarray','link_vlarray', 
-            'table', 'link_table', 
+            'image-missing', 'object', 'vlstring',
+            'array', 'link_array', 'carray', 'link_carray',
+            'earray', 'link_earray', 'vlarray','link_vlarray',
+            'table', 'link_table',
             # Icons for node views
-            'zoom-in', 
+            'zoom-in',
             # Icons for buttons
             'dialog-cancel', 'dialog-ok'])
 
@@ -240,7 +259,7 @@ def getHBIcons():
         large_icons = frozenset([
         # Icons for toolbar
         'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
-        'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out', 
+        'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out',
         'edit-clear-history'])
 
         small_icons = frozenset([
@@ -295,7 +314,7 @@ def formatArrayContent(content):
             return content.decode(DEFAULT_ENCODING)
         except UnicodeDecodeError:
             pass
-    
+   
     elif isinstance(content, numpy.ndarray):
         if content.dtype.char == 'S':
             sep = ', '

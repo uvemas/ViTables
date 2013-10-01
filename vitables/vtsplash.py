@@ -20,7 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-Here is defined the VTSplash class. It displays the splash screen during the 
+Here is defined the VTSplash class. It displays the splash screen during the
 ``ViTables`` startup and shows the advance of the startup sequence.
 """
 
