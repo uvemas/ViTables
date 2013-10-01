@@ -65,7 +65,7 @@ class NodeInfo(object):
         - shape
         - flavor
 
-    :Parameter node_item: an instance of :meth:`RootGroupNode`, 
+    :Parameter node_item: an instance of :meth:`RootGroupNode`,
       :meth:`GroupNode` or :meth:`LeafNode`.
     """
 

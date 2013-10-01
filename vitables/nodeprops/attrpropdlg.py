@@ -23,7 +23,7 @@
 This module displays in a dialog the node information collected by the
 :mod:`vitables.nodeprops.nodeinfo` module.
 
-Users' attributes can be edited if the database has been opened in read-write 
+Users' attributes can be edited if the database has been opened in read-write
 mode. Otherwise all shown information is read-only.
 """
 
@@ -42,7 +42,7 @@ import vitables.utils
 from vitables.nodeprops import attreditor
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_AttrPropDialog = \
@@ -71,7 +71,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
       describing a given node
     """
 
@@ -95,7 +95,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     def fillSysAttrsPage(self, info):
         """Fill the page of system attributes.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
           describing a given node
         """
 
@@ -108,11 +108,11 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             QtGui.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
-            translate('AttrPropDlg', 'Name', 
-            'First column header of the table'), 
-            translate('AttrPropDlg', 'Value', 
-            'Second column header of the table'), 
-            translate('AttrPropDlg', 'Datatype', 
+            translate('AttrPropDlg', 'Name',
+            'First column header of the table'),
+            translate('AttrPropDlg', 'Value',
+            'Second column header of the table'),
+            translate('AttrPropDlg', 'Datatype',
             'Third column header of the table')])
         self.sysTable.setModel(self.sysattr_model)
 
@@ -129,12 +129,12 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             # Since PyTables2.0 scalar attributes are stored as numpy arrays
             # It includes the TITLE attribute
             # For instance, assume the ASI of a given node is asi. Then
-            # if I do asi.test = 3 -> 
+            # if I do asi.test = 3 ->
             # type(asi.test) returns numpy.int32
             # isinstance(asi.test, int) returns True
             # asi.test.shape returns ()
             # asi.test2 = "hello" ->
-            # type(asi.test2) returns numpy.string_ 
+            # type(asi.test2) returns numpy.string_
             # isinstance(asi.test2, str) returns True
             # asi.test2.shape returns ()
             # Beware that objects whose shape is () are not warrantied
@@ -142,7 +142,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             # x = numpy.array(3) ->
             # x.shape returns ()
             # type(x) returns numpy.ndarray
-            # isinstance(x, int) returns False 
+            # isinstance(x, int) returns False
             if isinstance(value, tables.Filters):
                 dtype_name = u'tables.filters.Filters'
             elif hasattr(value, u'shape'):
@@ -171,7 +171,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     def fillUserAttrsPage(self, info):
         """Fill the page of user attributes.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
           describing a given node
         """
 
@@ -186,18 +186,18 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
                         setResizeMode(QtGui.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
-            translate('AttrPropDlg', 'Name', 
-            'First column header of the table'), 
-            translate('AttrPropDlg', 'Value', 
-            'Second column header of the table'), 
-            translate('AttrPropDlg', 'Datatype', 
+            translate('AttrPropDlg', 'Name',
+            'First column header of the table'),
+            translate('AttrPropDlg', 'Value',
+            'Second column header of the table'),
+            translate('AttrPropDlg', 'Datatype',
             'Third column header of the table')])
         self.userTable.setModel(self.userattr_model)
 
         # Fill the table
         # The Data Type cell is a combobox with static content
-        dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 
-            'uint32', 'uint64', 'float32', 'float64', 'complex64', 
+        dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16',
+            'uint32', 'uint64', 'float32', 'float64', 'complex64',
             'complex128', 'bool', 'string', 'unicode', 'python']
 
         bg_brush = self.userTable.palette().brush(QtGui.QPalette.Window)
@@ -246,7 +246,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             name_item.setBackground(brush)
             value_item.setEditable(editable)
             value_item.setBackground(brush)
-            self.user_attrs_before.append((name_item.text(), 
+            self.user_attrs_before.append((name_item.text(),
                 value_item.text(), dtypes_combo.currentText()))
         self.user_attrs_before.sort()
 
@@ -293,8 +293,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         self.userattr_model.appendRow([name_item, value_item, dtype_item])
 
         # The Data Type cell is a combobox with static content
-        dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 
-            'uint32', 'uint64', 'float32', 'float64', 'complex64', 
+        dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16',
+            'uint32', 'uint64', 'float32', 'float64', 'complex64',
             'complex128', 'bool', 'string', 'unicode', 'python']
         dtypes_combo = QtGui.QComboBox()
         dtypes_combo.addItems(dtypes_list)
@@ -322,7 +322,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # If there is not a selected attribute then return
         current_index = self.userTable.currentIndex()
         if not current_index.isValid():
-            print(translate('AttrPropDlg', 
+            print(translate('AttrPropDlg',
                 'Please, select the attribute to be deleted.',
                 'A usage text'))
             return
@@ -337,18 +337,18 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # Delete the marked attribute
         title = translate('AttrPropDlg', 'User attribute deletion',
             'Caption of the attr deletion dialog')
-        text = translate('AttrPropDlg', 
-            "\n\nYou are about to delete the attribute:\n{0}\n\n", 
+        text = translate('AttrPropDlg',
+            "\n\nYou are about to delete the attribute:\n{0}\n\n",
             'Ask for confirmation').format(name)
         itext = ''
         dtext = ''
         buttons = {
-            'Delete': 
-                (translate('AttrPropDlg', 'Delete', 'Button text'), 
-                QtGui.QMessageBox.YesRole), 
-            'Cancel': 
-                (translate('AttrPropDlg', 'Cancel', 'Button text'), 
-                QtGui.QMessageBox.NoRole), 
+            'Delete':
+                (translate('AttrPropDlg', 'Delete', 'Button text'),
+                QtGui.QMessageBox.YesRole),
+            'Cancel':
+                (translate('AttrPropDlg', 'Cancel', 'Button text'),
+                QtGui.QMessageBox.NoRole),
             }
 
         # Ask for confirmation
@@ -384,7 +384,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             dtype_item = self.userattr_model.item(index, 2)
             dtype_combo = self.userTable.indexWidget(dtype_item.index())
             dtype_after = dtype_combo.currentText()
-            self.user_attrs_after.append((name_after, value_after, 
+            self.user_attrs_after.append((name_after, value_after,
                 dtype_after))
         self.user_attrs_after.sort()
         if self.user_attrs_before != self.user_attrs_after:
@@ -398,7 +398,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         """
         Overwritten slot for accepted dialogs.
 
-        This slot is always the last called method whenever the Apply/Ok 
+        This slot is always the last called method whenever the Apply/Ok
         buttons are pressed.
         """
 
@@ -409,7 +409,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             return  # This is mandatory!
 
         # Check the editable attributes
-        aeditor = attreditor.AttrEditor(self.asi, self.title_after, 
+        aeditor = attreditor.AttrEditor(self.asi, self.title_after,
             self.userTable)
         attrs_are_ok, error = aeditor.checkAttributes()
         # If the attributes pass correctness checks then update the

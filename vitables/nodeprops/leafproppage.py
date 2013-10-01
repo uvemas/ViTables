@@ -21,7 +21,7 @@
 
 """
 A form with tables.Leaf information collected by the
-:mod:`vitables.nodeprops.nodeInfo` module.
+:mod:`vitables.nodeprops.nodeinfo` module.
 """
 
 __docformat__ = 'restructuredtext'
@@ -34,7 +34,7 @@ from PyQt4.uic import loadUiType
 import vitables.utils
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_LeafPropPage = \
@@ -63,7 +63,7 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
 
-    :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+    :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
       describing a given node
     """
 
@@ -83,7 +83,7 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
 
         The page contains two groupboxes that are laid out vertically.
 
-        :Parameter info: a :meth:`vitables.nodeprops.nodeInfo.NodeInfo` instance 
+        :Parameter info: a :meth:`vitables.nodeprops.nodeinfo.NodeInfo` instance
           describing a given node
         """
 
@@ -98,7 +98,7 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
         if info.filters.complib is None:
             self.compressionLE.setText('uncompressed')
         else:
-            self.compressionLE.setText(unicode(info.filters.complib, 
+            self.compressionLE.setText(unicode(info.filters.complib,
                 'utf_8'))
 
         # Information about the fields of Table instances
@@ -111,11 +111,11 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
             table.setStyleSheet(u"background-color: {0}".format(bg_name))
             self.fields_model = QtGui.QStandardItemModel()
             self.fields_model.setHorizontalHeaderLabels([
-                translate('LeafPropPage', 'Field name', 
-                'First column header of the table'), 
-                translate('LeafPropPage', 'Type', 
-                'Second column header of the table'), 
-                translate('LeafPropPage', 'Shape', 
+                translate('LeafPropPage', 'Field name',
+                'First column header of the table'),
+                translate('LeafPropPage', 'Type',
+                'Second column header of the table'),
+                translate('LeafPropPage', 'Shape',
                 'Third column header of the table')])
             table.setModel(self.fields_model)
 
@@ -134,13 +134,13 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
                     shape_item = QtGui.QStandardItem(
                         translate('LeafPropPage', '-'))
                 else:
-                    pathname_item = QtGui.QStandardItem(unicode(pathname, 
+                    pathname_item = QtGui.QStandardItem(unicode(pathname,
                                                                 'utf_8'))
                     type_item = QtGui.QStandardItem(\
                             unicode(info.columns_types[pathname], 'utf_8'))
                     shape_item = QtGui.QStandardItem(\
                                         unicode(info.columns_shapes[pathname]))
-                self.fields_model.appendRow([pathname_item, type_item, 
+                self.fields_model.appendRow([pathname_item, type_item,
                                             shape_item])
 
 

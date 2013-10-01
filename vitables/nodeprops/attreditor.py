@@ -29,6 +29,7 @@ about the error and the dialog remains open so the user can fix her mistake.
 
 __docformat__ = 'restructuredtext'
 
+import tables
 import numpy
 
 from PyQt4 import QtGui
@@ -49,7 +50,7 @@ def checkSyntax(value):
         return False
     try:
         eval(value)
-    except:
+    except (ValueError, SyntaxError):
         return False
     else:
         return True
@@ -147,7 +148,8 @@ class AttrEditor(object):
 
     - `asi`: the Attributes Set Instance being updated
     - `title`: the TITLE attribute entered by the user in the Properties dialog
-    - `user_table`: the table of user attributes edited by the user in the Properties dialog
+    - `user_table`: the table of user attributes edited by the user in the
+        Properties dialog
     """
 
     def __init__(self, asi, title, user_table):
@@ -283,7 +285,7 @@ class AttrEditor(object):
         for attr in (all_attrs - edited_attrs_names):
             try:
                 self.asi._v_node._f_delAttr(attr)
-            except:
+            except (tables.NodeError, AttributeError):
                 vitables.utils.formatExceptionInfo()
 
         for row in self.edited_attrs.keys():
@@ -302,5 +304,5 @@ class AttrEditor(object):
             # Updates the ASI
             try:
                 setattr(self.asi, name, value)
-            except:
+            except AttributeError:
                 vitables.utils.formatExceptionInfo()
