@@ -29,7 +29,6 @@ __docformat__ = 'restructuredtext'
 import tables
 
 from PyQt4 import QtCore
-from PyQt4 import QtGui
 
 import vitables.utils
 

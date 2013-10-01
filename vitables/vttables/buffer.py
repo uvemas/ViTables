@@ -20,11 +20,11 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module implements a buffer used to access the real data contained in 
+This module implements a buffer used to access the real data contained in
 `PyTables` datasets.
 
-By using this buffer we speed up the access to the stored data. As a 
-consequence, views (widgets showing a tabular representation of the dataset) 
+By using this buffer we speed up the access to the stored data. As a
+consequence, views (widgets showing a tabular representation of the dataset)
 are painted much faster too.
 """
 
@@ -208,10 +208,10 @@ class Buffer(object):
             self.data_source.read(start, stop)
         except tables.HDF5ExtError:
             readable = False
-            print(translate('Buffer', 
+            print(translate('Buffer',
                 """\nError: problems reading records. The dataset seems """
                 """to be compressed with the {0} library. Check that it """
-                """is installed in your system, please.""", 
+                """is installed in your system, please.""",
                 'A dataset readability error').\
                 format(self.data_source.filters.complib))
 
@@ -247,9 +247,9 @@ class Buffer(object):
             # array returned by EArray.read() will have only 2 rows
             data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
-            print(translate('Buffer', 
+            print(translate('Buffer',
                 """\nError: problems reading records. The dataset maybe """
-                """corrupted.""", 
+                """corrupted.""",
                 'A dataset readability error'))
         except:
             vitables.utils.formatExceptionInfo()

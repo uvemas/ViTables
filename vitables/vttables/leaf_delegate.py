@@ -45,7 +45,7 @@ class LeafDelegate(QtGui.QStyledItemDelegate):
 
     def paint(self, painter, option, index):
         """Renders the delegate for the item specified by index.
-        
+
         This method handles specially the result returned by the model data()
         method for the Qt.BackgroundRole role. Typically, if the cell being
         rendered is selected then the data() returned value is ignored and the
@@ -56,14 +56,14 @@ class LeafDelegate(QtGui.QStyledItemDelegate):
         the painting: state (which holds the state flags), rect (which holds
         the area that should be used for painting) and palette (which holds the
         palette that should be used when painting)
-        
+
         :Parameters:
 
         - `painter`: the painter used for rendering
         - `option`: the style option used for rendering
         - `index`: the index of the rendered item
         """
-        
+
         # option.state is an ORed combination of flags
         if (option.state & QtGui.QStyle.State_Selected):
             model = index.model()

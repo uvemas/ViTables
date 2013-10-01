@@ -66,7 +66,7 @@ class ScrollBar(QtGui.QScrollBar):
     def event(self, e):
         """Filter wheel events and send them to the table viewport.
         """
-        
+
         if (e.type() == QtCore.QEvent.Wheel):
             self.view.wheelEvent(e)
             return True
