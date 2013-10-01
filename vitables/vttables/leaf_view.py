@@ -157,13 +157,14 @@ class LeafView(QtGui.QTableView):
 
         offset = self.tmodel.rbuffer.start + 1
         fv_label = self.vheader.logicalIndexAt(0) + offset
-        lv_label = self.vheader.logicalIndexAt(self.vheader.viewport().height() - 1) + offset
+        lv_label = self.vheader.logicalIndexAt(
+            self.vheader.viewport().height() - 1) + offset
         if lv_label == self.leaf_numrows :
             self.tricky_vscrollbar.setValue(self.max_value)
         elif fv_label == 1 :
             self.tricky_vscrollbar.setValue(0)
         else :
-            value = numpy.rint(numpy.array(fv_label/self.interval_size, 
+            value = numpy.rint(numpy.array(fv_label/self.interval_size,
                 dtype=numpy.float64))
             self.tricky_vscrollbar.setValue(value)
 
@@ -175,7 +176,7 @@ class LeafView(QtGui.QTableView):
         self.vheader.headerDataChanged(
             QtCore.Qt.Vertical, 0, self.tmodel.numrows - 1)
         top_left = self.tmodel.index(0, 0)
-        bottom_right = self.tmodel.index(self.tmodel.numrows - 1, 
+        bottom_right = self.tmodel.index(self.tmodel.numrows - 1,
                                             self.tmodel.numcols - 1)
         self.dataChanged(top_left, bottom_right)
 
@@ -185,8 +186,8 @@ class LeafView(QtGui.QTableView):
 
         On a regular table (with the scrollbar connected to the table view)
         this slot is called after the `action` has set the slider position
-        but before the display has been updated (see documentation of the 
-        QAbstractSlider.actionTriggered signal in the Qt4 docs) so in this 
+        but before the display has been updated (see documentation of the
+        QAbstractSlider.actionTriggered signal in the Qt4 docs) so in this
         method we can safely do any action before that display update happens.
 
         In our case the slot is connected to the tricky scrollbar and its main
@@ -231,7 +232,7 @@ class LeafView(QtGui.QTableView):
 
         :Parameter direction: the data browsing direction (upwards/downwards)
         """
-        
+
         model = self.tmodel
         vh = self.vheader
 
@@ -260,13 +261,14 @@ class LeafView(QtGui.QTableView):
         # read the next contiguous buffer
         if (last_vp_row + 1 == table_rows) and \
             (buffer_start + table_rows < self.leaf_numrows):
-                # Buffer fault. The new buffer starts just after the current
-                # first row of the viewport.
-                new_start = buffer_start + last_vp_row - page_step + 1
-                model.loadData(new_start, table_rows)
-                self.updateView()
-                self.scrollTo(model.index(new_start - model.rbuffer.start, 0),
-                    QtGui.QAbstractItemView.PositionAtTop)
+            # Buffer fault. The new buffer starts just after the current
+            # first row of the viewport.
+            new_start = buffer_start + last_vp_row - page_step + 1
+            model.loadData(new_start, table_rows)
+            self.updateView()
+            self.scrollTo(
+                model.index(new_start - model.rbuffer.start, 0),
+                QtGui.QAbstractItemView.PositionAtTop)
         else:
             self.vscrollbar.triggerAction(1)
 
@@ -282,13 +284,14 @@ class LeafView(QtGui.QTableView):
         # read the next contiguous buffer
         if (last_vp_row + page_step + 1 > table_rows) and \
             (buffer_start + table_rows < self.leaf_numrows):
-                # Buffer fault. The new buffer starts at the current last
-                # row of the viewport.
-                new_start = buffer_start + last_vp_row
-                model.loadData(new_start, table_rows)
-                self.updateView()
-                self.scrollTo(model.index(new_start - model.rbuffer.start, 0),
-                    QtGui.QAbstractItemView.PositionAtTop)
+            # Buffer fault. The new buffer starts at the current last
+            # row of the viewport.
+            new_start = buffer_start + last_vp_row
+            model.loadData(new_start, table_rows)
+            self.updateView()
+            self.scrollTo(
+                model.index(new_start - model.rbuffer.start, 0),
+                QtGui.QAbstractItemView.PositionAtTop)
         else:
             self.vscrollbar.triggerAction(3)
 
@@ -303,14 +306,15 @@ class LeafView(QtGui.QTableView):
         # row of the dataset we still can go upwards so we have to
         # read the previous contiguous buffer
         if (first_vp_row == 0) and (buffer_start > 0):
-                # Buffer fault. The new buffer ends just before the current
-                # last row of the viewport.
-                model.loadData(
+            # Buffer fault. The new buffer ends just before the current
+            # last row of the viewport.
+            model.loadData(
                     buffer_start + page_step - table_rows, table_rows)
-                self.scrollTo(model.index(
+            self.scrollTo(
+                model.index(
                     buffer_start + page_step - model.rbuffer.start - 1, 0),
-                    QtGui.QAbstractItemView.PositionAtBottom)
-                self.updateView()
+            QtGui.QAbstractItemView.PositionAtBottom)
+            self.updateView()
         else:
             self.vscrollbar.triggerAction(2)
 
@@ -325,14 +329,16 @@ class LeafView(QtGui.QTableView):
         # row of the dataset we still can go upwards so we have to
         # read the previous contiguous buffer
         if (first_vp_row < page_step + 1) and (buffer_start > 0):
-                # Buffer fault. The new buffer ends just at the current
-                # first row of the viewport.
-                model.loadData(
-                    buffer_start + first_vp_row - table_rows + 1, table_rows)
-                self.updateView()
-                self.scrollTo(model.index(
+            # Buffer fault. The new buffer ends just at the current
+            # first row of the viewport.
+            model.loadData(
+                           buffer_start + first_vp_row - table_rows + 1,
+                           table_rows)
+            self.updateView()
+            self.scrollTo(
+                model.index(
                     buffer_start + first_vp_row - model.rbuffer.start, 0),
-                    QtGui.QAbstractItemView.PositionAtBottom)
+                QtGui.QAbstractItemView.PositionAtBottom)
         else:
             self.vscrollbar.triggerAction(4)
 
@@ -482,14 +488,15 @@ class LeafView(QtGui.QTableView):
         # read the next contiguous buffer
         if (last_vp_row + self.wheel_step + 1 > table_rows) and \
             (buffer_start + table_rows < self.leaf_numrows):
-                # Buffer fault. The new buffer and the old one overlap to ensure
-                # that no jumps occur.
-                new_start = \
-                    buffer_start + last_vp_row + self.wheel_step - page_step
-                model.loadData(new_start, table_rows)
-                self.updateView()
-                self.scrollTo(model.index(new_start - model.rbuffer.start, 0),
-                    QtGui.QAbstractItemView.PositionAtTop)
+            # Buffer fault. The new buffer and the old one overlap to ensure
+            # that no jumps occur.
+            new_start = \
+                buffer_start + last_vp_row + self.wheel_step - page_step
+            model.loadData(new_start, table_rows)
+            self.updateView()
+            self.scrollTo(
+                          model.index(new_start - model.rbuffer.start, 0),
+                          QtGui.QAbstractItemView.PositionAtTop)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
 
@@ -505,16 +512,16 @@ class LeafView(QtGui.QTableView):
         # row of the dataset we still can go upwards so we have to
         # read the previous contiguous buffer
         if (first_vp_row < page_step + 1) and (buffer_start > 0):
-                # Buffer fault. The new buffer and the old one overlap to ensure
-                # that no jumps occur.
-                new_start = buffer_start + first_vp_row + page_step - \
-                    self.wheel_step - table_rows + 1
-                model.loadData(
-                    new_start, table_rows)
-                self.updateView()
-                self.scrollTo(model.index(
+            # Buffer fault. The new buffer and the old one overlap to ensure
+            # that no jumps occur.
+            new_start = buffer_start + first_vp_row + page_step - \
+                self.wheel_step - table_rows + 1
+            model.loadData(new_start, table_rows)
+            self.updateView()
+            self.scrollTo(
+                model.index(
                     new_start + table_rows - model.rbuffer.start - 1, 0),
-                    QtGui.QAbstractItemView.PositionAtBottom)
+                QtGui.QAbstractItemView.PositionAtBottom)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
 
@@ -584,7 +591,7 @@ class LeafView(QtGui.QTableView):
         # Update buffer if needed
         last_row = model.rbuffer.start + table_rows
         if last_row < self.leaf_numrows:
-            self.tmodel.loadData(self.leaf_numrows - table_rows, 
+            self.tmodel.loadData(self.leaf_numrows - table_rows,
                                     table_rows)
             self.updateView()
         self.setCurrentIndex(index)
@@ -603,7 +610,7 @@ class LeafView(QtGui.QTableView):
 
         :Parameter direction: the data browsing direction (upwards/downwards)
         """
-        
+
         model = self.tmodel
         # Load the buffer where the valid current cell lives
         self.validCurrentCellBuffer()
@@ -782,16 +789,16 @@ class LeafView(QtGui.QTableView):
             self.valid_current_buffer = self.tmodel.rbuffer.start
 
 
-    # This method has been renamed from loadDatasetCurrentCell to validCurrentCellBuffer
-    # The method has been debugged too
+    # This method has been renamed from loadDatasetCurrentCell to
+    # validCurrentCellBuffer. The method has been debugged too
     def validCurrentCellBuffer(self):
         """Load the buffer in which the valid current cell lives.
         """
 
         table_rows = self.tmodel.numrows
         valid_current = self.currentIndex().row() + self.valid_current_buffer
-        if not (self.tmodel.rbuffer.start <= 
-            valid_current <= 
+        if not (self.tmodel.rbuffer.start <=
+            valid_current <=
             self.tmodel.rbuffer.start + table_rows - 1):
             self.tmodel.loadData(self.valid_current_buffer, table_rows)
             self.updateView()

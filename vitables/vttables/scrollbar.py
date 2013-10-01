@@ -23,11 +23,11 @@
 This minimal module makes a QScrollBar for browsing huge datasets.
 
 The use of this scrollbar is very tricky. It will be painted over the scrollbar
-of views bound to huge datasets so the view will look as usual but will have 2 
-scrollbars. The hidden scrollbar is not useful for browsing huge datasets (it 
+of views bound to huge datasets so the view will look as usual but will have 2
+scrollbars. The hidden scrollbar is not useful for browsing huge datasets (it
 is tightly bound to the dimensions (number of rows) of the view widget. But the
-visible scrollbar is independent of the dimensions of the view widget and can 
-be used for customising the view in a way that makes it useful for browsing 
+visible scrollbar is independent of the dimensions of the view widget and can
+be used for customising the view in a way that makes it useful for browsing
 datasets with a larger number of rows than that provided by the view widget.
 """
 
@@ -66,7 +66,7 @@ class ScrollBar(QtGui.QScrollBar):
     def event(self, e):
         """Filter wheel events and send them to the table viewport.
         """
-        
+
         if (e.type() == QtCore.QEvent.Wheel):
             self.view.wheelEvent(e)
             return True

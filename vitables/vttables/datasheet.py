@@ -22,7 +22,7 @@
 """
 This module defines a widget that wraps the view widget of leaves.
 
-When a leaf node is opened in the tree of databases view the data stored in 
+When a leaf node is opened in the tree of databases view the data stored in
 that leaf will be displayed in the workspace using this wrapper widget.
 """
 
@@ -41,7 +41,7 @@ class DataSheet(QtGui.QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
 
-    :Parameter index: the index (in the tree of databases model) of the leaf 
+    :Parameter index: the index (in the tree of databases model) of the leaf
       whose data will be displayed
     """
 
@@ -104,7 +104,7 @@ class DataSheet(QtGui.QMdiSubWindow):
         self.vtgui.updateActions()
 
         # Propagate the event. In the process, self.widget().closeEvent
-        # will be called 
+        # will be called
         QtGui.QMdiSubWindow.closeEvent(self, event)
 
         if self.vtgui.workspace.subWindowList() == []:
@@ -158,11 +158,11 @@ class DataSheet(QtGui.QMdiSubWindow):
         info = nodeinfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
-            title = '{0}: {1}[{2}]'.format(node.name, col, 
+            title = '{0}: {1}[{2}]'.format(node.name, col,
                 tmodel.rbuffer.start + row + 1)
         else:
-            title = '{0}: ({1},{2})'.format(node.name, 
+            title = '{0}: ({1},{2})'.format(node.name,
                 tmodel.rbuffer.start + row + 1, column + 1)
 
-        zoom_cell.ZoomCell(data, title, self.vtgui.workspace, 
+        zoom_cell.ZoomCell(data, title, self.vtgui.workspace,
                           self.dbt_leaf)

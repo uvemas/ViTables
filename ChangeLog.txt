@@ -13,6 +13,8 @@ The package nodeprops has been analyzed with pylint.
 
 The package vtwidgets has been analyzed with pylint.
 
+The package vttables has been analyzed with pylint.
+
 ** September 25, 2013 **
 Refactoring module names to follow PEP 8.
 nodeInfo.py -> nodeinfo.py

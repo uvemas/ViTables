@@ -20,7 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module implements a model (in the `MVC` sense) for the real data stored 
+This module implements a model (in the `MVC` sense) for the real data stored
 in a `tables.Leaf`.
 """
 
@@ -29,7 +29,6 @@ __docformat__ = 'restructuredtext'
 import tables
 
 from PyQt4 import QtCore
-from PyQt4 import QtGui
 
 import vitables.utils
 
@@ -158,7 +157,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
             index.column())
         if role == QtCore.Qt.DisplayRole:
             return self.formatContent(cell)
@@ -173,7 +172,7 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         When implementing a table based model this method has to be overriden
         -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the 
+        indices (because they have no children). If the index is not valid the
         method  should return the number of columns exposed by the model.
 
         :Parameter index: the model index being inspected.
@@ -190,7 +189,7 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         When implementing a table based model this method has to be overriden
         -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the 
+        indices (because they have no children). If the index is not valid the
         method  should return the number of rows exposed by the model.
 
         :Parameter index: the model index being inspected.
