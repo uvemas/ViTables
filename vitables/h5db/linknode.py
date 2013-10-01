@@ -20,7 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module defines a data structure to be used for the model of the databases 
+This module defines a data structure to be used for the model of the databases
 tree. The data structure is equivalent to a link node in a `PyTables` file.
 """
 

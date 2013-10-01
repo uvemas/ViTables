@@ -30,6 +30,8 @@ __docformat__ = 'restructuredtext'
 
 import os
 
+import tables
+
 import vitables.utils
 
 
@@ -65,7 +67,7 @@ class TLinkEditor(object):
             link = self.h5file.getNode(nodepath)
             link.remove()
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -92,7 +94,7 @@ class TLinkEditor(object):
             link = self.h5file.getNode(nodepath)
             link.move(newparent=self.hidden_group, newname=nodename)
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -107,10 +109,10 @@ class TLinkEditor(object):
         """
 
         try:
-            link.copy(newparent=parent, newname=childname, 
+            link.copy(newparent=parent, newname=childname,
                 overwrite=True, createparents=False)
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -128,7 +130,7 @@ class TLinkEditor(object):
             link = self.h5file.getNode(nodepath)
             link.rename(new_name)
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -156,6 +158,6 @@ class TLinkEditor(object):
                 self.h5file.removeNode(src_where, src_nodename, recursive=1)
             self.h5file.flush()
             return childname
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
             return None

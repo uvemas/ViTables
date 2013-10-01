@@ -30,6 +30,8 @@ __docformat__ = 'restructuredtext'
 
 import os
 
+import tables
+
 import vitables.utils
 
 
@@ -64,7 +66,7 @@ class TNodeEditor(object):
         try:
             self.h5file.removeNode(where=nodepath, recursive=True)
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -90,7 +92,7 @@ class TNodeEditor(object):
 
             self.move(nodepath, self, self.hidden_group, nodename)
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -108,7 +110,7 @@ class TNodeEditor(object):
             self.h5file.copyNode(src_node, newparent=parent,
                 newname=childname, overwrite=True, recursive=True)
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -127,7 +129,7 @@ class TNodeEditor(object):
         try:
             self.h5file.renameNode(where, new_name, current_name, overwrite=1)
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -146,7 +148,7 @@ class TNodeEditor(object):
                 self.h5file.removeNode(where, final_name, recursive=True)
             self.h5file.createGroup(where, final_name, title='')
             self.h5file.flush()
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -165,7 +167,7 @@ class TNodeEditor(object):
             dst_h5file = dst_dbdoc.h5file
             parent_node = dst_h5file.getNode(parentpath)
             if self.h5file is dst_h5file:
-                self.h5file.moveNode(childpath, newparent=parent_node, 
+                self.h5file.moveNode(childpath, newparent=parent_node,
                     newname=childname, overwrite=True)
             else:
                 self.h5file.copyNode(childpath, newparent=parent_node,
@@ -175,6 +177,6 @@ class TNodeEditor(object):
                 self.h5file.removeNode(src_where, src_nodename, recursive=1)
             self.h5file.flush()
             return childname
-        except:
+        except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
             return None
