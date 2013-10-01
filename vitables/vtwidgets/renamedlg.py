@@ -20,7 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module provides a dialog for solving node renaming issues on the tree of 
+This module provides a dialog for solving node renaming issues on the tree of
 databases view.
 
 Some times naming problems appear when the tree is being edited:
@@ -55,7 +55,7 @@ from PyQt4.uic import loadUiType
 import vitables.utils
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_RenameNodeDialog = \
@@ -73,7 +73,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
 
-    Regular Qt class `QInputDialog` is not used because, at least apparently, 
+    Regular Qt class `QInputDialog` is not used because, at least apparently,
     it doesn't provide a way for customizing buttons text.
 
     This dialog allows the user to solve naming issues. Available options
@@ -115,10 +115,10 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
 
         # The dialog buttons: Rename, Overwrite and Cancel
         self.overwrite_button = self.buttonsBox.addButton(
-            translate('RenameDlg', 'Overwrite', 'A button label'), 
+            translate('RenameDlg', 'Overwrite', 'A button label'),
             QtGui.QDialogButtonBox.AcceptRole)
         self.rename_button = self.buttonsBox.addButton(
-            translate('RenameDlg', 'Rename', 'A button label'), 
+            translate('RenameDlg', 'Rename', 'A button label'),
             QtGui.QDialogButtonBox.AcceptRole)
         self.rename_button.setDefault(1)
         self.cancel_button = self.buttonsBox.button(\
@@ -142,7 +142,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         """
         Check the new name value.
 
-        Every time that the text box content changes, this method is 
+        Every time that the text box content changes, this method is
         asked to check if the new name and the original name differ.
         Four cases can occur:
 
@@ -153,10 +153,10 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
             4) the new name and the current name differ and the new name
                is being used by a sibling node
 
-        In cases 1) and 2) the new name is not valid, the `Rename` and 
+        In cases 1) and 2) the new name is not valid, the `Rename` and
         `Overwrite` buttons are both disabled.
-        In case 3) the `Rename` button is enabled and the `Overwrite` one is 
-        not. In case 4) the `Overwrite` button is enabled but the `Rename` one 
+        In case 3) the `Rename` button is enabled and the `Overwrite` one is
+        not. In case 4) the `Overwrite` button is enabled but the `Rename` one
         is not.
 
         Beware that case 2) can appear only during a node renaming operation or

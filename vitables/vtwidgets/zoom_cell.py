@@ -30,6 +30,34 @@ from PyQt4 import QtGui
 
 import vitables.utils
 
+def getArrayDimensions(shape):
+    """
+    Get the dimensions of the grid where the cell will be zoomed.
+
+    The zoomed cell contains a `numpy` array and will be displayed
+    in a table with the same shape than it.
+
+    :Parameter shape: the cell shape
+
+    :Returns: a tuple (rows, columns)
+    """
+
+    # Numpy scalars are special a case
+    if shape == ():
+        nrows = ncols = 1
+    # 1-D arrays are displayed as a 1-column vector with nrows
+    elif len(shape) == 1:
+        nrows = shape[0]
+        ncols = 1
+    # N-D arrays are displayed as a matrix (nrowsXncols) which
+    # elements are (N-2)-D arrays
+    else:
+        nrows = shape[0]
+        ncols = shape[1]
+
+    return (nrows, ncols)
+
+
 class ZoomCell(QtGui.QMdiSubWindow):
     """
     Display an array/table cell on its own view (table widget).
@@ -51,7 +79,8 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
     Finally, cells of `Table` views also can be:
 
-    - a `numpy.void` object when the cell corresponds to nested field of the record
+    - a `numpy.void` object when the cell corresponds to nested field of the
+        record
 
     :Parameters:
 
@@ -105,7 +134,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # - other Python object
         if self.data_shape:
             self.formatContent = vitables.utils.formatArrayContent
-        elif isinstance(self.data, str) or isinstance(self.data, unicode):
+        elif isinstance(self.data, str):
             self.formatContent = vitables.utils.formatStringContent
         else:
             self.formatContent = vitables.utils.formatObjectContent
@@ -145,7 +174,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
             self.grid.verticalHeader().setResizeMode(rmode)
 
         # Connect signals to slots
-        self.grid.cellDoubleClicked.connect(self.zoomView) 
+        self.grid.cellDoubleClicked.connect(self.zoomView)
 
 
     def hasShape(self):
@@ -166,7 +195,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
             dtype = self.data.dtype
             if dtype.fields is None:
                 # Arrays with nested fields come here
-                return self.getArrayDimensions(shape)
+                return getArrayDimensions(shape)
             else:
                 # Table nested fields come here
                 return self.getNestedFieldDimensions()
@@ -188,34 +217,6 @@ class ZoomCell(QtGui.QMdiSubWindow):
             return (len(self.data), 1)
         else:
             return (1, 1)
-
-
-    def getArrayDimensions(self, shape):
-        """
-        Get the dimensions of the grid where the cell will be zoomed.
-
-        The zoomed cell contains a `numpy` array and will be displayed
-        in a table with the same shape than it.
-
-        :Parameter shape: the cell shape
-
-        :Returns: a tuple (rows, columns)
-        """
-
-        # Numpy scalars are special a case
-        if shape == ():
-            nrows = ncols = 1
-        # 1-D arrays are displayed as a 1-column vector with nrows
-        elif len(shape) == 1:
-            nrows = shape[0]
-            ncols = 1
-        # N-D arrays are displayed as a matrix (nrowsXncols) which
-        # elements are (N-2)-D arrays
-        else:
-            nrows = shape[0]
-            ncols = shape[1]
-
-        return (nrows, ncols)
 
 
     def getNestedFieldDimensions(self):
