@@ -13,6 +13,8 @@ The package vtwidgets has been analyzed with pylint.
 
 The package vttables has been analyzed with pylint.
 
+The package queries has been analyzed with pylint.
+
 ** September 30, 2013 **
 The modules vtSite and vtGUI hav been renamed accordingly to PEP 8.
 

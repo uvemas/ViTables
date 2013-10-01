@@ -42,7 +42,7 @@ translate = QtGui.QApplication.translate
 class Query(QtCore.QObject):
     """Class implementing a tables.Table query.
 
-    Ideally queries SHOULD be sequentially executed in a secondary thread for 
+    Ideally queries SHOULD be sequentially executed in a secondary thread for
     keeping the GUI responsive (i.e. not frozen) while a query (a potentially
     long-running operation) is taking place. Unfortunately this goal has
     proven difficult to achieve because `PyTables` is not thread-safe. So one
@@ -123,9 +123,9 @@ class Query(QtCore.QObject):
             tables.Int64Col(pos=-1)}
         ft_dict.update(src_dict)
         f_table = self.tmp_h5file.createTable(\
-            u'/_p_query_results', 
-            self.qdescr[u'ft_name'], 
-            ft_dict, 
+            u'/_p_query_results',
+            self.qdescr[u'ft_name'],
+            ft_dict,
             self.qdescr[u'title'])
 
         # Get the array of rows that fulfil the condition
@@ -140,8 +140,8 @@ class Query(QtCore.QObject):
             if lstop > stop:
                 lstop = stop
             coordinates = self.table.getWhereList(\
-                self.qdescr[u'condition'], 
-                self.qdescr[u'condvars'], 
+                self.qdescr[u'condition'],
+                self.qdescr[u'condvars'],
                 start=lstart, stop=lstop, step=step)
             selection = self.table.readCoordinates(coordinates)
             if selection.shape == (0, ):
@@ -162,8 +162,8 @@ class Query(QtCore.QObject):
 
         # Move the intermediate table to its final destination
         self.tmp_h5file.moveNode(\
-            u'/_p_query_results/' + self.qdescr[u'ft_name'], 
-            u'/', newname=self.qdescr[u'ft_name'], 
+            u'/_p_query_results/' + self.qdescr[u'ft_name'],
+            u'/', newname=self.qdescr[u'ft_name'],
             overwrite=True)
         self.completed = True
 
@@ -179,9 +179,9 @@ class Query(QtCore.QObject):
 
         # Create the destination table
         f_table = self.tmp_h5file.createTable(\
-            u'/_p_query_results', 
-            self.qdescr[u'ft_name'], 
-            src_dict, 
+            u'/_p_query_results',
+            self.qdescr[u'ft_name'],
+            src_dict,
             self.qdescr[u'title'])
 
         # Get the array of rows that fulfil the condition
@@ -196,16 +196,16 @@ class Query(QtCore.QObject):
             if lstop > stop:
                 lstop = stop
             selection = self.table.readWhere(\
-                self.qdescr[u'condition'], 
-                self.qdescr[u'condvars'], 
+                self.qdescr[u'condition'],
+                self.qdescr[u'condvars'],
                 start=lstart, stop=lstop, step=step)
             f_table.append(selection)
             self.flushTable(f_table)
 
         # Move the intermediate table to its final destination
         self.tmp_h5file.moveNode(\
-            u'/_p_query_results/' + self.qdescr[u'ft_name'], 
-            u'/', newname=self.qdescr[u'ft_name'], 
+            u'/_p_query_results/' + self.qdescr[u'ft_name'],
+            u'/', newname=self.qdescr[u'ft_name'],
             overwrite=True)
         self.completed = True
 
@@ -222,7 +222,7 @@ class Query(QtCore.QObject):
             # Do no add an `indexes` column to the result table
             else:
                 self.queryWithNoIndex(src_dict)
-        except:
+        except KeyError:
             vitables.utils.formatExceptionInfo()
             self.tmp_h5file.removeNode(\
                 u'/_p_query_results/' + self.qdescr[u'ft_name'])
