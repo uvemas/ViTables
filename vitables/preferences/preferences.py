@@ -22,7 +22,7 @@
 """
 This module provides a dialog for changing ``ViTables`` settings at runtime.
 
-The dialog has 3 pages managed via QtGui.QStackedWidget: General settings 
+The dialog has 3 pages managed via QtGui.QStackedWidget: General settings
 page, Look&Feel settings page and Plugins settings page.
 """
 
@@ -39,7 +39,7 @@ from vitables.vtsite import ICONDIR
 import vitables.utils
 
 translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dynamically loading user 
+# This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_SettingsDialog = \
@@ -152,25 +152,25 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         alignment = QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
         flags = QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
         general_item = QtGui.QStandardItem()
-        general_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        general_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
             'preferences-other.png')))
-        general_item.setText(translate('Preferences', "  General  ", 
+        general_item.setText(translate('Preferences', "  General  ",
             "Text for page selector icon"))
         general_item.setTextAlignment(alignment)
         general_item.setFlags(flags)
 
         style_item = QtGui.QStandardItem()
-        style_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        style_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
             'preferences-desktop-theme.png')))
-        style_item.setText(translate('Preferences', "Look & Feel", 
+        style_item.setText(translate('Preferences', "Look & Feel",
             "Text for page selector icon"))
         style_item.setTextAlignment(alignment)
         style_item.setFlags(flags)
 
         self.plugins_item = QtGui.QStandardItem()
-        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
             'preferences-plugin.png')))
-        self.plugins_item.setText(translate('Preferences', "  Plugins  ", 
+        self.plugins_item.setText(translate('Preferences', "  Plugins  ",
             "Text for page selector icon"))
         self.plugins_item.setTextAlignment(alignment)
         self.plugins_item.setFlags(flags)
@@ -260,7 +260,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.enabled_plugins = self.pg_loader.enabled_plugins[:]
         self.all_plugins = \
             dict(item for item in self.pg_loader.all_plugins.items())
-        UIDs = self.all_plugins.keys()
+#        UIDs = self.all_plugins.keys()
         for row in range(0, self.plugins_model.rowCount()):
             item = self.plugins_model.item(row, 0)
             if item.data() in self.enabled_plugins:
@@ -434,8 +434,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         except AttributeError:
             about_page = QtGui.QWidget(self.stackedPages)
             label = QtGui.QLabel(translate(\
-                'Preferences', 
-                'Sorry, there are no info available for this plugin', 
+                'Preferences',
+                'Sorry, there are no info available for this plugin',
                 'A text label'), about_page)
             layout = QtGui.QVBoxLayout(about_page)
             layout.addWidget(label)

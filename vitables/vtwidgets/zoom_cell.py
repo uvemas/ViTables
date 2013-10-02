@@ -113,7 +113,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # The WA_DeleteOnClose flag makes that when the widget is
         # closed either programatically (see VTAPP.windowClose)
         # or by the user (clicking the close button in the titlebar)
-        # the widget is hiden AND destroyed --> the workspace
+        # the widget is hidden AND destroyed --> the workspace
         # updates automatically its list of open windows --> the
         # Windows menu content is automatically updated
         super(ZoomCell, self).__init__(workspace)

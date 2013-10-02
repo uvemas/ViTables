@@ -22,15 +22,15 @@
 """
 This module manages the ``ViTables`` configuration.
 
-The module provides methods for reading and writing settings. Whether the 
+The module provides methods for reading and writing settings. Whether the
 settings are stored in a plain text file or in a Windows registry is
-transparent for this module because it deals with settings via 
+transparent for this module because it deals with settings via
 `QtCore.QSettings`.
 
-Every access to the config settings is done via a `QSettings` instance that, 
-in turn, will access the config file and return the read setting to the 
-application. Saving settings works in a similar way, the application passes 
-the setting to the `QSetting` instance and it (the instance) will write the 
+Every access to the config settings is done via a `QSettings` instance that,
+in turn, will access the config file and return the read setting to the
+application. Saving settings works in a similar way, the application passes
+the setting to the `QSetting` instance and it (the instance) will write the
 setting into the config file.
 
 .. Note:: *About the config file location*.
@@ -111,9 +111,9 @@ class Config(QtCore.QSettings):
     Manages the application configuration dynamically.
 
     This class defines accessor methods that allow the application (a
-    :meth:`vitables.vtapp.VTApp` instance) to read the configuration file/registry/plist.
-    The class also provides a method to save the current configuration
-    in the configuration file/registry/plist.
+    :meth:`vitables.vtapp.VTApp` instance) to read the configuration in
+    file/registry/plist. The class also provides a method to save the current
+    configuration in the configuration file/registry/plist.
     """
 
     def __init__(self):
@@ -493,10 +493,10 @@ class Config(QtCore.QSettings):
         # Style
         self.writeValue('Look/currentStyle', self.current_style)
         # Startup working directory
-        self.writeValue('Startup/startupWorkingDir', 
+        self.writeValue('Startup/startupWorkingDir',
             self.startup_working_directory)
         # Startup restore last session
-        self.writeValue('Startup/restoreLastSession', 
+        self.writeValue('Startup/restoreLastSession',
             self.restore_last_session)
         # Startup last working directory
         self.writeValue('Startup/lastWorkingDir', self.last_working_directory)
@@ -518,7 +518,7 @@ class Config(QtCore.QSettings):
         # The Help Browser bookmarks
         self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
         # The list of enabled plugins
-        self.writeValue('Plugins/Enabled', 
+        self.writeValue('Plugins/Enabled',
                         self.vtapp.plugins_mgr.enabled_plugins)
         self.sync()
 

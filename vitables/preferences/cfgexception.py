@@ -20,7 +20,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module defines an Exception to be used when there is a problem 
+This module defines an Exception to be used when there is a problem
 reading/writting the ``ViTables`` configuration.
 """
 

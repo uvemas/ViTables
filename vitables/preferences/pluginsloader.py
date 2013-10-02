@@ -47,7 +47,6 @@ FYI, approach a) looks like::
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import os
 import pkgutil
 import imp
@@ -77,7 +76,7 @@ def pluginDesc(mod_name, folder=None):
         file_obj, filepath, desc = imp.find_module(mod_name, [folder])
         finding_failed = False
         module = imp.load_source(mod_name, filepath, file_obj)
-    except (ImportError, Exception) as e:
+    except ImportError as e:
         # Warning! If the module being loaded is not a ViTables plugin
         # then unexpected errors can occur
         logger.debug('Failed to load a plugin module '
@@ -92,11 +91,11 @@ def pluginDesc(mod_name, folder=None):
 
     # Check if module is a plugin
     try:
-        class_name = getattr(module, 'plugin_class')
+#        class_name = getattr(module, 'plugin_class')
         plugin_name = getattr(module, 'plugin_name')
         comment = getattr(module, 'comment')
         desc = {'UID': '{0}#@#{1}'.format(plugin_name, comment),
-            'mod_name': mod_name, 
+            'mod_name': mod_name,
             'folder': folder,}
         return desc
     except AttributeError:
@@ -166,7 +165,7 @@ class PluginsLoader(object):
     def register(self):
         """Update the list of available plugins.
 
-        This method MUST be called every time that the plugins 
+        This method MUST be called every time that the plugins
         configuration changes.
         """
 
@@ -240,7 +239,7 @@ class PluginsLoader(object):
             # In some cases keeping a reference to instance is a must
             # (for example, the time_series plugin)
             self.loaded_plugins[UID] = instance
-        except:
+        except (KeyError, ValueError):
             self.untrack(UID)
             print("\nError: plugin {0} cannot be loaded.".format(name))
             vitables.utils.formatExceptionInfo()
