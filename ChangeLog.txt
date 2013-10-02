@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** October 02, 2013 **
 The package preferences has been analyzed with pylint.
 
+The package plugins has been analyzed with pylint.
+
 ** September 30, 2013 **
 refactoring module names to follow PEP 8.
 

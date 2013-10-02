@@ -37,17 +37,15 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 from PyQt4.uic import loadUiType
 
-import vitables.utils
-
 
 translate = QtGui.QApplication.translate
 
 
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_TimeFormatterPage = \
-    loadUiType(os.path.join(os.path.dirname(__file__), 
+    loadUiType(os.path.join(os.path.dirname(__file__),
     'timeformatter_page.ui'))[0]
 
 
@@ -96,7 +94,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
 
         # Setup initial configuration
         config = configparser.ConfigParser()
-        def_tformat = '%c' 
+        def_tformat = '%c'
         try:
             config.read(\
                 os.path.join(os.path.dirname(__file__), 'time_format.ini'))

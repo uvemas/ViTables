@@ -34,13 +34,12 @@ import os.path
 from PyQt4 import QtGui
 from PyQt4.uic import loadUiType
 
-import vitables.utils
 from vitables.vtsite import PLUGINSDIR
 
 translate = QtGui.QApplication.translate
 
 
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_AboutPage = \
