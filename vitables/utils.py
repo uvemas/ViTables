@@ -45,30 +45,6 @@ ICONS_DICT = {}
 HB_ICONS_DICT = {}
 DEFAULT_ENCODING = locale.getdefaultlocale()[1]
 
-def toUnicode(thing):
-    """Convert byte strings into unicode strings using the default locale.
-
-    Conversion to unicode is required when showing data in dialogs and
-    tables. The User Attributes of the node Properties dialog requires
-    special care because it can show data with a wide variety of types.
-    """
-
-    if isinstance(thing, bytes):
-        # thing is a byte string, e.g. an attribute whose type is numpy.string_
-        try:
-            return str(thing, encoding=DEFAULT_ENCODING)
-        except TypeError:
-            return thing
-    else:
-        # thing can be:
-        # - a PyQt object or
-        # - a numpy array, eg. a multidimensional attribute
-        #   like in examples/misc/MDobjects.h5
-        # - a numpy scalar object, e.g. an attribute whose
-        #   type is numpy.int32
-        # - a pure Python object e.g. a sequence
-        return thing
-
 
 def getVTApp():
     """Get a reference to the `VTApp` instance.

@@ -315,7 +315,7 @@ class NodeInfo(object):
         """The target of a `tables.Link` node."""
 
         try:
-            return vitables.utils.toUnicode(self.node.target)
+            return str(self.node.target)
         except AttributeError:
             return None
 
