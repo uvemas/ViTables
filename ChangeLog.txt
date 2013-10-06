@@ -7,6 +7,8 @@ Some minor changes (typos and similar things) have been done.
 
 The Plugins Manager has been debugged.
 
+The timeseries plugin has been debugged. Interpolation errors have been fixed.
+
 ** October 02, 2013 **
 The package preferences has been analyzed with pylint.
 

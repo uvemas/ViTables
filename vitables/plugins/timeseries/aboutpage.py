@@ -38,9 +38,6 @@ from PyQt4 import QtCore
 from PyQt4.uic import loadUiType
 
 
-translate = QtGui.QApplication.translate
-
-
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -92,14 +89,16 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         self.save_button = self.buttons_box.button(QtGui.QDialogButtonBox.Save)
         self.save_button.setText('Save format')
 
+        # The absolute path of the INI file
+        self.ini_filename = \
+            os.path.join(os.path.dirname(__file__), 'time_format.ini')
         # Setup initial configuration
-        config = configparser.ConfigParser()
+        self.config = configparser.ConfigParser(interpolation=None)
         def_tformat = '%c'
         try:
-            config.read(\
-                os.path.join(os.path.dirname(__file__), 'time_format.ini'))
-            self.tformat = config['Timeseries']['strftime']
-        except (IOError, configparser.Error):
+            self.config.read_file(open(self.ini_filename))
+            self.tformat = self.config['Timeseries']['strftime']
+        except (IOError, configparser.ParsingError):
             self.tformat = def_tformat
 
         self.tformat_editor.setText(self.tformat)
@@ -127,7 +126,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
 
         The time format currently entered in the line editor is applied to the
         sample label showing the today date. If the result is that expected by
-        user then she can click safely the OK button. Otherwhise she should try
+        user then she can click safely the OK button. Otherwise she should try
         another time format.
         """
 
@@ -140,9 +139,6 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         """Slot for saving the entered time format.
         """
 
-        config = configparser.ConfigParser()
-        filename = os.path.join(os.path.dirname(__file__), 'time_format.ini')
-        config.read(filename)
-        config['Timeseries']['strftime'] = self.tformat_editor.text()
-        with open(filename, 'wb') as ini_file:
-            config.write(ini_file)
+        self.config['Timeseries']['strftime'] = self.tformat_editor.text()
+        with open(self.ini_filename, 'w') as ini_file:
+            self.config.write(ini_file)

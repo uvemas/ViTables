@@ -158,13 +158,13 @@ def datetimeFormat():
     """The format string to be used when rendering the time series.
     """
 
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=None)
+    ini_filename = os.path.join(os.path.dirname(__file__), 'time_format.ini')
     def_dtformat = '%c'
     try:
-        config.read(\
-            os.path.join(os.path.dirname(__file__), 'time_format.ini'))
+        config.read_file(open(ini_filename))
         datetime_format = config['Timeseries']['strftime']
-    except (IOError, configparser.Error):
+    except (IOError, configparser.ParsingError):
         datetime_format = def_dtformat
 
     return datetime_format
