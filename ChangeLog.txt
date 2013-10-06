@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** October 06, 2013 **
 Fixed a bug regarding unicode strings.
 
+Some minor changes (typos and similar things) have been done.
+
 ** October 02, 2013 **
 The package preferences has been analyzed with pylint.
 

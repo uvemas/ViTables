@@ -67,7 +67,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         self.vtapp = vitables.utils.getVTApp()
         self.vtgui = self.vtapp.gui
-        # Create the Settings dialog and customise it
+        # Create the Settings dialog and customize it
         super(Preferences, self).__init__(self.vtgui)
         self.setupUi(self)
 
