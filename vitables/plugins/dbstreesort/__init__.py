@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['csv', 'dbstreesort', 'timeseries']
+__all__ = ['aboutpage', 'dbs_tree_sort']
