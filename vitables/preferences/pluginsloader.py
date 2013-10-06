@@ -48,8 +48,8 @@ FYI, approach a) looks like::
 __docformat__ = 'restructuredtext'
 
 import os
+import importlib
 import pkgutil
-import imp
 
 from PyQt4 import QtGui
 
@@ -61,41 +61,35 @@ from vitables.plugin_utils import getLogger
 translate = QtGui.QApplication.translate
 
 
-def pluginDesc(mod_name, folder=None):
+def pluginDesc(mod_path, folder=None):
     """Check if a given module is a plugin and return its description.
 
-    :Parameter name: the filename of the module being tested
+    :Parameter mod_path: the import absolute path of the module being tested
     """
 
     logger = getLogger() # top level logger
     # Import the module
-    if folder is None:
-        folder = PLUGINSDIR
     try:
-        finding_failed = True
-        file_obj, filepath, desc = imp.find_module(mod_name, [folder])
-        finding_failed = False
-        module = imp.load_source(mod_name, filepath, file_obj)
-    except ImportError as e:
+        imported_module = None
+        imported_module = importlib.import_module(mod_path)
+    except (ImportError, IOError, SystemError) as e:
         # Warning! If the module being loaded is not a ViTables plugin
         # then unexpected errors can occur
-        logger.debug('Failed to load a plugin module '
-                     '{name} from {folder}, exception type: {etype}'.format(
-                         folder=folder, name=mod_name, etype=type(e)))
+        logger.debug('Failed to load a plugin module {name} ,'
+                     'exception type: {etype}'.format(name=mod_path,
+                                                      etype=type(e)))
         return False
-    finally:
-        if not finding_failed:
-            file_obj.close()
-        else:
-            logger.debug('Failed to find the module: {}'.format(mod_name))
 
     # Check if module is a plugin
     try:
-#        class_name = getattr(module, 'plugin_class')
-        plugin_name = getattr(module, 'plugin_name')
-        comment = getattr(module, 'comment')
+        plugin_name = getattr(imported_module, 'plugin_name')
+        comment = getattr(imported_module, 'comment')
+        pkg_name = mod_path.split('.')[-2]
+        mod_name = mod_path.split('.')[-1]
+        folder = os.path.join(PLUGINSDIR, pkg_name)
         desc = {'UID': '{0}#@#{1}'.format(plugin_name, comment),
             'mod_name': mod_name,
+            'mod_path': mod_path,
             'folder': folder,}
         return desc
     except AttributeError:
@@ -119,21 +113,22 @@ def pluginDesc(mod_name, folder=None):
         # del module
 
 
-def scanFolder(proot):
+def scanFolder(package_root):
     """Scan a package looking for plugins.
 
     This is a non recursive method. It scans only the top level of
     the package.
 
-    :Parameter proot: the top level folder of the package being scanned
+    :Parameter package_root: the top level folder of the package being scanned
     """
 
 
     pkg_plugins = {}
-    folder = os.path.join(PLUGINSDIR, proot)
-    for loader, name, ispkg in pkgutil.iter_modules([folder]):
+    folder = os.path.join(PLUGINSDIR, package_root)
+    for module_finder, name, ispkg in pkgutil.iter_modules([folder]):
         if not ispkg:
-            desc = pluginDesc(name, folder)
+            module_path = '.'.join(['vitables','plugins', package_root, name])
+            desc = pluginDesc(module_path)
             if desc:
                 pkg_plugins[desc['UID']] = desc
     return pkg_plugins
@@ -169,7 +164,7 @@ class PluginsLoader(object):
         configuration changes.
         """
 
-        # Setup the list of available plugins
+        # Traverse the plugins folder looking for plugins
         self.all_plugins = {}
         for loader, name, ispkg in pkgutil.iter_modules([PLUGINSDIR]):
             if not ispkg:
@@ -198,37 +193,28 @@ class PluginsLoader(object):
         :Parameter UID: th UID of the plugin being loaded
         """
 
-        file_obj = None
+        logger = getLogger() # top level logger
         # Load the module where the plugin lives
         try:
             plugin = self.all_plugins[UID]
-            name = plugin['mod_name']
-            finding_failed = True
-            file_obj, filepath, desc = \
-                imp.find_module(name, [plugin['folder']])
-            finding_failed = False
-            module = imp.load_source(name, filepath, file_obj)
-        except (ImportError, ValueError):
+            mod_path = plugin['mod_path']
+            mod_name = '.'.split(mod_path)[-1]
+            imported_module = importlib.import_module(mod_path)
+        except (ImportError, IOError, SystemError):
             self.untrack(UID)
-            if finding_failed:
-                print("\nError: plugin {0} cannot be found.".format(name))
-            else:
-                print("\nError: plugin {0} cannot be loaded.".format(name))
+            logger.error("\nError: plugin {0} cannot be loaded.".format(mod_name))
             return
         except KeyError:
-            self.logger.error('Enabled module can not be loaded')
+            logger.error('\nError:  plugin {0} can not be found'.format(mod_name))
             return
-        finally:
-            if file_obj is not None:
-                file_obj.close()
 
         # Retrieve the plugin class
         try:
-            class_name = getattr(module, 'plugin_class')
-            cls = getattr(module, class_name)
+            class_name = getattr(imported_module, 'plugin_class')
+            cls = getattr(imported_module, class_name)
         except AttributeError:
             self.untrack(UID)
-            print("\nError: module {0} is not a valid plugin.".format(name))
+            logger.error("\nError: module {0} is not a valid plugin.".format(mod_name))
             return
 
         # Load the plugin
@@ -241,7 +227,7 @@ class PluginsLoader(object):
             self.loaded_plugins[UID] = instance
         except (KeyError, ValueError):
             self.untrack(UID)
-            print("\nError: plugin {0} cannot be loaded.".format(name))
+            logger.error("\nError: plugin {0} cannot be loaded.".format(mod_name))
             vitables.utils.formatExceptionInfo()
             return
 
