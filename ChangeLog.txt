@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** October 07, 2013 **
+Added a new plugin for sorting the tree of DBs.
+
 ** October 06, 2013 **
 Fixed a bug regarding unicode strings.
 

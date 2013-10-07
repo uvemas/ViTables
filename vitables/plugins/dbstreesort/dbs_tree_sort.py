@@ -20,8 +20,11 @@
 
 """Plugin that provides sorting algorithms for the DBs tree.
 
-At the moment only two sorting algorithms are supported, human (a.k.a.
-natural sorting) and sorting by creation time.
+At the moment only two sorting algorithms are supported, alphabetical and
+human (a.k.a. natural sorting). In order to obtain the default ViTables
+random order of nodes just disable the plugin.
+
+Once the plugin is enabled it works on any file opened after the enabling.
 """
 
 __docformat__ = 'restructuredtext'
@@ -31,24 +34,160 @@ plugin_name = 'Tree of DBs sorting'
 comment = 'Sorts the display of the databases tree'
 
 import os
+import re
+import configparser
 
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 
 import vitables
 from vitables.plugins.dbstreesort.aboutpage import AboutPage
+from vitables.h5db import groupnode
+from vitables.h5db import leafnode
+from vitables.h5db import linknode
+from vitables.h5db import dbstreemodel
 
 translate = QtGui.QApplication.translate
 
+def customiseDBsTreeModel():
+    """Slot connected to the convenience dbtree_model_created signal.
+
+    :Parameter `mode`: the model representing the tree of databases.
+    """
+
+    # The absolute path of the INI file
+    ini_filename = \
+        os.path.join(os.path.dirname(__file__), 'sorting_algorithm.ini')
+    config = configparser.ConfigParser()
+    default_sorting = 'default'
+    try:
+        config.read_file(open(ini_filename))
+        initial_sorting = config['DBsTreeSorting']['algorithm']
+    except (IOError, configparser.ParsingError):
+        initial_sorting = default_sorting
+
+    # The essence of the plugin is pretty simple, just monkeypatch
+    # the insertRows() method of the model to get the desired result.
+    # TODO how can the nodes be chronologically sorted?
+    if initial_sorting == 'creation time':
+        pass
+    if initial_sorting == 'human':
+        dbstreemodel.DBsTreeModel.insertRows = humanSort
+    elif initial_sorting == 'alphabetical':
+        dbstreemodel.DBsTreeModel.insertRows = alphabeticalSort
+
+
+def alphabeticalSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
+    """Insert `count` rows before the given row.
+
+    This method is called during nodes population and when files are
+    opened/created.
+
+    :Parameters:
+
+     - `position`: the position of the first row being added.
+     - `count`: the number of rows being added
+     - `parent`: the index of the parent item.
+
+     :Returns: True if the row is added. Otherwise it returns False.
+     """
+
+    # Add rows to the model and update its underlaying data store
+    self.layoutAboutToBeChanged.emit()
+    first = position
+    last = position + count - 1
+    self.beginInsertRows(parent, first, last)
+    node = self.nodeFromIndex(parent)
+    # Children are inserted at position 0, so inserted list must
+    # be reversed if we want to preserve their original order
+    for file_node in sorted(self.fdelta):
+        self.root.insertChild(file_node, position)
+    for name in sorted(self.gdelta, reverse=True):
+        group = groupnode.GroupNode(self, node, name)
+        node.insertChild(group, position)
+    for name in sorted(self.ldelta, reverse=True):
+        leaf = leafnode.LeafNode(self, node, name)
+        node.insertChild(leaf, position)
+    for name in sorted(self.links_delta, reverse=True):
+        link = linknode.LinkNode(self, node, name)
+        node.insertChild(link, position)
+    self.dataChanged.emit(parent, parent)
+    self.endInsertRows()
+    self.layoutChanged.emit()
+
+    # Report views about changes in data
+    top_left = self.index(first, 0, parent)
+    bottom_right = self.index(last, 0, parent)
+    self.dataChanged.emit(top_left, bottom_right)
+
+    return True
+
+
+def alphanum_key(key):
+    """ Turn a string into a list of string and number chunks.
+        "z23a" -> ["z", 23, "a"]
+    """
+    convert = lambda text: int(text) if text.isdigit() else text
+
+    return [convert(c) for c in re.split('(\d+)', key)]
+
+
+def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
+    """Insert `count` rows before the given row.
+
+    This method is called during nodes population and when files are
+    opened/created.
+
+    :Parameters:
+
+    - `position`: the position of the first row being added.
+    - `count`: the number of rows being added
+    - `parent`: the index of the parent item.
+
+    :Returns: True if the row is added. Otherwise it returns False.
+    """
+
+    # Add rows to the model and update its underlying data store
+    self.layoutAboutToBeChanged.emit()
+    first = position
+    last = position + count - 1
+    self.beginInsertRows(parent, first, last)
+    node = self.nodeFromIndex(parent)
+    # Children are inserted at position 0, so inserted list must
+    # be reversed if we want to preserve their original order
+    for file_node in sorted(self.fdelta):
+        self.root.insertChild(file_node, position)
+    for name in sorted(self.gdelta, reverse=True, key=alphanum_key):
+        group = groupnode.GroupNode(self, node, name)
+        node.insertChild(group, position)
+    for name in sorted(self.ldelta, reverse=True, key=alphanum_key):
+        leaf = leafnode.LeafNode(self, node, name)
+        node.insertChild(leaf, position)
+    for name in sorted(self.links_delta, reverse=True, key=alphanum_key):
+        link = linknode.LinkNode(self, node, name)
+        node.insertChild(link, position)
+    self.dataChanged.emit(parent, parent)
+    self.endInsertRows()
+    self.layoutChanged.emit()
+
+    # Report views about changes in data
+    top_left = self.index(first, 0, parent)
+    bottom_right = self.index(last, 0, parent)
+    self.dataChanged.emit(top_left, bottom_right)
+
+    return True
+
+
 class DBsTreeSort(object):
+    """Provides convenience methods and functions for sorting the tree of DBs.
     """
-    """
-    
+
     def __init__(self):
         """Class constructor.
-
         """
 
         self.vtapp = vitables.utils.getVTApp()
+        self.vtapp.dbtree_model_created.connect(customiseDBsTreeModel)
 
 
     def helpAbout(self, parent):

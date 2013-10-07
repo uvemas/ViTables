@@ -418,11 +418,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 self.overwriteNode(parent, index, childname)
 
             # Paste the copied/cut node in the destination database
-            dbdoc = self.getDBDoc(parent.filepath)
+            db_doc = self.getDBDoc(parent.filepath)
             if self.ccni['target']:
-                editor = tlink_editor.TLinkEditor(dbdoc)
+                editor = tlink_editor.TLinkEditor(db_doc)
             else:
-                editor = tnode_editor.TNodeEditor(dbdoc)
+                editor = tnode_editor.TNodeEditor(db_doc)
 
             src_node = self.copiedNode()
             editor.paste(src_node, parent.node, childname)
@@ -601,11 +601,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
             # Move the node to the PyTables database
             pt_node = self.getDBDoc(src_filepath).getNode(childpath)
-            dbdoc = self.getDBDoc(src_filepath)
+            db_doc = self.getDBDoc(src_filepath)
             if hasattr(pt_node, 'target'):
-                editor = tlink_editor.TLinkEditor(dbdoc)
+                editor = tlink_editor.TLinkEditor(db_doc)
             else:
-                editor = tnode_editor.TNodeEditor(dbdoc)
+                editor = tnode_editor.TNodeEditor(db_doc)
             movedname = editor.move(childpath, self.getDBDoc(dst_filepath),
                 parentpath, nodename)
         finally:
@@ -1019,6 +1019,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         This method is called during nodes population and when files are
         opened/created.
+
+        Warning! This method is MONKEY PATCHED if the DBs Sorting plugin is
+        enabled. If it is the case the working code will be in module
+        vitables.plugins.dbstreesort.dbs_tree_sort
 
         :Parameters:
 

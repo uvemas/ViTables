@@ -33,10 +33,7 @@ import os.path
 import configparser
 
 from PyQt4 import QtGui
-from PyQt4 import QtCore
 from PyQt4.uic import loadUiType
-
-from vitables.vtsite import PLUGINSDIR
 
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
@@ -70,7 +67,7 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
         # Makes the dialog and gives it a layout
         super(AboutPage, self).__init__(parent)
         self.setupUi(self)
-        
+
         # The widget with the OK and Cancel buttons
         self.preferences_dlg = parent.parent()
         self.dlg_box_buttons = self.preferences_dlg.buttonsBox
@@ -88,44 +85,44 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
 
         # Read initial configuration from the INI file
         self.config = configparser.ConfigParser()
-        default_sorting = 'default'
+        default_sorting = 'human'
         try:
-            self.config.read(self.ini_filename)
+            self.config.read_file(open(self.ini_filename))
             self.initial_sorting = self.config['DBsTreeSorting']['algorithm']
-        except (IOError, configparser.Error):
+        except (IOError, configparser.ParsingError):
             self.initial_sorting = default_sorting
- 
+
         # Fill the combo with values and choose the current sorting algorithm
         self.algorithms_combobox.insertItems(
-            0, ['default', 'human', 'creation time'])
+            0, ['alphabetical', 'human', 'creation time'])
         current_index = self.algorithms_combobox.findText(self.initial_sorting)
         self.algorithms_combobox.setCurrentIndex(current_index)
-        
+
         # Connect signals to slots
         self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Cancel).clicked.\
             connect(self.cancelAlgorithmChange)
         self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Ok).clicked.\
             connect(self.saveAlgorithmChange)
- 
+
 
     def cancelAlgorithmChange(self):
         """Restore the initial sorting algorithm in the combobox.
- 
+
         If the user press the Cancel button changes made in the
         combobox are lost.
         """
-     
+
         self.config['DBsTreeSorting']['algorithm'] = \
             self.initial_sorting
         with open(self.ini_filename, 'w') as ini_file:
             self.config.write(ini_file)
         #self.preferences_dlg.reject()
- 
-     
+
+
     def saveAlgorithmChange(self):
         """Save the combobox current algorithm.
         """
-     
+
         self.config['DBsTreeSorting']['algorithm'] = \
             self.algorithms_combobox.currentText()
         with open(self.ini_filename, 'w') as ini_file:
