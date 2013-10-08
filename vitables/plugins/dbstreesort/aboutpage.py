@@ -1,0 +1,130 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+#       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
+#
+#       This program is free software: you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation, either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#       Author:  Vicent Mas - vmas@vitables.org
+
+"""
+This module provides a widget with the full description of the plugin.
+
+The module allows for configuring the plugin too.
+
+The widget is displayed when the plugin is selected in the Preferences
+dialog selector pane.
+"""
+
+
+__docformat__ = 'restructuredtext'
+
+import os.path
+import ConfigParser
+
+from PyQt4 import QtGui
+from PyQt4.uic import loadUiType
+
+# This method of the PyQt4.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# info.
+Ui_DBsTreeSortPage = \
+    loadUiType(os.path.join(os.path.dirname(__file__),
+                            'dbs_tree_sort_page.ui'))[0]
+class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
+    """
+    Dialog for interactively choosing a sorting algorithm for the DBs tree.
+
+    By loading UI files at runtime we can:
+
+        - create user interfaces at runtime (without using pyuic)
+        - use multiple inheritance, MyParentClass(BaseClass, FormClass)
+
+    This dialog is called when the DBs tree sorting plugin is chosen in the
+    Plugins menu.
+
+    """
+
+    def __init__(self, desc, parent=None):
+        """A widget for describing/customizing the DBs tree sorting plugin.
+
+        :Parameters:
+          -`desc` a dictionary with the plugin description
+          -`parent` the stacked widget where this About page will be added
+        """
+
+        # Makes the dialog and gives it a layout
+        super(AboutPage, self).__init__(parent)
+        self.setupUi(self)
+
+        # The widget with the OK and Cancel buttons
+        self.preferences_dlg = parent.parent()
+        self.dlg_box_buttons = self.preferences_dlg.buttonsBox
+
+        # The plugin description
+        self.version_le.setText(desc['version'])
+        self.module_name_le.setText(desc['module_name'])
+        self.folder_le.setText(desc['folder'])
+        self.author_le.setText(desc['author'])
+        self.desc_te.setText(desc['about_text'])
+
+        # The absolute path of the INI file
+        self.ini_filename = \
+            os.path.join(os.path.dirname(__file__), 'sorting_algorithm.ini')
+
+        # Read initial configuration from the INI file
+        self.config = ConfigParser.ConfigParser()
+        default_sorting = 'human'
+        try:
+            self.config.readfp(open(self.ini_filename))
+            self.initial_sorting = self.config.get('DBsTreeSorting','algorithm')
+        except (IOError, ConfigParser.ParsingError):
+            self.initial_sorting = default_sorting
+
+        # Fill the combo with values and choose the current sorting algorithm
+        self.algorithms_combobox.insertItems(
+            0, ['alphabetical', 'human', 'creation time'])
+        current_index = self.algorithms_combobox.findText(self.initial_sorting)
+        self.algorithms_combobox.setCurrentIndex(current_index)
+
+        # Connect signals to slots
+        self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Cancel).clicked.\
+            connect(self.cancelAlgorithmChange)
+        self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Ok).clicked.\
+            connect(self.saveAlgorithmChange)
+
+
+    def cancelAlgorithmChange(self):
+        """Restore the initial sorting algorithm in the combobox.
+
+        If the user press the Cancel button changes made in the
+        combobox are lost.
+        """
+
+        self.config.set('DBsTreeSorting', 'algorithm',
+                        self.initial_sorting)
+        with open(self.ini_filename, 'w') as ini_file:
+            self.config.write(ini_file)
+        #self.preferences_dlg.reject()
+
+
+    def saveAlgorithmChange(self):
+        """Save the combobox current algorithm.
+        """
+
+        self.config.set('DBsTreeSorting', 'algorithm',
+                        self.algorithms_combobox.currentText())
+        with open(self.ini_filename, 'w') as ini_file:
+            self.config.write(ini_file)
+        #self.parent().parent().accept()
