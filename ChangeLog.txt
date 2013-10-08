@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** October 08, 2013**
 Fixed some white space inconsistencies in several modules.
 
+The pluginsloader module has been refactored and make more robust.
+
 ** October 01, 2013**
 Checking modules directly under the vitables package with pylint.
 

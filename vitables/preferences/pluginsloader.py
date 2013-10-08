@@ -47,62 +47,54 @@ FYI, approach a) looks like::
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import os
+import importlib
 import pkgutil
-import imp
-
+import sys
 from PyQt4 import QtGui
 
 import vitables.utils
-import vitables.plugins
 from vitables.vtsite import PLUGINSDIR
 from vitables.plugin_utils import getLogger
+
+LOGGER = getLogger()
 
 translate = QtGui.QApplication.translate
 
 
-def pluginDesc(mod_name, folder=None):
+def pluginDesc(mod_path, folder=None):
     """Check if a given module is a plugin and return its description.
 
-    :Parameter name: the filename of the module being tested
+    :Parameter mod_path: the import absolute path of the module being tested
     """
 
-    logger = getLogger() # top level logger
     # Import the module
-    if folder is None:
-        folder = PLUGINSDIR
+    # This is a little bit convoluted but doing things in the common way some
+    # errors are swallowed by the system for reasons unknown to me and no
+    # error is raised
     try:
-        finding_failed = True
-        file_obj, filepath, desc = imp.find_module(mod_name, [folder])
-        finding_failed = False
-#        module = imp.load_module(name, file_obj, filepath, desc)
-        module = imp.load_source(mod_name, filepath, file_obj)
-    except (ImportError, Exception) as e:
-        # Warning! If the module being loaded is not a ViTables plugin
-        # then unexpected errors can occur
-        logger.debug(u'Failed to load a plugin module '
-                     '{name} from {folder}, exception type: {etype}'.format(
-                         folder=folder, name=mod_name, etype=type(e)))
+        imported_module = importlib.import_module(mod_path)
+        if type(imported_module) != type(os):
+            raise ImportError
+    except (SyntaxError, ImportError):
+        LOGGER.error("""Failed to load the module {0} which belongs to a plugin
+                     .\ntraceback: {1}""".format(mod_path, sys.exc_info()[:2]))
         return False
-    finally:
-        if not finding_failed:
-            file_obj.close()
-        else:
-            logger.debug(u'Failed to find the module: {}'.format(mod_name))
 
     # Check if module is a plugin
     try:
-        class_name = getattr(module, 'plugin_class')
-        plugin_name = getattr(module, 'plugin_name')
-        comment = getattr(module, 'comment')
+        plugin_name = getattr(imported_module, 'plugin_name')
+        comment = getattr(imported_module, 'comment')
+        pkg_name = mod_path.split('.')[-2]
+        mod_name = mod_path.split('.')[-1]
+        folder = os.path.join(PLUGINSDIR, pkg_name)
         desc = {'UID': '{0}#@#{1}'.format(plugin_name, comment),
-            'mod_name': mod_name, 
+            'mod_name': mod_name,
+            'mod_path': mod_path,
             'folder': folder,}
         return desc
     except AttributeError:
         # then unexpected errors can occur
-        logger.debug(u'The module is not a plugin: {}'.format(mod_name))
         return False
 
     #######################################################
@@ -122,23 +114,28 @@ def pluginDesc(mod_name, folder=None):
         # del module
 
 
-def scanFolder(proot):
+def scanFolder(package_root):
     """Scan a package looking for plugins.
 
     This is a non recursive method. It scans only the top level of
     the package.
 
-    :Parameter proot: the top level folder of the package being scanned
+    :Parameter package_root: the top level folder of the package being scanned
     """
 
-
     pkg_plugins = {}
-    folder = os.path.join(PLUGINSDIR, proot)
-    for loader, name, ispkg in pkgutil.iter_modules([folder]):
-        if not ispkg:
-            desc = pluginDesc(name, folder)
-            if desc:
-                pkg_plugins[desc['UID']] = desc
+    folder = os.path.join(PLUGINSDIR, package_root)
+    if not os.path.exists(folder):
+        LOGGER.debug('Failed to find a plugin in folder {folder}:'
+                     'Folder does not exist'.format(folder))
+    else:
+        for module_finder, name, ispkg in pkgutil.iter_modules([folder]):
+            if not ispkg:
+                module_path = '.'.join(['vitables', 'plugins', package_root,
+                                        name])
+                desc = pluginDesc(module_path)
+                if desc:
+                    pkg_plugins[desc['UID']] = desc
     return pkg_plugins
 
 
@@ -153,6 +150,7 @@ class PluginsLoader(object):
     :Parameter enabled_plugins: a list with the UIDs of the enabled plugins
     """
 
+
     def __init__(self, enabled_plugins):
         """Dynamically load and instantiate the available plugins.
         """
@@ -161,8 +159,6 @@ class PluginsLoader(object):
         self.all_plugins = {}
         self.loaded_plugins = {}
 
-        self.logger = getLogger()
-
         # Update plugins information: available plugins, disabled plugins
         self.register()
 
@@ -170,11 +166,11 @@ class PluginsLoader(object):
     def register(self):
         """Update the list of available plugins.
 
-        This method MUST be called every time that the plugins 
+        This method MUST be called every time that the plugins
         configuration changes.
         """
 
-        # Setup the list of available plugins
+        # Traverse the plugins folder looking for plugins
         self.all_plugins = {}
         for loader, name, ispkg in pkgutil.iter_modules([PLUGINSDIR]):
             if not ispkg:
@@ -203,36 +199,30 @@ class PluginsLoader(object):
         :Parameter UID: th UID of the plugin being loaded
         """
 
-        file_obj = None
         # Load the module where the plugin lives
         try:
             plugin = self.all_plugins[UID]
-            name = plugin['mod_name']
-            file_obj, filepath, desc = \
-                imp.find_module(name, [plugin['folder']])
-    #        module = imp.load_module(name, file_obj, filepath, desc)
-            module = imp.load_source(name, filepath, file_obj)
-        except (ImportError, ValueError):
+            mod_path = plugin['mod_path']
+            mod_name = '.'.split(mod_path)[-1]
+            imported_module = importlib.import_module(mod_path)
+        except (ImportError, IOError, SystemError):
             self.untrack(UID)
-            if finding_failed:
-                print(u"\nError: plugin {0} cannot be found.".format(name))
-            else:
-                print(u"\nError: plugin {0} cannot be loaded.".format(name))
+            LOGGER.error("\nError: plugin {0} cannot be loaded.".
+                         format(mod_name))
             return
         except KeyError:
-            self.logger.error(u'Enabled module can not be loaded')
+            LOGGER.error('\nError:  plugin {0} can not be found'.
+                         format(mod_name))
             return
-        finally:
-            if file_obj is not None:
-                file_obj.close()
 
         # Retrieve the plugin class
         try:
-            class_name = getattr(module, 'plugin_class')
-            cls = getattr(module, class_name)
+            class_name = getattr(imported_module, 'plugin_class')
+            cls = getattr(imported_module, class_name)
         except AttributeError:
             self.untrack(UID)
-            print(u"\nError: module {0} is not a valid plugin.".format(name))
+            LOGGER.error("\nError: module {0} is not a valid plugin.".
+                         format(mod_name))
             return
 
         # Load the plugin
@@ -243,9 +233,10 @@ class PluginsLoader(object):
             # In some cases keeping a reference to instance is a must
             # (for example, the time_series plugin)
             self.loaded_plugins[UID] = instance
-        except:
+        except (KeyError, ValueError):
             self.untrack(UID)
-            print(u"\nError: plugin {0} cannot be loaded.".format(name))
+            LOGGER.error("\nError: plugin {0} cannot be loaded.".
+                         format(mod_name))
             vitables.utils.formatExceptionInfo()
             return
 

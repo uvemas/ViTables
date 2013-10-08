@@ -92,9 +92,12 @@ class VTApp(QtCore.QObject):
     """
 
 
-    leaf_model_created = QtCore.pyqtSignal(QtGui.QMdiSubWindow, \
-        name="leafModelCreated")
-
+    # Convenience signals for the plugins. Usually new signals are added
+    # when a new plugin is added to ViTables. They are the link between
+    # the plugins and the core of the program
+    leaf_model_created = QtCore.pyqtSignal(QtGui.QMdiSubWindow,
+                                           name="leafModelCreated")
+    dbtree_model_created = QtCore.pyqtSignal()
     pluginsLoaded = QtCore.pyqtSignal()
 
 
@@ -120,6 +123,9 @@ class VTApp(QtCore.QObject):
         splash.show()
         t_i = time.time()
 
+        # Instantiate a configurator object for the application
+        self.config = vtconfig.Config()
+
         # Create the GUI. This is done in 3 steps:
         # - create the main window
         # - create the model/view for the tree of databases
@@ -130,16 +136,29 @@ class VTApp(QtCore.QObject):
         dbs_tmodel = dbstreemodel.DBsTreeModel(self)
         dbstreeview.DBsTreeView(self, dbs_tmodel)
 
-        # The queries manager
-        self.queries_mgr = qmgr.QueriesManager()
-
-        # Instantiate a configurator object for the application
-        self.config = vtconfig.Config()
-
         # Apply the configuration stored on disk
         splash.drawMessage(translate('VTApp', 'Configuration setup...',
             'A splash screen message'))
+
+        # Reset the configuration object. I don't know why this is necessary
+        # but it is
+        del self.config
+        self.config = vtconfig.Config()
         self.config.loadConfiguration(self.config.readConfiguration())
+
+        # Load plugins.
+        # Some plugins modify existing menus so plugins must be loaded after
+        # creating the user interface.
+        # Some plugins modify the tree of databases or datasets displaying so
+        # plugins must be loaded before opening any file.
+        self.plugins_mgr = \
+            pluginsloader.PluginsLoader(self.config.enabled_plugins)
+        self.plugins_mgr.loadAll()
+        self.pluginsLoaded.emit()
+        self.dbtree_model_created.emit()
+
+        # The queries manager
+        self.queries_mgr = qmgr.QueriesManager()
 
         # Print the welcome message
         print(translate('VTApp',
@@ -160,16 +179,6 @@ class VTApp(QtCore.QObject):
 
         # List of HelpBrowser instances in memory
         self.doc_browser = None
-
-        # Load plugins.
-        # Some plugins modify existing menus so plugins must be loaded after
-        # creating the user interface.
-        # Some plugins modify datasets displaying so plugins must be loaded
-        # before opening any file.
-        self.plugins_mgr = \
-            pluginsloader.PluginsLoader(self.config.enabled_plugins)
-        self.plugins_mgr.loadAll()
-        self.pluginsLoaded.emit()
 
         # Restore last session
         if self.config.restore_last_session:
@@ -203,8 +212,6 @@ class VTApp(QtCore.QObject):
         self.gui.dbs_tree_model.rowsInserted.connect(self.gui.updateActions)
 
         self.gui.updateWindowMenu()
-
-
     # Databases are automatically opened at startup when:
     #
     #     * application is configured for recovering last session
