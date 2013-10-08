@@ -51,6 +51,7 @@ import os
 import importlib
 import pkgutil
 import sys
+
 from PyQt4 import QtGui
 
 import vitables.utils
@@ -126,7 +127,7 @@ def scanFolder(package_root):
     pkg_plugins = {}
     folder = os.path.join(PLUGINSDIR, package_root)
     if not os.path.exists(folder):
-        LOGGER.debug('Failed to find a plugin in folder {folder}:'
+        LOGGER.error('Failed to find a plugin in folder {folder}:'
                      'Folder does not exist'.format(folder))
     else:
         for module_finder, name, ispkg in pkgutil.iter_modules([folder]):
@@ -196,7 +197,7 @@ class PluginsLoader(object):
     def load(self, UID):
         """Load a given plugin.
 
-        :Parameter UID: th UID of the plugin being loaded
+        :Parameter UID: the UID of the plugin being loaded
         """
 
         # Load the module where the plugin lives

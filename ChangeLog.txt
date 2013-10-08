@@ -8,6 +8,8 @@ The pluginsloader module has been refactored and make more robust.
 The plugin for sorting the DBs tree has been added. At the moment
 it supports alphabetical and human sorting.
 
+Some docstrings and one plugin information page have been improved.
+
 ** October 01, 2013**
 Checking modules directly under the vitables package with pylint.
 

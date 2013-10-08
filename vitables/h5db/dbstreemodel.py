@@ -1023,6 +1023,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         This method is called during nodes population and when files are
         opened/created.
 
+        Warning! This method is MONKEY PATCHED if the DBs Sorting plugin is
+        enabled. If it is the case the working code will be in module
+        vitables.plugins.dbstreesort.dbs_tree_sort
+
         :Parameters:
 
         - `position`: the position of the first row being added.
