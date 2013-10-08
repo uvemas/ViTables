@@ -39,6 +39,7 @@ import vitables.utils
 import vitables.queries.querydlg as querydlg
 import vitables.queries.query as query
 
+
 translate = QtGui.QApplication.translate
 
 

@@ -23,6 +23,7 @@
 When exporting tables, a header with the field names can be inserted.
 """
 
+
 __docformat__ = 'restructuredtext'
 __version__ = '0.7'
 plugin_class = 'ExportToCSV'
@@ -324,7 +325,3 @@ class ExportToCSV(QtCore.QObject):
             'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
         return about_page
-
-
-
-

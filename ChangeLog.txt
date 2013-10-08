@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** October 08, 2013**
+Fixed some white space inconsistencies in several modules.
+
 ** October 01, 2013**
 Checking modules directly under the vitables package with pylint.
 

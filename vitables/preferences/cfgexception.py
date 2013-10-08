@@ -28,6 +28,7 @@ __docformat__ = 'restructuredtext'
 
 from PyQt4 import QtGui
 
+
 translate = QtGui.QApplication.translate
 
 

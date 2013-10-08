@@ -34,6 +34,7 @@ from PyQt4 import QtGui
 
 from vitables.h5db.nodeitemdelegate import NodeItemDelegate
 
+
 translate = QtGui.QApplication.translate
 
 
