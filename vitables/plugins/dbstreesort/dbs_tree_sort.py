@@ -210,7 +210,7 @@ class DBsTreeSort(object):
             """<qt>
             <p>Plugin that provides sorting capabilities to the tree of DBs.
             <p>At the moment only two sorting algorithms are supported: human
-            (a.k.a. natural sorting) and sorting by node creation time.
+            (a.k.a. natural sorting) and alphabetical.
             </qt>""",
             'Text of an About plugin message box')}
         self.about_page = AboutPage(desc, parent)

@@ -72,7 +72,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         :Parameters:
 
             - `desc`: a dictionary with the plugin description
-            -`parent`: the sctaked widget of the Preferences dialog
+            -`parent`: the stacked widget of the Preferences dialog
         """
 
         # Makes the dialog and gives it a layout

@@ -50,108 +50,94 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 import vitables.utils
-import vitables.plugin_utils
+from vitables.plugin_utils import getLogger
 from vitables.plugins.timeseries.aboutpage import AboutPage
+from vitables.vttables import leaf_model
 
 translate = QtGui.QApplication.translate
 
+LOGGER = getLogger()
 
-def findTS(leaf, node_kind):
-    """Find out if the inspected leaf contains a time field.
+def findPandasTS(leaf, attrs):
+    ok = False
+    time_cols = []
+    if pd and isinstance(leaf, tables.Table) and hasattr(attrs, 'index_kind')\
+    and (attrs.index_kind in ('datetime64', 'datetime32')):
+        time_cols.append(leaf.coldescrs['index']._v_pos)
+        ok = True
+    return (ok, time_cols)
 
-    **Existing time fields that cannot be formatted are skipped**:
 
-        - time series created via ``pandas`` module are ignored if that
-          module is not available
-        - time series created via ``scikits.timeseries`` module are
-          ignored if that module is not available
-        - time fields that are displayed in a multidimensional cell
-          are ignored
+def formatPandasTS(content):
+    """Format a given date in a user friendly way.
 
-    The last restriction includes the following cases:
+    The textual representation of the date index is converted to a
+    Timestamp instance that can be easily formatted.
 
-        - time fields that are part of a nested field
-        - time fields in `VLArrays`
-        - time fields in arrays with more than 2 dimensions
-        - time fields in arrays with atom shape other than ()
-
-    :Parameters:
-        - `leaf`: the tables.Leaf instance being inspected.
-        - `node_kind`: a LeafNode attribute that indicates the kind of dataset
-
-    :Return ts_kind: a flag indicating the kind of time series found
+    :Parameter content: the content of the table cell being formatted
     """
 
-    time_types = ['time32', 'time64']
-    if isinstance(leaf, tables.Table):
-        attrs = leaf._v_attrs
-        coltypes = leaf.coltypes
-        # Check for Pandas timeseries
-        if pd and hasattr(attrs, 'index_kind') and \
-        (attrs.index_kind in ('datetime64', 'datetime32')):
-            return 'pandas_ts'
-        # Check for scikits.timeseries timeseries
-        if ts and hasattr(attrs, 'CLASS') and \
-        (attrs.CLASS == 'TimeSeriesTable'):
-            return 'scikits_ts'
-        # Check for PyTables timeseries
-        for name in leaf.colnames:
-            if (name in coltypes) and (coltypes[name] in time_types):
-                return 'pytables_ts'
-    elif (leaf.atom.type in time_types) and \
-    (len(leaf.shape) < 3) and \
-    (leaf.atom.shape == ()) and \
-    (node_kind != 'vlarray'):
-        return 'pytables_ts'
-    else:
-        return None
+    date = pd.Timestamp(int(content))
+    try:
+        ts_format = datetimeFormat()
+        return date.strftime(ts_format)
+    except (ValueError, TypeError):
+        return content
 
 
-def tsPositions(ts_kind, leaf):
-    """Return the position of the time field going to be formatted.
-
-    The following cases can occur:
-
-    - scikits_ts: leaf is a `TimeSeriesTable` instance. It contains just one
-      time field, in a column labeled as `_dates`.
-    - pandas_ts: leaf is a regular `tables.Table` instance with a column
-      named `index`.
-    - pytables_ts and leaf is a regular `tables.Table` instance. Every column
-      can contain a time data type so we must inspect every column
-    - pytables_ts and leaf is a `tables.Array` instance. As it is a homogeneous
-      data container if a column contains a time data type then every column
-      contains a time data type. Specific positions are not required.
-    """
-
-    positions = []
-    if (ts_kind == 'scikits_ts'):
-        positions.append(leaf.coldescrs['_dates']._v_pos)
-    elif (ts_kind == 'pandas_ts'):
-        positions.append(leaf.coldescrs['index']._v_pos)
-    elif ts_kind == 'pytables_ts':
-        if isinstance(leaf, tables.Table):
-            for name in leaf.colnames:
-                if leaf.coltypes[name] in ['time32', 'time64']:
-                    positions.append(leaf.coldescrs[name]._v_pos)
-        else:
-            positions = [-1]
-    return positions
-
-
-def tsFrequency(ts_kind, leaf):
-    """Return the frequency (if any) of the time series.
-
-    Only time series created via ``scikits.timeseries`` module have
-    this attribute.
-    """
-
-    ts_freq = None
-    if ts_kind == 'scikits_ts':
-        # The frequency of the time serie. Default is 6000 (daily)
-        special_attrs = getattr(leaf._v_attrs, 'special_attrs',
-            {'freq': 6000})
+def findScikitsTS(leaf, attrs):
+    ok = False
+    time_cols = []
+    ts_freq = 6000
+    if ts and isinstance(leaf, tables.Table) and hasattr(attrs, 'CLASS') and \
+    (attrs.CLASS == 'TimeSeriesTable'):
+        ok = True
+        time_cols.append(leaf.coldescrs['_dates']._v_pos)
+        special_attrs = getattr(attrs, 'special_attrs', {'freq': 6000})
         ts_freq = special_attrs['freq']
-    return ts_freq
+    return (ok, time_cols, ts_freq)
+
+
+def findTablePyTablesTS(leaf):
+    ok = False
+    time_cols =  []
+    # Check for PyTables timeseries
+    if  isinstance(leaf, tables.Table):
+        coltypes = leaf.coltypes
+        for name in leaf.colnames:
+            if (name in coltypes) and (coltypes[name] in
+                                       ('time32', 'time64')):
+                ok = True
+                time_cols.append(leaf.coldescrs[name]._v_pos)
+    return (ok, time_cols)
+    
+
+def findArrayPyTablesTS(leaf):
+    ok = False
+    time_cols = []
+    if (not isinstance(leaf, tables.Table)) and \
+    (not isinstance(leaf, tables.VLArray)) and (leaf.atom.shape == ()) \
+    and (leaf.atom.type in ('time32', 'time64')) and (len(leaf.shape) < 3):
+        ok = True
+        time_cols = [-1]
+    return (ok, time_cols)
+
+
+def formatPyTablesTS(content):
+    """
+    Format a given date in a user friendly way.
+
+    The textual representation of the date index is converted to a UTC
+    time that can be easily formatted. This method is called when the
+    timeseries has not been created using a third party library (i.e;
+    Pandas, scikits.timeseries packages).
+    """
+
+    try:
+        ts_format = datetimeFormat()
+        return time.strftime(ts_format, time.gmtime(content))
+    except (ValueError, TypeError):
+        return content
 
 
 def datetimeFormat():
@@ -170,6 +156,147 @@ def datetimeFormat():
     return datetime_format
 
 
+def customiseModel(datasheet):
+    """Inspect a leaf model and customise it if a time series is found.
+
+    When finding out if the datasheet contains time fields any found time
+    field that cannot be formatted is skipped so:
+
+        - time series created via ``pandas`` module are ignored if that
+          module is not available
+        - time series created via ``scikits.timeseries`` module are
+          ignored if that module is not available
+        - time fields that are displayed in a multidimensional cell
+          are ignored
+
+    The last restriction includes the following cases:
+
+        - time fields that are part of a nested field
+        - time fields in `VLArrays`
+        - time fields in arrays with more than 2 dimensions
+        - time fields in arrays with atom shape other than ()
+
+    As far as the position of the time field being formatted is concerned the
+    following cases can occur:
+
+    - scikits_ts: leaf is a `TimeSeriesTable` instance. It contains just one
+      time field, in a column labeled as `_dates`.
+    - pandas_ts: leaf is a regular `tables.Table` instance with a column
+      named `index`.
+    - pytables_ts and leaf is a regular `tables.Table` instance. Every column
+      can contain a time data type so we must inspect every column
+    - pytables_ts and leaf is a `tables.Array` instance. As it is a homogeneous
+      data container if a column contains a time data type then every column
+      contains a time data type. Specific positions are not required.
+
+    :Parameter datasheet: the :meth:`vitables.vttables.datasheet.DataSheet`
+      instance being inspected
+    """
+    
+    # Functions `table_data` and `array_data` will override the `data`
+    # function of the leaf model when necessary. So this is MONKEY PATCHING.
+    def table_data(self, index, role=QtCore.Qt.DisplayRole):
+        """Returns the data stored under the given role for the item
+        referred to by the index.
+    
+        This is an overwritten method.
+    
+        :Parameters:
+    
+        - `index`: the index of a data item
+        - `role`: the role being returned
+        """
+    
+        if not index.isValid() or \
+            not (0 <= index.row() < self.numrows):
+            return None
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
+            index.column())
+        if role == QtCore.Qt.DisplayRole:
+            if index.column() in time_cols:
+                return time_formatter(cell)
+            return self.formatContent(cell)
+        elif role == QtCore.Qt.TextAlignmentRole:
+            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        else:
+            return None
+
+
+    def array_data(self, index, role=QtCore.Qt.DisplayRole):
+        """Returns the data stored under the given role for the item
+        referred to by the index.
+    
+        This is an overwritten method.
+    
+        :Parameters:
+    
+        - `index`: the index of a data item
+        - `role`: the role being returned
+        """
+    
+        if not index.isValid() or \
+            not (0 <= index.row() < self.numrows):
+            return None
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
+            index.column())
+        if role == QtCore.Qt.DisplayRole:
+            return time_formatter(cell)
+        elif role == QtCore.Qt.TextAlignmentRole:
+            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        else:
+            return None
+
+    # If the node is a soft/external link then dereference it
+    leaf = datasheet.dbt_leaf.node
+    if isinstance(leaf, tables.link.Link):
+        leaf = leaf.__call__()
+    attrs = leaf._v_attrs
+
+    node_kind = datasheet.dbt_leaf.node_kind
+
+    (ok, time_cols) = findPandasTS(leaf, attrs)
+    if ok:
+        time_formatter = formatPandasTS
+        datasheet.leaf_model.data = table_data
+        return
+
+    (ok, time_cols, ts_freq) = findScikitsTS(leaf, attrs)
+    if ok:
+        def formatScikitsTS(content):
+            """Format a given date in a user friendly way.
+        
+            The textual representation of the date index is converted to a Date
+            instance that can be easily formatted.
+        
+            :Parameter content: the content of the table cell being formatted
+            """
+        
+            date = ts.Date(ts_freq, value=int(content))
+            try:
+                ts_format = datetimeFormat()
+                return date.datetime.strftime(ts_format)
+            except ValueError:
+                return content
+
+        # Only time series created via ``scikits.timeseries`` module have
+        # freq attribute which defaults to 6000 meaning daily frequency
+        time_formatter = formatScikitsTS
+        leaf_model.LeafModel.data = table_data
+        return
+
+    (ok, time_cols) = findTablePyTablesTS(leaf) 
+    if ok:
+        time_formatter = formatPyTablesTS
+        datasheet.leaf_model.data = table_data
+        return
+        
+    (ok, time_cols) = findArrayPyTablesTS(leaf) 
+    if ok:
+        time_formatter = formatPyTablesTS
+        leaf_model.LeafModel.data = array_data
+        return
+
+
 class TSFormatter(object):
     """Human friendly formatting of time series in a dataset.
 
@@ -186,58 +313,7 @@ class TSFormatter(object):
         """
 
         self.vtapp = vitables.utils.getVTApp()
-        self.vtapp.leaf_model_created.connect(self.customiseModel)
-
-    def customiseModel(self, datasheet):
-        """Inspect a leaf model and customise it if a time series is found.
-
-        :Parameter subwindow: the :meth:`vitables.vttables.datasheet.DataSheet`
-          instance being inspected
-        """
-
-        # If the node is a soft/external link then dereference it
-        leaf = datasheet.dbt_leaf.node
-        if isinstance(leaf, tables.link.Link):
-            leaf = leaf.__call__()
-
-        # Look for formattable time fields in the dataset
-        node_kind = datasheet.dbt_leaf.node_kind
-        ts_kind = findTS(leaf, node_kind)
-        if ts_kind is None:
-            return
-
-        # Get the positions of the time fields
-        time_cols = tsPositions(ts_kind, leaf)
-        if time_cols == []:
-            return
-
-        # Customise the leaf model
-        model = datasheet.widget().model()
-        ts_info = {
-            'ts_kind': ts_kind,
-            'ts_cols': time_cols,
-            'ts_freq': tsFrequency(ts_kind, leaf),
-            'ts_format': datetimeFormat(),
-            }
-        if isinstance(leaf, tables.Table):
-            leaf_kind = 'table'
-        else:
-            leaf_kind = 'array'
-        model_info = {
-            'leaf_kind': leaf_kind,
-            'rbuffer': model.rbuffer,
-            'numrows': model.rowCount(),
-            'formatContent': model.formatContent,
-        }
-
-        # Add required attributes to model
-        for k in ts_info:
-            setattr(model, k, ts_info[k])
-
-        # Add/customise required methods to model
-        ts_model = TSLeafModel(model_info, ts_info)
-        model.tsFormatter = ts_model.tsFormatter
-        model.data = ts_model.data
+        self.vtapp.leaf_model_created.connect(customiseModel)
 
 
     def helpAbout(self, parent):
@@ -272,152 +348,3 @@ class TSFormatter(object):
         # of this widget to the AboutPage.applyFormat is useless)
         parent.parent().installEventFilter(self.about_page)
         return self.about_page
-
-
-class TSLeafModel(object):
-    """Provides a `data()` method to leaf models that contains time series.
-
-    Formatting a table is more difficult than formatting an array because
-    tables content is not homogeneous and columns with time series have to
-    be formatted in a different way to the rest of columns.
-    """
-
-
-    def __init__(self, model_info, ts_info, parent=None):
-        """The constructor method.
-
-        All required attributes are set in this method.
-        """
-
-        # Attributes required by the tsFormatter() method
-        self.ts_kind = ts_info['ts_kind']
-        self.ts_freq = ts_info['ts_freq']
-        self.ts_format = ts_info['ts_format']
-        # Attributes required by the data() method
-        self.rbuffer = model_info['rbuffer']
-        self.numrows = model_info['numrows']
-        self.ts_cols = ts_info['ts_cols']
-        self.formatContent = model_info['formatContent']
-
-        self.tsFormatter = self.timeFormatter()
-
-        leaf_kind = model_info['leaf_kind']
-        if leaf_kind == 'table':
-            self.data = self.table_data
-        else:
-            self.data = self.array_data
-
-
-    def table_data(self, index, role=QtCore.Qt.DisplayRole):
-        """Returns the data stored under the given role for the item
-        referred to by the index.
-
-        This is an overwritten method.
-
-        :Parameters:
-
-        - `index`: the index of a data item
-        - `role`: the role being returned
-        """
-
-        if not index.isValid() or \
-            not (0 <= index.row() < self.numrows):
-            return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
-            index.column())
-        if role == QtCore.Qt.DisplayRole:
-            if index.column() in self.ts_cols:
-                return self.tsFormatter(cell)
-            return self.formatContent(cell)
-        elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        else:
-            return None
-
-
-    def array_data(self, index, role=QtCore.Qt.DisplayRole):
-        """Returns the data stored under the given role for the item
-        referred to by the index.
-
-        This is an overwritten method.
-
-        :Parameters:
-
-        - `index`: the index of a data item
-        - `role`: the role being returned
-        """
-
-        if not index.isValid() or \
-            not (0 <= index.row() < self.numrows):
-            return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
-            index.column())
-        if role == QtCore.Qt.DisplayRole:
-            return self.tsFormatter(cell)
-        elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        else:
-            return None
-
-
-    def timeFormatter(self):
-        """Return the function to be used for formatting time series.
-        """
-
-        time_formatter = None
-        ts_kind = self.ts_kind
-        if ts_kind == 'pandas_ts':
-            time_formatter = self.formatPandasTS
-        elif ts_kind == 'scikits_ts':
-            time_formatter = self.formatScikitsTS
-        elif ts_kind == 'pytables_ts':
-            time_formatter = self.formatPyTablesTS
-        return time_formatter
-
-
-    def formatPyTablesTS(self, content):
-        """
-        Format a given date in a user friendly way.
-
-        The textual representation of the date index is converted to a UTC
-        time that can be easily formatted. This method is called when the
-        timeseries has not been created using a third party library (i.e;
-        Pandas, scikits.timeseries packages).
-        """
-
-        try:
-            return time.strftime(self.ts_format, time.gmtime(content))
-        except ValueError:
-            return content
-
-
-    def formatPandasTS(self, content):
-        """Format a given date in a user friendly way.
-
-        The textual representation of the date index is converted to a
-        Timestamp instance that can be easily formatted.
-
-        :Parameter content: the content of the table cell being formatted
-        """
-
-        date = pd.Timestamp(int(content))
-        try:
-            return date.strftime(self.ts_format)
-        except ValueError:
-            return content
-
-
-    def formatScikitsTS(self, content):
-        """Format a given date in a user friendly way.
-
-        The textual representation of the date index is converted to a Date
-        instance that can be easily formatted.
-
-        :Parameter content: the content of the table cell being formatted
-        """
-
-        date = ts.Date(self.ts_freq, value=int(content))
-        try:
-            return date.datetime.strftime(self.ts_format)
-        except ValueError:
-            return content

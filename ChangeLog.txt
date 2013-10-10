@@ -1,5 +1,9 @@
 ViTables ChangeLog
 ==================
+** October 10, 2013 **
+The Plugins manager has been debugged and made more robust.
+Also some typos in docstrings have been corrected.
+
 ** October 07, 2013 **
 Added a new plugin for sorting the tree of DBs.
 
