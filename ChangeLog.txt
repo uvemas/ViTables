@@ -4,6 +4,9 @@ ViTables ChangeLog
 The Plugins manager has been debugged and made more robust.
 Also some typos in docstrings have been corrected.
 
+Revert the commit of time_series.py. A non working version was pushed by
+error to the repo.
+
 ** October 07, 2013 **
 Added a new plugin for sorting the tree of DBs.
 
