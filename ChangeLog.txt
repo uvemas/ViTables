@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** October 14, 2013 **
+The docstrings of csv, dbstreesort and timeseries plugins have been fixed.
+
 ** October 08, 2013**
 Fixed some white space inconsistencies in several modules.
 

@@ -44,20 +44,21 @@ Ui_DBsTreeSortPage = \
                             'dbs_tree_sort_page.ui'))[0]
 class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
     """
-    Dialog for interactively choosing a sorting algorithm for the DBs tree.
+    Widget for describing and customizing the Sorting of DBs Tree plugin.
 
     By loading UI files at runtime we can:
 
         - create user interfaces at runtime (without using pyuic)
         - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
-    This dialog is called when the DBs tree sorting plugin is chosen in the
-    Plugins menu.
+    This widget is inserted as a page in the stacked widget of the
+    Preferences dialog when the CVS import/export item is clicked in the
+    selector tree.
 
     """
 
     def __init__(self, desc, parent=None):
-        """A widget for describing/customizing the DBs tree sorting plugin.
+        """Fill and customize the widget describing the DBs sorting plugin.
 
         :Parameters:
           -`desc` a dictionary with the plugin description

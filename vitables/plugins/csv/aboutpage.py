@@ -48,25 +48,21 @@ Ui_AboutPage = \
 
 class AboutPage(QtGui.QWidget, Ui_AboutPage):
     """
-    Dialog for interactively formatting scikits.timeseries time series.
+    Configure the About page for the csv plugin in the Preferences dialog.
 
     By loading UI files at runtime we can:
 
         - create user interfaces at runtime (without using pyuic)
         - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
-    This dialog is called when the Configure button is clicked in Time Series
-    entry of the Plugins menu.
+    This widget is inserted as a page in the stacked widget of the
+    Preferences dialog when the CVS import/export item is clicked in the
+    selector tree.
 
-    :Parameters:
-
-    - `title`: the dialog title
-    - `info`: information to be displayed in the dialog
-    - `action`: string with the editing action to be done, Create or Rename
     """
 
     def __init__(self, desc, parent=None):
-        """A widget for describing and customiseing the timeseries plugin.
+        """Fill the widget describing the CSV plugin.
 
         :Parameter desc: a dictionary with the plugin description
         """

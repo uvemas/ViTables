@@ -53,7 +53,7 @@ Ui_TimeFormatterPage = \
 
 class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
     """
-    Widget for describing and customising the Time series plugin.
+    Widget for describing and customizing the Time series plugin.
 
     By loading UI files at runtime we can:
 
@@ -64,15 +64,10 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
     Preferences dialog when the Time series item is clicked in the
     selector tree.
 
-    :Parameters:
-
-    - `title`: the dialog title
-    - `info`: information to be displayed in the dialog
-    - `action`: string with the editing action to be done, Create or Rename
     """
 
     def __init__(self, desc, parent=None):
-        """A widget for describing and customising the timeseries plugin.
+        """Widget for describing and customizing the Timeseries plugin.
 
         :Parameters:
 
