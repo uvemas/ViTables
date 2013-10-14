@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** October 14, 2013 **
+The docstrings of csv, dbstreesort and timeseries plugins have been fixed.
+
 ** October 10, 2013 **
 The Plugins manager has been debugged and made more robust.
 Also some typos in docstrings have been corrected.

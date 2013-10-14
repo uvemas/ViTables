@@ -39,7 +39,6 @@ import numpy
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-
 import vitables.utils
 import vitables.plugin_utils
 from vitables.vtsite import PLUGINSDIR
@@ -325,7 +324,4 @@ class ExportToCSV(QtCore.QObject):
             'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
         return about_page
-
-
-
 
