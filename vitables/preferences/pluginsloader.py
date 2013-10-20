@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
@@ -60,6 +60,7 @@ from vitables.plugin_utils import getLogger
 
 LOGGER = getLogger()
 
+
 translate = QtGui.QApplication.translate
 
 
@@ -70,14 +71,14 @@ def pluginDesc(mod_path, folder=None):
     """
 
     # Import the module
-    # This is a little bit convoluted but doing things in the common way some
-    # errors are swallowed by the system for reasons unknown to me and no
+    # This is a little bit convoluted but when doing things in the common way
+    # some errors are swallowed by the system for reasons unknown to me and no
     # error is raised
     try:
         imported_module = importlib.import_module(mod_path)
         if type(imported_module) != type(os):
             raise ImportError
-    except (SyntaxError, ImportError):
+    except (SyntaxError, ImportError, IOError, SystemError):
         LOGGER.error("""Failed to load the module {0} which belongs to a plugin
                      .\ntraceback: {1}""".format(mod_path, sys.exc_info()[:2]))
         return False
@@ -150,7 +151,6 @@ class PluginsLoader(object):
 
     :Parameter enabled_plugins: a list with the UIDs of the enabled plugins
     """
-
 
     def __init__(self, enabled_plugins):
         """Dynamically load and instantiate the available plugins.

@@ -1,5 +1,9 @@
 ViTables ChangeLog
 ==================
+** October 20, 2013 **
+Minor changes have been done in vtapp, plugin_utils and vtgui modules.
+In addition, the docstrings of several modules have been fixed.
+
 ** October 14, 2013 **
 The docstrings of csv, dbstreesort and timeseries plugins have been fixed.
 

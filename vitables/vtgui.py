@@ -522,13 +522,13 @@ class VTGUI(QtGui.QMainWindow):
             self.updateRecentSubmenu)
 
         # Create the Node menu and add actions/submenus/separators to it
-        node_menu = self.menuBar().addMenu(translate('VTGUI', "&Node",
+        self.node_menu = self.menuBar().addMenu(translate('VTGUI', "&Node",
             'The Node menu entry'))
-        node_menu.setObjectName('node_menu')
+        self.node_menu.setObjectName('node_menu')
         node_actions = ['nodeOpen', 'nodeClose', 'nodeProperties', None,
             'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy', 'nodePaste',
             'nodeDelete']
-        vitables.utils.addActions(node_menu, node_actions, self.gui_actions)
+        vitables.utils.addActions(self.node_menu, node_actions, self.gui_actions)
 
         # Create the Dataset menu and add actions/submenus/separators to it
         self.dataset_menu = self.menuBar().addMenu(

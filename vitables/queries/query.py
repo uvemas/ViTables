@@ -128,7 +128,7 @@ class Query(QtCore.QObject):
             ft_dict,
             self.qdescr[u'title'])
 
-        # Get the array of rows that fulfil the condition
+        # Get the array of rows that fulfill the condition
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
         for i in numpy.arange(0, div+1):
@@ -184,7 +184,7 @@ class Query(QtCore.QObject):
             src_dict,
             self.qdescr[u'title'])
 
-        # Get the array of rows that fulfil the condition
+        # Get the array of rows that fulfill the condition
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
         for i in numpy.arange(0, div+1):

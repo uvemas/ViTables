@@ -73,7 +73,7 @@ class DataSheet(QtGui.QMdiSubWindow):
         self.setWidget(self.leaf_view)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
-        # Customise the title bar
+        # Customize the title bar
         if not isinstance(leaf.title, unicode):
             title = unicode(leaf.title, 'utf_8')
         else:
