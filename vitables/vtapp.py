@@ -775,7 +775,7 @@ class VTApp(QtCore.QObject):
 
         # Create a view and announce it.
         # Announcing is potentially helpful for plugins in charge of
-        # datasets customisations (for instance, additional formatting)
+        # datasets customizations (for instance, additional formatting)
         subwindow = datasheet.DataSheet(index)
         subwindow.show()
         self.leaf_model_created.emit(subwindow)
@@ -797,7 +797,8 @@ class VTApp(QtCore.QObject):
             closed
         """
 
-        current = self.gui.dbs_tree_view.currentIndex()
+        if not current:
+            current = self.gui.dbs_tree_view.currentIndex()
         pcurrent = QtCore.QPersistentModelIndex(current)
         # Find out the subwindow tied to the selected node and close it
         for data_sheet in self.gui.workspace.subWindowList():

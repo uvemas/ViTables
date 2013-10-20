@@ -52,6 +52,14 @@ def getLogger(plugin_name=None):
     return logger
 
 
+def getDBsTreeModel():
+    """Small wrapper to hide that vtapp.gui object contains dbs_tree_model.
+    
+    :return: the DBs tree model
+    """
+    return getVTGui().dbs_tree_model
+
+
 def getVTGui():
     """Small wrapper to hide the fact that vtapp object contains gui.
 
