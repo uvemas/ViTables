@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** October 21, 2013 **
+A new plugin, columnar_org, is being developed.
+It will allow to combine several Array views with the same number of rows to
+be combined in a unique view (it is a feature request).
+
 ** October 20, 2013 **
 Minor changes have been done in vtapp, plugin_utils and vtgui modules.
 In addition, the docstrings of several modules have been fixed.
