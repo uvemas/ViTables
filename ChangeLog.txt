@@ -1,5 +1,11 @@
 ViTables ChangeLog
 ==================
+** October 23, 2013 **
+Still working in the columnar_org plugin.
+How the plugin should work ia now clearer: select several arrays via their
+checkboxes and launch the command Join Arrays. If the selected collection of
+arrays cannot be joined in a unique view then the launch command is disabled.
+
 ** October 21, 2013 **
 A new plugin, columnar_org, is being developed.
 It will allow to combine several Array views with the same number of rows to
