@@ -58,7 +58,7 @@ class ArrayColsOrganizer(QtCore.QObject):
 
         Dynamically finds new instances of
         :meth:`vitables.vttables.leaf_model.LeafModel` and customizes them if
-        they are arrays that can be linked in a unique view.
+        they are arrays that can be grouped in a unique view.
         """
 
         super(ArrayColsOrganizer, self).__init__(parent)
@@ -80,42 +80,45 @@ class ArrayColsOrganizer(QtCore.QObject):
         """Add the `Join Arrays`. entry to `Node` menu.
         """
 
-        join_icon = QtGui.QIcon()
+        object_group_icon = QtGui.QIcon()
         pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
-            'columnorg/icons/insert-link.png'))
-        join_icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
+            'columnorg/icons/object-group.png'))
+        object_group_icon.addPixmap(pixmap,
+                                    QtGui.QIcon.Normal,
+                                    QtGui.QIcon.On)
 
-        self.join_action = QtGui.QAction(
+        self.group_action = QtGui.QAction(
             translate('ArrayColsOrganizer',
-                "&Join Arrays",
-                "Join separated arrays with the same number of rows"),
+                "&Group Arrays",
+                "Group separated arrays with the same number of rows"),
             self,
-            shortcut=QtGui.QKeySequence.UnknownKey, triggered=self.joinArrays,
-            icon=join_icon,
+            shortcut=QtGui.QKeySequence.UnknownKey,
+            triggered=self.groupArrays,
+            icon=object_group_icon,
             statusTip=translate('ArrayColsOrganizer',
                 """Use a unique widget to display Arrays as if they where """
                 """columns of a Table""",
-                "Status bar text for the Node -> Join Arrays action"))
+                "Status bar text for the Node -> Group Arrays action"))
 
         # Add the action to the Node menu
         vitables.plugin_utils.addToMenu(self.vtgui.node_menu,
-                                        self.join_action)
+                                        self.group_action)
 
         # Add the action to the leaf context menu
-        vitables.plugin_utils.addToLeafContextMenu(self.join_action)
+        vitables.plugin_utils.addToLeafContextMenu(self.group_action)
 
 
     def updateNodeMenu(self):
         """Update the `join_action` QAction when the Node menu is pulled down.
         
-        The action is disabled when there are less than two Arrays checked and
-        when not all checked arrays have the same number of rows.
+        The action is disabled when there are less than two Arrays checked, and
+        also when not all checked arrays have the same number of rows.
 
         This method is a slot. See class ctor for details.
         """
 
         number_of_rows = []
-        self.join_action.setEnabled(False)
+        self.group_action.setEnabled(False)
         for view in self.vtgui.workspace.subWindowList():
             if hasattr(view, 'joined_arrays'):
                 number_of_rows.append(view.joined_arrays)
@@ -126,18 +129,18 @@ class ArrayColsOrganizer(QtCore.QObject):
         if len(number_of_rows) < 2:
             return
         if number_of_rows.count(number_of_rows[0]) == len(number_of_rows):
-            self.join_action.setEnabled(True)
+            self.group_action.setEnabled(True)
 
 
     def customizeView(self,datasheet):
         """Add a checkbox in the bottom right corner of array views.
 
-        This is a slot called everytime a new view is created.
+        This is a slot called every time a new view is created.
 
         """
 
         datasheet.cb = QtGui.QCheckBox(datasheet)
-        datasheet.cb.setToolTip("Can be joined to other Array view")
+        datasheet.cb.setToolTip("Group Arrays into a unique view")
     
         # The tables.Node instance tied to that data structure
         pt_node = datasheet.dbt_leaf.node
@@ -154,10 +157,15 @@ class ArrayColsOrganizer(QtCore.QObject):
 
 
     def chooseAction(self, state):
-        """Choose between joining individual arrays or separating joined arrays.
+        """Choose whether group individual arrays or separate grouped arrays.
         
-        State = 0 means that the checkbox is unchecked
-        State = 2 means that the checkbox is checked
+        State = 0 implies that the checkbox is unchecked. On an individual
+        array it means that it is not electable to be grouped. In a group of
+        arrays it means that the group should be separated.
+
+        State = 2 implies that the checkbox is checked. On both an individual
+        array and a group of arrays it means that the checked object can be
+        grouped to other checked array/group of arrays.
         
         :Parameter state: the state of the sender checkbox 
         """
@@ -165,11 +173,7 @@ class ArrayColsOrganizer(QtCore.QObject):
         if (state == 0):
             self.separateArrays(self.sender())
         elif (state == 2):
-            (views_to_join, numrows) = self.arraysToJoin()
-
-            #sw = self.joinArrays(views_to_join, numrows)
-            #if sw:
-            #    self.customizeJoinedViews(sw)
+            self.arraysToBeGrouped()
 
 
     def separateArrays(self, sender):
@@ -177,98 +181,88 @@ class ArrayColsOrganizer(QtCore.QObject):
 
         :Parameter sender: the checkbox that emited the signal
         """
+        pass        
 
-        for view in self.vtgui.workspace.subWindowList()[:]:
-            if hasattr(view, 'joined_arrays'):
-                self.internal_datasheets = []
-                for subwindow in view.children():
-                    LOGGER.error('++++ {}'.format(subwindow))
-        
-        
-    
-    def arraysToJoin(self):
-        """The list of array views to be joined at a given moment.
-        
+
+    def arraysToBeGrouped(self):
+        """The list of array views to be grouped at a given moment.
         """
 
-        views_to_join = []
-        number_of_rows = []
+        self.views_to_group = []
+        self.number_of_rows = []
         for view in self.vtgui.workspace.subWindowList():
             if hasattr(view, 'joined_arrays'):
-                views_to_join.append(view)
-                number_of_rows.append(view.joined_arrays)
+                self.views_to_group.append(view)
+                self.number_of_rows.append(view.joined_arrays)
             elif (view.leaf_view.cornerWidget() and\
             view.leaf_view.cornerWidget().isChecked()):
-                views_to_join.append(view)
-                number_of_rows.append(view.leaf_model.numrows[()])
+                self.views_to_group.append(view)
+                self.number_of_rows.append(view.leaf_model.numrows[()])
 
-        if number_of_rows.count(number_of_rows[0]) != len(number_of_rows):
+        if self.number_of_rows.count(self.number_of_rows[0]) != len(self.number_of_rows):
             print("""\nError: join arrays operation cancelled. Not all the """
                   """selected arrays have the same number of rows.""")
-        return views_to_join, number_of_rows[0]
 
 
-    def joinArrays(self, views_to_join, numrows):
-        """Join an Array with other Array or with a group of joined Arrays.
-
-        :Parameters:
-          - views_to_join: the list of views to be joined
-          - numrows: the views numbeer of rows
+    def groupArrays(self):
+        """Group an Array with other Array or with an existing group of Arrays.
         """
 
-        # Create a joined view. If it already exists then it is reused
-        container = None
-        sw = None
-        if len(views_to_join) > 1:
-            # If a joined view exists then reuse it
-            for datasheet in views_to_join:
-                if hasattr(datasheet, 'joined_arrays'):
-                    container = datasheet.widget()
-                    container_layout = container.layout().childLayout()
-                    sw = datasheet
-                    break
+        numrows = self.number_of_rows[0]
+        # Set the internal widget for the SubWindow that will be created later
+        container = QtGui.QWidget()
+        hlayout = QtGui.QHBoxLayout()
+            
+        # Add datasheets to the layout and give this layout to the widget.
+        # Datasheets must no have title bar. If they have then the user can
+        # move them freely inside the wrapping subwindow
+        for datasheet in self.views_to_group:
+            title = QtGui.QLabel(datasheet.windowTitle())
+            datasheet.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+            vertical_layout = QtGui.QVBoxLayout()
+            vertical_layout.addWidget(title)
+            vertical_layout.addWidget(datasheet)
+            hlayout.addLayout(vertical_layout)
+        container.setLayout(hlayout)
 
-            # If no joined view exists then set variables to proper values
-            if not container:
-                container = QtGui.QWidget()
-                container_layout = QtGui.QHBoxLayout(container)
-                hlayout = QtGui.QHBoxLayout()
-                hlayout.setObjectName('internal_hlayout')
-                container_layout.addLayout(hlayout)
-                #container.setLayout(container_layout)
-                
-            # Create a joined view
-            for datasheet in views_to_join:
-                if  hasattr(datasheet, 'joined_arrays'):
-                    continue
-#                container_layout.addWidget(datasheet)
-                hlayout.addWidget(datasheet)
-            if not sw:
-                sw = self.vtgui.workspace.addSubWindow(container)
-                sw.joined_arrays = numrows
-                sw.show()
-        return sw
+        # Create the subwindow
+        sw = self.vtgui.workspace.addSubWindow(container)
+        sw.joined_arrays = numrows
+        sw.show()
+        self.customizeGroupedViews(sw)
 
 
-    def customizeJoinedViews(self, sw):
+    def customizeGroupedViews(self, sw):
         """Make the joined view widget usable.
         
         - All but the leftmost horizontal header views are hidden
         - All but the rightmost verticals scrollbars are hidden
-        - A unique horizontal scrollbar is added
+          and connected beween them
         
+        Beware that horizontal scrollbars cannot be connected easily if the
+        number of columns differ for the grouped arrays so we recommend to
+        group only arrays with the same number of columns.
+
         :Parameter sw: the viw (QMdiSubWindow instance) being customized
         """
         
+        # The top level layout, a horizontal box layout
         sw_layout = sw.widget().layout()
-        internal_items = sw_layout.count()
-        internal_widgets = []
-        for i in range(internal_items):
-            internal_widgets.append(sw_layout.itemAt(i).widget().leaf_view)
-        for i in range(1, internal_items):
-            internal_widgets[i].verticalHeader().hide()
-            internal_widgets[i-1].verticalScrollBar().hide()
-            internal_widgets[i-1].setCornerWidget(None)
+        # The number of children vertical layouts
+        vl_count = sw_layout.count()
+        # The internal widgets contained by the children layouts are labels
+        # and datasheets:
+        # horizontal layout -> vertical layout -> widget item -> label
+        #                                     |-> widget item -> datasheet 
+        datasheets = []
+        for i in range(vl_count):
+            datasheets.append(sw_layout.itemAt(i).itemAt(1).widget())
+        for i in range(vl_count-1):
+            datasheets[vl_count-1].widget().verticalScrollBar().valueChanged.connect(
+                datasheets[i].widget().verticalScrollBar().setValue)
+            datasheets[i+1].widget().verticalHeader().hide()
+            datasheets[i].widget().verticalScrollBar().hide()
+            datasheets[i].widget().setCornerWidget(None)
         
 #     def closeEvent(self, event):
 #         # Propagate the event. In the process, self.widget().closeEvent

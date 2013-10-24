@@ -2,7 +2,11 @@ ViTables ChangeLog
 ==================
 ** October 23, 2013 **
 Still working in the columnar_org plugin.
-How the plugin should work ia now clearer: select several arrays via their
+Grouping arrays is working with some minor (I think) bugs.
+
+** October 23, 2013 **
+Still working in the columnar_org plugin.
+How the plugin should work is now clearer: select several arrays via their
 checkboxes and launch the command Join Arrays. If the selected collection of
 arrays cannot be joined in a unique view then the launch command is disabled.
 
