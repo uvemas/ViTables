@@ -28,7 +28,8 @@ that leaf will be displayed in the workspace using this wrapper widget.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 
 import vitables.utils
 import vitables.nodeprops.nodeinfo as nodeinfo
@@ -69,7 +70,8 @@ class DataSheet(QtGui.QMdiSubWindow):
         self.leaf_model = leaf_model.LeafModel(rbuffer)
         self.leaf_view = leaf_view.LeafView(self.leaf_model)
 
-        super(DataSheet, self).__init__(self.vtgui.workspace)
+        super(DataSheet, self).__init__(self.vtgui.workspace,
+                                        QtCore.Qt.SubWindow)
         self.setWidget(self.leaf_view)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
