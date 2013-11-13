@@ -285,8 +285,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             if hasattr(i, 'grouped_arrays_nrows'):
                 self.already_grouped.add(i)
                 self.arrays.remove(i)
-#        LOGGER.error('++++ len(arrays) {}'.format(len(self.arrays)))
-#        LOGGER.error('++++ len(already_grouped) {}'.format(len(self.already_grouped)))
         # Create a GroupedArrays object from the set of regular arrays
         self.pindex = QtCore.QModelIndex()
         if (len(self.arrays) > 1):
@@ -300,26 +298,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             self.already_grouped.add(self)
             # Create the subwindow
             self.show()
-#             LOGGER.error('++++ container {}\n     ga_layout {}\n'.format(self.container, ga_layout))
-#             LOGGER.error('++++ itemAt0 {}\n     itemAt1 {}\n     itemAt2 {}'.format(ga_layout.itemAt(0),
-#                                                                                  ga_layout.itemAt(1),
-#                                                                                  ga_layout.itemAt(2)))
-#             LOGGER.error('++++ itemAt0.itemAt0 {}\n     itemAt1itemAt0 {}\n     itemAt2itemAt0 {}'.
-#                          format(ga_layout.itemAt(0).itemAt(0),
-#                                 ga_layout.itemAt(1).itemAt(0),
-#                                 ga_layout.itemAt(2).itemAt(0)))
-#             LOGGER.error('++++ itemAt0.itemAt0widget {}\n     itemAt1itemAt0widget {}\n     itemAt2itemAt0widget {}'.
-#                          format(ga_layout.itemAt(0).itemAt(0).widget(),
-#                                 ga_layout.itemAt(1).itemAt(0).widget(),
-#                                 ga_layout.itemAt(2).itemAt(0).widget()))
-#             LOGGER.error('++++ itemAt0.itemAt1 {}\n     itemAt1itemAt1 {}\n     itemAt2itemAt1 {}'.
-#                          format(ga_layout.itemAt(0).itemAt(1),
-#                                 ga_layout.itemAt(1).itemAt(1),
-#                                 ga_layout.itemAt(2).itemAt(1)))
-#             LOGGER.error('++++ itemAt0.itemAt1widget {}\n     itemAt1itemAt1widget {}\n     itemAt2itemAt1widget {}'.
-#                          format(ga_layout.itemAt(0).itemAt(1).widget(),
-#                                 ga_layout.itemAt(1).itemAt(1).widget(),
-#                                 ga_layout.itemAt(2).itemAt(1).widget()))
+            self.customizeGroupedViews()
         elif (len(self.arrays) == 1) and len(self.already_grouped):
             # We want to group an existing GroupedArrays with a regular array
             datasheet = self.arrays.pop()
@@ -334,11 +313,11 @@ class GroupedArrays(QtGui.QMdiSubWindow):
                 self.container.layout().itemAt(0).itemAt(1).widget().leaf_model.numrows[()]
             self.already_grouped.add(self)
             self.show()
+            self.customizeGroupedViews()
         # This block of code is executed always so functions 
         # self.setLayout and self.setWidget won't need to be set again
         if len(self.already_grouped) > 1:
             grouped_arrays = self.already_grouped.pop()
-            LOGGER.error('++++ grouped_arrays{}'.format(grouped_arrays))
 #            grouped_arrays.deleteLater()
             self.container = grouped_arrays.widget()
             self.getGALayout = self.combineGroupedArrays
@@ -349,8 +328,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
                 self.container.layout().itemAt(0).itemAt(1).widget().leaf_model.numrows[()]
             self.already_grouped.add(self)
             self.show()
-
-#        self.customizeGroupedViews()
+            self.customizeGroupedViews()
         
 
     # The following functions define the behavior of GroupedArrays objects:
@@ -413,16 +391,12 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         ga_layout = self.container.layout()
         while self.already_grouped:
             current_grouped_array = self.already_grouped.pop()
-            LOGGER.error('++++ current_grouped_array {}'.format(current_grouped_array))
             widget = current_grouped_array.widget()
             ga_layout.addWidget(widget)
             current_grouped_array.deleteLater()
         return ga_layout
 
         
-    def ungroupArrays(self):
-        pass
-
     def customizeGroupedViews(self):
         """Make the grouped view widget usable.
         
@@ -441,19 +415,27 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         sw_layout = self.widget().layout()
         # The number of children vertical layouts
         vl_count = sw_layout.count()
-        # The internal widgets contained by the children layouts are labels
-        # and datasheets:
+        # The items contained by a layout can be QVBoxLAyout or QWidgetItems.
+        # The vertical layout items can contain labels and datasheets:
         # horizontal layout -> vertical layout -> widget item -> label
         #                                     |-> widget item -> datasheet 
         datasheets = []
         for i in range(vl_count):
-            datasheets.append(sw_layout.itemAt(i).itemAt(1).widget())
-        for i in range(vl_count-1):
-            datasheets[vl_count-1].widget().verticalScrollBar().valueChanged.connect(
+            layout = sw_layout.itemAt(i)
+            if isinstance(layout, QtGui.QWidgetItem):
+                internal_layout = layout.widget().layout()
+                datasheets.append(internal_layout.itemAt(0).itemAt(1).widget())
+                datasheets.append(internal_layout.itemAt(1).itemAt(1).widget())
+            else:
+                datasheets.append(layout.itemAt(1).widget())
+        nd = len(datasheets)
+        for i in range(nd):
+            datasheets[nd-1].widget().verticalScrollBar().valueChanged.connect(
                 datasheets[i].widget().verticalScrollBar().setValue)
-            datasheets[i+1].widget().verticalHeader().hide()
-            datasheets[i].widget().verticalScrollBar().hide()
-            datasheets[i].widget().setCornerWidget(None)
+            if i < (nd - 1):
+                datasheets[i].widget().verticalScrollBar().hide()
+                datasheets[i].widget().setCornerWidget(None)
+                datasheets[i+1].widget().verticalHeader().hide()
 
 
     def closeEvent(self, event):
@@ -461,11 +443,42 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         In the process, self.widget().closeEvent will be called
         """
         
-        for datasheet in self.views_to_group:
-            datasheet.dbt_leaf.hasview = False
-            QtGui.QMdiSubWindow.closeEvent(datasheet, event)
-        
+        sw_layout = self.widget().layout()
+        vl_count = sw_layout.count()
+        datasheets = []
+        for i in range(vl_count):
+            layout = sw_layout.itemAt(i)
+            if isinstance(layout, QtGui.QWidgetItem):
+                internal_layout = layout.widget().layout()
+                datasheets.append(internal_layout.itemAt(0).itemAt(1).widget())
+                datasheets.append(internal_layout.itemAt(1).itemAt(1).widget())
+            else:
+                datasheets.append(layout.itemAt(1).widget())
+        for i in datasheets:
+            # Ensure that Node menu actions are properly updated
+            i.dbt_leaf.hasview = False
+            self.vtgui.updateActions()
+            i.close()
+        # Propagate the event. In the process, self.widget().closeEvent
+        # will be called
+        QtGui.QMdiSubWindow.closeEvent(self, event)
+        self.vtgui.workspace.removeSubWindow(self)
+         
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
 
+
+    def ungroupArrays(self):
+        sw_layout = self.widget().layout()
+        self.clearLayout(sw_layout)
+#         vl_count = sw_layout.count()
+#         datasheets = []
+#         for i in range(vl_count):
+#             layout = sw_layout.itemAt(i)
+#             if isinstance(layout, QtGui.QWidgetItem):
+#                 internal_layout = layout.widget().layout()
+#                 datasheets.append(internal_layout.itemAt(0).itemAt(1).widget())
+#                 datasheets.append(internal_layout.itemAt(1).itemAt(1).widget())
+#             else:
+#                 datasheets.append(layout.itemAt(1).widget())
 

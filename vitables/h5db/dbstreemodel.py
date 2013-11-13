@@ -679,37 +679,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 yield self.index(crow, 0, child)
 
 
-    def traverseTree(self, parent=None):
-        """Iterates over a subtree of the tree of databases view.
-
-        :Parameter parent: the model index of the root node of the iterated
-            subtree
-        """
-
-        if parent is None:
-            # The root index of the tree view
-            parent = QtCore.QModelIndex()
-
-        # Iterator over the top level items (i.e. root group nodes) of
-        # the tree view
-        i = iter(range(0, self.rowCount(parent)))
-        try:
-            next(i)
-        except StopIteration:
-            return
-
-        # Recurse the tree view
-        try:
-            child = self.index(next(i), 0, parent)
-            while child:
-                yield child
-                for item in self.traverseTree(child):
-                    yield item
-                child = self.index(next(i), 0, parent)
-        except StopIteration:
-            pass
-
-
     def indexChildren(self, index):
         """Iterate over the children of a given index.
 
