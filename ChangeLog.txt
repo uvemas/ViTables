@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** November 14, 2013 **
+Code in the columnar_org plugin has been debugged and refactored.
+A small bug in the closing arrays process remains open. Ungrouping hasn't
+been implemented yet.
+
 ** November 13, 2013 **
 Still working in the columnar_org plugin.
 Grouping arrays has been debugged and now it works well in most cases.
