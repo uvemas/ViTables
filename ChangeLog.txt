@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** November 15, 2013 **
+Ungrouping arrays has been implemented in the columnar_org plugin.
+At the moment I just see one minor bug. All functionality has been
+implemented so its time for a final debug and refactor sessions.
+
 ** November 14, 2013 **
 Code in the columnar_org plugin has been debugged and refactored.
 A small bug in the closing arrays process remains open. Ungrouping hasn't

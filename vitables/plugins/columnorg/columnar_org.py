@@ -261,7 +261,7 @@ class MenuUpdater(QtCore.QObject):
         GroupedArrays(arrays=self.checked_views)
 
     def ungroupArrays(self):
-        pass
+        GroupedArrays.ungroupArrays(self.checked_views[0])
 
 
 class GroupedArrays(QtGui.QMdiSubWindow):
@@ -455,46 +455,55 @@ class GroupedArrays(QtGui.QMdiSubWindow):
 
 
     def closeEvent(self, event):
-        """ Propagate the event.
+        """ Propagate the close event.
         In the process, self.widget().closeEvent will be called
         """
         
         sw_layout = self.widget().layout()
         vl_count = sw_layout.count()
-        datasheets = []
         for i in range(vl_count):
             layout = sw_layout.itemAt(i)
-            if isinstance(layout, QtGui.QWidgetItem):
-                internal_layout = layout.widget().layout()
-                datasheets.append(internal_layout.itemAt(0).itemAt(1).widget())
-                datasheets.append(internal_layout.itemAt(1).itemAt(1).widget())
-            else:
-                datasheets.append(layout.itemAt(1).widget())
-        for i in datasheets:
-            # Ensure that Node menu actions are properly updated
-            i.dbt_leaf.hasview = False
+            datasheet = layout.itemAt(1).widget()
+            datasheet.dbt_leaf.hasview = False
             self.vtgui.updateActions()
-            i.close()
-        # Propagate the event. In the process, self.widget().closeEvent
-        # will be called
-        QtGui.QMdiSubWindow.closeEvent(self, event)
-        self.vtgui.workspace.removeSubWindow(self)
-         
+            datasheet.close()
+            layout.deleteLater()
+        # Simply propagating the event seems not to work so I call the
+        # corresponding method in the parent
+        self.vtgui.workspace.removeSubWindow(self)        
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
 
+        QtGui.QMdiSubWindow.closeEvent(self, event)
+
 
     def ungroupArrays(self):
-        sw_layout = self.widget().layout()
-        self.clearLayout(sw_layout)
-#         vl_count = sw_layout.count()
-#         datasheets = []
-#         for i in range(vl_count):
-#             layout = sw_layout.itemAt(i)
-#             if isinstance(layout, QtGui.QWidgetItem):
-#                 internal_layout = layout.widget().layout()
-#                 datasheets.append(internal_layout.itemAt(0).itemAt(1).widget())
-#                 datasheets.append(internal_layout.itemAt(1).itemAt(1).widget())
-#             else:
-#                 datasheets.append(layout.itemAt(1).widget())
+        """Break-up a GroupedArrays object into its individual components.
+        """
 
+        for view in self.vtgui.workspace.subWindowList():
+            if isinstance(view, GroupedArrays):
+                self = view
+                break
+        sw_layout = self.widget().layout()
+        vl_count = sw_layout.count()
+        datasheets = []
+        for i in range(vl_count):
+            layout = sw_layout.itemAt(i)
+            title = layout.itemAt(0).widget().text()
+            datasheet = layout.itemAt(1).widget()
+            datasheet.setWindowFlags(QtCore.Qt.SubWindow)
+            datasheet.setWindowTitle(title)
+            datasheet.setParent(self.vtgui.workspace)
+            datasheet.widget().verticalScrollBar().show()
+            datasheet.widget().verticalHeader().show()
+            cb = QtGui.QCheckBox(datasheet)
+            cb.setToolTip("Group Arrays into a unique view")
+            datasheet.leaf_view.setCornerWidget(cb)
+            # Attributes for retrieving the state of the checkbox from the
+            # datasheet being customized
+            cb.source_array = datasheet
+            datasheet.is_checked = datasheet.leaf_view.cornerWidget().checkState()
+            datasheet.show()
+            layout.deleteLater()
+        self.vtgui.workspace.removeSubWindow(self)
