@@ -1,5 +1,9 @@
 ViTables ChangeLog
 ==================
+** November 19, 2013 **
+First working version of the columnar_org plugin is available.
+I think I've fixed all serious bugs.
+
 ** October 20, 2013 **
 Minor changes have been done in vtapp, plugin_utils and vtgui modules.
 In addition, the docstrings of several modules have been fixed.
