@@ -47,12 +47,15 @@ from vitables.plugins.columnorg.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate
 
-LOGGER = vitables.plugin_utils.getLogger()
-
 class ArrayColsOrganizer(QtCore.QObject):
-    """The grouped arrays widget.
+    """The class which defines the plugin for columnar organization of arrays.
+    It is connected to the core program so that ever time a new view is
+    created this class customizes the view if it is required. In addition the
+    class triggers the update of the Node menu and includes a `helpAbout`method
+    that is used in the Preferences dialog to show information about the
+    plugin.
     """
-    
+
     def __init__(self, parent=None):
         """Class constructor.
 
@@ -63,7 +66,7 @@ class ArrayColsOrganizer(QtCore.QObject):
 
         super(ArrayColsOrganizer, self).__init__(parent)
         self.vtapp = vitables.utils.getVTApp()
-        
+
         # An specialized object will deal with the Node menu changes
         self.menu_updater = MenuUpdater()
         self.menu_updater.addEntry()
@@ -72,13 +75,12 @@ class ArrayColsOrganizer(QtCore.QObject):
         self.vtapp.leaf_model_created.connect(self.customizeView)
 
 
-    def customizeView(self,datasheet):
+    def customizeView(self, datasheet):
         """Add a checkbox in the bottom right corner of array views.
 
-        Customization is twofold: add a checkbox to the LeafView and add a 
-        is_checked` attr to the view. In addition, the checkbox has an `array`
-        (or `group`) attribute that points to the view (datasheet or group)
-        containing it.
+        Customization is twofold: add a checkbox to the LeafView and add a
+        is_checked` attr to the view. In addition, the checkbox has a
+        `source_array` attribute that points to the view containing it.
 
         In a regular array, if checkbox ticked, it means that the array is
         candidate to be added to other single/grouped arrays.
@@ -106,7 +108,8 @@ class ArrayColsOrganizer(QtCore.QObject):
             # Attributes for retrieving the state of the checkbox from the
             # datasheet being customized
             cb.source_array = datasheet
-            datasheet.is_checked = datasheet.leaf_view.cornerWidget().checkState()
+            datasheet.is_checked = \
+                datasheet.leaf_view.cornerWidget().checkState()
 
         # Connect signals to slots
         cb.stateChanged.connect(self.cbStateChanged)
@@ -142,7 +145,7 @@ class ArrayColsOrganizer(QtCore.QObject):
             the same number of rows.
             <p>The user selects the arrays which he want to see in a unique
             viewer. Then clicks on the Node -> Linked View menu entry and
-            the arrays are displayed as expected by the user. 
+            the arrays are displayed as expected by the user.
             </qt>""",
             'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
@@ -150,6 +153,8 @@ class ArrayColsOrganizer(QtCore.QObject):
 
 
 class MenuUpdater(QtCore.QObject):
+    """Specialized class for modifying the Node menu.
+    """
 
     def __init__(self, parent=None):
         """The constructor method.
@@ -157,7 +162,7 @@ class MenuUpdater(QtCore.QObject):
 
         super(MenuUpdater, self).__init__(parent)
         self.vtgui = vitables.plugin_utils.getVTGui()
-        
+
         # Connect signals to slots
         self.vtgui.node_menu.aboutToShow.connect(self.updateNodeMenu)
         self.vtgui.leaf_node_cm.aboutToShow.connect(self.updateNodeMenu)
@@ -218,7 +223,7 @@ class MenuUpdater(QtCore.QObject):
 
     def updateNodeMenu(self):
         """Update (un)group_action QActions if the Node menu is about to show.
-        
+
         The `group_action` is disabled when there are less than two Arrays
         checked, and also when not all checked arrays have the same number of
         rows.
@@ -242,7 +247,7 @@ class MenuUpdater(QtCore.QObject):
                     numrows.append(view.grouped_arrays_nrows)
                 elif isinstance(view, vitables.vttables.datasheet.DataSheet):
                     numrows.append(view.leaf_model.numrows[()])
- 
+
         self.checked_views = checked_views
 
         if len(checked_views) == 1:
@@ -258,18 +263,22 @@ class MenuUpdater(QtCore.QObject):
 
 
     def groupArrays(self):
-        GroupedArrays(arrays=self.checked_views)
+        """Group a set of individual arrays into the same view widget.
+        """
+        GroupedArrays(views=self.checked_views)
 
     def ungroupArrays(self):
+        """Break-up a grouped array into a set of views (one per component).
+        """
         GroupedArrays.ungroupArrays(self.checked_views[0])
 
 
 class GroupedArrays(QtGui.QMdiSubWindow):
     """A widget that contains a group of Arrays.
     """
-    
+
     def __init__(self, parent=None, flags=QtCore.Qt.SubWindow,
-                 arrays=None):
+                 views=None):
         """The class constructor.
         """
 
@@ -277,23 +286,26 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         super(GroupedArrays, self).__init__(self.vtgui.workspace, flags)
 
         # The components from which the GroupedArrays will be made.
-        # We use sets instead of lists
-        self.arrays = {i for i in arrays}
+        # We use sets instead of lists because there seems to be a
+        # problem with my_list.pop(i) when i != -1
+        self.arrays = set(views)
         self.already_grouped  = set([])
         for i in self.arrays.copy():
             if isinstance(i, GroupedArrays):
                 self.already_grouped.add(i)
                 self.arrays.remove(i)
+        self.arrays = list(self.arrays)
+        self.already_grouped = list(self.already_grouped)
         self.pindex = QtCore.QModelIndex()
         # Create a GroupedArrays object from the set of regular arrays
         if (len(self.arrays) > 1):
-            self.combineArrays(self.arrays)
+            self.combineArrays()
         # Combine regular arrays with GroupedArrays
         elif (len(self.arrays) == 1) and len(self.already_grouped):
-            self.combineArrayAndGroupedArrays(self.arrays, self.already_grouped)
+            self.combineArrayAndGroupedArrays()
         # Combine GroupedArrays (no regular arrays in the way)
         elif len(self.already_grouped) > 1:
-            self.combineGroupedArrays(self.already_grouped)        
+            self.combineGroupedArrays()
 
     # The following functions define the behavior of GroupedArrays objects:
     # - how they are created from several Datasheet objects
@@ -303,132 +315,138 @@ class GroupedArrays(QtGui.QMdiSubWindow):
     # - how they are closed
     # - how they are ungrouped
 
-    def combineArrays(self, arrays):
-        """Convert a set of array views into a GroupedArray view.
-        """
-        
-        # The widget of this MdiSubWindow
-        self.container = QtGui.QWidget()
+    def addVerticalLayout(self, container_layout,  datasheet, title = None):
+        """Add a vertical layout to the horizontal layout of a GroupArrays.
 
-        # Fill the widget with Datasheets arranged in the container layout
-        container_layout = QtGui.QHBoxLayout()
-        while arrays:
-            # Extract the first datasheet and manipulate it conveniently:
-            # get the title, remove the frame and put both of them in a
-            # vertical layout
-            datasheet = arrays.pop()
+        This is a helper method.
+
+        :Parameter:
+        - `container_layout`: the horizontal layout of the ArraysGroup
+        - `datasheet`: the datasheet being added
+        """
+
+        if not title:
             title = QtGui.QLabel(datasheet.windowTitle())
-            datasheet.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-            vertical_layout = QtGui.QVBoxLayout()
-            vertical_layout.addWidget(title)
-            vertical_layout.addWidget(datasheet)
-            container_layout.addLayout(vertical_layout)
-        self.container.setLayout(container_layout)
-        # Create the MdiSubWindow
-        self.setWidget(self.container)
-
-        # Some convenient attributes
-        self.is_checked = QtCore.Qt.Checked
-        nrows = datasheet.leaf_model.numrows[()]
-        self.grouped_arrays_nrows = nrows
-#        self.already_grouped.add(self)
-
-        # Create the subwindow
-        self.show()
-        self.customizeGroupedViews()
-
-
-    def combineArrayAndGroupedArrays(self, datasheet, grouped_arrays):
-        """Add an Array to this GroupedArray instance.
-        
-        :Parameters:
-        
-        - `datasheet: the Datasheet object being added to this
-                              instance of GroupedArrays.
-        """
-        datasheet = self.arrays.pop()
-        # This instance will be the first GroupedArray instance of the set
-        # Calling self.show() won't be required because the GroupedArray is
-        # already visible
-        self = self.already_grouped.pop()
-        self.container = self.widget()
-        container_layout = self.container.layout()
-        # The datasheet is manipulated conveniently:
-        # get the title, remove the frame and put both of them in a
-        # vertical layout
-        title = QtGui.QLabel(datasheet.windowTitle())
         datasheet.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         vertical_layout = QtGui.QVBoxLayout()
         vertical_layout.addWidget(title)
         vertical_layout.addWidget(datasheet)
         container_layout.addLayout(vertical_layout)
-#        self.repaint()
 
-        # Some convenient attributes
+
+    def convenienceAttrs(self, datasheet):
+        """Helper method for setting some attributes
+        """
+
         self.is_checked = QtCore.Qt.Checked
         nrows = datasheet.leaf_model.numrows[()]
         self.grouped_arrays_nrows = nrows
 
-        self.already_grouped.add(self)
+
+    def combineArrays(self):
+        """Convert a set of array views into a GroupedArray view.
+        """
+
+        self.pindex = QtCore.QModelIndex()
+        # The widget of this MdiSubWindow
+        self.container = QtGui.QWidget()
+
+        # Fill the widget with Datasheets arranged in the container layout
+        container_layout = QtGui.QHBoxLayout()
+        while self.arrays:
+            # Extract the first datasheet and manipulate it conveniently:
+            # get the title, remove the frame and put both of them in a
+            # vertical layout
+            datasheet = self.arrays.pop()
+            self.addVerticalLayout(container_layout, datasheet)
+        self.container.setLayout(container_layout)
+
+        # Some convenient attributes
+        self.convenienceAttrs(datasheet)
+
+        # Create and customize the MdiSubWindow
+        self.setWidget(self.container)
+        self.show()
         self.customizeGroupedViews()
-        
-        # If still there are GroupedArrays around then combine them
-        if len(self.already_grouped) > 1:
-            self.combineGroupedArrays(self.already_grouped)
 
 
-    def combineGroupedArrays(self, grouped_arrays):
-        """Convert an Array view an set of GroupedArrays into a unique GroupedArrays view.
-        
+    def combineArrayAndGroupedArrays(self):
+        """Add an Array to this GroupedArray instance.
+        """
+
+        datasheet = self.arrays.pop()
+        # Overwrite self with the last GroupedArray instance of the list
+        # of grouped arrays but preserve the list of grouped arrays seen
+        # by the self object. Calling self.show() won't be required because
+        # the GroupedArray is already visible
+        self.deleteLater()
+        self.pindex = QtCore.QModelIndex()
+        grouped_arrays = self.already_grouped[:]
+        self = self.already_grouped.pop()
+        self.already_grouped = grouped_arrays[:-1]
+        self.container = self.widget()
+        container_layout = self.container.layout()
+        # The datasheet is manipulated conveniently:
+        # get the title, remove the frame and put both of them in a
+        # vertical layout
+        self.addVerticalLayout(container_layout, datasheet)
+
+        # Some convenient attributes
+        self.convenienceAttrs(datasheet)
+
+        self.customizeGroupedViews()
+
+
+    def combineGroupedArrays(self):
+        """Convert a set of GroupedArrays into a unique GroupedArrays view.
+
         :Parameter grouped_arrays: a set of GroupedArrays views
         """
 
-        # This instance will be the first GroupedArray instance of the set
-        # Calling self.show() won't be required because the GroupedArray is
-        # already visible
-        self = grouped_arrays.pop()
+        # Overwrite self with the last GroupedArray instance of the list
+        # of grouped arrays but preserve the list of grouped arrays seen
+        # by the self object. Calling self.show() won't be required because
+        # the GroupedArray is already visible
+        self.deleteLater()
+        self.pindex = QtCore.QModelIndex()
+        grouped_arrays = self.already_grouped[:]
+        self = self.already_grouped.pop()
+        self.already_grouped = grouped_arrays[:-1]
         self.container = self.widget()
         container_layout = self.container.layout()
 
-        while grouped_arrays:
-            ga = grouped_arrays.pop()
+        while self.already_grouped:
+            ga = self.already_grouped.pop(-1)
             hlayout = ga.widget().layout()
+            first_datasheet = hlayout.itemAt(0).itemAt(1).widget()
             for i in range(hlayout.count()):
                 vl = hlayout.itemAt(i)
-#                LOGGER.error('i {} vl {} vl.itemAt0widget {} vl.itemAt1widget {}'.format(i, vl, vl.itemAt(0).widget(), vl.itemAt(1).widget()))
                 title = vl.itemAt(0).widget()
                 datasheet = vl.itemAt(1).widget()
-                datasheet.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-                vertical_layout = QtGui.QVBoxLayout()
-                vertical_layout.addWidget(title)
-                vertical_layout.addWidget(datasheet)
-                container_layout.addLayout(vertical_layout)
+                self.addVerticalLayout(container_layout, datasheet, title)
             ga.deleteLater()
-        self.repaint()
+#        self.repaint()
 
         # Some convenient attributes
-        self.is_checked = QtCore.Qt.Checked
-        first_datasheet = container_layout.itemAt(0).itemAt(1).widget()
-        nrows = first_datasheet.leaf_model.numrows[()]
-        self.grouped_arrays_nrows = nrows
+        self.convenienceAttrs(first_datasheet)
 
         self.customizeGroupedViews()
 
-        
+
     def customizeGroupedViews(self):
         """Make the grouped view widget usable.
-        
+
         - All but the leftmost horizontal header views are hidden
         - All but the rightmost verticals scrollbars are hidden
           and connected between them
-        
+
         Beware that horizontal scrollbars cannot be connected easily if the
         number of columns differ for the grouped arrays so we recommend to
         group only arrays with the same number of columns.
 
         :Parameter sw: the viw (QMdiSubWindow instance) being customized
         """
-        
+
         # This instance will be the first GroupedArray instance of the set
         # Calling self.show() won't be required because the GroupedArray is
         # already visible
@@ -438,12 +456,12 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         # The items contained in the container layout are QVBoxLAyout layout
         # boxes. These vertical layouts can contain labels and datasheets:
         # horizontal layout -> vertical layout -> widget item -> label
-        #                                     |-> widget item -> datasheet 
+        #                                     |-> widget item -> datasheet
         datasheets = []
         for i in range(container_layout.count()):
             vl = container_layout.itemAt(i)
             datasheets.append(vl.itemAt(1).widget())
-        
+
         nd = len(datasheets)
         for i in range(nd):
             datasheets[nd-1].widget().verticalScrollBar().valueChanged.connect(
@@ -458,7 +476,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         """ Propagate the close event.
         In the process, self.widget().closeEvent will be called
         """
-        
+
         sw_layout = self.widget().layout()
         vl_count = sw_layout.count()
         for i in range(vl_count):
@@ -468,13 +486,11 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             self.vtgui.updateActions()
             datasheet.close()
             layout.deleteLater()
-        # Simply propagating the event seems not to work so I call the
-        # corresponding method in the parent
-        self.vtgui.workspace.removeSubWindow(self)        
+
+        self.deleteLater()
+        QtGui.QMdiSubWindow.closeEvent(self, event)
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
-
-        QtGui.QMdiSubWindow.closeEvent(self, event)
 
 
     def ungroupArrays(self):
@@ -487,7 +503,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
                 break
         sw_layout = self.widget().layout()
         vl_count = sw_layout.count()
-        datasheets = []
         for i in range(vl_count):
             layout = sw_layout.itemAt(i)
             title = layout.itemAt(0).widget().text()
@@ -503,7 +518,10 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             # Attributes for retrieving the state of the checkbox from the
             # datasheet being customized
             cb.source_array = datasheet
-            datasheet.is_checked = datasheet.leaf_view.cornerWidget().checkState()
+            datasheet.leaf_view.cornerWidget().setCheckState(QtCore.Qt.Checked)
+            datasheet.is_checked = \
+                datasheet.leaf_view.cornerWidget().checkState()
             datasheet.show()
             layout.deleteLater()
+        self.deleteLater()
         self.vtgui.workspace.removeSubWindow(self)
