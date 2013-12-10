@@ -905,8 +905,17 @@ class VTGUI(QtGui.QMainWindow):
 
         if widget == self.workspace:
             if event.type() == QtCore.QEvent.ContextMenu:
-                pos = event.globalPos()
-                self.mdi_cm.popup(pos)
+                # if active mdi subwindow can handle context menu
+                # event pass envent to it
+                active_window = self.workspace.activeSubWindow()
+                if active_window is not None \
+                   and hasattr(active_window, 'is_context_menu_custom'):
+                    is_cm_custom = active_window.is_context_menu_custom
+                else:
+                    is_cm_custom = False
+                if not is_cm_custom:
+                    pos = event.globalPos()
+                    self.mdi_cm.popup(pos)
             return QtGui.QMdiArea.eventFilter(widget, widget, event)
         else:
             return QtGui.QMainWindow.eventFilter(self, widget, event)
