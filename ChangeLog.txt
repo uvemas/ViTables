@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 12, 2013 **
+Context menus on views are now allowed which is a good thing for plugins.
+
 ** November 19, 2013 **
 First working version of the columnar_org plugin is available.
 I think I've fixed all serious bugs.
