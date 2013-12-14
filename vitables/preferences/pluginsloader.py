@@ -213,7 +213,7 @@ class PluginsLoader(object):
             return
         except KeyError:
             LOGGER.error('\nError:  plugin {0} can not be found'.
-                         format(mod_name))
+                         format(UID))
             return
 
         # Retrieve the plugin class

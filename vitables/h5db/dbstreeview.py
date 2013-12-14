@@ -85,7 +85,7 @@ class DBsTreeView(QtGui.QTreeView):
         # Misc. setup
         self.setRootIsDecorated(True)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.setWhatsThis(translate('DBsTreeView',
             """<qt>
             <h3>The Tree of databases</h3>
