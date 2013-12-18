@@ -139,6 +139,10 @@ class DBsTreeView(QtGui.QTreeView):
         :Parameter index: the index of the activated item
         """
 
+        modifiers = QtGui.QApplication.keyboardModifiers()
+        if modifiers == QtCore.Qt.ShiftModifier \
+           or modifiers == QtCore.Qt.ControlModifier:
+            return
         node = self.dbt_model.nodeFromIndex(index)
         if node.node_kind.count('group'):
             if not self.isExpanded(index):
