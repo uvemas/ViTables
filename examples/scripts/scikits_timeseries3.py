@@ -42,9 +42,9 @@ except OSError:
 
 hdf5_name = 'scikits_test3.hdf5'
 filepath_hdf5 = os.path.join(output_dir, hdf5_name)
-h5file = tstab.openFile(filepath_hdf5, mode="w",
+h5file = tstab.open_file(filepath_hdf5, mode="w",
 title='Example table with csikits time series')
-group_doc = h5file.createGroup("/", 'examples', 'Test Data')
+group_doc = h5file.create_group("/", 'examples', 'Test Data')
 table = h5file.createTimeSeriesTable(group_doc, 'Example_3', series)
 h5file.close()
 

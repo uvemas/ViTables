@@ -282,7 +282,6 @@ class TSLeafModel(object):
     be formatted in a different way to the rest of columns.
     """
 
-
     def __init__(self, model_info, ts_info, parent=None):
         """The constructor method.
 

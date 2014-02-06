@@ -42,8 +42,6 @@ import vitables.utils
 Ui_InputNodenameDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'nodename_dlg.ui'))[0]
 
-
-
 class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
     """
     Dialog for interactively entering a name for a given node.

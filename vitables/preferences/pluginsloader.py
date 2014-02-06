@@ -60,6 +60,7 @@ from vitables.plugin_utils import getLogger
 
 LOGGER = getLogger()
 
+
 translate = QtGui.QApplication.translate
 
 

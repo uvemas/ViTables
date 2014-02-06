@@ -38,6 +38,7 @@ from PyQt4.uic import loadUiType
 from vitables.vtsite import ICONDIR
 import vitables.utils
 
+
 translate = QtGui.QApplication.translate
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more

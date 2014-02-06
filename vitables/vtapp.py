@@ -211,8 +211,6 @@ class VTApp(QtCore.QObject):
         self.gui.dbs_tree_model.rowsInserted.connect(self.gui.updateActions)
 
         self.gui.updateWindowMenu()
-
-
     # Databases are automatically opened at startup when:
     #
     #     * application is configured for recovering last session

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
@@ -37,7 +37,6 @@ from PyQt4.uic import loadUiType
 from vitables.vtsite import PLUGINSDIR
 
 translate = QtGui.QApplication.translate
-
 
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more

@@ -88,7 +88,9 @@ class HelpBrowser(QtCore.QObject) :
 
         This slot is called when:
 
-            - :meth:`vitables.docbrowser.bookmarksdlg.BookmarksDlg.displayBookmark` is launched
+            - :meth:
+                `vitables.docbrowser.bookmarksdlg.BookmarksDlg.displayBookmark`
+                is launched
             - a new item is activated in the `History` combo
             - an entry is selected in the `Bookmarks` menu
 
@@ -171,7 +173,8 @@ class HelpBrowser(QtCore.QObject) :
     def updateBackward(self, available) :
         """Enables/disables the ``Go --> Backward`` menu item.
 
-        :Parameter available: a boolean. Indicates if a Previous page is available
+        :Parameter available: a boolean. Indicates if a Previous page is
+            available
         """
         self.gui.actions['goBackward'].setEnabled(available)
 
@@ -238,7 +241,8 @@ class HelpBrowser(QtCore.QObject) :
         - a bookmark is opened
 
         The history combobox is a visual representation of the `history list`,
-        so entries will occupy the same position in both, the list and the combo.
+        so entries will occupy the same position in both, the list and the
+        combo.
 
         :Parameter src: the path being added to the combo
         """

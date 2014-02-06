@@ -18,6 +18,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
+
 """Plugin that provides columnar organizations for arrays
 
 The plugin let the users to mark several array views (all of them with the

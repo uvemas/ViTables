@@ -49,15 +49,15 @@ except OSError:
 # Open a new empty HDF5 file
 hdf5_name = "table_ts.h5"
 filepath_hdf5 = os.path.join(output_dir, hdf5_name)
-h5file = tables.openFile(filepath_hdf5, mode="w",
+h5file = tables.open_file(filepath_hdf5, mode="w",
 title='Example Table with time series')
 
 # Get the HDF5 root group
 root = h5file.root
-group = h5file.createGroup(root, "Particles")
+group = h5file.create_group(root, "Particles")
 filters = tables.Filters(complevel=1, complib='lzo', shuffle=1)
 nrows = 6000
-table = h5file.createTable("/Particles", "TParticle", Particle,
+table = h5file.create_table("/Particles", "TParticle", Particle,
                           "Sample set of particles ", filters,
                           expectedrows = nrows)
 

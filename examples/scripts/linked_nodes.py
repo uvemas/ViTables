@@ -33,45 +33,45 @@ except OSError:
 # Open a new empty HDF5 file
 hdf5_name = 'links_examples.h5'
 filepath_hdf5 = os.path.join(output_dir, hdf5_name)
-fileh = tb.openFile(filepath_hdf5, mode = "w")
+fileh = tb.open_file(filepath_hdf5, mode = "w")
 
 # Create some groups and add datasets to them
-garrays = fileh.createGroup('/', 'arrays')
-a1 = fileh.createCArray(garrays, 'a1', tb.Int64Atom(shape=(2,)), shape=(100, 3),
+garrays = fileh.create_group('/', 'arrays')
+a1 = fileh.create_carray(garrays, 'a1', tb.Int64Atom(shape=(2,)), shape=(100, 3),
     title='A linked array')
-gtables = fileh.createGroup('/', 'tables')
-t1 = fileh.createTable(gtables, 't1',
+gtables = fileh.create_group('/', 'tables')
+t1 = fileh.create_table(gtables, 't1',
     {'field1': tb.FloatCol(), 'field2': tb.IntCol()}, title='A linked table')
 
 # Create a group and put some links there
-glinks = fileh.createGroup('/', 'links')
+glinks = fileh.create_group('/', 'links')
 
 # Hard link to table t1. If we remove t1 it will still be accessible via ht1.
 # Hard links are not a subclass of tables.link.Link so they don't have a
 # target attribute. Because hard links behave like regular nodes one can't
 # infer if ht1 is a hard link by calling its __str__ method
-ht1 = fileh.createHardLink(glinks, 'ht1', '/tables/t1')
+ht1 = fileh.create_hard_link(glinks, 'ht1', '/tables/t1')
 t1.remove()
 
 # Soft link to array a1
-sa1 = fileh.createSoftLink(glinks, 'sa1', '/arrays/a1')
+sa1 = fileh.create_soft_link(glinks, 'sa1', '/arrays/a1')
 
 # Soft link to table t1. This is a dangling link because it points to a
 # non-existing node. In order to get the pointed node the soft links are
 # callable >>> psa1 = sa1()
-st1 = fileh.createSoftLink(glinks, 'st1', '/tables/t1')
+st1 = fileh.create_soft_link(glinks, 'st1', '/tables/t1')
 # Recreate the pointed table so the link is not dangling
-hht1 = fileh.createHardLink(gtables, 't1', '/links/ht1')
+hht1 = fileh.create_hard_link(gtables, 't1', '/links/ht1')
 
 # External links. They behave like soft links but point to nodes living in
 # a different file
 hdf5_name = 'external_file.h5'
 filepath_hdf5 = os.path.join(output_dir, hdf5_name)
-fileh2 = tb.openFile(filepath_hdf5, mode = "w")
+fileh2 = tb.open_file(filepath_hdf5, mode = "w")
 new_a1 = a1.copy(fileh2.root, 'a1')
 fileh2.close()
 sa1.remove()
-ea1 = fileh.createExternalLink(glinks, 'ea1', 'external_file.h5:/a1')
+ea1 = fileh.create_external_link(glinks, 'ea1', 'external_file.h5:/a1')
 
 fileh.close()
 

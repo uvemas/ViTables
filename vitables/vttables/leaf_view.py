@@ -309,7 +309,7 @@ class LeafView(QtGui.QTableView):
             # Buffer fault. The new buffer ends just before the current
             # last row of the viewport.
             model.loadData(
-                    buffer_start + page_step - table_rows, table_rows)
+                buffer_start + page_step - table_rows, table_rows)
             self.scrollTo(
                 model.index(
                     buffer_start + page_step - model.rbuffer.start - 1, 0),

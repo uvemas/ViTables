@@ -27,10 +27,10 @@ import tables
 import numpy
 
 # Create a VLArray:
-fileh = tables.openFile('vlarray_samples.h5', mode='w')
+fileh = tables.open_file('vlarray_samples.h5', mode='w')
 
 root = fileh.root
-vlarray = fileh.createVLArray(root, 'vlarray1', 
+vlarray = fileh.create_vlarray(root, 'vlarray1', 
     tables.Int32Atom(), "ragged array of ints", filters=tables.Filters(1))
 # Append some (variable length) rows:
 vlarray.append(numpy.array([5, 6]))
@@ -38,7 +38,7 @@ vlarray.append(numpy.array([5, 6, 7]))
 vlarray.append([5, 6, 9, 8])
 
 # Now, do the same with native Python strings.
-vlarray2 = fileh.createVLArray(root, 'vlarray2', 
+vlarray2 = fileh.create_vlarray(root, 'vlarray2', 
     tables.StringAtom(itemsize=2), "ragged array of strings", 
     filters=tables.Filters(1))
 vlarray2.flavor = 'python'
@@ -48,7 +48,7 @@ vlarray2.append(['5', '6', '77'])
 vlarray2.append(['5', '6', '9', '88'])
 
 # Test with lists of bidimensional vectors
-vlarray3 = fileh.createVLArray(root, 'vlarray3', tables.Int64Atom(shape=(2,)), 
+vlarray3 = fileh.create_vlarray(root, 'vlarray3', tables.Int64Atom(shape=(2,)), 
     "Ragged array of vectors")
 a = numpy.array([[1, 2], [1, 2]], dtype=numpy.int64)
 vlarray3.append(a)
@@ -63,25 +63,25 @@ vlarray3.append(numpy.array([[5, 6]], dtype=numpy.int64))
 # Tests with strings
 
 # Python flavor
-vlarray5 = fileh.createVLArray(root, 'vlarray5', 
+vlarray5 = fileh.create_vlarray(root, 'vlarray5', 
     tables.StringAtom(itemsize=3),  "Ragged array of strings")
 vlarray5.flavor = "python"
 vlarray5.append(["123", "456", "3"])
 vlarray5.append(["456", "3"])
 
 # Binary strings
-vlarray6 = fileh.createVLArray(root, 'vlarray6', tables.UInt8Atom(), 
+vlarray6 = fileh.create_vlarray(root, 'vlarray6', tables.UInt8Atom(), 
     "pickled bytes")
 data = pickle.dumps((["123", "456"], "3"))
 vlarray6.append(numpy.ndarray(buffer=data, dtype=numpy.uint8, shape=len(data)))
 
 # The next is a way of doing the same than before
-vlarray7 = fileh.createVLArray(root, 'vlarray7', tables.ObjectAtom(), 
+vlarray7 = fileh.create_vlarray(root, 'vlarray7', tables.ObjectAtom(), 
     "pickled object")
 vlarray7.append([["123", "456"], "3"])
 
 # Boolean arrays are supported as well
-vlarray8 = fileh.createVLArray(root, 'vlarray8', tables.BoolAtom(), 
+vlarray8 = fileh.create_vlarray(root, 'vlarray8', tables.BoolAtom(), 
     "Boolean atoms")
 # The next lines are equivalent...
 vlarray8.append([1, 0])
@@ -90,13 +90,13 @@ vlarray8.append([1, 0, 3, 0])  # This will be converted to a boolean
 #vlarray.append([1,0,1])
 
 # Variable length strings
-vlarray9 = fileh.createVLArray(root, 'vlarray9', tables.VLStringAtom(), 
+vlarray9 = fileh.create_vlarray(root, 'vlarray9', tables.VLStringAtom(), 
     "Variable Length String")
 vlarray9.append("asd")
 vlarray9.append("aaana")
 
 # Unicode variable length strings
-vlarray10 = fileh.createVLArray(root, 'vlarray10', tables.VLUnicodeAtom(), 
+vlarray10 = fileh.create_vlarray(root, 'vlarray10', tables.VLUnicodeAtom(), 
     "Variable Length Unicode String")
 vlarray10.append("aaana")
 vlarray10.append("")   # The empty string
@@ -107,7 +107,7 @@ vlarray10.append("para\u0140lel")
 N = 100
 shape = (3,3)
 numpy.random.seed(10)  # For reproductible results
-vlarray11 = fileh.createVLArray(root, 'vlarray11', 
+vlarray11 = fileh.create_vlarray(root, 'vlarray11', 
     tables.Float64Atom(shape=shape), "ragged array of arrays")
 
 k = 0

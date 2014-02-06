@@ -58,6 +58,7 @@ def getArrayDimensions(shape):
     return (nrows, ncols)
 
 
+
 class ZoomCell(QtGui.QMdiSubWindow):
     """
     Display an array/table cell on its own view (table widget).

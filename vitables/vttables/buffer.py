@@ -126,7 +126,7 @@ class Buffer(object):
     def __del__(self):
         """Release resources before destroying the buffer.
         """
-        self.chunk = []
+        self.chunk = None
 
 
     def leafNumberOfRows(self):
@@ -342,6 +342,36 @@ class Buffer(object):
             return self.data_source.read()[int(row - self.start)]
         except IndexError:
             print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
+                  format(self.start, row, col))
+
+
+    def EArrayCell(self, row, col):
+        """
+        Returns a cell of a EArray view.
+
+        The indices values are not checked (and could not be in the
+        buffer) so they should be checked by the caller methods.
+
+        :Parameters:
+
+        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `col`: the column to wich the cell belongs
+
+        :Returns: the cell at position `(row, col)` of the document
+        """
+
+        # We must shift the row value by self.start units in order to
+        # get the right chunk element. Note that indices of chunk
+        # needn't to be int64 because they are indexing a fixed size,
+        # small chunk of data (see ctor docstring).
+        # chunk = [row0, row1, row2, ..., rowN]
+        # and columns can be read from a given row using indexing notation
+        # TODO: this method should be improved as it requires to read the
+        # whola array keeping the read data in memory
+        try:
+            return self.data_source.read()[int(row - self.start)]
+        except IndexError:
+            print(u'IndexError! buffer start: {0} row, column: {1}, {2}'.\
                   format(self.start, row, col))
 
 

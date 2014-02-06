@@ -71,7 +71,7 @@ f = open('VERSION', 'r')
 vt_version = f.readline()[:-1]
 f.close()
 
-setup(name = 'ViTables', # The name of the distribution
+setup(name = 'notViTables', # The name of the distribution
     version = "{0}".format(vt_version), 
     description = 'A viewer for PyTables package', 
     long_description = \
@@ -90,10 +90,14 @@ setup(name = 'ViTables', # The name of the distribution
     url = 'http://www.vitables.org', 
     license = 'GPLv3, see the LICENSE.txt file for detailed info', 
     platforms = 'Unix, MacOSX, Windows', 
-    classifiers = ['Development Status :: 2.1', 
-    'Environment :: Desktop', 
-    'Operating System :: POSIX', 
-    'Programming Language :: Python'], 
+    classifiers = ['Development Status :: 4 - Beta',
+                   'Environment :: X11 Applications',
+                   'Environment :: MacOS X',
+                   'Environment :: Win32 (MS Windows)',
+                   'Operating System :: POSIX',
+                   'Programming Language :: Python'],
+    requires = ['sip', 'PyQt4', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
+                'cython (>=0.13)', 'tables (>=3.0)'],
     scripts = ['scripts/vitables'], 
     packages = ['vitables', 'vitables.docbrowser', 'vitables.h5db', 
         'vitables.nodeprops', 'vitables.queries', 'vitables.preferences', 

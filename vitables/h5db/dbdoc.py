@@ -85,7 +85,7 @@ class DBDoc(QtCore.QObject):
         self.hidden_group = None
 
         if is_tmp_dbdoc:
-            self.h5file.createGroup('/', '_p_query_results',
+            self.h5file.create_group('/', '_p_query_results',
                 'Hide the result of queries')
             self.h5file.flush()
 
@@ -135,6 +135,7 @@ class DBDoc(QtCore.QObject):
 
         :Returns: the format of the database file
         """
+
         file_format = None
         if self.h5file:
             if self.h5file._isPTFile:

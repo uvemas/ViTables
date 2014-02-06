@@ -39,14 +39,14 @@ class Particle(tables.IsDescription):
     temperature = tables.Float64Col(pos=5)      # double (double-precision)
 
 # Open a file in "w"rite mode
-fileh = tables.openFile("table_samples.h5", mode = "w")
+fileh = tables.open_file("table_samples.h5", mode = "w")
 
 root = fileh.root
 # Create a new group
-group = fileh.createGroup(root, "newgroup")
+group = fileh.create_group(root, "newgroup")
 
 # Create a new table in newgroup group
-table = fileh.createTable(group, 'table', Particle, "A table", 
+table = fileh.create_table(group, 'table', Particle, "A table", 
     tables.Filters(1))
 particle = table.row
 
@@ -85,7 +85,7 @@ class Particle2(tables.IsDescription):
     matrix2D    = tables.ComplexCol(itemsize=16, shape=(2, 2), pos=5)
 
 # Open a file in "w"rite mode
-table1 = fileh.createTable(root, 'table1', Particle2, "A table")
+table1 = fileh.create_table(root, 'table1', Particle2, "A table")
 # Append several rows in only one call
 table1.append([("Particle:     10", 10j, 0, (10*9+1j, 1), [[10**2j, 11*3]]*2),
               ("Particle:     11", 11j, -1, (11*10+2j, 2), [[11**2j, 10*3]]*2),
@@ -119,12 +119,12 @@ Particle4 = {
 }
 
 # Create a new group under "/" (root)
-group = fileh.createGroup("/", 'detector')
+group = fileh.create_group("/", 'detector')
 
 # Create one table on it
-#table = h5file.createTable(group, 'table', Particle, "Title example")
+#table = h5file.create_table(group, 'table', Particle, "Title example")
 # You can choose creating a Table from a description dictionary if you wish
-table2 = fileh.createTable(group, 'table', Particle4, "Title example")
+table2 = fileh.create_table(group, 'table', Particle4, "Title example")
 
 # Create a shortcut to the table record object
 particle = table2.row
@@ -147,26 +147,26 @@ for i in range(10):
 table2.flush()
 
 # Create a new group to hold new arrays
-gcolumns = fileh.createGroup("/", "columns")
+gcolumns = fileh.create_group("/", "columns")
 pressure = [ p['pressure'] for p in table2.iterrows() ]
 # Create an array with this info under '/columns' having a 'list' flavor
-fileh.createArray(gcolumns, 'pressure', pressure, 
+fileh.create_array(gcolumns, 'pressure', pressure, 
                    "Pressure column")
 
 # Do the same with TDCcount, but with a numpy object
 TDC = [ p['TDCcount'] for p in table2.iterrows() ]
-fileh.createArray('/columns', 'TDC', numpy.array(TDC), "TDCcount column")
+fileh.create_array('/columns', 'TDC', numpy.array(TDC), "TDCcount column")
 
 # Do the same with name column
 names = [ p['name'] for p in table2.iterrows() ]
-fileh.createArray('/columns', 'name', names, "Name column")
+fileh.create_array('/columns', 'name', names, "Name column")
 
 # Save a recarray object under detector
 r = numpy.rec.array("a"*300, formats='f4,3i4,a5,i2', shape=3)
-recarrt = fileh.createTable("/detector", 'recarray', r, "RecArray example")
+recarrt = fileh.create_table("/detector", 'recarray', r, "RecArray example")
 r2 = r[0:3:2]
 # Change the byteorder property
-recarrt = fileh.createTable("/detector", 'recarray2', r2,
+recarrt = fileh.create_table("/detector", 'recarray2', r2,
                              "Non-contiguous recarray")
 
 # Finally, append some new records to table
