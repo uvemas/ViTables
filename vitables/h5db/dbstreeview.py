@@ -85,7 +85,7 @@ class DBsTreeView(QtGui.QTreeView):
         # Misc. setup
         self.setRootIsDecorated(True)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.setWhatsThis(translate('DBsTreeView',
             """<qt>
             <h3>The Tree of databases</h3>
@@ -139,6 +139,10 @@ class DBsTreeView(QtGui.QTreeView):
         :Parameter index: the index of the activated item
         """
 
+        modifiers = QtGui.QApplication.keyboardModifiers()
+        if (modifiers & QtCore.Qt.ShiftModifier) \
+           or (modifiers & QtCore.Qt.ControlModifier):
+            return
         node = self.dbt_model.nodeFromIndex(index)
         if node.node_kind.count('group'):
             if not self.isExpanded(index):
