@@ -13,6 +13,7 @@ syntax: glob
 .settings
 doc/html
 doc/index.rst
+doc/_build
 run_vitables.py
 MANIFEST
 

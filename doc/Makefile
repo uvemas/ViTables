@@ -7,12 +7,18 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
 
+# Variables needed to create build dependent index file
+MKDIR = mkdir -p
+CP = cp
+ACTUAL_INDEX = $(BUILDDIR)/output_dependent_index.rst
+
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest
+.PHONY: builddir
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -36,7 +42,7 @@ help:
 clean:
 	-rm -rf $(BUILDDIR)/*
 
-html:
+html: htmlindex
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
@@ -129,8 +135,17 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-pdf:
+pdf: pdfindex
 	$(SPHINXBUILD) -b pdf $(ALLSPHINXOPTS) $(BUILDDIR)/pdf
 	@echo
 	@echo "pdf build finished; the PDF files are in $(BUILDDIR)/pdf."
 
+# targets that generate output specific index file
+htmlindex: index_html.txt | $(BUILDDIR)
+	$(CP) $< $(ACTUAL_INDEX)
+
+pdfindex: index_pdf.txt | $(BUILDDIR)
+	$(CP) $< $(ACTUAL_INDEX)
+
+$(BUILDDIR):
+	$(MKDIR) $(BUILDDIR)
