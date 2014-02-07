@@ -6,6 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
+SPHINXAPIDOC  = sphinx-apidoc
 
 # Variables needed to create build dependent index file
 MKDIR = mkdir -p
@@ -18,7 +19,7 @@ PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest
-.PHONY: builddir
+.PHONY: builddir devhtml
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -38,12 +39,19 @@ help:
 	@echo "  changes    to make an overview of all changed/added/deprecated items"
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
+	@echo "  devhtml    to make HTML docs for developers"
+	@echo "  apidoc     to regenerate api documentation rst file (use with caution)"
 
 clean:
 	-rm -rf $(BUILDDIR)/*
 
 html: htmlindex
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	@echo
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+devhtml: devindex
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/devhtml
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
@@ -146,6 +154,16 @@ htmlindex: index_html.txt | $(BUILDDIR)
 
 pdfindex: index_pdf.txt | $(BUILDDIR)
 	$(CP) $< $(ACTUAL_INDEX)
+
+devindex: index_dev.txt | $(BUILDDIR)
+	$(CP) $< $(ACTUAL_INDEX)
+
+# regenerate apidoc rst files, some might have been edited by hand
+# this command will overwrite them
+.PHONY: apidocs
+apidocs:
+	@echo "Building apidocs ..."
+	$(SPHINXAPIDOC) -f -o api -H ViTables ../vitables
 
 $(BUILDDIR):
 	$(MKDIR) $(BUILDDIR)
