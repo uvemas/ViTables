@@ -51,6 +51,7 @@ import os
 import importlib
 import pkgutil
 import sys
+import pkg_resources
 
 from PyQt4 import QtGui
 
@@ -62,6 +63,9 @@ LOGGER = getLogger()
 
 
 translate = QtGui.QApplication.translate
+
+
+PLUGIN_GROUP = 'vitables.plugins'
 
 
 def pluginDesc(mod_path, folder=None):
@@ -91,9 +95,10 @@ def pluginDesc(mod_path, folder=None):
         mod_name = mod_path.split('.')[-1]
         folder = os.path.join(PLUGINSDIR, pkg_name)
         desc = {'UID': '{0}#@#{1}'.format(plugin_name, comment),
-            'mod_name': mod_name,
-            'mod_path': mod_path,
-            'folder': folder,}
+                'mod_name': mod_name,
+                'mod_path': mod_path,
+                'folder': folder,
+                'is_old_style': True}
         return desc
     except AttributeError:
         # then unexpected errors can occur
@@ -141,6 +146,22 @@ def scanFolder(package_root):
     return pkg_plugins
 
 
+def get_plugin_descriptions():
+    """Emulate old style plugin description."""
+    plugins = {}
+    for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
+        plugin_class = entrypoint.load()
+        plugin_description = {'UID': plugin_class.UID,
+                              'mod_name': entrypoint.module_name,
+                              'mod_path': None,
+                              'folder': None,
+                              'is_old_style': False,
+                              'name': plugin_class.NAME,
+                              'comment': plugin_class.COMMENT}
+        plugins[plugin_class.UID] = plugin_description
+    return plugins
+
+
 class PluginsLoader(object):
     """Plugins loader class.
 
@@ -163,7 +184,6 @@ class PluginsLoader(object):
         # Update plugins information: available plugins, disabled plugins
         self.register()
 
-
     def register(self):
         """Update the list of available plugins.
 
@@ -181,8 +201,16 @@ class PluginsLoader(object):
             else:
                 pkg_plugins = scanFolder(name)
                 self.all_plugins.update(pkg_plugins)
+        # new style plugins
+        self.all_plugins.update(get_plugin_descriptions())
 
-
+    def load_plugins(self):
+        """Load new style plugins."""
+        for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
+            plugin_class = entrypoint.load()
+            if plugin_class.UID in self.enabled_plugins:
+                instance = plugin_class()
+                self.loaded_plugins[plugin_class.UID] = instance
 
     def loadAll(self):
         """Try to load the enabled plugins.
@@ -191,8 +219,9 @@ class PluginsLoader(object):
         if self.enabled_plugins == []:
             return
         for UID in self.enabled_plugins:
-            self.load(UID)
-
+            if self.all_plugins[UID]['is_old_style']:
+                self.load(UID)
+        self.load_plugins()
 
     def load(self, UID):
         """Load a given plugin.

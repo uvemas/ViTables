@@ -126,8 +126,8 @@ class VTGUI(QtGui.QMainWindow):
         # Put the logging console in the bottom region of the window
         self.logger = logger.Logger(self.vsplitter)
         # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
+        #sys.stdout = self.logger
+        #sys.stderr = self.logger
         # add self.logger as handler of main logger object
         vitables_logger = logging.getLogger('vitables')
         stream_handler = logging.StreamHandler(self.logger)
