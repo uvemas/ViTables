@@ -104,7 +104,7 @@ class DBDoc(QtCore.QObject):
                     'A logger error message'))
 
         try:
-            h5file = tables.openFile(self.filepath, self.mode)
+            h5file = tables.open_file(self.filepath, self.mode)
         except IOError as inst:
             print(translate('DBDoc',
                 "\nError: {0}.", 'A logger error message').format(inst))
