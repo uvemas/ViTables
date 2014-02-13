@@ -27,10 +27,27 @@ in a `tables.Leaf`.
 __docformat__ = 'restructuredtext'
 
 import tables
+import numpy as np
 
 from PyQt4 import QtCore
 
 import vitables.utils
+
+_ENUM_DTYPE = np.dtype('S32')
+
+
+def get_enum_column_description(data_source):
+    """Return the dictionary which maps column index to enum dict."""
+    if not isinstance(data_source, tables.Table):
+        return {}
+    enum_columns = {}
+    for _, column_description in data_source.coldescrs.items():
+        if not isinstance(column_description, tables.EnumCol):
+            continue
+        enum_columns[column_description._v_pos] \
+            = {value: name for name, value in column_description.enum}
+    return enum_columns
+
 
 class LeafModel(QtCore.QAbstractTableModel):
     """
@@ -90,6 +107,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         #
 
         self.formatContent = vitables.utils.formatArrayContent
+        self._enum_columns_desc = get_enum_column_description(self.data_source)
 
         # Time series (if they are found) are formatted transparently
         # via the time_series.py plugin
@@ -110,6 +128,8 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         super(LeafModel, self).__init__(parent)
 
+    def _collect_enum_indices(self):
+        """Initialize structures required to properly display enum columns."""
 
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
@@ -154,11 +174,14 @@ class LeafModel(QtCore.QAbstractTableModel):
         - `role`: the role being returned
         """
 
-        if not index.isValid() or \
-            not (0 <= index.row() < self.numrows):
+        if not index.isValid() \
+           or not (0 <= index.row() < self.numrows):
             return None
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
-            index.column())
+                                    index.column())
+        if index.column() in self._enum_columns_desc:
+            cell = _ENUM_DTYPE.type(
+                self._enum_columns_desc[index.column()].get(cell, cell))
         if role == QtCore.Qt.DisplayRole:
             return self.formatContent(cell)
         elif role == QtCore.Qt.TextAlignmentRole:
