@@ -33,6 +33,9 @@ import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
+from future import standard_library
+standard_library.install_hooks()
+
 from PyQt4 import QtGui
 
 _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,

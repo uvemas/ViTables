@@ -46,6 +46,7 @@ class VTSplash(QtGui.QSplashScreen):
         """
 
         super(VTSplash, self).__init__(png)
+        self.msg = ''
 
 
     def drawContents(self, painter):
