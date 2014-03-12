@@ -219,7 +219,8 @@ class PluginsLoader(object):
         if self.enabled_plugins == []:
             return
         for UID in self.enabled_plugins:
-            if self.all_plugins[UID]['is_old_style']:
+            if UID in self.all_plugins \
+               and self.all_plugins[UID]['is_old_style']:
                 self.load(UID)
         self.load_plugins()
 

@@ -36,7 +36,6 @@ import tables
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-
 import vitables.utils
 import vitables.vtsplash
 from vitables.vtsite import ICONDIR
@@ -61,7 +60,6 @@ import vitables.vttables.datasheet as datasheet
 import vitables.vtgui as vtgui
 
 translate = QtGui.QApplication.translate
-
 
 def makePage(content):
     """Create a page for the About ViTables dialog.

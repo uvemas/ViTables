@@ -181,6 +181,20 @@ def getSelectedLeaf():
     return leaf
 
 
+def getDBsTreeView():
+    return getVTGui().dbs_tree_view
+
+
+def getSelectedIndices():
+    return getDBsTreeView().selectionModel().selection().indexes()
+
+
+def getSelectedNodes():
+    """Return list of selected nodes."""
+    return [getDBsTreeModel().nodeFromIndex(index).node
+            for index in getSelectedIndices()]
+
+
 def long_action(message=None):
     """Decorator that changes the cursor to the wait cursor.
 

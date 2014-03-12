@@ -763,8 +763,13 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if role == QtCore.Qt.DisplayRole:
             data = node.name
         elif role == QtCore.Qt.ToolTipRole:
-            data = '{0}: {1}'.format(node.node_kind,
-                node.name)
+            attrset = node.node._v_attrs
+            data_lines = ['{0}: {1}'.format(node.node_kind, node.name),
+                          'Title: {0}'.format(attrset.TITLE)]
+            data_lines.extend(
+                ['{0}: {1}'.format(name, str(getattr(attrset, name)))
+                 for name in attrset._v_attrnamesuser])
+            data = '\n'.join(data_lines)
         elif role == QtCore.Qt.StatusTipRole:
             data = node.as_record
         elif role == QtCore.Qt.DecorationRole:
