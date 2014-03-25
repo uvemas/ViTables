@@ -159,12 +159,11 @@ pdfindex: indices/index_pdf.rst | $(BUILDDIR)
 devindex: indices/index_dev.rst | $(BUILDDIR)
 	$(CP) $< $(ACTUAL_INDEX)
 
-# regenerate apidoc rst files, some might have been edited by hand
-# this command will overwrite them
+# regenerate apidoc rst files
 .PHONY: apidocs
 apidocs:
 	@echo "Building apidocs ..."
-	$(SPHINXAPIDOC) -f -o api -H ViTables ../vitables
+	$(SPHINXAPIDOC) -f -o api -H "ViTables API" ../vitables
 
 $(BUILDDIR):
 	$(MKDIR) $(BUILDDIR)
