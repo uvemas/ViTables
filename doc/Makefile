@@ -51,7 +51,7 @@ html: htmlindex
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
-devhtml: devindex
+devhtml: devindex apidocs
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/devhtml
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/devhtml."
