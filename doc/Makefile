@@ -11,7 +11,7 @@ SPHINXAPIDOC  = sphinx-apidoc
 # Variables needed to create build dependent index file
 MKDIR = mkdir -p
 CP = cp
-ACTUAL_INDEX = $(BUILDDIR)/output_dependent_index.rst
+ACTUAL_INDEX = index.rst
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -44,16 +44,17 @@ help:
 
 clean:
 	-rm -rf $(BUILDDIR)/*
+	-rm -f index.rst
 
 html: htmlindex
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
-devhtml: devindex
+devhtml: devindex apidocs
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/devhtml
 	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/devhtml."
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
@@ -149,21 +150,20 @@ pdf: pdfindex
 	@echo "pdf build finished; the PDF files are in $(BUILDDIR)/pdf."
 
 # targets that generate output specific index file
-htmlindex: index_html.txt | $(BUILDDIR)
+htmlindex: indices/index_html.rst | $(BUILDDIR)
 	$(CP) $< $(ACTUAL_INDEX)
 
-pdfindex: index_pdf.txt | $(BUILDDIR)
+pdfindex: indices/index_pdf.rst | $(BUILDDIR)
 	$(CP) $< $(ACTUAL_INDEX)
 
-devindex: index_dev.txt | $(BUILDDIR)
+devindex: indices/index_dev.rst | $(BUILDDIR)
 	$(CP) $< $(ACTUAL_INDEX)
 
-# regenerate apidoc rst files, some might have been edited by hand
-# this command will overwrite them
+# regenerate apidoc rst files
 .PHONY: apidocs
 apidocs:
 	@echo "Building apidocs ..."
-	$(SPHINXAPIDOC) -f -o api -H ViTables ../vitables
+	$(SPHINXAPIDOC) -f -o api -H "ViTables API" ../vitables
 
 $(BUILDDIR):
 	$(MKDIR) $(BUILDDIR)

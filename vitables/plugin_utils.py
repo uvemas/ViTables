@@ -37,12 +37,13 @@ def getLogger(plugin_name=None):
 
     This function is needed just to standardize logger names and
     ensure that all log objects belong to vitables which was properly
-    configured.
+    configured. The function takes plugin name as argument that is
+    used to set name of the logger.
 
-    :parameter plugin_name: the name that will be used in log output
-    to identify the source
+    :parameter plugin_name: string appended to logger name
 
     :return: logger object
+
     """
 
     logger_name = 'vitables'
@@ -203,8 +204,7 @@ def long_action(message=None):
     running (the status bar is cleaned afterwards). If the message is
     not provided then the status bar is not updated.
 
-    :parameter message: message to be displayed in the status bar
-    while the function is running
+    :parameter message: string to display in status bar
 
     """
     def _long_action(f):

@@ -12,6 +12,7 @@ syntax: glob
 .project
 .pydevproject
 .settings
+doc/api
 doc/html
 doc/index.rst
 doc/_build
