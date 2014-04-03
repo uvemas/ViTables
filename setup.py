@@ -20,6 +20,7 @@
 Setup script for the vitables package.
 """
 
+import os
 from setuptools import setup, find_packages
 
 # Utility function to read the README file.
