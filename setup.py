@@ -50,6 +50,6 @@ setup(name='ViTables',
       ],
       requires=['sip', 'PyQt4', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
                 'cython (>=0.13)', 'tables (>=3.0)'],
-      scripts=['scripts/vitables'],
+      entry_points={'gui_scripts': ['vitables = vitables.start:gui']},
       packages=find_packages(),
       include_package_data=True,)
