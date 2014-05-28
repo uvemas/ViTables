@@ -42,13 +42,14 @@ _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
                             2: logging.INFO, 3: logging.DEBUG}
 _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-def main(args):
+
+def gui():
     """The application launcher.
 
     First of all, translators are loaded. Then the GUI is shown and the events
     loop is started.
     """
-
+    args = sys.argv
     app = QtGui.QApplication(args)
     # These imports must be done after the QApplication has been instantiated
     from vitables.vtapp import VTApp
@@ -68,7 +69,6 @@ def main(args):
     # (catalan, german...) so C locale is always used for numbers.
     locale.setlocale(locale.LC_ALL, '')
     locale.setlocale(locale.LC_NUMERIC, 'C')
-    language = locale.getlocale()[0]
     # Future translations (if any) will use resource files
     # vt_translator = QTranslator()
     # vt_translator.load('vitables_%s' % language, config.translations_dir)
@@ -82,18 +82,20 @@ def main(args):
     h5files_group = parser.add_argument_group('h5files')
     logging_group = parser.add_argument_group('logging')
     # Options for the default group
-    parser.add_argument('--version', action='version',
+    parser.add_argument(
+        '--version', action='version',
         version='%(prog)s {}'.format(vtconfig.getVersion()))
     # Options for opening files
-    h5files_group.add_argument('-m', '--mode', choices=['r', 'a'],
-        metavar='MODE',
+    h5files_group.add_argument(
+        '-m', '--mode', choices=['r', 'a'], metavar='MODE',
         help='mode access for a database. Can be r(ead) or a(ppend)')
     h5files_group.add_argument('-d', '--dblist',
-        help='a file with the list of HDF5 filepaths to be open')
+                               help=('a file with the list of HDF5 '
+                                     'filepaths to be open'))
     # Logging options
     logging_group.add_argument('-l', '--log-file', help='log file path')
     logging_group.add_argument('-v', '--verbose', action='count', default=0,
-                      help='log verbosity level')
+                               help='log verbosity level')
     # Allow an optional list of input filepaths
     parser.add_argument('h5file', nargs='*')
     # Set sensible option defaults
@@ -130,6 +132,3 @@ def main(args):
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
     vtapp.gui.show()
     app.exec_()
-
-if __name__ == '__main__':
-    main(sys.argv)

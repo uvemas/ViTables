@@ -13,6 +13,7 @@ Contents:
    usersguide-app1
    usersguide-app2
 
+   develop
    api/modules
 
 Indices and tables
