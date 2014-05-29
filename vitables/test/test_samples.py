@@ -1,6 +1,6 @@
 import sys
 import os.path
-import unittest
+import nose.tools as nt
 
 import sip
 sip.setapi('QString', 2)
@@ -32,17 +32,17 @@ def get_index(model, node_name, start_index=None):
     return None
 
 
-def assert_path(test, model, view, path):
+def assert_path(test, path):
     """Activate and check that node at given path exist.
 
     If the last node is a leaf then subwindow will be created.
     """
     if not path:
         return
-    index = get_index(model, path[0])
-    test.assertFalse(index is None)
-    view.activateNode(index)
-    assert_path(test, model, view, path[1:])
+    index = get_index(test.model, path[0])
+    nt.assert_false(index is None)
+    test.view.activateNode(index)
+    assert_path(test, path[1:])
 
 
 def get_leaf_model_with_assert(test, filepath, leaf_path):
@@ -54,22 +54,31 @@ def get_leaf_model_with_assert(test, filepath, leaf_path):
     leaf_path = leaf_path.split('/')
     _, filename = os.path.split(filepath)
     test.vtapp.fileOpen(filepath)
-    assert_path(test, test.model, test.view, [filename] + leaf_path)
+    assert_path(test, [filename] + leaf_path)
     return test.vtgui.workspace.subWindowList()[0].leaf_model
 
 
-class TestTableOpening(unittest.TestCase):
-    def setUp(self):
-        self.app = qtgui.QApplication(sys.argv)
-        self.vtapp = VTApp(keep_splash=False)
-        self.vtgui = self.vtapp.gui
-        self.model = self.vtgui.dbs_tree_model
-        self.view = self.vtgui.dbs_tree_view
+class TestTableOpening:
+    TEST_NODES = {'examples/tables/nested_samples.h5': ['table']}
 
-    def test_nested(self):
-        filepath = 'examples/tables/nested_samples.h5'
-        leaf_model = get_leaf_model_with_assert(self, filepath, 'table')
-        cell_data = leaf_model.data(leaf_model.index(0, 3))
-        # print(cell_data)
-        # self.vtgui.show()
-        # self.app.exec_()
+    @classmethod
+    def setup_class(cls):
+        """Create app and store shortcuts to the application objects."""
+        cls.app = qtgui.QApplication(sys.argv)
+        cls.vtapp = VTApp(keep_splash=False)
+        cls.vtgui = cls.vtapp.gui
+        cls.model = cls.vtgui.dbs_tree_model
+        cls.view = cls.vtgui.dbs_tree_view
+
+    def test_opening_files(self):
+        for filepath, nodes in self.TEST_NODES.items():
+            for node in nodes:
+                yield self.check_node_open, filepath, node
+
+    def check_node_open(self, filepath, nodepath):
+        leaf_model = get_leaf_model_with_assert(self, filepath, nodepath)
+        for row in range(leaf_model.rowCount()):
+            for column in range(leaf_model.columnCount()):
+                cell_index = leaf_model.index(row, column, qtcore.QModelIndex())
+                cell_data = leaf_model.data(cell_index)
+
