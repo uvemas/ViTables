@@ -83,26 +83,29 @@ class TestTableOpening:
         'examples/misc/external_file.h5': [
             'a1',
         ],
-        'examples/misc/fnode.h5': [
-            'fnode_test',
-        ],
-        'examples/misc/genericHDF5.h5': [
-            'A note', 'arrays/2D float array', 'arrays/2D int array',
-            'arrays/3D int array',
-            'arrays/Vdata table: PerBlockMetadataCommon',
-            'arrays/external',
-            # 'images/iceberg_palette',
-            # 'images/Iceberg',
-            # 'images/landcover.umd.199906.jpg',
-            # 'images/pixel interlace',
-            # 'images/plane interlace',
-        ],
+        # modified on open !!!
+        # 'examples/misc/fnode.h5': [
+        #     'fnode_test',
+        # ],
+        # modified on open !!!
+        # 'examples/misc/genericHDF5.h5': [
+        #     'A note', 'arrays/2D float array', 'arrays/2D int array',
+        #     'arrays/3D int array',
+        #     'arrays/Vdata table: PerBlockMetadataCommon',
+        #     'arrays/external',
+        #     # 'images/iceberg_palette',
+        #     # 'images/Iceberg',
+        #     # 'images/landcover.umd.199906.jpg',
+        #     # 'images/pixel interlace',
+        #     # 'images/plane interlace',
+        # ],
         'examples/misc/links_examples.h5': [
             'arrays/a1', 'links/ht1', 'tables/t1',
         ],
-        'examples/misc/nonalphanum.h5': [
-            'array_1', 'array_f', 'array_f_Numeric', 'array_s',
-        ],
+        # modified on open !!!
+        # 'examples/misc/nonalphanum.h5': [
+        #     'array_1', 'array_f', 'array_f_Numeric', 'array_s',
+        # ],
         'examples/misc/objecttree.h5': [
             'array1', 'group1/array2', 'group1/table1', 'group2/table2',
         ],
@@ -155,15 +158,18 @@ class TestTableOpening:
             # 'df_table/_i_table/index/zbounds',
             'df_table/table',
         ],
-        'examples/timeseries/scikits_test1.hdf5': [
-            'examples/Example_1',
-        ],
-        'examples/timeseries/scikits_test2.hdf5': [
-            'examples/Example_2',
-        ],
-        'examples/timeseries/scikits_test3.hdf5': [
-            'examples/Example_3',
-        ],
+        # modified on open !!!
+        # 'examples/timeseries/scikits_test1.hdf5': [
+        #     'examples/Example_1',
+        # ],
+        # modified on open !!!
+        # 'examples/timeseries/scikits_test2.hdf5': [
+        #     'examples/Example_2',
+        # ],
+        # modified on open !!!
+        # 'examples/timeseries/scikits_test3.hdf5': [
+        #     'examples/Example_3',
+        # ],
         'examples/timeseries/table_ts.h5': [
             'Particles/TParticle',
         ],
