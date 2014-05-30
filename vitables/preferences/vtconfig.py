@@ -280,21 +280,6 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
-    def vsplitterPosition(self):
-        """
-        Returns the vertical splitter geometry setting.
-        """
-
-        key = 'Geometry/VSplitter'
-        default_value = None
-        setting_value = self.value(key)
-        if isinstance(setting_value, QtCore.QByteArray):
-            return setting_value
-        else:
-            return default_value
-
-
     def startupLastSession(self):
         """
         Returns the `Restore last session` setting.
@@ -460,7 +445,6 @@ class Config(QtCore.QSettings):
         config['Geometry/Position'] = self.windowPosition()
         config['Geometry/Layout'] = self.windowLayout()
         config['Geometry/HSplitter'] = self.hsplitterPosition()
-        config['Geometry/VSplitter'] = self.vsplitterPosition()
         config['Recent/Files'] = self.recentFiles()
         config['Session/Files'] = self.sessionFiles()
         config['HelpBrowser/History'] = self.helpHistory()
@@ -506,8 +490,6 @@ class Config(QtCore.QSettings):
         self.writeValue('Geometry/Layout', vtgui.saveState())
         # Horizontal splitter geometry
         self.writeValue('Geometry/HSplitter', vtgui.hsplitter.saveState())
-        # Vertical splitter geometry
-        self.writeValue('Geometry/VSplitter', vtgui.vsplitter.saveState())
         # The list of recent files
         self.writeValue('Recent/Files', self.recent_files)
         # The list of session files and nodes
@@ -596,12 +578,6 @@ class Config(QtCore.QSettings):
             if isinstance(value, QtCore.QByteArray):
                 # Default geometry provided by the underlying Qt installation
                 gui.hsplitter.restoreState(value)
-
-            key = 'Geometry/VSplitter'
-            value = config[key]
-            if isinstance(value, QtCore.QByteArray):
-                # Default geometry provided by the underlying Qt installation
-                gui.vsplitter.restoreState(value)
 
             key = 'Startup/lastWorkingDir'
             self.last_working_directory = config[key]

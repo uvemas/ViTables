@@ -99,13 +99,11 @@ class VTGUI(QtGui.QMainWindow):
         self.setWindowIcon(self.icons_dictionary['vitables_wm'])
         central_widget = QtGui.QWidget(self)
         central_layout = QtGui.QVBoxLayout(central_widget)
-        self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical, central_widget)
-        central_layout.addWidget(self.vsplitter)
-        self.setCentralWidget(central_widget)
-
         # Divide the top region of the window into 2 regions and put there
         # the workspace. The tree of databases will be added later on
-        self.hsplitter = QtGui.QSplitter(self.vsplitter)
+        self.hsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, central_widget)
+        central_layout.addWidget(self.hsplitter)
+        self.setCentralWidget(central_widget)
         self.hsplitter.addWidget(self.dbs_tree_view)
         self.workspace = QtGui.QMdiArea(self.hsplitter)
         sb_as_needed = QtCore.Qt.ScrollBarAsNeeded
@@ -124,10 +122,18 @@ class VTGUI(QtGui.QMainWindow):
             )
 
         # Put the logging console in the bottom region of the window
-        self.logger = logger.Logger(self.vsplitter)
+        self.logger_dock = QtGui.QDockWidget('Log')
+        self.logger_dock.setObjectName('LoggerDockWindow')
+        self.logger_dock.setFeatures(
+            QtGui.QDockWidget.DockWidgetClosable
+            | QtGui.QDockWidget.DockWidgetMovable
+            | QtGui.QDockWidget.DockWidgetFloatable)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logger_dock)
+        self.logger = logger.Logger()
+        self.logger_dock.setWidget(self.logger)
         # Redirect standard output and standard error to a Logger instance
-        #sys.stdout = self.logger
-        #sys.stderr = self.logger
+        sys.stdout = self.logger
+        sys.stderr = self.logger
         # add self.logger as handler of main logger object
         vitables_logger = logging.getLogger('vitables')
         stream_handler = logging.StreamHandler(self.logger)
@@ -136,9 +142,8 @@ class VTGUI(QtGui.QMainWindow):
 
         # The signal mapper used to keep the the Window menu updated
         self.window_mapper = QtCore.QSignalMapper(self)
-        self.window_mapper.mapped[QtGui.QWidget].connect(\
+        self.window_mapper.mapped[QtGui.QWidget].connect(
             self.workspace.setActiveSubWindow)
-
         self.workspace.installEventFilter(self)
 
 
