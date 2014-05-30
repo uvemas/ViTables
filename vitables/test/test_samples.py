@@ -59,7 +59,17 @@ def get_leaf_model_with_assert(test, filepath, leaf_path):
 
 
 class TestTableOpening:
-    TEST_NODES = {'examples/tables/nested_samples.h5': ['table']}
+    """Open files and read all cell values."""
+
+    TEST_NODES = {
+        'examples/tables/nested_samples.h5': ['table'],
+        'examples/tables/table_samples.h5': [
+            'table1', 'columns/name', 'columns/pressure', 'columns/TDC',
+            'newgroup/table', 'detector/recarray', 'detector/recarray2'],
+        'examples/misc/external_file.h5': ['a1'],
+        'examples/misc/fnode.h5': ['fnode_test'],
+        'examples/misc/genericHDF5.h5': ['A note', 'images/Iceberg'],
+        }
 
     @classmethod
     def setup_class(cls):
@@ -71,14 +81,17 @@ class TestTableOpening:
         cls.view = cls.vtgui.dbs_tree_view
 
     def test_opening_files(self):
+        """Generate tests for given data files."""
         for filepath, nodes in self.TEST_NODES.items():
             for node in nodes:
                 yield self.check_node_open, filepath, node
 
     def check_node_open(self, filepath, nodepath):
+        """Open file get access to a node and read all cells."""
         leaf_model = get_leaf_model_with_assert(self, filepath, nodepath)
         for row in range(leaf_model.rowCount()):
             for column in range(leaf_model.columnCount()):
-                cell_index = leaf_model.index(row, column, qtcore.QModelIndex())
+                cell_index = leaf_model.index(row, column,
+                                              qtcore.QModelIndex())
                 cell_data = leaf_model.data(cell_index)
-
+        self.vtapp.fileClose()
