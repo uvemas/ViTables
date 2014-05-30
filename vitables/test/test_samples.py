@@ -62,14 +62,106 @@ class TestTableOpening:
     """Open files and read all cell values."""
 
     TEST_NODES = {
-        'examples/tables/nested_samples.h5': ['table'],
+        'examples/arrays/array_samples.h5': [
+            'array_b', 'array_f', 'array_f3D', 'array_int16', 'array_int8',
+            'group1/array_B', 'group2/array_h', 'group3/array_l',
+            'group4/array_f', 'group5/array_d', 'scalar_array',
+        ],
+        'examples/arrays/carray_sample.h5': [
+            'carray',
+        ],
+        'examples/arrays/earray_samples.h5': [
+            'array_b', 'array_c', 'array_char', 'array_e',
+        ],
+        'examples/arrays/vlarray_samples.h5': [
+            'vlarray1', 'vlarray10', 'vlarray11', 'vlarray2', 'vlarray3',
+            'vlarray5', 'vlarray6', 'vlarray7', 'vlarray8', 'vlarray9',
+        ],
+        'examples/misc/external_file.h5': [
+            'a1',
+        ],
+        'examples/misc/fnode.h5': [
+            'fnode_test',
+        ],
+        'examples/misc/genericHDF5.h5': [
+            'A note', 'arrays/2D float array', 'arrays/2D int array',
+            'arrays/3D int array',
+            'arrays/Vdata table: PerBlockMetadataCommon',
+            'arrays/external', 'images/Iceberg', 'images/iceberg_palette',
+            'images/landcover.umd.199906.jpg', 'images/pixel interlace',
+            'images/plane interlace',
+        ],
+        'examples/misc/links_examples.h5': [
+            'arrays/a1', 'links/ht1', 'tables/t1',
+        ],
+        'examples/misc/nonalphanum.h5': [
+            'array_1', 'array_f', 'array_f_Numeric', 'array_s',
+        ],
+        'examples/misc/objecttree.h5': [
+            'array1', 'group1/array2', 'group1/table1', 'group2/table2',
+        ],
+        'examples/misc/szip_compressor.h5': [
+            'datasetF32',
+        ],
+        'examples/tables/nested_samples.h5': [
+            'table',
+        ],
         'examples/tables/table_samples.h5': [
-            'table1', 'columns/name', 'columns/pressure', 'columns/TDC',
-            'newgroup/table', 'detector/recarray', 'detector/recarray2'],
-        'examples/misc/external_file.h5': ['a1'],
-        'examples/misc/fnode.h5': ['fnode_test'],
-        'examples/misc/genericHDF5.h5': ['A note', 'images/Iceberg'],
-        }
+            'columns/TDC', 'columns/name', 'columns/pressure',
+            'detector/recarray', 'detector/recarray2', 'detector/table',
+            'newgroup/table', 'table1',
+        ],
+        'examples/timeseries/carray_ts.h5': [
+            'test_carray_1', 'test_carray_2',
+        ],
+        'examples/timeseries/pandas_test1.hdf5': [
+            'one_column_ts/_i_table/index/abounds',
+            'one_column_ts/_i_table/index/bounds',
+            'one_column_ts/_i_table/index/indices',
+            'one_column_ts/_i_table/index/indicesLR',
+            'one_column_ts/_i_table/index/mbounds',
+            'one_column_ts/_i_table/index/mranges',
+            'one_column_ts/_i_table/index/ranges',
+            'one_column_ts/_i_table/index/sorted',
+            'one_column_ts/_i_table/index/sortedLR',
+            'one_column_ts/_i_table/index/zbounds',
+            'one_column_ts/table',
+        ],
+        'examples/timeseries/pandas_test2.hdf5': [
+            'intc/_i_table/index/abounds', 'intc/_i_table/index/bounds',
+            'intc/_i_table/index/indices', 'intc/_i_table/index/indicesLR',
+            'intc/_i_table/index/mbounds', 'intc/_i_table/index/mranges',
+            'intc/_i_table/index/ranges', 'intc/_i_table/index/sorted',
+            'intc/_i_table/index/sortedLR', 'intc/_i_table/index/zbounds',
+            'intc/table',
+        ],
+        'examples/timeseries/pandas_test3.hdf5': [
+            'df/axis0', 'df/axis1', 'df/block0_items', 'df/block0_values',
+            'df_table/_i_table/index/abounds',
+            'df_table/_i_table/index/bounds',
+            'df_table/_i_table/index/indices',
+            'df_table/_i_table/index/indicesLR',
+            'df_table/_i_table/index/mbounds',
+            'df_table/_i_table/index/mranges',
+            'df_table/_i_table/index/ranges',
+            'df_table/_i_table/index/sorted',
+            'df_table/_i_table/index/sortedLR',
+            'df_table/_i_table/index/zbounds',
+            'df_table/table',
+        ],
+        'examples/timeseries/scikits_test1.hdf5': [
+            'examples/Example_1',
+        ],
+        'examples/timeseries/scikits_test2.hdf5': [
+            'examples/Example_2',
+        ],
+        'examples/timeseries/scikits_test3.hdf5': [
+            'examples/Example_3',
+        ],
+        'examples/timeseries/table_ts.h5': [
+            'Particles/TParticle',
+        ],
+    }
 
     @classmethod
     def setup_class(cls):
