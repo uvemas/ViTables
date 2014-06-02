@@ -111,7 +111,7 @@ class TestTableOpening:
             # 'datasetF32',
         ],
         'examples/tables/nested_samples.h5': [
-            # 'table',
+            'table',
         ],
         'examples/tables/table_samples.h5': [
             'columns/TDC', 'columns/name', 'columns/pressure',

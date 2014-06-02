@@ -26,6 +26,8 @@ in a `tables.Leaf`.
 
 __docformat__ = 'restructuredtext'
 
+import collections
+
 import tables
 import numpy as np
 
@@ -180,15 +182,20 @@ class LeafModel(QtCore.QAbstractTableModel):
         cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
                                     index.column())
         if index.column() in self._enum_columns_desc:
-            cell = _ENUM_DTYPE.type(
-                self._enum_columns_desc[index.column()].get(cell, cell))
+            if isinstance(cell, collections.Iterable):
+                cell = np.array([
+                    _ENUM_DTYPE.type(
+                        self._enum_columns_desc[index.column()].get(c, c))
+                    for c in cell])
+            else:
+                cell = _ENUM_DTYPE.type(
+                    self._enum_columns_desc[index.column()].get(cell, cell))
         if role == QtCore.Qt.DisplayRole:
             return self.formatContent(cell)
         elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+            return int(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         else:
             return None
-
 
     def columnCount(self, index=QtCore.QModelIndex()):
         """The number of columns of the given model index.
