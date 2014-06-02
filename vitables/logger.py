@@ -210,17 +210,3 @@ class Logger(QtGui.QTextEdit):
         pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             self.frame_style['foreground'])
         QtGui.QTextEdit.focusOutEvent(self, event)
-
-if __name__ == '__main__':
-    import sys
-    APP = QtGui.QApplication(sys.argv)
-    LOGGER = Logger()
-    LOGGER.show()
-    # Redirect standard output and standard error to the Logger instance
-    sys.stdout = LOGGER
-    sys.stderr = LOGGER
-    print('Hola mundo!')
-    print('\nError: El viatger del crepuscle')
-    print('\nWarning: Adolf Piquer')
-    print('Adeu!')
-    APP.exec_()

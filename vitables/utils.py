@@ -31,6 +31,7 @@ import os
 import traceback
 import locale
 import re
+import logging
 
 import numpy
 
@@ -347,8 +348,8 @@ def formatExceptionInfo(limit=1):
 
     :Parameter limit: the number of stack trace entries to be printed
     """
-
-    print('\n{0}\n'.format(traceback.format_exc(limit)))
+    logger = logging.getLogger(__name__)
+    logger.error('{0}'.format(traceback.format_exc(limit)))
 
 #
 # Path related functions

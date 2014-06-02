@@ -31,6 +31,7 @@ __docformat__ = 'restructuredtext'
 
 import os
 import uuid
+import logging
 
 import tables
 from PyQt4 import QtCore
@@ -68,6 +69,8 @@ class DBDoc(QtCore.QObject):
 
         super(DBDoc, self).__init__()
 
+        self.logger = logging.getLogger(__name__)
+
         # The opening mode
         self.mode = mode
 
@@ -86,9 +89,8 @@ class DBDoc(QtCore.QObject):
 
         if is_tmp_dbdoc:
             self.h5file.create_group('/', '_p_query_results',
-                'Hide the result of queries')
+                                     'Hide the result of queries')
             self.h5file.flush()
-
 
     def openH5File(self):
         """Open the file tied to this instance."""
@@ -98,24 +100,25 @@ class DBDoc(QtCore.QObject):
         if self.mode != 'r' and os.path.isfile(self.filepath):
             if not os.access(self.filepath, os.W_OK):
                 self.mode = 'r'
-                print(translate('DBDoc',
-                    """\nWarning: file access in read-write mode"""
-                    """ is denied. It will be opened in read-only mode.""",
-                    'A logger error message'))
+                self.logger.warning(
+                    translate('DBDoc',
+                              """\nWarning: file access in read-write mode """
+                              """is denied. It will be opened in read-only """
+                              """mode.""", 'A logger error message'))
 
         try:
             h5file = tables.open_file(self.filepath, self.mode)
         except IOError as inst:
-            print(translate('DBDoc',
-                "\nError: {0}.", 'A logger error message').format(inst))
+            self.logger.error(translate('DBDoc', "{0}",
+                                        'A logger error message').format(inst))
         except:
             vitables.utils.formatExceptionInfo()
-            print(translate('DBDoc',
-                "Please, if you think it is a bug, report it to developers.",
-                'A logger error message'))
+            self.logger.error(
+                translate('DBDoc',
+                          "Please, if you think it is a bug, report it to "
+                          "developers.", 'A logger error message'))
 
         return h5file
-
 
     def closeH5File(self):
         """Closes a tables.File instance."""
@@ -124,7 +127,6 @@ class DBDoc(QtCore.QObject):
             self.h5file.close()
         except (tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
-
 
     def getFileFormat(self):
         """
@@ -145,7 +147,6 @@ class DBDoc(QtCore.QObject):
 
         return file_format
 
-
     def getNode(self, where):
         """
         The node whose path is where.
@@ -157,12 +158,12 @@ class DBDoc(QtCore.QObject):
             node = self.h5file.getNode(where)
             return node
         except tables.exceptions.NoSuchNodeError:
-            print(translate('DBDoc',
-                """\nError: cannot open node {0} in file {1} """,
-                'Error message').format(where, self.filepath))
+            self.logger.error(
+                translate('DBDoc',
+                          """\nError: cannot open node {0} in file {1} """,
+                          'Error message').format(where, self.filepath))
             vitables.utils.formatExceptionInfo()
             return None
-
 
     def listNodes(self):
         """:Returns: the recursive list of full nodepaths for the file"""
@@ -191,13 +192,14 @@ class DBDoc(QtCore.QObject):
         try:
             self.h5file.copyFile(dst_filepath, overwrite=True)
         except tables.exceptions.HDF5ExtError:
-            print(translate('DBDoc',
-                """\nError: unable to save the file {0} as """
-                """{1}. Beware that only closed files can be safely """
-                """overwritten via Save As...""",
-                'A logger error message').format(self.filepath, dst_filepath))
+            self.logger.error(
+                translate('DBDoc',
+                          """Unable to save the file {0} as """
+                          """{1}. Beware that only closed files can be """
+                          """safely overwritten via Save As...""",
+                          'A logger error message').format(self.filepath,
+                                                           dst_filepath))
             vitables.utils.formatExceptionInfo()
-
 
     def createHiddenGroup(self):
         """

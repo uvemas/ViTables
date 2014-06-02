@@ -30,6 +30,7 @@ mode. Otherwise all shown information is read-only.
 __docformat__ = 'restructuredtext'
 
 import os.path
+import logging
 
 import tables
 
@@ -81,6 +82,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         vtapp = vitables.utils.getVTApp()
         super(AttrPropDlg, self).__init__(vtapp.gui)
         self.setupUi(self)
+
+        self.logger = logging.getLogger(__name__)
 
         # Customise the dialog's pages
         self.fillSysAttrsPage(info)
@@ -319,9 +322,10 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # If there is not a selected attribute then return
         current_index = self.userTable.currentIndex()
         if not current_index.isValid():
-            print(translate('AttrPropDlg',
-                'Please, select the attribute to be deleted.',
-                'A usage text'))
+            self.logger.error(
+                translate('AttrPropDlg',
+                          'Please, select the attribute to be deleted.',
+                          'A usage text'))
             return
 
         # Get the name of the attribute being deleted

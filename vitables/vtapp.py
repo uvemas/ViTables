@@ -30,6 +30,7 @@ __docformat__ = 'restructuredtext'
 import os
 import time
 import sys
+import logging
 
 import tables
 
@@ -61,6 +62,7 @@ import vitables.vtgui as vtgui
 
 translate = QtGui.QApplication.translate
 
+
 def makePage(content):
     """Create a page for the About ViTables dialog.
 
@@ -88,8 +90,6 @@ class VTApp(QtCore.QObject):
     - `h5files`: a list of files to be open at startup
     - `dblist`: a file that contains a list of files to be open at startup
     """
-
-
     # Convenience signals for the plugins. Usually new signals are added
     # when a new plugin is added to ViTables. They are the link between
     # the plugins and the core of the program
@@ -108,6 +108,8 @@ class VTApp(QtCore.QObject):
         """
 
         super(VTApp, self).__init__()
+
+        self.logger = logging.getLogger(__name__)
 
         # Make the main window easily accessible for external modules
         self.setObjectName('VTApp')
@@ -128,14 +130,14 @@ class VTApp(QtCore.QObject):
         # - create the model/view for the tree of databases
         # - setup the main window
         splash.drawMessage(translate('VTApp', 'Creating the GUI...',
-            'A splash screen message'))
+                                     'A splash screen message'))
         self.gui = vtgui.VTGUI(self, vtconfig.getVersion())
         dbs_tmodel = dbstreemodel.DBsTreeModel(self)
         dbstreeview.DBsTreeView(self, dbs_tmodel)
 
         # Apply the configuration stored on disk
         splash.drawMessage(translate('VTApp', 'Configuration setup...',
-            'A splash screen message'))
+                                     'A splash screen message'))
 
         # Reset the configuration object. I don't know why this is necessary
         # but it is
@@ -158,10 +160,12 @@ class VTApp(QtCore.QObject):
         self.queries_mgr = qmgr.QueriesManager()
 
         # Print the welcome message
-        print(translate('VTApp',
-            """ViTables {0}\nCopyright (c) 2008-2013 Vicent Mas."""
-            """\nAll rights reserved.""",
-            'Application startup message').format(vtconfig.getVersion()))
+        self.gui.logger.write(
+            translate('VTApp',
+                      """ViTables {0}\nCopyright (c) 2008-2013 Vicent Mas."""
+                      """\nAll rights reserved.""",
+                      'Application startup message').format(
+                          vtconfig.getVersion()))
 
         # The list of most recently open DBs
         self.number_of_recent_files = 10
@@ -180,18 +184,18 @@ class VTApp(QtCore.QObject):
         # Restore last session
         if self.config.restore_last_session:
             splash.drawMessage(translate('VTApp', 'Recovering last session...',
-                'A splash screen message'))
+                                         'A splash screen message'))
             self.recoverLastSession()
 
         # Process the command line
         if h5files:
             splash.drawMessage(translate('VTApp', 'Opening files...',
-                'A splash screen message'))
+                                         'A splash screen message'))
             self.processCommandLineArgs(mode=mode, h5files=h5files)
         elif dblist:
             splash.drawMessage(translate('VTApp',
-                'Opening the list of files...',
-                'A splash screen message'))
+                                         'Opening the list of files...',
+                                         'A splash screen message'))
             self.processCommandLineArgs(dblist=dblist)
 
         # Make sure that the splash screen is shown at least for two seconds
@@ -238,9 +242,8 @@ class VTApp(QtCore.QObject):
             filepath = vitables.utils.forwardPath(filepath)
             # Open the database --> add the root group to the tree view.
             if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
-                self.gui.dbs_tree_view.setCurrentIndex(\
-                    self.gui.dbs_tree_model.index(\
-                    0, 0, QtCore.QModelIndex()))
+                self.gui.dbs_tree_view.setCurrentIndex(
+                    self.gui.dbs_tree_model.index(0, 0, QtCore.QModelIndex()))
             db_doc = self.gui.dbs_tree_model.getDBDoc(filepath)
             if db_doc is None:
                 continue
@@ -261,8 +264,8 @@ class VTApp(QtCore.QObject):
                 # It happens to be the last root node added to model
                 # so its row is 0
                 group = self.gui.dbs_tree_model.root.childAtRow(0)
-                index = self.gui.dbs_tree_model.index(\
-                    0, 0, QtCore.QModelIndex())
+                index = self.gui.dbs_tree_model.index(0, 0,
+                                                      QtCore.QModelIndex())
                 self.gui.dbs_tree_view.expanded.emit(index)
                 groups.pop(0)
                 # Expand the rest of groups of the nodepath
@@ -282,7 +285,6 @@ class VTApp(QtCore.QObject):
                 self.gui.dbs_tree_view.setCurrentIndex(leaf_index)
                 self.nodeOpen(leaf_index)
 
-
     def processCommandLineArgs(self, mode='', h5files=None, dblist=''):
         """
         Open files passed in the command line.
@@ -295,16 +297,16 @@ class VTApp(QtCore.QObject):
         """
 
         bad_line = translate('VTApp',
-            """Opening failed: wrong {0} in line {1} of {2}""",
-            'Bad line format')
+                             'Opening failed: wrong {0} in line {1} of {2}',
+                             'Bad line format')
         # The database manager opens the files (if any)
         if isinstance(h5files, list):
             for filepath in h5files:
                 filepath = vitables.utils.forwardPath(filepath)
                 if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
-                    self.gui.dbs_tree_view.setCurrentIndex(\
-                        self.gui.dbs_tree_model.index(\
-                        0, 0, QtCore.QModelIndex()))
+                    self.gui.dbs_tree_view.setCurrentIndex(
+                        self.gui.dbs_tree_model.index(0, 0,
+                                                      QtCore.QModelIndex()))
                     self.updateRecentFiles(filepath, mode)
 
         # If a list of files is passed then parse the list and open the files
@@ -317,24 +319,25 @@ class VTApp(QtCore.QObject):
                     if line == ['']:
                         continue
                     if len(line) != 2:
-                        print(bad_line.format('format', line, dblist))
+                        self.logger.error(bad_line.format('format', line,
+                                                          dblist))
                         continue
                     [mode, filepath] = line
                     filepath = vitables.utils.forwardPath(filepath)
                     if not mode in ['r', 'a']:
-                        print(bad_line.format('mode', line, dblist))
+                        self.logger.error(bad_line.format('mode', line,
+                                                          dblist))
                         continue
                     if self.gui.dbs_tree_model.openDBDoc(filepath, mode):
-                        self.gui.dbs_tree_view.setCurrentIndex(\
-                            self.gui.dbs_tree_model.index(\
-                            0, 0, QtCore.QModelIndex()))
+                        self.gui.dbs_tree_view.setCurrentIndex(
+                            self.gui.dbs_tree_model.index(
+                                0, 0, QtCore.QModelIndex()))
                         self.updateRecentFiles(filepath, mode)
 
             except IOError:
-                print(translate('VTApp',
-                    "\nError: list of HDF5 files not read",
-                    'File not updated error'))
-
+                self.logger.error(
+                    translate('VTApp', 'List of HDF5 files not read',
+                              'File not updated error'))
 
     def updateRecentFiles(self, filepath, mode):
         """
@@ -360,7 +363,6 @@ class VTApp(QtCore.QObject):
         while len(recent_files) > self.number_of_recent_files:
             del recent_files[-1]
 
-
     def updateFSHistory(self, working_dir):
         """Update the navigation history of the file selector widget.
 
@@ -375,20 +377,19 @@ class VTApp(QtCore.QObject):
                 self.file_selector_history.remove(working_dir)
             self.file_selector_history.append(working_dir)
 
-
     def fileNew(self):
         """Create a new file."""
 
         # Launch the file selector
         fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen,
-            'file_mode': QtGui.QFileDialog.AnyFile,
-            'history': self.file_selector_history,
-            'label': translate('VTApp', 'Create',
-                'Accept button text for QFileDialog')}
+                   'file_mode': QtGui.QFileDialog.AnyFile,
+                   'history': self.file_selector_history,
+                   'label': translate('VTApp', 'Create',
+                                      'Accept button text for QFileDialog')}
         filepath, working_dir = vitables.utils.getFilepath(
             self.gui,
             translate('VTApp', 'Creating a new file...',
-                'Caption of the File New... dialog'),
+                      'Caption of the File New... dialog'),
             dfilter=translate('VTApp',
                 """HDF5 Files (*.hdf *.h5 *.hd5 *.hdf5);;"""
                 """All Files (*)""", 'Filter for the Open New dialog'),
@@ -406,10 +407,9 @@ class VTApp(QtCore.QObject):
 
         # Check the returned path
         if os.path.exists(filepath):
-            print(translate('VTApp',
-                """\nWarning: """
-                """new file creation failed because file already exists.""",
-                'A file creation error'))
+            self.logger.error(
+                translate('VTApp', 'New file creation failed because file '
+                          'already exists.', 'A file creation error'))
             return
 
         # Open the database and select it in the tree view
@@ -417,11 +417,9 @@ class VTApp(QtCore.QObject):
         if db_doc:
             # The write mode must be replaced by append mode or the file
             # will be created from scratch in the next ViTables session
-            self.gui.dbs_tree_view.setCurrentIndex(\
-                self.gui.dbs_tree_model.index(\
-                0, 0, QtCore.QModelIndex()))
+            self.gui.dbs_tree_view.setCurrentIndex(
+                self.gui.dbs_tree_model.index(0, 0, QtCore.QModelIndex()))
             self.updateRecentFiles(filepath, 'a')
-
 
     def fileSaveAs(self):
         """
@@ -440,17 +438,18 @@ class VTApp(QtCore.QObject):
 
         # Launch the file selector
         fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave,
-            'file_mode': QtGui.QFileDialog.AnyFile,
-            'history': self.file_selector_history,
-            'label': translate('VTApp', 'Create',
-                'Accept button text for QFileDialog')}
+                   'file_mode': QtGui.QFileDialog.AnyFile,
+                   'history': self.file_selector_history,
+                   'label': translate('VTApp', 'Create',
+                                      'Accept button text for QFileDialog')}
         trier_filepath, working_dir = vitables.utils.getFilepath(
             self.gui,
             translate('VTApp', 'Copying a file...',
                       'Caption of the File Save as... dialog'),
-            dfilter = translate('VTApp',
-                """HDF5 Files (*.hdf *.h5 *.hd5 *.hdf5);;"""
-                """All Files (*)""", 'Filter for the Save As... dialog'),
+            dfilter=translate('VTApp',
+                              """HDF5 Files (*.hdf *.h5 *.hd5 *.hdf5);;"""
+                              """All Files (*)""",
+                              'Filter for the Save As... dialog'),
             filepath=initial_filepath,
             settings=fs_args)
 
@@ -557,10 +556,9 @@ class VTApp(QtCore.QObject):
         # The position in the tree is kept
         for row, child in enumerate(self.gui.dbs_tree_model.root.children):
             if child.filepath == initial_filepath:
-                self.fileClose(self.gui.dbs_tree_model.index(row, 0,
-                                                        QtCore.QModelIndex()))
+                self.fileClose(self.gui.dbs_tree_model.index(
+                    row, 0, QtCore.QModelIndex()))
                 self.fileOpen(filepath, 'a', row)
-
 
     def fileOpenRO(self, filepath=None):
         """
@@ -569,7 +567,6 @@ class VTApp(QtCore.QObject):
         :Parameters filepath: the full path of the file to be open
         """
         self.fileOpen(filepath, mode='r')
-
 
     def openRecentFile(self):
         """
@@ -581,14 +578,12 @@ class VTApp(QtCore.QObject):
         (mode, filepath) = item.split('#@#')
         self.fileOpen(filepath, mode)
 
-
     def clearRecentFiles(self):
         """
         Clear the list of recently opened files and delete the corresponding
         historical file.
         """
         self.config.recent_files = []
-
 
     def fileOpen(self, filepath=None, mode='a', position=0):
         """

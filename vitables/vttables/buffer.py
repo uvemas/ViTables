@@ -31,6 +31,7 @@ are painted much faster too.
 __docformat__ = 'restructuredtext'
 
 import warnings
+import logging
 
 from PyQt4 import QtGui
 
@@ -51,14 +52,13 @@ warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
 
 
 class Buffer(object):
-    """
-    Buffer used to access the real data contained in `PyTables` datasets.
+    """Buffer used to access the real data contained in `PyTables` datasets.
 
-    Note that the buffer number of rows **must** be at least equal to the number
-    of rows of the table widget it is going to fill. This way we avoid to have
-    partially filled tables.
-    Also note that rows in buffer are numbered from 0 to N (as it happens with
-    the data source).
+    Note that the buffer number of rows **must** be at least equal to
+    the number of rows of the table widget it is going to fill. This
+    way we avoid to have partially filled tables.  Also note that rows
+    in buffer are numbered from 0 to N (as it happens with the data
+    source).
 
     Leaves are displayed in MxN table widgets:
 
@@ -75,12 +75,15 @@ class Buffer(object):
     :Parameter leaf:
         the data source (`tables.Leaf` instance) from which data are
         going to be read.
+
     """
 
     def __init__(self, leaf):
         """
         Initializes the buffer.
         """
+
+        self.logger = logging.getLogger(__name__)
 
         self.data_source = leaf
 
@@ -122,12 +125,10 @@ class Buffer(object):
             # Dataset elements will be read like a[row][column]
             self.getCell = self.arrayCell
 
-
     def __del__(self):
         """Release resources before destroying the buffer.
         """
         self.chunk = None
-
 
     def leafNumberOfRows(self):
         """The number of rows of the dataset being read.
@@ -144,7 +145,7 @@ class Buffer(object):
         """
 
         shape = self.data_source.shape
-        if shape == None:
+        if shape is None:
             # Node is not a Leaf or there was problems getting the shape
             nrows = 0
         elif shape == ():
@@ -158,7 +159,6 @@ class Buffer(object):
             nrows = self.data_source.nrows
 
         return numpy.array(nrows, dtype=numpy.int64)
-
 
     def getReadParameters(self, start, buffer_size):
         """
@@ -178,7 +178,7 @@ class Buffer(object):
         last_row = self.leaf_numrows
 
         # When scrolling up we must keep start value >= first_row
-        if start <  first_row:
+        if start < first_row:
             start = first_row
 
         # When scrolling down we must keep stop value <= last_row
@@ -192,7 +192,6 @@ class Buffer(object):
 
         return start, stop
 
-
     def isDataSourceReadable(self):
         """Find out if the dataset can be read or not.
 
@@ -202,21 +201,21 @@ class Buffer(object):
         """
 
         readable = True
-        start, stop = self.getReadParameters(\
-                            numpy.array(0, dtype=numpy.int64), self.chunk_size)
+        start, stop = self.getReadParameters(numpy.array(0, dtype=numpy.int64),
+                                             self.chunk_size)
         try:
             self.data_source.read(start, stop)
         except tables.HDF5ExtError:
             readable = False
-            print(translate('Buffer',
-                """\nError: problems reading records. The dataset seems """
-                """to be compressed with the {0} library. Check that it """
-                """is installed in your system, please.""",
-                'A dataset readability error').\
-                format(self.data_source.filters.complib))
-
+            self.logger.error(
+                translate('Buffer',
+                          """\nError: problems reading records. The dataset """
+                          """seems to be compressed with the {0} library. """
+                          """Check that it is installed in your system, """
+                          """please.""",
+                          'A dataset readability error').format(
+                              self.data_source.filters.complib))
         return readable
-
 
     def readBuffer(self, start, buffer_size):
         """
@@ -247,17 +246,16 @@ class Buffer(object):
             # array returned by EArray.read() will have only 2 rows
             data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
-            print(translate('Buffer',
-                """\nError: problems reading records. The dataset maybe """
-                """corrupted.""",
-                'A dataset readability error'))
+            self.logger.error(
+                translate('Buffer', """\nError: problems reading records. """
+                          """The dataset maybe corrupted.""",
+                          'A dataset readability error'))
         except:
             vitables.utils.formatExceptionInfo()
         else:
             # Update the buffer contents and its start position
             self.chunk = data
             self.start = start
-
 
     def scalarCell(self, row, col):
         """
@@ -277,9 +275,8 @@ class Buffer(object):
         try:
             return self.chunk[()]
         except IndexError:
-            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                format(self.start, row, col))
-
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
 
     def vectorCell(self, row, col):
         """
@@ -311,39 +308,8 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)]
         except IndexError:
-            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                  format(self.start, row, col))
-
-
-    def EArrayCell(self, row, col):
-        """
-        Returns a cell of a EArray view.
-
-        The indices values are not checked (and could not be in the
-        buffer) so they should be checked by the caller methods.
-
-        :Parameters:
-
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
-        - `col`: the column to wich the cell belongs
-
-        :Returns: the cell at position `(row, col)` of the document
-        """
-
-        # We must shift the row value by self.start units in order to
-        # get the right chunk element. Note that indices of chunk
-        # needn't to be int64 because they are indexing a fixed size,
-        # small chunk of data (see ctor docstring).
-        # chunk = [row0, row1, row2, ..., rowN]
-        # and columns can be read from a given row using indexing notation
-        # TODO: this method should be improved as it requires to read the
-        # whola array keeping the read data in memory
-        try:
-            return self.data_source.read()[int(row - self.start)]
-        except IndexError:
-            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                  format(self.start, row, col))
-
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
 
     def EArrayCell(self, row, col):
         """
@@ -371,9 +337,8 @@ class Buffer(object):
         try:
             return self.data_source.read()[int(row - self.start)]
         except IndexError:
-            print(u'IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                  format(self.start, row, col))
-
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
 
     def arrayCell(self, row, col):
         """
@@ -403,5 +368,5 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)][col]
         except IndexError:
-            print('IndexError! buffer start: {0} row, column: {1}, {2}'.\
-                format(self.start, row, col))
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
