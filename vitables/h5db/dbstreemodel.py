@@ -267,14 +267,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 db_doc = dbdoc.DBDoc(filepath, 'w', is_tmp_db)
             except (tables.NodeError, OSError):
                 db_doc = None
-               
                 self.logger.error(
                     translate('DBsTreeModel',
-                              """\nFile creation failed due """
-                              """to unknownn       """reasons!\nPlease, have a look to the """
-                              """last        """error displayed in """
-                              """the logger. If you     """
-                              """   """think it's a bug, please report it to """
+                              """\nFile creation failed due to unknown"""
+                              """reasons! Please, have a look to the """
+                              """last error displayed in the logger. If you """
+                              """think it's a bug, please report it to """
                               """developers.""", 'A file creation error'))
                 return
 
@@ -293,7 +291,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             QtGui.qApp.restoreOverrideCursor()
             return db_doc
 
-
     def __createTempDB(self):
         """
         Create a temporary database where filtered tables will be stored.
@@ -303,14 +300,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         # Create the database
-        self.logger.errorself.logger.error('DBsTreeModel', 'Creating the Query results file...',
-            'A logger info message'))
+        self.logger.error(
+            translate('DBsTreeModel', 'Creating the Query results file...',
+                      'A logger info message'))
         (f_handler, filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)
         self.tmp_filepath = QtCore.QDir.fromNativeSeparators(filepath)
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         return db_doc
-
 
     def deleteNode(self, index):
         """Delete a node.
