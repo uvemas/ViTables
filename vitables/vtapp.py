@@ -160,7 +160,7 @@ class VTApp(QtCore.QObject):
         self.queries_mgr = qmgr.QueriesManager()
 
         # Print the welcome message
-        self.logger.info(
+        self.gui.logger.write(
             translate('VTApp',
                       """ViTables {0}\nCopyright (c) 2008-2013 Vicent Mas."""
                       """\nAll rights reserved.""",
