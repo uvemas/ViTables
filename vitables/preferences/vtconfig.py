@@ -91,6 +91,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '2.1'
 
 import sys
+import logging
 
 from PyQt4 import QtCore
 from PyQt4 import QtGui
@@ -129,6 +130,8 @@ class Config(QtCore.QSettings):
         In all platforms QSettings format is NativeFormat and scope
         is UserScope.
         """
+
+        self.logger = logging.getLogger(__name__)
 
         organization = QtGui.qApp.organizationName()
         product = QtGui.qApp.applicationName()
@@ -414,11 +417,10 @@ class Config(QtCore.QSettings):
         try:
             self.setValue(key, value)
             if self.status():
-                raise cfgexception.ConfigFileIOException( \
+                raise cfgexception.ConfigFileIOException(
                     '{0}={1}'.format(key, value))
         except cfgexception.ConfigFileIOException as inst:
-            print(inst.error_message)
-
+            self.logger.error(inst.error_message)
 
     def readConfiguration(self):
         """
