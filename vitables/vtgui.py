@@ -55,7 +55,7 @@ class VTGUI(QtGui.QMainWindow):
         super(VTGUI, self).__init__(None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle(translate('VTGUI', 'ViTables {0}',
-            'Main window title').format(version))
+                                      'Main window title').format(version))
         self.vtapp = vtapp
 
         # Make the main window easily accessible for external modules
@@ -69,7 +69,7 @@ class VTGUI(QtGui.QMainWindow):
         # resulting in spurious syncs. The editing_dlg flag prevents
         # this behavior
         self.editing_dlg = None
-
+        self.setup_logger_window()
 
     def setup(self, tree_view):
         """Add widgets, actions, menus and toolbars to the GUI.
@@ -87,12 +87,29 @@ class VTGUI(QtGui.QMainWindow):
 
         self.logger.nodeCopyAction = self.gui_actions['nodeCopy']
 
+    def setup_logger_window(self):
+        # Put the logging console in the bottom region of the window
+        self.logger_dock = QtGui.QDockWidget('Log')
+        self.logger_dock.setObjectName('LoggerDockWindow')
+        self.logger_dock.setFeatures(
+            QtGui.QDockWidget.DockWidgetClosable
+            | QtGui.QDockWidget.DockWidgetMovable
+            | QtGui.QDockWidget.DockWidgetFloatable)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logger_dock)
+        self.logger = logger.Logger()
+        self.logger_dock.setWidget(self.logger)
+        # add self.logger as handler of main logger object
+        vitables_logger = logging.getLogger('vitables')
+        stream_handler = logging.StreamHandler(self.logger)
+        stream_handler.setFormatter(logging.Formatter(_GUI_LOG_FORMAT))
+        vitables_logger.addHandler(stream_handler)
 
     def addComponents(self):
         """Add widgets to the main window.
 
         The main window contains a databases tree view, a workspace and a
         console.
+
         """
 
         self.setIconSize(QtCore.QSize(22, 22))
@@ -120,22 +137,6 @@ class VTGUI(QtGui.QMainWindow):
             </qt>""",
             'WhatsThis help for the workspace')
             )
-
-        # Put the logging console in the bottom region of the window
-        self.logger_dock = QtGui.QDockWidget('Log')
-        self.logger_dock.setObjectName('LoggerDockWindow')
-        self.logger_dock.setFeatures(
-            QtGui.QDockWidget.DockWidgetClosable
-            | QtGui.QDockWidget.DockWidgetMovable
-            | QtGui.QDockWidget.DockWidgetFloatable)
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logger_dock)
-        self.logger = logger.Logger()
-        self.logger_dock.setWidget(self.logger)
-        # add self.logger as handler of main logger object
-        vitables_logger = logging.getLogger('vitables')
-        stream_handler = logging.StreamHandler(self.logger)
-        stream_handler.setFormatter(logging.Formatter(_GUI_LOG_FORMAT))
-        vitables_logger.addHandler(stream_handler)
 
         # The signal mapper used to keep the the Window menu updated
         self.window_mapper = QtCore.QSignalMapper(self)

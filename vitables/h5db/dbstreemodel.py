@@ -72,9 +72,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.root = rootgroupnode.RootGroupNode(self)
 
         super(DBsTreeModel, self).__init__(parent=None)
-
         self.logger = logging.getLogger(__name__)
-
         # The dictionary of open databases
         self.__openDBs = {}
 
@@ -300,7 +298,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         # Create the database
-        self.logger.error(
+        self.logger.info(
             translate('DBsTreeModel', 'Creating the Query results file...',
                       'A logger info message'))
         (f_handler, filepath) = tempfile.mkstemp('.h5', 'FT_')
