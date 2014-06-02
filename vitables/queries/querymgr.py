@@ -302,10 +302,10 @@ class QueriesManager(QtCore.QObject):
 
         QtGui.qApp.restoreOverrideCursor()
         if not completed:
-            self.logger(translate('QueriesManager',
-                                  'Query on table {0} failed!',
-                                  'Warning log message about a failed '
-                                  'query').format(table_uid))
+            self.logger.error(translate('QueriesManager',
+                                        'Query on table {0} failed!',
+                                        'Warning log message about a failed '
+                                        'query').format(table_uid))
             return
 
         # Update temporary database view i.e. call lazyAddChildren

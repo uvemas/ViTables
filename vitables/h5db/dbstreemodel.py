@@ -34,6 +34,7 @@ import tempfile
 import os
 import sys
 import re
+import logging
 
 import tables
 
@@ -72,6 +73,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         super(DBsTreeModel, self).__init__(parent=None)
 
+        self.logger = logging.getLogger(__name__)
+
         # The dictionary of open databases
         self.__openDBs = {}
 
@@ -90,9 +93,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.ldelta = frozenset([])
         self.links_delta = frozenset([])
 
-
         self.rowsAboutToBeRemoved.connect(self.closeViews)
-
 
     def mapDB(self, filepath, db_doc):
         """Maps a file path with a :meth:`dbdoc.DBDoc` instance.
@@ -104,14 +105,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
         self.__openDBs[filepath] = db_doc
 
-
     def removeMappedDB(self, filepath):
         """Remove a :meth:`dbdoc.DBDoc` instance from the tracking dict.
 
         :Parameter filepath: the full path of the database being untracked
         """
         del self.__openDBs[filepath]
-
 
     def getDBDoc(self, filepath):
         """Returns the DBDoc instance tied to a given file path.
@@ -123,7 +122,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             return self.__openDBs[filepath]
         else:
             return None
-
 
     def getDBList(self):
         """Returns the list of paths of files currently open.
@@ -138,7 +136,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             pass
         return filepaths
 
-
     def checkOpening(self, filepath):
         """
         Check if a database can be open.
@@ -150,26 +147,26 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Check if file doesn't exist
             if os.path.isdir(filepath):
                 error = translate('DBsTreeModel',
-                    'Openning cancelled: {0} is a folder.',
-                    'A logger error message').format(filepath)
+                                  'Openning cancelled: {0} is a folder.',
+                                  'A logger error message').format(filepath)
                 raise ValueError
 
             elif not os.path.isfile(filepath):
                 error = translate('DBsTreeModel',
-                    'Opening failed: file {0} cannot be found.',
-                    'A logger error message').format(filepath)
+                                  'Opening failed: file {0} cannot be found.',
+                                  'A logger error message').format(filepath)
                 raise ValueError
 
             # Check if file is already open.
             elif self.getDBDoc(filepath) is not None:
                 error = translate('DBsTreeModel',
-                    'Opening cancelled: file {0} already open.',
-                    'A logger error message').format(filepath)
+                                  'Opening cancelled: file {0} already open.',
+                                  'A logger error message').format(filepath)
 
                 raise ValueError
 
         except ValueError:
-            print(error)
+            self.logger.error(error)
             return False
 
         # Check the file format
@@ -178,14 +175,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 error = translate('DBsTreeModel', \
                     'Opening cancelled: file {0} has not HDF5 format.',
                     'A logger error message').format(filepath)
-                print(error)
+                self.logger.error(error)
                 return False
         except (tables.NodeError, OSError):
             error = translate('DBsTreeModel',
                 """Opening failed: I cannot find out if file {0} has HDF5 """
                 """format.""",
                 'A logger error message').format(filepath)
-            print(error)
+            self.logger.error(error)
             return False
         else:
             return True
@@ -220,7 +217,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         return is_open
 
-
     def closeDBDoc(self, filepath):
         """
         Close the hdf5 file with the given file path.
@@ -247,12 +243,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 db_doc = self.getDBDoc(filepath)
                 if db_doc.hidden_group is not None:
                     db_doc.h5file.removeNode(db_doc.hidden_group,
-                        recursive=True)
+                                             recursive=True)
                 db_doc.closeH5File()
                 # Update the dictionary of open files
                 self.removeMappedDB(filepath)
                 break
-
 
     def createDBDoc(self, filepath, is_tmp_db=False):
         """
@@ -272,12 +267,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 db_doc = dbdoc.DBDoc(filepath, 'w', is_tmp_db)
             except (tables.NodeError, OSError):
                 db_doc = None
-                print(translate('DBsTreeModel',
-                    """\nFile creation failed due to unknown reasons!\n"""
-                    """Please, have a look to the last error displayed in """
-                    """the logger. If you think it's a bug, please report it"""
-                    """ to developers.""",
-                    'A file creation error'))
+               
+                self.logger.error(
+                    translate('DBsTreeModel',
+                              """\nFile creation failed due """
+                              """to unknownn       """reasons!\nPlease, have a look to the """
+                              """last        """error displayed in """
+                              """the logger. If you     """
+                              """   """think it's a bug, please report it to """
+                              """developers.""", 'A file creation error'))
                 return
 
             # Track the just created dbdoc
@@ -285,7 +283,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
             # Populate the model with the dbdoc
             root = rootgroupnode.RootGroupNode(self, db_doc, self.root,
-                is_tmp_db)
+                                               is_tmp_db)
             self.fdelta = frozenset([root])
             self.gdelta = frozenset([])
             self.ldelta = frozenset([])
@@ -305,7 +303,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         # Create the database
-        print(translate('DBsTreeModel', 'Creating the Query results file...',
+        self.logger.errorself.logger.error('DBsTreeModel', 'Creating the Query results file...',
             'A logger info message'))
         (f_handler, filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)

@@ -207,7 +207,7 @@ class Buffer(object):
             self.data_source.read(start, stop)
         except tables.HDF5ExtError:
             readable = False
-            self.logger(
+            self.logger.error(
                 translate('Buffer',
                           """\nError: problems reading records. The dataset """
                           """seems to be compressed with the {0} library. """
@@ -246,7 +246,7 @@ class Buffer(object):
             # array returned by EArray.read() will have only 2 rows
             data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
-            self.logger(
+            self.logger.error(
                 translate('Buffer', """\nError: problems reading records. """
                           """The dataset maybe corrupted.""",
                           'A dataset readability error'))
@@ -275,8 +275,8 @@ class Buffer(object):
         try:
             return self.chunk[()]
         except IndexError:
-            self.logger('IndexError! buffer start: {0} row, column: '
-                        '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
 
     def vectorCell(self, row, col):
         """
@@ -308,8 +308,8 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)]
         except IndexError:
-            self.logger('IndexError! buffer start: {0} row, column: '
-                        '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
 
     def EArrayCell(self, row, col):
         """
@@ -337,8 +337,8 @@ class Buffer(object):
         try:
             return self.data_source.read()[int(row - self.start)]
         except IndexError:
-            self.logger('IndexError! buffer start: {0} row, column: '
-                        '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
 
     def arrayCell(self, row, col):
         """
@@ -368,5 +368,5 @@ class Buffer(object):
         try:
             return self.chunk[int(row - self.start)][col]
         except IndexError:
-            self.logger('IndexError! buffer start: {0} row, column: '
-                        '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! buffer start: {0} row, column: '
+                              '{1}, {2}'.format(self.start, row, col))
