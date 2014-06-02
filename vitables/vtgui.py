@@ -131,9 +131,6 @@ class VTGUI(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logger_dock)
         self.logger = logger.Logger()
         self.logger_dock.setWidget(self.logger)
-        # Redirect standard output and standard error to a Logger instance
-        sys.stdout = self.logger
-        sys.stderr = self.logger
         # add self.logger as handler of main logger object
         vitables_logger = logging.getLogger('vitables')
         stream_handler = logging.StreamHandler(self.logger)

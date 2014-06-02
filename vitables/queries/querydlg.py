@@ -29,6 +29,7 @@ results` in the databases tree).
 __docformat__ = 'restructuredtext'
 
 import os.path
+import logging
 
 import numpy
 
@@ -45,7 +46,7 @@ translate = QtGui.QApplication.translate
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_QueryDialog = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'query_dlg.ui'))[0]
+    loadUiType(os.path.join(os.path.dirname(__file__), 'query_dlg.ui'))[0]
 
 
 class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
@@ -86,6 +87,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         """
         Initialise the dialog.
         """
+        self.logger = logging.getLogger(__name__)
 
         #
         # Attributes used by slot updateOKState
@@ -118,7 +120,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         self.setupUi(self)
 
         self.setWindowTitle(translate('QueryDlg', 'New query on table: {0}',
-            'A dialog caption').format(info['name']))
+                                      'A dialog caption').format(info['name']))
 
         self.nameLE.setText('FilteredTable_{0}'.format(counter))
 
@@ -130,13 +132,12 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         # Fill the combos
         operators = ['&', '|', '~', '<', '<=', '==', '!=', '>', '>=',
-            '+', '-', '*', '/', '**', '%']
+                     '+', '-', '*', '/', '**', '%']
         self.operatorsComboBox.insertItems(0, operators)
         functions = ['where', 'sin', 'cos', 'tan', 'arcsin', 'arccos',
-            'arctan', 'arctan2', 'sinh', 'cosh', 'tanh',
-            'arcsinh', 'arccosh', 'arctanh', 'log', 'log10', 'log1p',
-            'exp', 'expm1', 'sqrt',
-            'real', 'imag', 'complex']
+                     'arctan', 'arctan2', 'sinh', 'cosh', 'tanh',
+                     'arcsinh', 'arccosh', 'arctanh', 'log', 'log10', 'log1p',
+                     'exp', 'expm1', 'sqrt', 'real', 'imag', 'complex']
         self.functionsComboBox.insertItems(0, functions)
         sorted_fields = [field for field in info['valid_fields']]
         sorted_fields.sort()
@@ -163,7 +164,6 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         # initial condition then the OK button will be enabled
         self.nameLE.textChanged.emit(self.nameLE.text())
 
-
     @QtCore.pyqtSlot(bool, name="on_indicesCheckBox_toggled")
     def enableIndicesColumn(self, cb_on):
         """
@@ -176,13 +176,12 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         :Parameter cb_on: a boolean that indicates if the checkbox is down
             or not.
-    """
+        """
 
         if cb_on:
             self.indicesColumnLE.setEnabled(1)
         else:
             self.indicesColumnLE.setEnabled(0)
-
 
     @QtCore.pyqtSlot("QString", name="on_operatorsComboBox_activated")
     def insertOperator(self, operator):
@@ -192,7 +191,6 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         :Parameter operator: is the operator in the combobox current item
         """
         self.queryLE.insert(' {0} '.format(operator))
-
 
     @QtCore.pyqtSlot("QString", name="on_columnsComboBox_activated")
     def insertField(self, field_id):
@@ -210,7 +208,6 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         """
         self.queryLE.insert(field_id.split(' ')[0])
 
-
     @QtCore.pyqtSlot("QString", name="on_functionsComboBox_activated")
     def insertFunction(self, text):
         """
@@ -223,31 +220,29 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         """
 
         name2call = {'where': 'where(B, N, N)',
-            'sin': 'sin(F|C)',
-            'cos': 'cos(F|C)',
-            'tan': 'tan(F|C)',
-            'arcsin': 'arcsin(F|C)',
-            'arccos': 'arccos(F|C)',
-            'arctan': 'arctan(F|C)',
-            'arctan2': 'arctan2(F, F)',
-            'sinh': 'sinh(F|C)',
-            'cosh': 'cosh(F|C)',
-            'tanh': 'tanh(F|C)',
-            'arcsinh': 'arcsinh(F|C)',
-            'arccosh': 'arccosh(F|C)',
-            'arctanh': 'arctanh(F|C)',
-            'log': 'log(F|C)',
-            'log10': 'log10(F|C)',
-            'log1p': 'log1p(F|C)',
-            'exp': 'exp(F|C)',
-            'expm1': 'expm1(F|C)',
-            'sqrt': 'sqrt(F|C)',
-            'real': 'real(C)',
-            'imag': 'imag(C)',
-            'complex': 'complex(F, F)'
-            }
+                     'sin': 'sin(F|C)',
+                     'cos': 'cos(F|C)',
+                     'tan': 'tan(F|C)',
+                     'arcsin': 'arcsin(F|C)',
+                     'arccos': 'arccos(F|C)',
+                     'arctan': 'arctan(F|C)',
+                     'arctan2': 'arctan2(F, F)',
+                     'sinh': 'sinh(F|C)',
+                     'cosh': 'cosh(F|C)',
+                     'tanh': 'tanh(F|C)',
+                     'arcsinh': 'arcsinh(F|C)',
+                     'arccosh': 'arccosh(F|C)',
+                     'arctanh': 'arctanh(F|C)',
+                     'log': 'log(F|C)',
+                     'log10': 'log10(F|C)',
+                     'log1p': 'log1p(F|C)',
+                     'exp': 'exp(F|C)',
+                     'expm1': 'expm1(F|C)',
+                     'sqrt': 'sqrt(F|C)',
+                     'real': 'real(C)',
+                     'imag': 'imag(C)',
+                     'complex': 'complex(F, F)'}
         self.queryLE.insert(name2call[text])
-
 
     @QtCore.pyqtSlot("QString", name="on_nameLE_textChanged")
     @QtCore.pyqtSlot("QString", name="on_indicesColumnLE_textChanged")
@@ -285,30 +280,36 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             status_ok = False
         elif ft_name in self.used_names:
             status_ok = False
-            print(translate('QueryDlg',
-                """The chosen name is already in use. Please,"""
-                """ choose another one.""", 'A logger info message'))
+            self.logger.error(
+                translate('QueryDlg',
+                          """The chosen name is already in use. Please,"""
+                          """ choose another one.""",
+                          'A logger info message'))
 
         # Check the indices column name
         indices_colname = self.indicesColumnLE.text()
         if self.indicesColumnLE.isEnabled():
             if indices_colname == '':
                 status_ok = False
-                print(translate('QueryDlg',
-                    "Enter a name for the column of indices, please",
-                    'A logger info message'))
+                self.logger.error(
+                    translate('QueryDlg',
+                              "Enter a name for the column of indices, please",
+                              'A logger info message'))
             elif indices_colname.count('/'):
                 status_ok = False
-                print(translate('QueryDlg',
-                    """The chosen name for the column of indices"""
-                    """is not valid. It contains '/' characters""",
-                    'A logger info message'))
+                self.logger.error(
+                    translate('QueryDlg',
+                              """The chosen name for the column of indices"""
+                              """is not valid. It contains '/' characters""",
+                              'A logger info message'))
             elif indices_colname in self.col_names:
                 status_ok = False
-                print(translate('QueryDlg',
-                    """The chosen name for the column of indices"""
-                    """ is already in use. Please, choose another one.""",
-                    'A logger info message'))
+                self.logger.error(
+                    translate('QueryDlg',
+                              """The chosen name for the column of indices"""
+                              """ is already in use. """
+                              """"Please, choose another one.""",
+                              'A logger info message'))
 
         # Check the condition.
         # If it is an empty string the OK button is not enabled
@@ -326,21 +327,24 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             stop = numpy.array(stop_str).astype(numpy.int64)
             if stop > self.num_rows:
                 status_ok = False
-                print(translate('QueryDlg',
-                    """The stop value is greater than the number of """
-                    """rows. Please, choose another one.""",
-                    'A logger info message'))
+                self.logger.error(
+                    translate('QueryDlg',
+                              """The stop value is greater than the number """
+                              """of rows. Please, choose another one.""",
+                              'A logger info message'))
             elif start > stop:
                 status_ok = False
-                print(translate('QueryDlg',
-                    """The start value is greater than the """
-                    """stop value. Please, choose another one.""",
-                    'A logger info message'))
+                self.logger.error(
+                    translate('QueryDlg',
+                              """The start value is greater than the """
+                              """stop value. Please, choose another one.""",
+                              'A logger info message'))
             elif start < 1:
                 status_ok = False
-                print(translate('QueryDlg',
-                    "The start value must be greater than 0.",
-                    'A logger info message'))
+                self.logger.error(
+                    translate('QueryDlg',
+                              "The start value must be greater than 0.",
+                              'A logger info message'))
 
         # Enable/disable the OK button
         ok_button = self.buttonBox.button(QtGui.QDialogButtonBox.Ok)
@@ -348,7 +352,6 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             ok_button.setEnabled(1)
         else:
             ok_button.setEnabled(0)
-
 
     def checkConditionSyntax(self, condition):
         """Check the condition syntax.
@@ -361,29 +364,24 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
             self.source_table.willQueryUseIndexing(condition, self.condvars)
         except SyntaxError as error:
             syntax_ok = False
-            print(translate('QueryDlg', """\nError: {0}""",
-                'A logger info message').format(error.__doc__))
+            self.logger.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except NameError as error:
             syntax_ok = False
-            print(translate('QueryDlg', """\nError: {0}""",
-                'A logger info message').format(error.__doc__))
+            self.logger.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except ValueError as error:
             syntax_ok = False
-            print(translate('QueryDlg', """\nError: {0}""",
-                'A logger info message').format(error.__doc__))
+            self.logger.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except TypeError as error:
             syntax_ok = False
-            print(translate('QueryDlg', """\nError: {0}""",
-                'A logger info message').format(error.__doc__))
+            self.logger.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except:
             syntax_ok = False
             vitables.utils.formatExceptionInfo()
         return syntax_ok
-
 
     @QtCore.pyqtSlot(name="on_buttonBox_accepted")
     def composeQuery(self):
@@ -406,9 +404,9 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         # Get the range and convert it into a Python range
         self.query_info['rows_range'] = (
-           numpy.array(self.rstartLE.text()).astype(numpy.int64) - 1,
-           numpy.array(self.rstopLE.text()).astype(numpy.int64),
-           numpy.array(self.rstep.text()).astype(numpy.int64))
+            numpy.array(self.rstartLE.text()).astype(numpy.int64) - 1,
+            numpy.array(self.rstopLE.text()).astype(numpy.int64),
+            numpy.array(self.rstep.text()).astype(numpy.int64))
 
         # Exit
         self.accept()
