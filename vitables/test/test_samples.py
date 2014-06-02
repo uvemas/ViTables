@@ -75,10 +75,8 @@ class TestTableOpening:
         ],
         'examples/arrays/vlarray_samples.h5': [
             'vlarray1', 'vlarray11', 'vlarray2', 'vlarray3', 'vlarray5',
-            'vlarray6', 'vlarray8',
-            # 'vlarray10',
+            'vlarray6', 'vlarray8', 'vlarray10', 'vlarray9',
             # 'vlarray7',
-            # 'vlarray9',
         ],
         'examples/misc/external_file.h5': [
             'a1',
