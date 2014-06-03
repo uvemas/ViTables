@@ -1186,38 +1186,14 @@ There is already a node named &apos;{2}&apos; in that parent group.
 <context>
     <name>VTApp</name>
     <message>
-        <location filename="vitables/vtapp.py" line="1044"/>
-        <source>Node deletion</source>
-        <comment>Caption of the node deletion dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vitables/vtapp.py" line="1230"/>
-        <source>About Qt</source>
-        <comment>Caption of the About Qt dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vitables/vtapp.py" line="1266"/>
-        <source>Version Numbers</source>
-        <comment>Caption of the Versions dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vitables/vtapp.py" line="1261"/>
-        <source>not available</source>
-        <comment>Part of the library not found text</comment>
+        <location filename="vitables/vtapp.py" line="132"/>
+        <source>Creating the GUI...</source>
+        <comment>A splash screen message</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="vitables/vtapp.py" line="139"/>
         <source>Configuration setup...</source>
-        <comment>A splash screen message</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vitables/vtapp.py" line="132"/>
-        <source>Creating the GUI...</source>
         <comment>A splash screen message</comment>
         <translation type="unfinished"></translation>
     </message>
@@ -1451,6 +1427,12 @@ Node name &apos;{4}&apos; already in use in that group.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="vitables/vtapp.py" line="1044"/>
+        <source>Node deletion</source>
+        <comment>Caption of the node deletion dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="vitables/vtapp.py" line="1046"/>
         <source>
 You are about to delete the node:
@@ -1527,15 +1509,27 @@ You are about to delete the node:
         <comment>Title of the third tab of the About dialog</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="vitables/vtapp.py" line="1230"/>
+        <source>About Qt</source>
+        <comment>Caption of the About Qt dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/vtapp.py" line="1266"/>
+        <source>Version Numbers</source>
+        <comment>Caption of the Versions dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/vtapp.py" line="1261"/>
+        <source>not available</source>
+        <comment>Part of the library not found text</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>VTGUI</name>
-    <message>
-        <location filename="vitables/vtgui.py" line="501"/>
-        <source>Ready...</source>
-        <comment>The status bar startup message</comment>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="vitables/vtgui.py" line="57"/>
         <source>ViTables {0}</source>
@@ -1962,6 +1956,12 @@ Click and hold to open a recent file</source>
         <location filename="vitables/vtgui.py" line="498"/>
         <source>The node currently selected in the Tree of databases pane</source>
         <comment>The Selected node box startup message</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/vtgui.py" line="501"/>
+        <source>Ready...</source>
+        <comment>The status bar startup message</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
