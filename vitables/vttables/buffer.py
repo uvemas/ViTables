@@ -209,12 +209,17 @@ class Buffer(object):
             readable = False
             self.logger.error(
                 translate('Buffer',
-                          """\nError: problems reading records. The dataset """
+                          """Problems reading records. The dataset """
                           """seems to be compressed with the {0} library. """
                           """Check that it is installed in your system, """
                           """please.""",
                           'A dataset readability error').format(
                               self.data_source.filters.complib))
+        except ValueError as e:
+            readable = False
+            self.logger.error(
+                translate('Buffer', 'Data read error: {}',
+                          'A dataset read error').format(e.message))
         return readable
 
     def readBuffer(self, start, buffer_size):

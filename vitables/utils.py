@@ -330,13 +330,12 @@ def formatStringContent(content):
     # Content is a encoded string i.e. a sequence of raw bytes
     if isinstance(content, bytes):
         try:
-            fcontent = str(content, encoding=DEFAULT_ENCODING)
+            fcontent = content.decode(encoding=DEFAULT_ENCODING)
             return fcontent
         except UnicodeDecodeError:
-            pass
-    elif isinstance(content, str):
-        # Content is a unicode string
-        return content
+            logger = logging.getLogger(__name__)
+            logger.error('UnicodeDecodeError exception')
+    return content
 
 
 def formatExceptionInfo(limit=1):
@@ -354,6 +353,7 @@ def formatExceptionInfo(limit=1):
 #
 # Path related functions
 #
+
 
 def getHomeDir():
     """
