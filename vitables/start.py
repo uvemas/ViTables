@@ -39,6 +39,9 @@ standard_library.install_hooks()
 from PyQt4 import QtGui
 import PyQt4.QtCore as qtcore
 
+from vitables.vtapp import VTApp
+from vitables.preferences import vtconfig
+
 _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
                             2: logging.INFO, 3: logging.DEBUG}
 _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -46,55 +49,28 @@ _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 _I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
 
 
-def _setup_logger(args):
-    """"""
-    logger = logging.getLogger('vitables')
-    file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
-    temporary_stderr_handler = logging.StreamHandler()
-    temporary_stderr_handler.setFormatter(file_formatter)
-    logger.addHandler(temporary_stderr_handler)
-    if args.log_file is not None:
-        try:
-            log_filename = os.path.expandvars(
-                os.path.expanduser(args.log_file))
-            file_handler = logging.FileHandler(log_filename)
-            file_handler.setFormatter(file_formatter)
-            logger.addHandler(file_handler)
-        except Exception as e:
-            logger.error('Failed to open log file')
-            logger.error(e)
-    if args.verbose in _VERBOSITY_LOGLEVEL_DICT:
-        logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[args.verbose])
-    else:
-        logger.setLevel(logging.ERROR)
-        logger.error('Invalid verbosity level: {}'.format(args.verbose))
-    return logger, temporary_stderr_handler
+def _set_credentials(app):
+    """Specify the organization's Internet domain.
 
+    When the Internet domain is set, it is used on Mac OS X instead of
+    the organization name, since Mac OS X applications conventionally
+    use Internet domains to identify themselves
 
-def gui():
-    """The application launcher.
-
-    First of all, translators are loaded. Then the GUI is shown and the events
-    loop is started.
     """
-    args = sys.argv
-    app = QtGui.QApplication(args)
-    # These imports must be done after the QApplication has been instantiated
-    from vitables.vtapp import VTApp
-    from vitables.preferences import vtconfig
-
-    # Specify the organization's Internet domain. When the Internet
-    # domain is set, it is used on Mac OS X instead of the organization
-    # name, since Mac OS X applications conventionally use Internet
-    # domains to identify themselves
     app.setOrganizationDomain('vitables.org')
     app.setOrganizationName('ViTables')
     app.setApplicationName('ViTables')
     app.setApplicationVersion(vtconfig.getVersion())
 
-    # Localize the application using the system locale
-    # numpy seems to have problems with decimal separator in some locales
-    # (catalan, german...) so C locale is always used for numbers.
+
+def _set_locale(app):
+    """Set locale and load translation if available.
+
+    Localize the application using the system locale numpy seems to
+    have problems with decimal separator in some locales (catalan,
+    german...) so C locale is always used for numbers.
+
+    """
     locale.setlocale(locale.LC_ALL, '')
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
@@ -103,7 +79,10 @@ def gui():
     if translator.load('vitables_' + locale_name, _I18N_PATH):
         app.installTranslator(translator)
 
-    # Parse the command line optional arguments
+
+def _parse_command_line():
+    """Create parser and parse command line."""
+     # Parse the command line optional arguments
     parser = argparse.ArgumentParser(usage='%(prog)s [option]... [h5file]...')
     h5files_group = parser.add_argument_group('h5files')
     logging_group = parser.add_argument_group('logging')
@@ -132,7 +111,51 @@ def gui():
         # Other options and positional arguments are silently ignored
         args.mode = ''
         args.h5file = []
-    # Start the application
+    return args
+
+
+def _setup_logger(args):
+    """Setup logger output format, level and output file.
+
+    Stderr logger is added to handle error that raise before the gui
+    is launched. It better be removed before event loop starts.
+
+    """
+    logger = logging.getLogger('vitables')
+    file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
+    temporary_stderr_handler = logging.StreamHandler()
+    temporary_stderr_handler.setFormatter(file_formatter)
+    logger.addHandler(temporary_stderr_handler)
+    if args.log_file is not None:
+        try:
+            log_filename = os.path.expandvars(
+                os.path.expanduser(args.log_file))
+            file_handler = logging.FileHandler(log_filename)
+            file_handler.setFormatter(file_formatter)
+            logger.addHandler(file_handler)
+        except Exception as e:
+            logger.error('Failed to open log file')
+            logger.error(e)
+    if args.verbose in _VERBOSITY_LOGLEVEL_DICT:
+        logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[args.verbose])
+    else:
+        logger.setLevel(logging.ERROR)
+        logger.error('Invalid verbosity level: {}, error level '
+                     'set to ERROR'.format(args.verbose))
+    return logger, temporary_stderr_handler
+
+
+def gui():
+    """The application launcher.
+
+    First of all, translators are loaded. Then the GUI is shown and
+    the events loop is started.
+
+    """
+    app = QtGui.QApplication(sys.argv)
+    _set_credentials(app)
+    _set_locale(app)
+    args = _parse_command_line()
     logger, console_log_handler = _setup_logger(args)
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
     vtapp.gui.show()
