@@ -206,8 +206,11 @@ class PluginsLoader(object):
 
     def load_plugins(self):
         """Load new style plugins."""
+        app = QtGui.QApplication.instance()
         for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
             plugin_class = entrypoint.load()
+            if hasattr(plugin_class, 'translator'):
+                app.installTranslator(plugin_class.translator)
             if plugin_class.UID in self.enabled_plugins:
                 instance = plugin_class()
                 self.loaded_plugins[plugin_class.UID] = instance
