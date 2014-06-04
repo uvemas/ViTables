@@ -37,10 +37,13 @@ from future import standard_library
 standard_library.install_hooks()
 
 from PyQt4 import QtGui
+import PyQt4.QtCore as qtcore
 
 _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
                             2: logging.INFO, 3: logging.DEBUG}
 _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+_I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
 
 
 def gui():
@@ -69,13 +72,11 @@ def gui():
     # (catalan, german...) so C locale is always used for numbers.
     locale.setlocale(locale.LC_ALL, '')
     locale.setlocale(locale.LC_NUMERIC, 'C')
-    # Future translations (if any) will use resource files
-    # vt_translator = QTranslator()
-    # vt_translator.load('vitables_%s' % language, config.translations_dir)
-    # qt_translator = QTranslator()
-    # qt_translator.load('qt_%s' % language, config.translations_dir)
-    # app.installTranslator(vt_translator)
-    # app.installTranslator(qt_translator)
+
+    locale_name = qtcore.QLocale.system().name()
+    translator = qtcore.QTranslator()
+    if translator.load('vitables_' + locale_name, _I18N_PATH):
+        app.installTranslator(translator)
 
     # Parse the command line optional arguments
     parser = argparse.ArgumentParser(usage='%(prog)s [option]... [h5file]...')
