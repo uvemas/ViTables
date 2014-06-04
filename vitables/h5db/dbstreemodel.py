@@ -264,7 +264,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             try:
                 db_doc = dbdoc.DBDoc(filepath, 'w', is_tmp_db)
             except (tables.NodeError, OSError):
-                db_doc = None
                 self.logger.error(
                     translate('DBsTreeModel',
                               """\nFile creation failed due to unknown"""
@@ -272,7 +271,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                               """last error displayed in the logger. If you """
                               """think it's a bug, please report it to """
                               """developers.""", 'A file creation error'))
-                return
+                return None
 
             # Track the just created dbdoc
             self.mapDB(filepath, db_doc)
@@ -287,7 +286,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             self.insertRows(0, 1)
         finally:
             QtGui.qApp.restoreOverrideCursor()
-            return db_doc
+        return db_doc
 
     def __createTempDB(self):
         """
