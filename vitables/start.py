@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
@@ -39,37 +36,48 @@ standard_library.install_hooks()
 from PyQt4 import QtGui
 import PyQt4.QtCore as qtcore
 
+from vitables.vtapp import VTApp
+from vitables.preferences import vtconfig
+
+# Map number of -v's on command line to logging error level.
 _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
                             2: logging.INFO, 3: logging.DEBUG}
+# Default log format used by logger.
 _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-
+# Folder with vitables translations.
 _I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
 
 
-def gui():
-    """The application launcher.
+def _check_versions():
+    """Check that tables are at least version 3.0"""
+    import tables
+    if tables.__version__ < '3.0':
+        sys.exit('FATAL: PyTables version 3.0 or above is required, '
+                 'installed version is {}'.format(tables.__version__))
 
-    First of all, translators are loaded. Then the GUI is shown and the events
-    loop is started.
+
+def _set_credentials(app):
+    """Specify the organization's Internet domain.
+
+    When the Internet domain is set, it is used on Mac OS X instead of
+    the organization name, since Mac OS X applications conventionally
+    use Internet domains to identify themselves
+
     """
-    args = sys.argv
-    app = QtGui.QApplication(args)
-    # These imports must be done after the QApplication has been instantiated
-    from vitables.vtapp import VTApp
-    from vitables.preferences import vtconfig
-
-    # Specify the organization's Internet domain. When the Internet
-    # domain is set, it is used on Mac OS X instead of the organization
-    # name, since Mac OS X applications conventionally use Internet
-    # domains to identify themselves
     app.setOrganizationDomain('vitables.org')
     app.setOrganizationName('ViTables')
     app.setApplicationName('ViTables')
     app.setApplicationVersion(vtconfig.getVersion())
 
-    # Localize the application using the system locale
-    # numpy seems to have problems with decimal separator in some locales
-    # (catalan, german...) so C locale is always used for numbers.
+
+def _set_locale(app):
+    """Set locale and load translation if available.
+
+    Localize the application using the system locale numpy seems to
+    have problems with decimal separator in some locales (catalan,
+    german...) so C locale is always used for numbers.
+
+    """
     locale.setlocale(locale.LC_ALL, '')
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
@@ -77,8 +85,12 @@ def gui():
     translator = qtcore.QTranslator()
     if translator.load('vitables_' + locale_name, _I18N_PATH):
         app.installTranslator(translator)
+    return translator
 
-    # Parse the command line optional arguments
+
+def _parse_command_line():
+    """Create parser and parse command line."""
+     # Parse the command line optional arguments
     parser = argparse.ArgumentParser(usage='%(prog)s [option]... [h5file]...')
     h5files_group = parser.add_argument_group('h5files')
     logging_group = parser.add_argument_group('logging')
@@ -107,29 +119,54 @@ def gui():
         # Other options and positional arguments are silently ignored
         args.mode = ''
         args.h5file = []
+    return args
 
-    # Setup top level logger using command line options
+
+def _setup_logger(args):
+    """Setup logger output format, level and output file.
+
+    Stderr logger is added to handle error that raise before the gui
+    is launched. It better be removed before event loop starts.
+
+    """
     logger = logging.getLogger('vitables')
     file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
     temporary_stderr_handler = logging.StreamHandler()
     temporary_stderr_handler.setFormatter(file_formatter)
     logger.addHandler(temporary_stderr_handler)
     if args.log_file is not None:
-        log_filename = os.path.expandvars(os.path.expanduser(args.log_file))
-        # TODO(alexey) add checks that the file can be written into,
-        # add a function into utils maybe
-        file_handler = logging.FileHandler(log_filename)
-        file_handler.setFormatter(file_formatter)
-        logger.addHandler(file_handler)
+        try:
+            log_filename = os.path.expandvars(
+                os.path.expanduser(args.log_file))
+            file_handler = logging.FileHandler(log_filename)
+            file_handler.setFormatter(file_formatter)
+            logger.addHandler(file_handler)
+        except Exception as e:
+            logger.error('Failed to open log file')
+            logger.error(e)
     if args.verbose in _VERBOSITY_LOGLEVEL_DICT:
         logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[args.verbose])
     else:
         logger.setLevel(logging.ERROR)
-        logger.error('Invalid verbosity level: {}'.format(args.verbose))
-    # remove stderr handler, by default use logger.Logger object
-    logger.removeHandler(temporary_stderr_handler)
+        logger.error('Invalid verbosity level: {}, error level '
+                     'set to ERROR'.format(args.verbose))
+    return logger, temporary_stderr_handler
 
-    # Start the application
+
+def gui():
+    """The application launcher.
+
+    First of all, translators are loaded. Then the GUI is shown and
+    the events loop is started.
+
+    """
+    _check_versions()
+    app = QtGui.QApplication(sys.argv)
+    _set_credentials(app)
+    translator = _set_locale(app)
+    args = _parse_command_line()
+    logger, console_log_handler = _setup_logger(args)
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
     vtapp.gui.show()
+    logger.removeHandler(console_log_handler)
     app.exec_()
