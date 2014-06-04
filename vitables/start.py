@@ -46,6 +46,31 @@ _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 _I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
 
 
+def _setup_logger(args):
+    """"""
+    logger = logging.getLogger('vitables')
+    file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
+    temporary_stderr_handler = logging.StreamHandler()
+    temporary_stderr_handler.setFormatter(file_formatter)
+    logger.addHandler(temporary_stderr_handler)
+    if args.log_file is not None:
+        try:
+            log_filename = os.path.expandvars(
+                os.path.expanduser(args.log_file))
+            file_handler = logging.FileHandler(log_filename)
+            file_handler.setFormatter(file_formatter)
+            logger.addHandler(file_handler)
+        except Exception as e:
+            logger.error('Failed to open log file')
+            logger.error(e)
+    if args.verbose in _VERBOSITY_LOGLEVEL_DICT:
+        logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[args.verbose])
+    else:
+        logger.setLevel(logging.ERROR)
+        logger.error('Invalid verbosity level: {}'.format(args.verbose))
+    return logger, temporary_stderr_handler
+
+
 def gui():
     """The application launcher.
 
@@ -107,29 +132,9 @@ def gui():
         # Other options and positional arguments are silently ignored
         args.mode = ''
         args.h5file = []
-
-    # Setup top level logger using command line options
-    logger = logging.getLogger('vitables')
-    file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
-    temporary_stderr_handler = logging.StreamHandler()
-    temporary_stderr_handler.setFormatter(file_formatter)
-    logger.addHandler(temporary_stderr_handler)
-    if args.log_file is not None:
-        log_filename = os.path.expandvars(os.path.expanduser(args.log_file))
-        # TODO(alexey) add checks that the file can be written into,
-        # add a function into utils maybe
-        file_handler = logging.FileHandler(log_filename)
-        file_handler.setFormatter(file_formatter)
-        logger.addHandler(file_handler)
-    if args.verbose in _VERBOSITY_LOGLEVEL_DICT:
-        logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[args.verbose])
-    else:
-        logger.setLevel(logging.ERROR)
-        logger.error('Invalid verbosity level: {}'.format(args.verbose))
-    # remove stderr handler, by default use logger.Logger object
-    logger.removeHandler(temporary_stderr_handler)
-
     # Start the application
+    logger, console_log_handler = _setup_logger(args)
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
     vtapp.gui.show()
+    logger.removeHandler(console_log_handler)
     app.exec_()
