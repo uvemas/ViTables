@@ -52,6 +52,7 @@ import importlib
 import pkgutil
 import sys
 import pkg_resources
+import logging
 
 from PyQt4 import QtGui
 
@@ -207,10 +208,16 @@ class PluginsLoader(object):
     def load_plugins(self):
         """Load new style plugins."""
         app = QtGui.QApplication.instance()
+        logger = logging.getLogger(__name__)
         for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
             plugin_class = entrypoint.load()
             if hasattr(plugin_class, 'translator'):
-                app.installTranslator(plugin_class.translator)
+                try:
+                    app.installTranslator(plugin_class.translator)
+                except Exception as e:
+                    logger.error('Failed to install {0} plugin '
+                                 'translator'.format(entrypoint.module_name))
+                    logger.error(e)
             if plugin_class.UID in self.enabled_plugins:
                 instance = plugin_class()
                 self.loaded_plugins[plugin_class.UID] = instance
