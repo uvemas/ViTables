@@ -85,6 +85,7 @@ def _set_locale(app):
     translator = qtcore.QTranslator()
     if translator.load('vitables_' + locale_name, _I18N_PATH):
         app.installTranslator(translator)
+    return translator
 
 
 def _parse_command_line():
@@ -162,7 +163,7 @@ def gui():
     _check_versions()
     app = QtGui.QApplication(sys.argv)
     _set_credentials(app)
-    _set_locale(app)
+    translator = _set_locale(app)
     args = _parse_command_line()
     logger, console_log_handler = _setup_logger(args)
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
