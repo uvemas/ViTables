@@ -48,6 +48,14 @@ _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 _I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
 
 
+def _check_versions():
+    """Check that tables are at least version 3.0"""
+    import tables
+    if tables.__version__ < '3.0':
+        sys.exit('FATAL: PyTables version 3.0 or above is required, '
+                 'installed version is {}'.format(tables.__version__))
+
+
 def _set_credentials(app):
     """Specify the organization's Internet domain.
 
@@ -151,6 +159,7 @@ def gui():
     the events loop is started.
 
     """
+    _check_versions()
     app = QtGui.QApplication(sys.argv)
     _set_credentials(app)
     _set_locale(app)
