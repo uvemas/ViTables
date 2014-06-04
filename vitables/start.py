@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
@@ -42,10 +39,12 @@ import PyQt4.QtCore as qtcore
 from vitables.vtapp import VTApp
 from vitables.preferences import vtconfig
 
+# Map number of -v's on command line to logging error level.
 _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
                             2: logging.INFO, 3: logging.DEBUG}
+# Default log format used by logger.
 _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-
+# Folder with vitables translations.
 _I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
 
 
