@@ -28,7 +28,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="version_le">
+       <widget class="QLineEdit" name="version_text">
         <property name="palette">
          <palette>
           <active>
@@ -79,7 +79,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="module_name_le">
+       <widget class="QLineEdit" name="module_name_text">
         <property name="palette">
          <palette>
           <active>
@@ -130,7 +130,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="folder_le">
+       <widget class="QLineEdit" name="folder_text">
         <property name="palette">
          <palette>
           <active>
@@ -181,7 +181,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="author_le">
+       <widget class="QLineEdit" name="author_text">
         <property name="palette">
          <palette>
           <active>
@@ -232,7 +232,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QTextEdit" name="desc_te">
+       <widget class="QTextEdit" name="desc_text">
         <property name="palette">
          <palette>
           <active>
