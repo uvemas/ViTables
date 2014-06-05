@@ -43,11 +43,16 @@ i18n
                   plugin/analyze.py
 
    
-2. Run `pylupdate4` to create `.ts` file in top level folder.
+2. Run ``pylupdate4`` to create ``.ts`` file in top level folder:
+   
+   .. code-block:: sh
 
-3. Translate and store compiled version in, for example, `i18n/plugin_ru_RU.qm`.
+       pylupdate4 plugin.pro
 
-4. Create `resources.qrc` with resource description:
+3. Translate using ``linguist`` and store compiled version in, for
+   example, ``i18n/plugin_ru_RU.qm``.
+
+4. Create ``resources.qrc`` with resource description:
 
    .. code-block:: xml
 
