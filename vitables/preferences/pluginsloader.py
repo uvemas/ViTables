@@ -78,7 +78,7 @@ class PluginsLoader(object):
         """Dynamically load and instantiate the available plugins.
         """
 
-        self.logger = logging.getLogger(__name__)
+        self._logger = logging.getLogger(__name__)
         # list of UID of enabled plugins, stored in configuration
         self.enabled_plugins = enabled_plugins
         # dictionary that contains all available plugins
@@ -93,18 +93,28 @@ class PluginsLoader(object):
             try:
                 app.installTranslator(plugin_class.translator)
             except Exception as e:
-                self.logger.error('Failed to install {0} plugin '
-                                  'translator'.format(module_name))
-                self.logger.error(e)
+                self._logger.error('Failed to install {0} plugin '
+                                   'translator'.format(module_name))
+                self._logger.error(e)
+
+    def _disable_not_loaded(self):
+        self.enabled_plugins = list(self.loaded_plugins.keys())
 
     def loadAll(self):
         """Find plugins in the system and crete instances of enabled ones."""
+        self._logger.debug('Enabled plugins: {0}'.format(
+            str(self.enabled_plugins)))
         for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
             plugin_class = entrypoint.load()
+            self._logger.debug('Found plugin: {0}'.format(
+                entrypoint.module_name))
             self.all_plugins[plugin_class.UID] = {
                 'UID': plugin_class.UID, 'name': plugin_class.NAME,
                 'comment': plugin_class.COMMENT}
             if plugin_class.UID in self.enabled_plugins:
+                self._logger.debug('Loading plugin: {0}'.format(
+                    entrypoint.name))
                 self._add_plugin_translator(entrypoint.module_name,
                                             plugin_class)
                 self.loaded_plugins[plugin_class.UID] = plugin_class()
+        self._disable_not_loaded()
