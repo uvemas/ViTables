@@ -129,7 +129,7 @@ def _setup_logger(args):
     is launched. It better be removed before event loop starts.
 
     """
-    logger = logging.getLogger('vitables')
+    logger = logging.getLogger()
     file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
     temporary_stderr_handler = logging.StreamHandler()
     temporary_stderr_handler.setFormatter(file_formatter)

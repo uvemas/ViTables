@@ -27,8 +27,11 @@ to ViTables folder and run:
    done
 
 
-Plugin i18n
------------
+Plugins
+-------
+
+i18n
+++++
 
 1. Create module project file
 
