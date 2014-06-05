@@ -19,44 +19,14 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """The plugins loader module.
-
-Every module under the plugins directory is a plugin.
-This module finds, loads, instantiates and registers the available plugins.
-
-There are (at least) 2 approaches for loading the plugins under
-the plugins directory:
-
-a) to iterate over a list of module names
-b) to iterate over the content of the plugins directory
-
-Syntax of a) is simpler (see below) but b) seems to be more general and
-powerful as it can deal with packages too. So *at the moment* I'll use the
-approach b). In the future a better defined plugins infrastructure may be used.
-
-FYI, approach a) looks like::
-
-    from vitables.plugins import __all__ as plugins
-    for plugin in plugins:
-        try:
-            module_name = 'vitables.plugins.' + plugin
-            __import__(module_name)
-            module = sys.modules[module_name]
-        except ImportError:
-            print "Error: module %s cannot be loaded" % module_name
 """
 
 __docformat__ = 'restructuredtext'
 
-import os
-import importlib
-import pkgutil
-import sys
 import pkg_resources
 import logging
 
 from PyQt4 import QtGui
-
-import vitables.utils
 
 translate = QtGui.QApplication.translate
 
@@ -66,16 +36,13 @@ PLUGIN_GROUP = 'vitables.plugins'
 class PluginsLoader(object):
     """Plugins loader class.
 
-    Every module|package under the plugins directory is a plugin. At the
-    moment packages can contain module plugins only at top level because
-    the plugins manager doesn't iterate recursively over the package looking
-    for plugins.
+    The class loads enabled plugins and their translations and stores
+    info about them.
 
-    :Parameter enabled_plugins: a list with the UIDs of the enabled plugins
     """
 
     def __init__(self, enabled_plugins):
-        """Dynamically load and instantiate the available plugins.
+        """Assign default values to members.
         """
 
         self._logger = logging.getLogger(__name__)
