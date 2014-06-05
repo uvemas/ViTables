@@ -25,12 +25,48 @@ __docformat__ = 'restructuredtext'
 
 import pkg_resources
 import logging
+import traceback
 
 from PyQt4 import QtGui
 
 translate = QtGui.QApplication.translate
 
 PLUGIN_GROUP = 'vitables.plugins'
+
+
+def _add_plugin_translator(module_name, plugin_class, logger):
+    """Try to load plugin translator."""
+    app = QtGui.QApplication.instance()
+    if hasattr(plugin_class, 'translator'):
+        try:
+            app.installTranslator(plugin_class.translator)
+        except Exception as e:
+            logger.error('Failed to install {0} plugin '
+                         'translator'.format(module_name))
+            logger.error(e)
+
+
+def _load_entrypoint(entrypoint, logger):
+    plugin_class = None
+    try:
+        plugin_class = entrypoint.load()
+    except Exception as e:
+        logger.error('Failed to load plugin: {0}'.format(
+            entrypoint.module_name))
+        logger.error(e)
+        logger.info(traceback.format_exc())
+    return plugin_class
+
+
+def _create_instance(plugin_class, logger):
+    instance = None
+    try:
+        instance = plugin_class()
+    except Exception as e:
+        logger.error('Failed to create plugin instance')
+        logger.error(e)
+        logger.info(traceback.format_exc())
+    return instance
 
 
 class PluginsLoader(object):
@@ -53,17 +89,6 @@ class PluginsLoader(object):
         # instances of loaded plugins
         self.loaded_plugins = {}
 
-    def _add_plugin_translator(self, module_name, plugin_class):
-        """Try to load plugin translator."""
-        app = QtGui.QApplication.instance()
-        if hasattr(plugin_class, 'translator'):
-            try:
-                app.installTranslator(plugin_class.translator)
-            except Exception as e:
-                self._logger.error('Failed to install {0} plugin '
-                                   'translator'.format(module_name))
-                self._logger.error(e)
-
     def _disable_not_loaded(self):
         self.enabled_plugins = list(self.loaded_plugins.keys())
 
@@ -72,7 +97,9 @@ class PluginsLoader(object):
         self._logger.debug('Enabled plugins: {0}'.format(
             str(self.enabled_plugins)))
         for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
-            plugin_class = entrypoint.load()
+            plugin_class = _load_entrypoint(entrypoint, self._logger)
+            if plugin_class is None:
+                continue
             self._logger.debug('Found plugin: {0}'.format(
                 entrypoint.module_name))
             self.all_plugins[plugin_class.UID] = {
@@ -81,7 +108,9 @@ class PluginsLoader(object):
             if plugin_class.UID in self.enabled_plugins:
                 self._logger.debug('Loading plugin: {0}'.format(
                     entrypoint.name))
-                self._add_plugin_translator(entrypoint.module_name,
-                                            plugin_class)
-                self.loaded_plugins[plugin_class.UID] = plugin_class()
+                _add_plugin_translator(entrypoint.module_name,
+                                       plugin_class, self._logger)
+                instance = _create_instance(plugin_class, self._logger)
+                if instance is not None:
+                    self.loaded_plugins[plugin_class.UID] = instance
         self._disable_not_loaded()
