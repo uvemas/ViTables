@@ -129,11 +129,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         # Populate the model
         row = 0
         for UID, desc in self.all_plugins.items():
-            if desc['is_old_style']:
-                name, comment = UID.split('#@#')
-            else:
-                name = desc['name']
-                comment = desc['comment']
+            name = desc['name']
+            comment = desc['comment']
             nitem = QtGui.QStandardItem(name)
             nitem.setData(UID)
             nitem.setCheckable(True)

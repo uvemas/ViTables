@@ -129,7 +129,7 @@ def _setup_logger(args):
     is launched. It better be removed before event loop starts.
 
     """
-    logger = logging.getLogger('vitables')
+    logger = logging.getLogger()
     file_formatter = logging.Formatter(_FILE_LOG_FORMAT)
     temporary_stderr_handler = logging.StreamHandler()
     temporary_stderr_handler.setFormatter(file_formatter)
@@ -163,7 +163,7 @@ def gui():
     _check_versions()
     app = QtGui.QApplication(sys.argv)
     _set_credentials(app)
-    translator = _set_locale(app)
+    translator = _set_locale(app)  # must not be destroyed before app quits
     args = _parse_command_line()
     logger, console_log_handler = _setup_logger(args)
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)

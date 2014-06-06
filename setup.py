@@ -23,6 +23,7 @@ Setup script for the vitables package.
 import os
 from setuptools import setup, find_packages
 
+
 # Utility function to read the README file.
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -50,6 +51,19 @@ setup(name='ViTables',
       ],
       requires=['sip', 'PyQt4', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
                 'cython (>=0.13)', 'tables (>=3.0)'],
-      entry_points={'gui_scripts': ['vitables = vitables.start:gui']},
+      entry_points={
+          'gui_scripts': ['vitables = vitables.start:gui'],
+          'vitables.plugins':
+          [('columnar_org = '
+            'vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer'),
+           ('import_csv = '
+            'vitables.plugins.csv.import_csv:ImportCSV'),
+           ('export_csv = '
+            'vitables.plugins.csv.export_csv:ExportToCSV'),
+           ('dbs_tree_sort = '
+            'vitables.plugins.dbstreesort.dbs_tree_sort:DBsTreeSort'),
+           ('time_series = '
+            'vitables.plugins.timeseries.time_series:TSFormatter')]
+      },
       packages=find_packages(),
       include_package_data=True,)
