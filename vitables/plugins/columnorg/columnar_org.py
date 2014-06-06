@@ -60,7 +60,7 @@ class ArrayColsOrganizer(QtCore.QObject):
     """
 
     UID = 'vitables.plugin.columnar_org'
-    NAME = 'columnar_org'
+    NAME = plugin_name
     COMMENT = comment
 
     def __init__(self, parent=None):

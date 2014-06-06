@@ -55,7 +55,9 @@ setup(name='ViTables',
           'gui_scripts': ['vitables = vitables.start:gui'],
           'vitables.plugins':
           [('columnar_org = '
-            'vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer')]
+            'vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer'),
+           ('import_csv = '
+            'vitables.plugins.csv.import_csv:ImportCSV')]
       },
       packages=find_packages(),
       include_package_data=True,)
