@@ -177,6 +177,10 @@ class TSFormatter(object):
     contains a time series suitable to be formatted in a user friendly way.
     """
 
+    UID = 'vitables.plugin.time_series'
+    NAME = plugin_name
+    COMMENT = comment
+
     def __init__(self):
         """Class constructor.
 

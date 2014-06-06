@@ -61,7 +61,9 @@ setup(name='ViTables',
            ('export_csv = '
             'vitables.plugins.csv.export_csv:ExportToCSV'),
            ('dbs_tree_sort = '
-            'vitables.plugins.dbstreesort.dbs_tree_sort:DBsTreeSort')]
+            'vitables.plugins.dbstreesort.dbs_tree_sort:DBsTreeSort'),
+           ('time_series = '
+            'vitables.plugins.timeseries.time_series:TSFormatter')]
       },
       packages=find_packages(),
       include_package_data=True,)
