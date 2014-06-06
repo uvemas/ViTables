@@ -57,7 +57,9 @@ setup(name='ViTables',
           [('columnar_org = '
             'vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer'),
            ('import_csv = '
-            'vitables.plugins.csv.import_csv:ImportCSV')]
+            'vitables.plugins.csv.import_csv:ImportCSV'),
+           ('export_csv = '
+            'vitables.plugins.csv.export_csv:ExportToCSV')]
       },
       packages=find_packages(),
       include_package_data=True,)
