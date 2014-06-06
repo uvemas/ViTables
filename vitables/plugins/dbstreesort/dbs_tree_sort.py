@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
@@ -49,6 +46,7 @@ from vitables.h5db import dbstreemodel
 
 translate = QtGui.QApplication.translate
 
+
 def customiseDBsTreeModel():
     """Slot connected to the convenience dbtree_model_created signal.
 
@@ -56,8 +54,8 @@ def customiseDBsTreeModel():
     """
 
     # The absolute path of the INI file
-    ini_filename = \
-        os.path.join(os.path.dirname(__file__), 'sorting_algorithm.ini')
+    ini_filename = os.path.join(os.path.dirname(__file__),
+                                'sorting_algorithm.ini')
     config = configparser.ConfigParser()
     default_sorting = 'default'
     try:
@@ -129,7 +127,7 @@ def alphanum_key(key):
     """
     convert = lambda text: int(text) if text.isdigit() else text
 
-    return [convert(c) for c in re.split('(\d+)', key)]
+    return [convert(c) for c in re.split(r'(\d+)', key)]
 
 
 def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
@@ -182,13 +180,16 @@ class DBsTreeSort(object):
     """Provides convenience methods and functions for sorting the tree of DBs.
     """
 
+    UID = 'vitables.plugin.dbs_tree_sort'
+    NAME = plugin_name
+    COMMENT = comment
+
     def __init__(self):
         """Class constructor.
         """
 
         self.vtapp = vitables.utils.getVTApp()
         self.vtapp.dbtree_model_created.connect(customiseDBsTreeModel)
-
 
     def helpAbout(self, parent):
         """Full description of the plugin.
@@ -203,17 +204,16 @@ class DBsTreeSort(object):
 
         # Plugin full description
         desc = {'version': __version__,
-            'module_name': os.path.join(os.path.basename(__file__)),
-            'folder': os.path.join(os.path.dirname(__file__)),
-            'author': 'Vicent Mas <vmas@vitables.org>',
-            'about_text': translate('DBsTreeSortingPage',
-            """<qt>
-            <p>Plugin that provides sorting capabilities to the tree of DBs.
-            <p>At the moment only two sorting algorithms are supported: human
-            (a.k.a. natural sorting) and alphabetical.
-            </qt>""",
-            'Text of an About plugin message box')}
+                'module_name': os.path.join(os.path.basename(__file__)),
+                'folder': os.path.join(os.path.dirname(__file__)),
+                'author': 'Vicent Mas <vmas@vitables.org>',
+                'about_text': translate(
+                    'DBsTreeSortingPage',
+                    '<qt><p>Plugin that provides sorting capabilities to '
+                    'the tree of DBs.<p>At the moment only two sorting '
+                    'algorithms are supported: human (a.k.a. natural sorting) '
+                    'and alphabetical.</qt>',
+                    'Text of an About plugin message box')}
         self.about_page = AboutPage(desc, parent)
 
         return self.about_page
-
