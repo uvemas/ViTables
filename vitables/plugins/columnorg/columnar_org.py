@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
@@ -32,8 +29,8 @@ __docformat__ = 'restructuredtext'
 __version__ = '1.0'
 plugin_class = 'ArrayColsOrganizer'
 plugin_name = 'Columnar organization of arrays'
-comment = """Rearrange several arrays with the same number of rows and """\
-"""displays them in a unique widget"""
+comment = ('Rearrange several arrays with the same number of rows and '
+           'displays them in a unique widget')
 
 import os.path
 
@@ -43,19 +40,28 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 
 import vitables
-from vitables.vtsite import PLUGINSDIR
-from vitables.plugins.columnorg.aboutpage import AboutPage
+import vitables.plugin_utils
+from vitables.plugins.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate
 
+_PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
+
+
 class ArrayColsOrganizer(QtCore.QObject):
     """The class which defines the plugin for columnar organization of arrays.
-    It is connected to the core program so that ever time a new view is
-    created this class customizes the view if it is required. In addition the
-    class triggers the update of the Node menu and includes a `helpAbout`method
-    that is used in the Preferences dialog to show information about the
-    plugin.
+
+    It is connected to the core program so that ever time a new view
+    is created this class customizes the view if it is required. In
+    addition the class triggers the update of the Node menu and
+    includes a `helpAbout`method that is used in the Preferences
+    dialog to show information about the plugin.
+
     """
+
+    UID = 'vitables.plugin.columnar_org'
+    NAME = 'columnar_org'
+    COMMENT = comment
 
     def __init__(self, parent=None):
         """Class constructor.
@@ -74,7 +80,6 @@ class ArrayColsOrganizer(QtCore.QObject):
 
         # Connect convenience signal defined in the vtapp module to slot
         self.vtapp.leaf_model_created.connect(self.customizeView)
-
 
     def customizeView(self, datasheet):
         """Add a checkbox in the bottom right corner of array views.
@@ -115,14 +120,12 @@ class ArrayColsOrganizer(QtCore.QObject):
         # Connect signals to slots
         cb.stateChanged.connect(self.cbStateChanged)
 
-
     def cbStateChanged(self, state):
         """Update the `is_checked` attribute of DataSheets and GroupedArrays.
         """
 
         view = self.sender().source_array
         view.is_checked = state
-
 
     def helpAbout(self, parent):
         """Full description of the plugin.
@@ -137,18 +140,18 @@ class ArrayColsOrganizer(QtCore.QObject):
 
         # Plugin full description
         desc = {'version': __version__,
-            'module_name': os.path.join(os.path.basename(__file__)),
-            'folder': os.path.join(os.path.dirname(__file__)),
-            'author': 'Vicent Mas <vmas@vitables.org>',
-            'about_text': translate('ArraysColsOrganizer',
-            """<qt>
-            <p>Plugin that provides an alternative view for arrays with
-            the same number of rows.
-            <p>The user selects the arrays which he want to see in a unique
-            viewer. Then clicks on the Node -> Linked View menu entry and
-            the arrays are displayed as expected by the user.
-            </qt>""",
-            'Text of an About plugin message box')}
+                'module_name': os.path.join(os.path.basename(__file__)),
+                'folder': os.path.join(os.path.dirname(__file__)),
+                'author': 'Vicent Mas <vmas@vitables.org>',
+                'comment': translate(
+                    'ArraysColsOrganizer',
+                    '<qt><p>Plugin that provides an alternative view for '
+                    'arrays with the same number of rows. <p>'
+                    'The user selects the arrays which he want to see in '
+                    'a unique viewer. Then clicks on the Node -> Linked View '
+                    'menu entry and the arrays are displayed as expected '
+                    'by the user.</qt>',
+                    'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
         return about_page
 
@@ -168,59 +171,57 @@ class MenuUpdater(QtCore.QObject):
         self.vtgui.node_menu.aboutToShow.connect(self.updateNodeMenu)
         self.vtgui.leaf_node_cm.aboutToShow.connect(self.updateNodeMenu)
 
-
     def addEntry(self):
         """Add the `Group Arrays` and `Ungroup Arrays` entries to `Node` menu.
         """
 
         object_group_icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
-            'columnorg/icons/object-group.png'))
+        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
+                                            'icons/object-group.png'))
         object_group_icon.addPixmap(pixmap,
                                     QtGui.QIcon.Normal,
                                     QtGui.QIcon.On)
 
         self.group_action = QtGui.QAction(
             translate('ArrayColsOrganizer',
-                "&Group Arrays",
-                "Group separated arrays with the same number of rows"),
+                      "&Group Arrays",
+                      "Group separated arrays with the same number of rows"),
             self,
             shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.groupArrays,
             icon=object_group_icon,
-            statusTip=translate('MenuUpdater',
-                """Use a unique widget to display Arrays as if they where """
-                """columns of a Table""",
+            statusTip=translate(
+                'MenuUpdater', 'Use a unique widget to display Arrays as if '
+                'they where columns of a Table',
                 "Status bar text for the Node -> Group Arrays action"))
 
         object_ungroup_icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
-            'columnorg/icons/object-ungroup.png'))
+        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
+                                            'icons/object-ungroup.png'))
         object_ungroup_icon.addPixmap(pixmap,
-                                    QtGui.QIcon.Normal,
-                                    QtGui.QIcon.On)
+                                      QtGui.QIcon.Normal,
+                                      QtGui.QIcon.On)
 
         self.ungroup_action = QtGui.QAction(
-            translate('MenuUpdater',
-                "&Ungroup Arrays",
-                "Ungroup previously grouped arrays."),
+            translate('MenuUpdater', "&Ungroup Arrays",
+                      "Ungroup previously grouped arrays."),
             self,
             shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.ungroupArrays,
             icon=object_ungroup_icon,
-            statusTip=translate('MenuUpdater',
+            statusTip=translate(
+                'MenuUpdater',
                 """Ungroup previously grouped arrays.""",
                 "Status bar text for the Node -> Ungroup Arrays action"))
 
         # Add the actions to the Node menu
         vitables.plugin_utils.addToMenu(self.vtgui.node_menu,
                                         (self.group_action,
-                                        self.ungroup_action))
+                                         self.ungroup_action))
 
         # Add the actions to the leaf context menu
         vitables.plugin_utils.addToLeafContextMenu((self.group_action,
                                                    self.ungroup_action))
-
 
     def updateNodeMenu(self):
         """Update (un)group_action QActions if the Node menu is about to show.
@@ -262,7 +263,6 @@ class MenuUpdater(QtCore.QObject):
                       """Not all the selected arrays have the same number """
                       """of rows.""")
 
-
     def groupArrays(self):
         """Group a set of individual arrays into the same view widget.
         """
@@ -290,7 +290,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         # We use sets instead of lists because there seems to be a
         # problem with my_list.pop(i) when i != -1
         self.arrays = set(views)
-        self.already_grouped  = set([])
+        self.already_grouped = set([])
         for i in self.arrays.copy():
             if isinstance(i, GroupedArrays):
                 self.already_grouped.add(i)
@@ -316,7 +316,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
     # - how they are closed
     # - how they are ungrouped
 
-    def addVerticalLayout(self, container_layout,  datasheet, title = None):
+    def addVerticalLayout(self, container_layout, datasheet, title=None):
         """Add a vertical layout to the horizontal layout of a GroupArrays.
 
         This is a helper method.
@@ -334,7 +334,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         vertical_layout.addWidget(datasheet)
         container_layout.addLayout(vertical_layout)
 
-
     def convenienceAttrs(self, datasheet):
         """Helper method for setting some attributes
         """
@@ -342,7 +341,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         self.is_checked = QtCore.Qt.Checked
         nrows = datasheet.leaf_model.numrows[()]
         self.grouped_arrays_nrows = nrows
-
 
     def combineArrays(self):
         """Convert a set of array views into a GroupedArray view.
@@ -370,7 +368,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         self.show()
         self.customizeGroupedViews()
 
-
     def combineArrayAndGroupedArrays(self):
         """Add an Array to this GroupedArray instance.
         """
@@ -396,7 +393,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         self.convenienceAttrs(datasheet)
 
         self.customizeGroupedViews()
-
 
     def combineGroupedArrays(self):
         """Convert a set of GroupedArrays into a unique GroupedArrays view.
@@ -432,7 +428,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         self.convenienceAttrs(first_datasheet)
 
         self.customizeGroupedViews()
-
 
     def customizeGroupedViews(self):
         """Make the grouped view widget usable.
@@ -472,7 +467,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
                 datasheets[i].widget().setCornerWidget(None)
                 datasheets[i+1].widget().verticalHeader().hide()
 
-
     def closeEvent(self, event):
         """ Propagate the close event.
         In the process, self.widget().closeEvent will be called
@@ -492,7 +486,6 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         QtGui.QMdiSubWindow.closeEvent(self, event)
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
-
 
     def ungroupArrays(self):
         """Break-up a GroupedArrays object into its individual components.
