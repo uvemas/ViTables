@@ -30,9 +30,6 @@ import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
-from future import standard_library
-standard_library.install_hooks()
-
 from PyQt4 import QtGui
 import PyQt4.QtCore as qtcore
 
