@@ -59,8 +59,8 @@ def customiseDBsTreeModel():
     config = configparser.ConfigParser()
     default_sorting = 'default'
     try:
-        config.read_file(open(ini_filename))
-        initial_sorting = config['DBsTreeSorting']['algorithm']
+        config.read(ini_filename)
+        initial_sorting = config.get('DBsTreeSorting', 'algorithm')
     except (IOError, configparser.ParsingError):
         initial_sorting = default_sorting
 

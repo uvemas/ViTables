@@ -117,8 +117,8 @@ class ArrayColsOrganizer(QtCore.QObject):
             datasheet.is_checked = \
                 datasheet.leaf_view.cornerWidget().checkState()
 
-        # Connect signals to slots
-        cb.stateChanged.connect(self.cbStateChanged)
+            # Connect signals to slots
+            cb.stateChanged.connect(self.cbStateChanged)
 
     def cbStateChanged(self, state):
         """Update the `is_checked` attribute of DataSheets and GroupedArrays.
