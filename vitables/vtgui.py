@@ -34,6 +34,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 import vitables.logger as logger
+import vitables.calculator as vtc
 
 translate = QtGui.QApplication.translate
 
@@ -432,6 +433,15 @@ class VTGUI(QtGui.QMainWindow):
                 'Status bar text for the Help -> Show Versions action'))
         actions['helpVersions'].setObjectName('helpVersions')
 
+        actions['calculate'] = QtGui.QAction(
+            translate('VTGUI', 'Calculate...', 'Calculate action'),
+            self,
+            triggered=vtc.calculator.run,
+            statusTip=translate(
+                'VTGUI', 'Run calculation on opened tables.',
+                'Action tip'))
+        actions['calculate'].setObjectName('calculate')
+
         return actions
 
     def setupToolBars(self):
@@ -548,7 +558,7 @@ class VTGUI(QtGui.QMainWindow):
         self.dataset_menu = self.menuBar().addMenu(
             translate('VTGUI', "&Dataset", 'The Dataset menu entry'))
         self.dataset_menu.setObjectName('dataset_menu')
-        dataset_actions = ['queryNew', None]
+        dataset_actions = ['queryNew', 'calculate', None]
         vitables.utils.addActions(self.dataset_menu, dataset_actions,
                                   self.gui_actions)
 
