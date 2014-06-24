@@ -34,7 +34,7 @@ from PyQt4 import QtGui
 
 import vitables.utils
 import vitables.logger as logger
-import vitables.calculator as vtc
+from vitables.calculator import calculator
 
 translate = QtGui.QApplication.translate
 
@@ -436,7 +436,7 @@ class VTGUI(QtGui.QMainWindow):
         actions['calculate'] = QtGui.QAction(
             translate('VTGUI', 'Calculate...', 'Calculate action'),
             self,
-            triggered=vtc.calculator.run,
+            triggered=calculator.run,
             statusTip=translate(
                 'VTGUI', 'Run calculation on opened tables.',
                 'Action tip'))
