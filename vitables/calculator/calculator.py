@@ -132,5 +132,6 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result.
 
         """
-        print('execute')
-    
+        expression = self.expression_edit.text()
+        identifiers = extract_identifiers(expression)
+        

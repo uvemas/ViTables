@@ -62,6 +62,22 @@ def getVTApp():
     return vtapp
 
 
+def getVTGui():
+    """Small wrapper to hide the fact that vtapp object contains gui.
+
+    :return: main window object
+    """
+    return getVTApp().gui
+
+
+def getDBsTreeModel():
+    """Small wrapper to hide that vtapp.gui object contains dbs_tree_model.
+
+    :return: the DBs tree model
+    """
+    return getVTGui().dbs_tree_model
+
+
 def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     """Raise a customised file selector dialog.
 

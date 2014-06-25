@@ -18,3 +18,6 @@ class TestCalculator:
                         vtc.extract_identifiers('+$data*$data1 + test'))
         nt.assert_equal(set(['$data', '$test.data1']),
                         vtc.extract_identifiers('+$data*$test.data1 + test'))
+
+    
+    
