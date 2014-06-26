@@ -56,11 +56,10 @@ def get_current_group():
     contains the leaf.
 
     """
-    selection = vtu.getView().selectedIndexes()
-    if len(selection) != 1:
+    selected_nodes = vtu.getSelectedLeafs()
+    if len(selected_nodes) != 1:
         return None
-    node = vtu.getModel().nodeFromIndex(selection[0])
-
+    
 
 class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
     def __init__(self, parent=None):

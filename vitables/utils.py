@@ -88,6 +88,14 @@ def getView():
     return getGui().dbs_tree_view
 
 
+def getSelectedLeafs():
+    """Return a list of selected pytables objects."""
+    selection = getView().selectedIndexes()
+    model = getModel()
+    nodes = [model.nodeFromIndex(index).node for index in selection]
+    return nodes
+
+
 def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     """Raise a customised file selector dialog.
 
