@@ -7,6 +7,8 @@ import PyQt4.QtGui as qtgui
 import PyQt4.QtCore as qtcore
 from PyQt4 import uic
 
+import tables
+
 import vitables.utils as vtu
 
 translate = qtcore.QCoreApplication.translate
@@ -48,18 +50,69 @@ def extract_identifiers(expression):
 
 
 def get_current_group():
-    """Return model index of current group.
+    """Return current pytables group.
 
     If zero or more then one items are selected then None is
-    returned. If a group or file is selected then its index is
-    returned. If a pytables leaf is selected then return group that
-    contains the leaf.
+    returned. If a group or file is selected then return it. If a
+    pytables leaf is selected then return group that contains the
+    leaf.
 
     """
     selected_nodes = vtu.getSelectedLeafs()
     if len(selected_nodes) != 1:
         return None
-    
+    node = selected_nodes[0]
+    if not isinstance(node, tables.Leaf):
+        return node
+    return node._v_parent
+
+
+def find_identifier_root(model, identifier):
+    """Find the identifier root group in the model.
+
+    Identifier is a string, root group is found by matching item name
+    to identifier beggining. The second return argument contains path
+    to to identifier node relative to root.
+
+    """
+    root_index = qtcore.QModelIndex()
+    for row in range(model.rowCount(root_index)):
+        index = model.index(row, 0, root_index)
+        name = model.data(index, qtcore.Qt.DisplayRole)
+        if identifier.startswith(name):
+            return (model.nodeFromIndex(index).node,
+                    identifier[len(name) + 1:])
+    return None, None
+
+
+def find_node(start_node, path):
+    """Given group and a list of node names return node referenced by path."""
+    if not path or start_node is None:
+        return start_node
+    if not isinstance(start_node, tables.Group):
+        return None
+    if path[0] in start_node._v_children:
+        return find_node(start_node._v_children[path[0]], path[1:])
+    else:
+        return None
+
+
+def build_identifier_node_dict(identifiers, current_group):
+    """Map identifiers to pytables nodes."""
+    model = vtu.getModel()
+    identifier_node_dict = {}
+    for identifier in identifiers:
+        identifier_ancestor, relative_path = find_identifier_root(model,
+                                                                  identifier)
+        if identifier_ancestor is None:
+            identifier_ancestor = current_group
+            relative_path = identifier
+        identifier_node = find_node(identifier_ancestor,
+                                    relative_path.split('.'))
+        if identifier_node:
+            identifier_node_dict[identifier] = identifier_node
+    return identifier_node_dict
+
 
 class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
     def __init__(self, parent=None):
@@ -128,7 +181,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
 
     def _store_expressions(self):
         """Store expressions in configuration.
-        
+
         Save name expression dictionary in 'expression' part of
         configuration.
 
@@ -166,12 +219,30 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result.
 
         """
-        current_group = get_current_group()
-        
-
-
         expression = self.expression_edit.toPlainText()
-        identifiers = extract_identifiers(expression)
-        model = vtu.getModel()
+        identifier_strings = extract_identifiers(expression)
+        identifiers = [i[1:] for i in identifier_strings]
+        current_group = get_current_group()
+        identifier_node_dict = build_identifier_node_dict(identifiers,
+                                                          current_group)
+        for identifier in identifiers:
+            if identifier not in identifier_node_dict:
+                qtgui.QMessageBox.critical(
+                    self, translate('Calculator', 'Node not found'),
+                    translate('Calculator',
+                              'Node "{0}" not found'.format(identifier)))
+                return
+            if not isinstance(identifier_node_dict[identifier], tables.Leaf):
+                qtgui.QMessageBox.critical(
+                    self, translate('Calculator', 'Node type'),
+                    translate('Calculator',
+                              'Node "{0}" is not a leaf'.format(identifier)))
+                return
+        eval_globals = {}
+        for index, (identifier, node) in enumerate(
+                identifier_node_dict.items()):
+            variable_name = identifier.replace('.', '_') \
+                            + '_calculator_index_' + str(index)
+            expression = expression.replace('$' + identifier, variable_name)
+            eval_globals[variable_name] = node
 
-        
