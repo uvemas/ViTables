@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
@@ -62,20 +59,33 @@ def getVTApp():
     return vtapp
 
 
-def getVTGui():
+def getApp():
+    """Return getVTApp."""
+    return getVTApp()
+
+
+def getGui():
     """Small wrapper to hide the fact that vtapp object contains gui.
 
     :return: main window object
     """
-    return getVTApp().gui
+    return getApp().gui
 
 
-def getDBsTreeModel():
+def getModel():
     """Small wrapper to hide that vtapp.gui object contains dbs_tree_model.
 
     :return: the DBs tree model
     """
-    return getVTGui().dbs_tree_model
+    return getGui().dbs_tree_model
+
+
+def getView():
+    """Small wrapper to hide that vtapp.gui object contains dbs_tree_view.
+
+    :return: the DBs tree view
+    """
+    return getGui().dbs_tree_view
 
 
 def getFileSelector(parent, caption, dfilter, filepath='', settings=None):

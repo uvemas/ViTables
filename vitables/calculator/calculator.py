@@ -7,6 +7,8 @@ import PyQt4.QtGui as qtgui
 import PyQt4.QtCore as qtcore
 from PyQt4 import uic
 
+import vitables.utils as vtu
+
 translate = qtcore.QCoreApplication.translate
 
 Ui_Calculator = uic.loadUiType(os.path.join(
@@ -132,6 +134,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result.
 
         """
-        expression = self.expression_edit.text()
+        expression = self.expression_edit.toPlainText()
         identifiers = extract_identifiers(expression)
-        
+        model = vtu.getModel()
+        view = vtu.getView()
