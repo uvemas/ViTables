@@ -16,6 +16,24 @@ Ui_Calculator = uic.loadUiType(os.path.join(
 
 
 def run():
+    gui = vtu.getGui()
+    selection_count = len(vtu.getView().selectedIndexes())
+    question = ''
+    if selection_count == 0:
+        question = translate('Calculator', 'No group is selected. '
+                             'Relative references are disabled. '
+                             'Continue?')
+    if selection_count > 1:
+        question = translate('Calculator',
+                             'Multiple groups are selected. '
+                             'Relative references are disabled. '
+                             'Continue?')
+    if question:
+        answer = qtgui.QMessageBox.question(
+            gui, translate('Calculator', 'Relative references are disabled'),
+            question, buttons=qtgui.QMessageBox.Yes | qtgui.QMessageBox.No)
+        if answer != qtgui.QMessageBox.Yes:
+            return
     dialog = CalculatorDialog()
     dialog.exec_()
 
@@ -27,6 +45,21 @@ IDENTIFIER_RE = r'\$[\w.]+'
 def extract_identifiers(expression):
     """Return a set of identifiers that appear in the expression."""
     return set(re.findall(IDENTIFIER_RE, expression))
+
+
+def get_current_group():
+    """Return model index of current group.
+
+    If zero or more then one items are selected then None is
+    returned. If a group or file is selected then its index is
+    returned. If a pytables leaf is selected then return group that
+    contains the leaf.
+
+    """
+    selection = vtu.getView().selectedIndexes()
+    if len(selection) != 1:
+        return None
+    node = vtu.getModel().nodeFromIndex(selection[0])
 
 
 class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
@@ -134,7 +167,12 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result.
 
         """
+        current_group = get_current_group()
+        
+
+
         expression = self.expression_edit.toPlainText()
         identifiers = extract_identifiers(expression)
         model = vtu.getModel()
-        view = vtu.getView()
+
+        
