@@ -70,6 +70,20 @@ def get_current_group():
     return node._v_parent
 
 
+def create_group(group, path):
+    """Given ancestor group and a path create a group."""
+    if not path:
+        return group
+    node_name = path[0]
+    rest_of_path = path[1:]
+    if node_name in group._v_groups:
+        return create_group(group._v_groups[node_name], rest_of_path)
+    if node_name in group._v_children:  # child but not a group
+        return None
+    node_group = group._v_file.create_group(group, node_name)
+    return create_group(node_group, rest_of_path)
+
+
 def find_identifier_root(model, identifier):
     """Find the identifier root group in the model.
 
@@ -135,9 +149,9 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         """Slot for apply button, run and store saved expressions."""
         button_id = self.buttons.standardButton(button)
         if button_id == qtgui.QDialogButtonBox.Apply:
-            self._execute_expression()
-            self._store_expressions()
-            self.accept()
+            if self._execute_expression():
+                self._store_expressions()
+                self.accept()
 
     @qtcore.pyqtSlot()
     def on_save_button_clicked(self):
@@ -246,6 +260,64 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
             eval_globals[variable_name] = node
         return eval_globals, expression
 
+    def _get_result_group_and_name(self):
+        """Find or create a group for result based on provided name."""
+        result_identifier = self.result_edit.text()
+        if not result_identifier:
+            qtgui.QMessageBox.critical(
+                self, translate('Calculator', 'Result name'),
+                translate('Calculator',
+                          'The location to store results is not specified'))
+            return None
+        model = vtu.getModel()
+        result_ancestor, relative_path = find_identifier_root(
+            model, result_identifier)
+        if result_ancestor is None:
+            result_ancestor = get_current_group()
+            relative_path = result_identifier
+        relative_path = relative_path.split('.')
+        result_group = find_node(result_ancestor, relative_path[:-1])
+        if result_group is None:
+            answer = qtgui.QMessageBox.question(
+                self, translate('Calculator', 'Create group'),
+                translate('Calculator', 'There is no group "{group}" in '
+                          '"{ancestor}". File "{filename}". Create it?'.format(
+                              group='/'.join(relative_path[:-1]),
+                              ancestor=result_ancestor._v_pathname,
+                              filename=result_ancestor._v_file.filename)),
+                buttons=qtgui.QMessageBox.Yes | qtgui.QMessageBox.No)
+            if answer != qtgui.QMessageBox.Yes:
+                return None
+            result_group = create_group(result_ancestor, relative_path[:-1])
+            if result_group is None:
+                qtgui.QMessageBox.critical(
+                    self, translate('Calculator', 'Result name'),
+                    translate('Calculator',
+                              'Failed to create group "{group}" inside '
+                              '{ancestor} to hold results. File "{filename}".'
+                              ''.format(
+                                  group='/'.join(relative_path[:-1]),
+                                  ancestor=result_ancestor._v_pathname,
+                                  filename=result_ancestor._v_file.filename)))
+                return None
+        result_name = relative_path[-1]
+        if result_name in result_group._v_children:
+            qtgui.QMessageBox.critical(
+                self, translate('Calculator', 'Result name'),
+                translate('Calculator',
+                          'Node "{node}" already exists in group "{group}". '
+                          'File "{filename}". Choose another place to store '
+                          'results.'.format(
+                              node=result_name,
+                              group=result_group._v_pathname,
+                              filename=result_group._v_file.filename)))
+            return None, None
+        return result_group, result_name
+
+    def _store_result(self, result, group):
+        """Create appropriate pytables structure to hold result."""
+        pass
+
     def _execute_expression(self):
         """Execute expression and store results.
 
@@ -260,7 +332,13 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         identifier_node_dict = build_identifier_node_dict(identifiers,
                                                           current_group)
         if not self._all_identifiers_found(identifiers, identifier_node_dict):
-            return
+            return False
         eval_globals, expression = self._create_eval_globals_and_epsression(
             expression, identifier_node_dict)
+        result_group, result_name = self._get_result_group_and_name()
+        if result_group is None:
+            return False
         result = vtce.evaluate(expression, eval_globals)
+        print(result)
+        self._store_result(result, result_group)
+        return True
