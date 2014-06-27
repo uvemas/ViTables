@@ -10,6 +10,7 @@ from PyQt4 import uic
 import tables
 
 import vitables.utils as vtu
+import vitables.calculator.evaluator as vtce
 
 translate = qtcore.QCoreApplication.translate
 
@@ -50,7 +51,7 @@ def extract_identifiers(expression):
 
 
 def get_current_group():
-    """Return current pytables group.
+    """Return selected pytables group.
 
     If zero or more then one items are selected then None is
     returned. If a group or file is selected then return it. If a
@@ -245,4 +246,4 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
                             + '_calculator_index_' + str(index)
             expression = expression.replace('$' + identifier, variable_name)
             eval_globals[variable_name] = node
-
+        result = vtce.evaluate(expression, eval_globals)
