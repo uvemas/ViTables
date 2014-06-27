@@ -8,6 +8,7 @@ import PyQt4.QtCore as qtcore
 from PyQt4 import uic
 
 import tables
+import numpy as np
 
 import vitables.utils as vtu
 import vitables.calculator.evaluator as vtce
@@ -314,10 +315,6 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
             return None, None
         return result_group, result_name
 
-    def _store_result(self, result, group):
-        """Create appropriate pytables structure to hold result."""
-        pass
-
     def _execute_expression(self):
         """Execute expression and store results.
 
@@ -339,6 +336,9 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         if result_group is None:
             return False
         result = vtce.evaluate(expression, eval_globals)
-        print(result)
-        self._store_result(result, result_group)
+        if not isinstance(result, np.ndarray) and not isinstance(result, list):
+            result = np.array([result])
+        result_group._v_file.create_array(
+            result_group, result_name, obj=result,
+            title='Expression: ' + self.expression_edit.toPlainText())
         return True
