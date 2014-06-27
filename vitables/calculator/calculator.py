@@ -130,7 +130,7 @@ def _update_model_tree(model, path, parent_index):
 
 def update_model_tree(model, node):
     """Update model and view up to given pytable node."""
-    filename = node._v_file.filename
+    filename = os.path.basename(node._v_file.filename)
     path = node._v_pathname[1:]
     if path:
         path = [filename] + path.split('/')
