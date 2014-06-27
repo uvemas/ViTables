@@ -40,6 +40,8 @@ def run():
     dialog = CalculatorDialog()
     dialog.exec_()
 
+# Marker used as prefix to distinguish identifiers from functions.
+IDENTIFIER_MARKER = '$'
 
 # Regular expression used to find identifiers in an evaluation formula.
 IDENTIFIER_RE = r'\$[\w.]+'
@@ -213,6 +215,37 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
             self.saved_list.addItem(name)
         self._settings.endArray()
 
+    def _all_identifiers_found(self, identifiers, identifier_node_dict):
+        """Return false if identifier is not found or references a group."""
+        for identifier in identifiers:
+            if identifier not in identifier_node_dict:
+                qtgui.QMessageBox.critical(
+                    self, translate('Calculator', 'Node not found'),
+                    translate('Calculator',
+                              'Node "{0}" not found'.format(identifier)))
+                return False
+            if not isinstance(identifier_node_dict[identifier], tables.Leaf):
+                qtgui.QMessageBox.critical(
+                    self, translate('Calculator', 'Node type'),
+                    translate('Calculator',
+                              'Node "{0}" does not contain data. '
+                              'It is probably a group.'.format(identifier)))
+                return False
+        return True
+
+    def _create_eval_globals_and_epsression(self, expression,
+                                            identifier_node_dict):
+        """Transform identifiers into valid python names, update expression."""
+        eval_globals = {}
+        for index, (identifier, node) in enumerate(
+                identifier_node_dict.items()):
+            variable_name = identifier.replace('.', '_') \
+                            + '_calculator_index_' + str(index)
+            expression = expression.replace(
+                IDENTIFIER_MARKER + identifier, variable_name)
+            eval_globals[variable_name] = node
+        return eval_globals, expression
+
     def _execute_expression(self):
         """Execute expression and store results.
 
@@ -226,24 +259,8 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         current_group = get_current_group()
         identifier_node_dict = build_identifier_node_dict(identifiers,
                                                           current_group)
-        for identifier in identifiers:
-            if identifier not in identifier_node_dict:
-                qtgui.QMessageBox.critical(
-                    self, translate('Calculator', 'Node not found'),
-                    translate('Calculator',
-                              'Node "{0}" not found'.format(identifier)))
-                return
-            if not isinstance(identifier_node_dict[identifier], tables.Leaf):
-                qtgui.QMessageBox.critical(
-                    self, translate('Calculator', 'Node type'),
-                    translate('Calculator',
-                              'Node "{0}" is not a leaf'.format(identifier)))
-                return
-        eval_globals = {}
-        for index, (identifier, node) in enumerate(
-                identifier_node_dict.items()):
-            variable_name = identifier.replace('.', '_') \
-                            + '_calculator_index_' + str(index)
-            expression = expression.replace('$' + identifier, variable_name)
-            eval_globals[variable_name] = node
+        if not self._all_identifiers_found(identifiers, identifier_node_dict):
+            return
+        eval_globals, expression = self._create_eval_globals_and_epsression(
+            expression, identifier_node_dict)
         result = vtce.evaluate(expression, eval_globals)
