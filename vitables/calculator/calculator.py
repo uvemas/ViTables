@@ -115,6 +115,30 @@ def find_node(start_node, path):
         return None
 
 
+def _update_model_tree(model, path, parent_index):
+    """Update view of given path in model starting from index."""
+    model.lazyAddChildren(parent_index)
+    if not path:
+        return
+    node_name = path[0]
+    for row in range(model.rowCount(parent_index)):
+        index = model.index(row, 0, parent_index)
+        name = model.data(index, qtcore.Qt.DisplayRole)
+        if name == node_name:
+            _update_model_tree(model, path[1:], index)
+
+
+def update_model_tree(model, node):
+    """Update model and view up to given pytable node."""
+    filename = node._v_file.filename
+    path = node._v_pathname[1:]
+    if path:
+        path = [filename] + path.split('/')
+    else:
+        path = [filename]
+    _update_model_tree(model, path, qtcore.QModelIndex())
+
+
 def build_identifier_node_dict(identifiers, current_group):
     """Map identifiers to pytables nodes."""
     model = vtu.getModel()
@@ -338,7 +362,8 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result = vtce.evaluate(expression, eval_globals)
         if not isinstance(result, np.ndarray) and not isinstance(result, list):
             result = np.array([result])
-        result_group._v_file.create_array(
+        result_array = result_group._v_file.create_array(
             result_group, result_name, obj=result,
             title='Expression: ' + self.expression_edit.toPlainText())
+        update_model_tree(vtu.getModel(), result_group)
         return True
