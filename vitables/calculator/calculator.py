@@ -2,6 +2,7 @@
 
 import os
 import re
+import logging
 
 import PyQt4.QtGui as qtgui
 import PyQt4.QtCore as qtcore
@@ -160,6 +161,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
     def __init__(self, parent=None):
         super(CalculatorDialog, self).__init__(parent)
         self.setupUi(self)
+        self._logger = logging.getLogger(__name__)
         self._name_expression_dict = {}
         self._settings = qtcore.QSettings()
         self._settings.beginGroup('Calculator')
@@ -359,11 +361,27 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result_group, result_name = self._get_result_group_and_name()
         if result_group is None:
             return False
-        result = vtce.evaluate(expression, eval_globals)
+        try:
+            result = vtce.evaluate(expression, eval_globals)
+        except Exception as e:
+            self._logger.error(str(e))
+            qtgui.QMessageBox.critical(
+                self, translate('Calculator', 'Evaluation error'),
+                translate('Calculator', 'An exception was raised during '
+                          'evaluation, see log for details.'))
+            return False
         if not isinstance(result, np.ndarray) and not isinstance(result, list):
             result = np.array([result])
-        result_array = result_group._v_file.create_array(
-            result_group, result_name, obj=result,
-            title='Expression: ' + self.expression_edit.toPlainText())
+        try:
+            result_array = result_group._v_file.create_array(
+                result_group, result_name, obj=result,
+                title='Expression: ' + self.expression_edit.toPlainText())
+        except Exception as e:
+            self._logger.error(str(e))
+            qtgui.QMessageBox.critical(
+                self, translate('Calculator', 'Result save error'),
+                translate('Calculator', 'An exception was raised while '
+                          'trying to store results, see log for details.'))
+            return False
         update_model_tree(vtu.getModel(), result_group)
         return True
