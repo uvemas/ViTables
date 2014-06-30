@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
@@ -60,6 +57,43 @@ def getVTApp():
             break
 
     return vtapp
+
+
+def getApp():
+    """Return getVTApp."""
+    return getVTApp()
+
+
+def getGui():
+    """Small wrapper to hide the fact that vtapp object contains gui.
+
+    :return: main window object
+    """
+    return getApp().gui
+
+
+def getModel():
+    """Small wrapper to hide that vtapp.gui object contains dbs_tree_model.
+
+    :return: the DBs tree model
+    """
+    return getGui().dbs_tree_model
+
+
+def getView():
+    """Small wrapper to hide that vtapp.gui object contains dbs_tree_view.
+
+    :return: the DBs tree view
+    """
+    return getGui().dbs_tree_view
+
+
+def getSelectedLeafs():
+    """Return a list of selected pytables objects."""
+    selection = getView().selectedIndexes()
+    model = getModel()
+    nodes = [model.nodeFromIndex(index).node for index in selection]
+    return nodes
 
 
 def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
