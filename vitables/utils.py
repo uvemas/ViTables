@@ -29,6 +29,8 @@ import traceback
 import locale
 import re
 import logging
+import collections
+import functools
 
 import numpy
 
@@ -88,12 +90,146 @@ def getView():
     return getGui().dbs_tree_view
 
 
-def getSelectedLeafs():
-    """Return a list of selected pytables objects."""
-    selection = getView().selectedIndexes()
-    model = getModel()
-    nodes = [model.nodeFromIndex(index).node for index in selection]
-    return nodes
+def getSelectedIndexes():
+    """Return the list of selected indices."""
+    return getView().selectedIndexes()
+
+
+def getSelectedNodes():
+    """Return list of selected nodes."""
+    return [getModel().nodeFromIndex(index).node
+            for index in getSelectedIndexes()]
+
+
+def long_action(message=None):
+    """Decorator that changes the cursor to the wait cursor.
+
+    Used with functions that take some time finish. The provided
+    message is displayed in the status bar while the function is
+    running (the status bar is cleaned afterwards). If the message is
+    not provided then the status bar is not updated.
+
+    :parameter message: string to display in status bar
+
+    """
+    def _long_action(f):
+        @functools.wraps(f)
+        def __long_action(*args, **kwargs):
+            status_bar = getGui().statusBar()
+            if message is not None:
+                status_bar.showMessage(message)
+            QtGui.QApplication.setOverrideCursor(
+                QtGui.QCursor(QtCore.Qt.WaitCursor))
+            try:
+                res = f(*args, **kwargs)
+            finally:
+                QtGui.QApplication.restoreOverrideCursor()
+                if message is not None:
+                    status_bar.clearMessage()
+            return res
+        return __long_action
+    return _long_action
+
+
+def addToMenuBar(menu):
+    """Add menu to the menu bar into one before last position.
+
+    Basically insert a menu before Help menu.
+
+    :parameter menu: QMenu object
+
+    :return: None
+    """
+
+    menu_bar = getGui().menuBar()
+    last_action = menu_bar.actions()[-1]
+    menu_bar.insertMenu(last_action, menu)
+
+
+def insertInMenu(menu, entries, uid):
+    """Insert entries to the given menu before the action named uid.
+
+    The function accept a QAction/QMenu or an iterable. The entries will
+    be added before the action whose name is uid.
+
+    :Parameters:
+
+    - `menu`: the menu or context menu being updated
+    - `entries`: QAction/Qmenu object or a list of such objects
+    - `uid`: indicates the insertion position for the new entries
+
+    :return: None
+    """
+
+    if not isinstance(entries, collections.Iterable):
+        entries = [entries]
+
+    if isinstance(entries[0], QtGui.QAction):
+        menu.insertEntry = menu.insertAction
+    elif isinstance(entries[0], QtGui.QMenu):
+        menu.insertEntry = menu.insertMenu
+
+    for item in menu.actions():
+        if item.objectName() == uid:
+            for a in entries:
+                menu.insertEntry(item, a)
+
+
+def addToMenu(menu, entries):
+    """Add entries at the end of the given menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
+
+    :Parameters:
+
+    - `menu`: the menu or context menu being updated
+    - `entries`: QAction/QMenu object or a list of such objects
+
+    :return: None
+    """
+
+    if not isinstance(entries, collections.Iterable):
+        entries = [entries]
+
+    if isinstance(entries[0], QtGui.QAction):
+        menu.addEntry = menu.addAction
+    elif isinstance(entries[0], QtGui.QMenu):
+        menu.addEntry = menu.addMenu
+
+    menu.addSeparator()
+    for a in entries:
+        menu.addEntry(a)
+
+
+def addToLeafContextMenu(actions):
+    """Add entries at the end of the leaf context menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
+
+    :parameter actions: QAction/QMenu object or a list of such objects
+
+    :return: None
+    """
+
+    context_menu = getGui().leaf_node_cm
+    addToMenu(context_menu, actions)
+
+
+def addToGroupContextMenu(actions):
+    """Add entries at the end of the group context menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
+
+    :parameter actions: QAction/QMenu object or a list of such objects
+
+    :return: None
+    """
+
+    context_menu = getGui().group_node_cm
+    addToMenu(context_menu, actions)
 
 
 def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
@@ -120,8 +256,8 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     if filepath:
         file_selector.selectFile(filepath)
     if settings['label'] != '':
-        file_selector.setLabelText(QtGui.QFileDialog.Accept,
-        settings['label'])
+        file_selector.setLabelText(
+            QtGui.QFileDialog.Accept, settings['label'])
 
     # Uncomment next line if you want native dialogs. Removing the comment
     # comes at the price of an annoying KDE warning in your console. See the
