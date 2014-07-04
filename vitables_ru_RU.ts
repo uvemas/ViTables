@@ -4,7 +4,7 @@
 <context>
     <name>ArrayColsOrganizer</name>
     <message>
-        <location filename="vitables/plugins/columnorg/columnar_org.py" line="183"/>
+        <location filename="vitables/plugins/columnorg/columnar_org.py" line="184"/>
         <source>&amp;Group Arrays</source>
         <comment>Group separated arrays with the same number of rows</comment>
         <translation>С&amp;группировать</translation>
@@ -13,14 +13,8 @@
 <context>
     <name>ArraysColsOrganizer</name>
     <message>
-        <location filename="vitables/plugins/columnorg/columnar_org.py" line="143"/>
-        <source>&lt;qt&gt;
-            &lt;p&gt;Plugin that provides an alternative view for arrays with
-            the same number of rows.
-            &lt;p&gt;The user selects the arrays which he want to see in a unique
-            viewer. Then clicks on the Node -&gt; Linked View menu entry and
-            the arrays are displayed as expected by the user.
-            &lt;/qt&gt;</source>
+        <location filename="vitables/plugins/columnorg/columnar_org.py" line="145"/>
+        <source>&lt;qt&gt;&lt;p&gt;Plugin that provides an alternative view for arrays with the same number of rows. &lt;p&gt;The user selects the arrays which he want to see in a unique viewer. Then clicks on the Node -&gt; Linked View menu entry and the arrays are displayed as expected by the user.&lt;/qt&gt;</source>
         <comment>Text of an About plugin message box</comment>
         <translation>Альтернативный метод отображения массивов</translation>
     </message>
@@ -188,6 +182,79 @@ Error: problems reading records. The dataset maybe corrupted.</source>
     </message>
 </context>
 <context>
+    <name>Calculator</name>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="28"/>
+        <source>No group is selected. Relative references are disabled. Continue?</source>
+        <translation>Группа не выбрана. Относительные ссылки не возможные. Продолжить?</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="32"/>
+        <source>Multiple groups are selected. Relative references are disabled. Continue?</source>
+        <translation>Выбрано более одной группы. Относительные ссылки не возможные. Продолжить?</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="37"/>
+        <source>Relative references are disabled</source>
+        <translation>Относительные ссылка заблокированы</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="192"/>
+        <source>Save expression as</source>
+        <translation>Сохранить выражение как</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="192"/>
+        <source>Name:</source>
+        <translation>Имя:</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="263"/>
+        <source>Node not found</source>
+        <translation>Узел не найден</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="269"/>
+        <source>Node type</source>
+        <translation>Тип узла</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="332"/>
+        <source>Result name</source>
+        <translation>Имя для результатов</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="294"/>
+        <source>The location to store results is not specified</source>
+        <translation>Не задано место для сохранения результатов</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="308"/>
+        <source>Create group</source>
+        <translation>Создать группу</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="368"/>
+        <source>Evaluation error</source>
+        <translation>Ошибка вычисления</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="368"/>
+        <source>An exception was raised during evaluation, see log for details.</source>
+        <translation>В процессе вычисления возникло исключения, детали в журнале.</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="381"/>
+        <source>Result save error</source>
+        <translation>Ошибка при сохранении результата</translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator.py" line="381"/>
+        <source>An exception was raised while trying to store results, see log for details.</source>
+        <translation>В процессе сохранения результата возникло исключения, детали в журнале.</translation>
+    </message>
+</context>
+<context>
     <name>ConfigFileIOException</name>
     <message>
         <location filename="vitables/preferences/cfgexception.py" line="51"/>
@@ -242,56 +309,56 @@ Error: cannot open node {0} in file {1} </source>
 <context>
     <name>DBsTreeModel</name>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="147"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="168"/>
         <source>Openning cancelled: {0} is a folder.</source>
         <comment>A logger error message</comment>
         <translation>Отмена открытия: {0} является папкой.</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="153"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="174"/>
         <source>Opening failed: file {0} cannot be found.</source>
         <comment>A logger error message</comment>
         <translation>Ошибка: файл {0} не найден.</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="160"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="181"/>
         <source>Opening cancelled: file {0} already open.</source>
         <comment>A logger error message</comment>
         <translation>Отмена: файл {0} уже открыт.</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="173"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="194"/>
         <source>Opening cancelled: file {0} has not HDF5 format.</source>
         <comment>A logger error message</comment>
         <translation>Отмена: файл {0} не в формате HDF5.</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="179"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="200"/>
         <source>Opening failed: I cannot find out if file {0} has HDF5 format.</source>
         <comment>A logger error message</comment>
         <translation>Ошибка: не возможно определить формат файла {0}.</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="268"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="288"/>
         <source>
 File creation failed due to unknownreasons! Please, have a look to the last error displayed in the logger. If you think it&apos;s a bug, please report it to developers.</source>
         <comment>A file creation error</comment>
         <translation>Неизвестная ошибка при создании файла. Обратите внимание на последнюю ошибку. Если она связана с некорректной работой программы, то сообщите разработчикам.</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="301"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="321"/>
         <source>Creating the Query results file...</source>
         <comment>A logger info message</comment>
         <translation>Создание файла с результатами запроса...</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="632"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="646"/>
         <source>Node move: nodename already exists</source>
         <comment>A dialog caption</comment>
         <translation>Перемещение узла: узел уже существует</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="635"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="649"/>
         <source>Source file: {0}
 Moved node: {1}
 Destination file: {2}
@@ -307,13 +374,13 @@ Node name &apos;{4}&apos; already in use in that group.
 Узел с именем {4} уже существует в этой группе.</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="642"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="656"/>
         <source>Rename</source>
         <comment>A button label</comment>
         <translation>Переименовать</translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="836"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="822"/>
         <source>Tree of databases</source>
         <comment>Header of the only column of the tree of databases view</comment>
         <translation>Дерево базы данных</translation>
@@ -322,12 +389,8 @@ Node name &apos;{4}&apos; already in use in that group.
 <context>
     <name>DBsTreeSortingPage</name>
     <message>
-        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort.py" line="209"/>
-        <source>&lt;qt&gt;
-            &lt;p&gt;Plugin that provides sorting capabilities to the tree of DBs.
-            &lt;p&gt;At the moment only two sorting algorithms are supported: human
-            (a.k.a. natural sorting) and alphabetical.
-            &lt;/qt&gt;</source>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort.py" line="210"/>
+        <source>&lt;qt&gt;&lt;p&gt;Plugin that provides sorting capabilities to the tree of DBs.&lt;p&gt;At the moment only two sorting algorithms are supported: human (a.k.a. natural sorting) and alphabetical.&lt;/qt&gt;</source>
         <comment>Text of an About plugin message box</comment>
         <translation>Плагин позволяющий сортировать дерево базы данных</translation>
     </message>
@@ -348,89 +411,77 @@ Node name &apos;{4}&apos; already in use in that group.
 <context>
     <name>ExportToCSV</name>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="106"/>
+        <location filename="vitables/plugins/csv/export_csv.py" line="108"/>
         <source>E&amp;xport to CSV...</source>
         <comment>Save dataset as CSV</comment>
         <translation>&amp;Экспорт в CSV...</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="106"/>
+        <location filename="vitables/plugins/csv/export_csv.py" line="108"/>
         <source>Save the dataset as a plain text with CSV format</source>
         <comment>Status bar text for the Dataset -&gt; Export to CSV... action</comment>
         <translation>Сохранить набор данных в формате CSV</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="152"/>
+        <location filename="vitables/plugins/csv/export_csv.py" line="150"/>
         <source>Exporting dataset to CSV format</source>
         <comment>Caption of the Export to CSV dialog</comment>
         <translation>Экспорт набора данных в формате CSV</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="152"/>
+        <location filename="vitables/plugins/csv/export_csv.py" line="150"/>
         <source>CSV Files (*.csv);;All Files (*)</source>
         <comment>Filter for the Export to CSV dialog</comment>
         <translation>CSV файл (*.csv);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="152"/>
+        <location filename="vitables/plugins/csv/export_csv.py" line="150"/>
         <source>Export</source>
         <comment>Accept button text for QFileDialog</comment>
         <translation>Экспорт</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="200"/>
-        <source>
-Warning: export failed because destination file already exists.</source>
+        <location filename="vitables/plugins/csv/export_csv.py" line="199"/>
+        <source>Export failed because destination file already exists.</source>
         <comment>A file creation error</comment>
-        <translation>Предупреждение: неудачная попытка экспорта, так как файл уже существует.</translation>
+        <translation>Ошибка при создании нового файла, так как он уже существует.</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="207"/>
-        <source>
-Warning: export failed because destination container is a directory.</source>
+        <location filename="vitables/plugins/csv/export_csv.py" line="206"/>
+        <source>Export failed because destination container is a directory.</source>
         <comment>A file creation error</comment>
-        <translation>Предупреждение: неудачная попытка экспорта, так как выбранный объек подкаталог.</translation>
+        <translation>Экспорт не удался так, как выбраный объект подкаталог.</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="229"/>
-        <source>
-Warning: Empty dataset. Nothing to export.</source>
-        <translation>Предупреждение: пустой набор данных. Экспорт невозможен.</translation>
+        <location filename="vitables/plugins/csv/export_csv.py" line="227"/>
+        <source>Empty dataset. Nothing to export.</source>
+        <translation>Пустой набор данных.</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="235"/>
-        <source>
-Warning: Scalar array. Nothing to export.</source>
-        <translation>Предупреждение: скалярный массив. Экспорт невозможен.</translation>
+        <location filename="vitables/plugins/csv/export_csv.py" line="233"/>
+        <source>Scalar array. Nothing to export.</source>
+        <translation>Одномерный массив, экспорт не возможен.</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="241"/>
-        <source>
-Warning: The selected node has more than 2 dimensions. I can&apos;t export it to CSV format.</source>
-        <translation>Предупреждение: выделенный узел имеет размерность больше двух. Экспорт в CSV невозможен.</translation>
+        <location filename="vitables/plugins/csv/export_csv.py" line="239"/>
+        <source>The selected node has more than 2 dimensions. I can&apos;t export it to CSV format.</source>
+        <translation>Выбранный узел имеет размерность больше 2-х. Экспорт в CSV не возможен.</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="248"/>
-        <source>
-Warning: The selected node is a VLArray. I can&apos;t export it to CSV format.</source>
-        <translation>Предупреждение: выделенный узел массив в формате VLArray. Экспорт в CSV невозможен.</translation>
+        <location filename="vitables/plugins/csv/export_csv.py" line="246"/>
+        <source>The selected node is a VLArray. I can&apos;t export it to CSV format.</source>
+        <translation>Выбранный узел является VLArray. Экспорт в CSV не возможен.</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="259"/>
-        <source>
-Warning: Some fields aren&apos;t scalars I can&apos;t export the table to CSV format.</source>
-        <translation>Предупреждение: некоторые из полей не являются скалярными. Экспорт в CSV невозможен.</translation>
+        <location filename="vitables/plugins/csv/export_csv.py" line="257"/>
+        <source>Some fields aren&apos;t scalars. I can&apos;t export the table to CSV format.</source>
+        <translation>Некоторые из полей не являются числами. Экспорт не возможен.</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/export_csv.py" line="318"/>
-        <source>&lt;qt&gt;
-            &lt;p&gt;Plugin that provides export to CSV files capabilities.
-            &lt;p&gt;Any kind of PyTables dataset can be exported. When
-            exporting tables, a header with the field names can be
-            inserted at top of the CSV file.
-            &lt;/qt&gt;</source>
+        <location filename="vitables/plugins/csv/export_csv.py" line="315"/>
+        <source>&lt;qt&gt;&lt;p&gt;Plugin that provides export to CSV files capabilities.&lt;p&gt;Any kind of PyTables dataset can be exported. When exporting tables, a header with the field names can be inserted at top of the CSV file.&lt;/qt&gt;</source>
         <comment>Text of an About plugin message box</comment>
-        <translation>Плагин для экспорта в CSV</translation>
+        <translation>Надстройка для экспорта в формате CSV</translation>
     </message>
 </context>
 <context>
@@ -749,52 +800,31 @@ Warning: Some fields aren&apos;t scalars I can&apos;t export the table to CSV fo
 <context>
     <name>ImportCSV</name>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="81"/>
-        <source>
-Error: please, make sure that you are importing a homogeneous dataset.</source>
-        <comment>CSV file not imported error</comment>
-        <translation>Ошибка: убедитесь, что импортируемые данные однородны.</translation>
-    </message>
-    <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="276"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="274"/>
         <source>Resolving first line role</source>
         <comment>Message box title</comment>
         <translation>Определение типа первой строки</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="278"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="276"/>
         <source>Does the first line of the file contain a table header or regular data?</source>
         <comment>Message box text</comment>
         <translation>Что содержит первая строка? Заголовок таблицы или данные?</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="288"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="286"/>
         <source>Header</source>
         <comment>Button text</comment>
         <translation>Заголовок</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="291"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="289"/>
         <source>Data</source>
         <comment>Button text</comment>
         <translation>Данные</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="420"/>
-        <source>
-Warning: import failed because destination file already exists.</source>
-        <comment>A file creation error</comment>
-        <translation>Предупреждение: не удалось импортировать данные, так как файл уже существует.</translation>
-    </message>
-    <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="427"/>
-        <source>
-Warning: import failed because destination container is a directory.</source>
-        <comment>A file creation error</comment>
-        <translation>Предупреждение: не удалось импортировать данные, так как выбранный объек подкаталог.</translation>
-    </message>
-    <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="472"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="471"/>
         <source>I&amp;mport from CSV...</source>
         <comment>File -&gt; Import CSV</comment>
         <translation>&amp;Импорт из CSV...</translation>
@@ -812,81 +842,88 @@ Warning: import failed because destination container is a directory.</source>
         <translation>Импорт таблицы из файла CSV</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="489"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="490"/>
         <source>Import &amp;Array...</source>
         <comment>Import array from CSV file</comment>
         <translation>Импортировать &amp;массив...</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="489"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="490"/>
         <source>Import Array from plain CSV file</source>
         <comment>Status bar text for File -&gt; Import CSV... -&gt; Import Array</comment>
         <translation>Импортировать массив из файла CSV</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="499"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="501"/>
         <source>Import &amp;CArray...</source>
         <comment>Import carray from CSV file</comment>
         <translation>Импортировать &amp;CArray...</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="499"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="501"/>
         <source>Import CArray from plain CSV file</source>
         <comment>Status bar text for File -&gt; Import CSV... -&gt; Import CArray</comment>
         <translation>Импортировать массив из файла CSV</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="509"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="512"/>
         <source>Import &amp;EArray...</source>
         <comment>Import earray from CSV file</comment>
         <translation>Импортировать &amp;EArray...</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="509"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="512"/>
         <source>Import EArray from plain CSV file</source>
         <comment>Status bar text for File -&gt; Import CSV... -&gt; Import EArray</comment>
         <translation>Импортировать массив из файла CSV</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="556"/>
-        <source>
-Warning: import failed because destination file cannot be created.</source>
-        <comment>A file creation error</comment>
-        <translation>Предупреждение: сбой в процессе импортирования, так как не возможно создать файл.</translation>
-    </message>
-    <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="572"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="571"/>
         <source>Importing CSV file into {0}</source>
         <comment>Caption of the Import from CSV dialog</comment>
         <translation>Импорт CSV файла в {0}</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="572"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="571"/>
         <source>CSV Files (*.csv);;All Files (*)</source>
         <comment>Filter for the Import from CSV dialog</comment>
         <translation>CSV файл (*.csv);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="572"/>
+        <location filename="vitables/plugins/csv/import_csv.py" line="571"/>
         <source>Import</source>
         <comment>Accept button text for QFileDialog</comment>
         <translation>Импорт</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/csv/import_csv.py" line="838"/>
-        <source>&lt;qt&gt;
-            &lt;p&gt;Plugin that provides import CSV files capabilities.
-            &lt;p&gt;CSV files can be imported into any of the following
-            PyTables containers: Array, EArray, CArray and Table.
-            &lt;p&gt;When a file is imported into a Table automatic header
-            detection is provided.
-            &lt;p&gt;Beware that importing large files is a potentially slow
-            process because the whole file has to be read from disk,
-            transformed and write back to disk again so there is a lot
-            of disk IO.
-            &lt;/qt&gt;</source>
+        <location filename="vitables/plugins/csv/import_csv.py" line="76"/>
+        <source>Please, make sure that you are importing a homogeneous dataset.</source>
+        <comment>CSV file not imported error</comment>
+        <translation>Убедитесь, что импортируемые данные однородны.</translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/csv/import_csv.py" line="417"/>
+        <source>Import failed because destination file already exists.</source>
+        <comment>A file creation error</comment>
+        <translation>Импорт не удался так, как файл уже существует.</translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/csv/import_csv.py" line="424"/>
+        <source>Import failed because destination container is a directory.</source>
+        <comment>A file creation error</comment>
+        <translation>Импорт не удался, так как объект уже существует.</translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/csv/import_csv.py" line="556"/>
+        <source>Import failed because destination file cannot be created.</source>
+        <comment>A file creation error</comment>
+        <translation>Импорт не удался, так как файл не может быть создан.</translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/csv/import_csv.py" line="831"/>
+        <source>&lt;qt&gt;&lt;p&gt;Plugin that provides import CSV files capabilities.&lt;p&gt;CSV files can be imported into any of the following PyTables containers: Array, EArray, CArray and Table.&lt;p&gt;When a file is imported into a Table automatic header detection is provided. &lt;p&gt;Beware that importing large files is a potentially slow process because the whole file has to be read from disk, transformed and write back to disk again so there is a lot of disk IO.&lt;/qt&gt;</source>
         <comment>Text of an About plugin message box</comment>
-        <translation>Плагин для импорт данных из CSV</translation>
+        <translation>Надстройка для импорта данных из CSV файла</translation>
     </message>
 </context>
 <context>
@@ -999,19 +1036,19 @@ Warning: import failed because destination file cannot be created.</source>
 <context>
     <name>MenuUpdater</name>
     <message>
-        <location filename="vitables/plugins/columnorg/columnar_org.py" line="183"/>
+        <location filename="vitables/plugins/columnorg/columnar_org.py" line="184"/>
         <source>Use a unique widget to display Arrays as if they where columns of a Table</source>
         <comment>Status bar text for the Node -&gt; Group Arrays action</comment>
         <translation>Использовать специализированный элемент для отображения массивов в виде столбцов таблицы</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/columnorg/columnar_org.py" line="203"/>
+        <location filename="vitables/plugins/columnorg/columnar_org.py" line="204"/>
         <source>&amp;Ungroup Arrays</source>
         <comment>Ungroup previously grouped arrays.</comment>
         <translation>&amp;Разбить группу</translation>
     </message>
     <message>
-        <location filename="vitables/plugins/columnorg/columnar_org.py" line="203"/>
+        <location filename="vitables/plugins/columnorg/columnar_org.py" line="204"/>
         <source>Ungroup previously grouped arrays.</source>
         <comment>Status bar text for the Node -&gt; Ungroup Arrays action</comment>
         <translation>Убрать группирование массивов.</translation>
@@ -1041,25 +1078,25 @@ There is already a node named &apos;{2}&apos; in that parent group.
 <context>
     <name>Preferences</name>
     <message>
-        <location filename="vitables/preferences/preferences.py" line="162"/>
+        <location filename="vitables/preferences/preferences.py" line="159"/>
         <source>  General  </source>
         <comment>Text for page selector icon</comment>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="vitables/preferences/preferences.py" line="170"/>
+        <location filename="vitables/preferences/preferences.py" line="167"/>
         <source>Look &amp; Feel</source>
         <comment>Text for page selector icon</comment>
         <translation>Внешний вид</translation>
     </message>
     <message>
-        <location filename="vitables/preferences/preferences.py" line="178"/>
+        <location filename="vitables/preferences/preferences.py" line="175"/>
         <source>  Plugins  </source>
         <comment>Text for page selector icon</comment>
         <translation>Плагин</translation>
     </message>
     <message>
-        <location filename="vitables/preferences/preferences.py" line="441"/>
+        <location filename="vitables/preferences/preferences.py" line="438"/>
         <source>Sorry, there are no info available for this plugin</source>
         <comment>A text label</comment>
         <translation>Описание плагина отсутствует</translation>
@@ -1179,7 +1216,7 @@ There is already a node named &apos;{2}&apos; in that parent group.
 <context>
     <name>TimeFormatterPage</name>
     <message>
-        <location filename="vitables/plugins/timeseries/time_series.py" line="259"/>
+        <location filename="vitables/plugins/timeseries/time_series.py" line="262"/>
         <source>&lt;qt&gt;
             &lt;p&gt;Plugin that provides nice string formatting for time fields.
             &lt;p&gt;It supports not only native PyTables time datatypes but
@@ -1548,13 +1585,13 @@ You are about to delete the node:
 <context>
     <name>VTGUI</name>
     <message>
-        <location filename="vitables/vtgui.py" line="57"/>
+        <location filename="vitables/vtgui.py" line="58"/>
         <source>ViTables {0}</source>
         <comment>Main window title</comment>
         <translation>ViTables {0}</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="131"/>
+        <location filename="vitables/vtgui.py" line="132"/>
         <source>&lt;qt&gt;
                       &lt;h3&gt;The Workspace&lt;/h3&gt;
                       This is the area where open leaves of the object tree are
@@ -1567,485 +1604,497 @@ You are about to delete the node:
         <translation>Основная рабочая область</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="156"/>
+        <location filename="vitables/vtgui.py" line="157"/>
         <source>&amp;New...</source>
         <comment>File -&gt; New</comment>
         <translation>&amp;Создать...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="156"/>
+        <location filename="vitables/vtgui.py" line="157"/>
         <source>Create a new file</source>
         <comment>Status bar text for the File -&gt; New action</comment>
         <translation>Создать новый файл</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="166"/>
+        <location filename="vitables/vtgui.py" line="167"/>
         <source>&amp;Open...</source>
         <comment>File -&gt; Open</comment>
         <translation>&amp;Открыть...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="166"/>
+        <location filename="vitables/vtgui.py" line="167"/>
         <source>Open an existing file</source>
         <comment>Status bar text for the File -&gt; Open action</comment>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="176"/>
+        <location filename="vitables/vtgui.py" line="177"/>
         <source>Read-only open...</source>
         <comment>File -&gt; Open</comment>
         <translation>Открыть для чтения...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="176"/>
+        <location filename="vitables/vtgui.py" line="177"/>
         <source>Open an existing file in read-only mode</source>
         <comment>Status bar text for the File -&gt; Open action</comment>
         <translation>Открыть существующий файл только для чтения</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="185"/>
+        <location filename="vitables/vtgui.py" line="186"/>
         <source>&amp;Close</source>
         <comment>File -&gt; Close</comment>
         <translation>&amp;Закрыть</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="185"/>
+        <location filename="vitables/vtgui.py" line="186"/>
         <source>Close the selected file</source>
         <comment>Status bar text for the File -&gt; Close action</comment>
         <translation>Закрыть выделенный файл</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="195"/>
+        <location filename="vitables/vtgui.py" line="196"/>
         <source>Close &amp;All</source>
         <comment>File -&gt; Close All</comment>
         <translation>Закрыть &amp;все</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="195"/>
+        <location filename="vitables/vtgui.py" line="196"/>
         <source>Close all files</source>
         <comment>Status bar text for the File -&gt; Close All action</comment>
         <translation>Закрыть все файлы</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="203"/>
+        <location filename="vitables/vtgui.py" line="204"/>
         <source>&amp;Save as...</source>
         <comment>File -&gt; Save As</comment>
         <translation>Сохранить &amp;как...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="203"/>
+        <location filename="vitables/vtgui.py" line="204"/>
         <source>Save a renamed copy of the selected file</source>
         <comment>Status bar text for the File -&gt; Save As action</comment>
         <translation>Сохранить файл под новым именем</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="213"/>
+        <location filename="vitables/vtgui.py" line="214"/>
         <source>E&amp;xit</source>
         <comment>File -&gt; Exit</comment>
         <translation>&amp;Выйти</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="213"/>
+        <location filename="vitables/vtgui.py" line="214"/>
         <source>Quit ViTables</source>
         <comment>Status bar text for the File -&gt; Exit action</comment>
         <translation>Выйти из программы</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="223"/>
+        <location filename="vitables/vtgui.py" line="224"/>
         <source>&amp;Open view</source>
         <comment>Node -&gt; Open View</comment>
         <translation>&amp;Открыть вид</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="223"/>
+        <location filename="vitables/vtgui.py" line="224"/>
         <source>Display the contents of the selected node</source>
         <comment>Status bar text for the Node -&gt; Open View action</comment>
         <translation>Отобразить содержание выделенного узла</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="232"/>
+        <location filename="vitables/vtgui.py" line="233"/>
         <source>C&amp;lose view</source>
         <comment>Node -&gt; Close View</comment>
         <translation>&amp;Закрыть вид</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="232"/>
+        <location filename="vitables/vtgui.py" line="233"/>
         <source>Close the view of the selected node</source>
         <comment>Status bar text for the Node -&gt; Close View action</comment>
         <translation>Закрыть вид выделенного узла</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="241"/>
+        <location filename="vitables/vtgui.py" line="242"/>
         <source>Prop&amp;erties...</source>
         <comment>Node -&gt; Properties</comment>
         <translation>&amp;Свойства...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="241"/>
+        <location filename="vitables/vtgui.py" line="242"/>
         <source>Show the properties dialog for the selected node</source>
         <comment>Status bar text for the Node -&gt; Properties action</comment>
         <translation>Отобразить свойства выделенного узла</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="251"/>
+        <location filename="vitables/vtgui.py" line="252"/>
         <source>&amp;New group...</source>
         <comment>Node -&gt; New group</comment>
         <translation>Создать &amp;группу...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="251"/>
+        <location filename="vitables/vtgui.py" line="252"/>
         <source>Create a new group under the selected node</source>
         <comment>Status bar text for the Node -&gt; New group action</comment>
         <translation>Создать новую группу</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="261"/>
+        <location filename="vitables/vtgui.py" line="262"/>
         <source>&amp;Rename...</source>
         <comment>Node -&gt; Rename</comment>
         <translation>&amp;Переименовать...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="261"/>
+        <location filename="vitables/vtgui.py" line="262"/>
         <source>Rename the selected node</source>
         <comment>Status bar text for the Node -&gt; Rename action</comment>
         <translation>Переименовать выделенный узел</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="271"/>
+        <location filename="vitables/vtgui.py" line="272"/>
         <source>Cu&amp;t</source>
         <comment>Node -&gt; Cut</comment>
         <translation>Вы&amp;резать</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="271"/>
+        <location filename="vitables/vtgui.py" line="272"/>
         <source>Cut the selected node</source>
         <comment>Status bar text for the Node -&gt; Cut action</comment>
         <translation>Вырезать выделенный узел</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="280"/>
+        <location filename="vitables/vtgui.py" line="281"/>
         <source>&amp;Copy</source>
         <comment>Node -&gt; Copy</comment>
         <translation>&amp;Копировать</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="280"/>
+        <location filename="vitables/vtgui.py" line="281"/>
         <source>Copy the selected node</source>
         <comment>Status bar text for the Node -&gt; Copy action</comment>
         <translation>Копировать выделенный узел</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="289"/>
+        <location filename="vitables/vtgui.py" line="290"/>
         <source>&amp;Paste</source>
         <comment>Node -&gt; Paste</comment>
         <translation>&amp;Вставить</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="289"/>
+        <location filename="vitables/vtgui.py" line="290"/>
         <source>Paste the last copied/cut node</source>
         <comment>Status bar text for the Node -&gt; Copy action</comment>
         <translation>Вставить последний скопированный/вырезанный узел</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="298"/>
+        <location filename="vitables/vtgui.py" line="299"/>
         <source>&amp;Delete</source>
         <comment>Node -&gt; Delete</comment>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="298"/>
+        <location filename="vitables/vtgui.py" line="299"/>
         <source>Delete the selected node</source>
         <comment>Status bar text for the Node -&gt; Copy action</comment>
         <translation>Удалить выделенный узел</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="307"/>
+        <location filename="vitables/vtgui.py" line="308"/>
         <source>&amp;Query...</source>
         <comment>Query -&gt; New...</comment>
         <translation>За&amp;прос...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="307"/>
+        <location filename="vitables/vtgui.py" line="308"/>
         <source>Create a new filter for the selected table</source>
         <comment>Status bar text for the Query -&gt; New... action</comment>
         <translation>Создать новый фильтр для выделенной таблицы</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="316"/>
+        <location filename="vitables/vtgui.py" line="317"/>
         <source>Delete &amp;All</source>
         <comment>Query -&gt; Delete All</comment>
         <translation>Удалить &amp;все</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="316"/>
+        <location filename="vitables/vtgui.py" line="317"/>
         <source>Remove all filters</source>
         <comment>Status bar text for the Query -&gt; Delete All action</comment>
         <translation>Удалить все фильтры</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="325"/>
+        <location filename="vitables/vtgui.py" line="326"/>
         <source>&amp;Preferences...</source>
         <comment>Settings -&gt; Preferences</comment>
         <translation>&amp;Настройки...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="325"/>
+        <location filename="vitables/vtgui.py" line="326"/>
         <source>Configure ViTables</source>
         <comment>Status bar text for the Settings -&gt; Preferences action</comment>
         <translation>Изменить настройки ViTables</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="336"/>
+        <location filename="vitables/vtgui.py" line="337"/>
         <source>&amp;Cascade</source>
         <comment>Windows -&gt; Cascade</comment>
         <translation>Каска&amp;д</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="336"/>
+        <location filename="vitables/vtgui.py" line="337"/>
         <source>Arranges open windows in a cascade pattern</source>
         <comment>Status bar text for the Windows -&gt; Cascade action</comment>
         <translation>Разместить выделенные окна каскадом</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="344"/>
+        <location filename="vitables/vtgui.py" line="345"/>
         <source>&amp;Tile</source>
         <comment>Windows -&gt; Tile</comment>
         <translation>&amp;Плитки</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="344"/>
+        <location filename="vitables/vtgui.py" line="345"/>
         <source>Arranges open windows in a tile pattern</source>
         <comment>Status bar text for the Windows -&gt; Tile action</comment>
         <translation>Разместить выделенные окна плитками</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="352"/>
+        <location filename="vitables/vtgui.py" line="353"/>
         <source>&amp;Restore All</source>
         <comment>Windows -&gt; Restore All</comment>
         <translation>&amp;Восстановить все</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="352"/>
+        <location filename="vitables/vtgui.py" line="353"/>
         <source>Restore all minimized windows on the workspace</source>
         <comment>Status bar text for the Windows -&gt; Restore All action</comment>
         <translation>Восстановить размер всех минимизированных окон</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="361"/>
+        <location filename="vitables/vtgui.py" line="362"/>
         <source>&amp;Minimize All</source>
         <comment>Windows -&gt; Minimize All</comment>
         <translation>&amp;Минимизировать</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="361"/>
+        <location filename="vitables/vtgui.py" line="362"/>
         <source>Minimize all windows on the workspace</source>
         <comment>Status bar text for the Windows -&gt; Restore All action</comment>
         <translation>Минимизировать все окна</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="370"/>
+        <location filename="vitables/vtgui.py" line="371"/>
         <source>C&amp;lose</source>
         <comment>Windows -&gt; Close</comment>
         <translation>&amp;Закрыть</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="370"/>
+        <location filename="vitables/vtgui.py" line="371"/>
         <source>Close the active view</source>
         <comment>Status bar text for the Windows -&gt; Close action</comment>
         <translation>Закрыть активный вид</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="378"/>
+        <location filename="vitables/vtgui.py" line="379"/>
         <source>Close &amp;All</source>
         <comment>Windows -&gt; Close All</comment>
         <translation>Закрыть &amp;все</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="378"/>
+        <location filename="vitables/vtgui.py" line="379"/>
         <source>Close all views</source>
         <comment>Status bar text for the Windows -&gt; Close All action</comment>
         <translation>Закрыть все окна</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="386"/>
+        <location filename="vitables/vtgui.py" line="387"/>
         <source>Current View</source>
         <comment>Windows -&gt; separator</comment>
         <translation>Текущий вид</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="391"/>
+        <location filename="vitables/vtgui.py" line="392"/>
         <source>Change view mode</source>
         <comment>MDI -&gt; Tabbed</comment>
         <translation>Изменить режим отображения</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="391"/>
+        <location filename="vitables/vtgui.py" line="392"/>
         <source>Change the workspace view mode</source>
         <comment>Status bar text for the MDI -&gt; Tabbed action</comment>
         <translation>Изменить режим отображения рабочей среды</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="399"/>
+        <location filename="vitables/vtgui.py" line="400"/>
         <source>&amp;User&apos;s Guide</source>
         <comment>Help -&gt; Users Guide</comment>
         <translation>&amp;Руководство</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="399"/>
+        <location filename="vitables/vtgui.py" line="400"/>
         <source>Open the ViTables User&apos;s Guide</source>
         <comment>Status bar text for the Help -&gt; Users Guide action</comment>
         <translation>Открыть руководство пользователя</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="409"/>
+        <location filename="vitables/vtgui.py" line="410"/>
         <source>&amp;About ViTables</source>
         <comment>Help -&gt; About</comment>
         <translation>&amp;О ViTables</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="409"/>
+        <location filename="vitables/vtgui.py" line="410"/>
         <source>Display information about ViTables</source>
         <comment>Status bar text for the Help -&gt; About action</comment>
         <translation>Показать информацию о ViTables</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="418"/>
+        <location filename="vitables/vtgui.py" line="419"/>
         <source>About &amp;Qt</source>
         <comment>Help -&gt; About Qt</comment>
         <translation>О &amp;Qt</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="418"/>
+        <location filename="vitables/vtgui.py" line="419"/>
         <source>Display information about the Qt library</source>
         <comment>Status bar text for the Help -&gt; About Qt action</comment>
         <translation>Отобразить информацию о Qt</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="426"/>
+        <location filename="vitables/vtgui.py" line="427"/>
         <source>Show &amp;Versions</source>
         <comment>Help -&gt; Show Versions</comment>
         <translation>Верс&amp;ии</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="426"/>
+        <location filename="vitables/vtgui.py" line="427"/>
         <source>Show the versions of the libraries used by ViTables</source>
         <comment>Status bar text for the Help -&gt; Show Versions action</comment>
         <translation>Показать информацию о версиях используемых библиотек</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="445"/>
+        <location filename="vitables/vtgui.py" line="455"/>
         <source>File operations</source>
         <comment>Toolbar title</comment>
         <translation>Работа с файлами</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="457"/>
+        <location filename="vitables/vtgui.py" line="467"/>
         <source>Click to open a file
 Click and hold to open a recent file</source>
         <comment>File toolbar -&gt; Open Recent Files</comment>
         <translation>Одно нажатие для открытия файла. Нажать и удерживать для открытия недавно использованного файла</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="463"/>
+        <location filename="vitables/vtgui.py" line="473"/>
         <source>Node operations</source>
         <comment>Toolbar title</comment>
         <translation>Работа с узлами</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="470"/>
+        <location filename="vitables/vtgui.py" line="480"/>
         <source>Queries on tables</source>
         <comment>Toolbar title</comment>
         <translation>Запрос из таблицы</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="478"/>
+        <location filename="vitables/vtgui.py" line="488"/>
         <source>Help system</source>
         <comment>Toolbar title</comment>
         <translation>Система помощи</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="484"/>
+        <location filename="vitables/vtgui.py" line="494"/>
         <source>Whats this? help for a widget</source>
         <comment>Status bar text for the Help -&gt; Whats This action</comment>
         <translation>Помощь для элемента</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="498"/>
+        <location filename="vitables/vtgui.py" line="508"/>
         <source>The node currently selected in the Tree of databases pane</source>
         <comment>The Selected node box startup message</comment>
         <translation>Выделенный эелемент в окне дерева базы данных</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="501"/>
+        <location filename="vitables/vtgui.py" line="511"/>
         <source>Ready...</source>
         <comment>The status bar startup message</comment>
         <translation>Готов...</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="516"/>
+        <location filename="vitables/vtgui.py" line="526"/>
         <source>&amp;File</source>
         <comment>The File menu entry</comment>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="519"/>
+        <location filename="vitables/vtgui.py" line="529"/>
         <source>Open R&amp;ecent Files</source>
         <comment>File -&gt; Open Recent Files</comment>
         <translation>Открыть &amp;последние</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="538"/>
+        <location filename="vitables/vtgui.py" line="548"/>
         <source>&amp;Node</source>
         <comment>The Node menu entry</comment>
         <translation>&amp;Узел</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="548"/>
+        <location filename="vitables/vtgui.py" line="558"/>
         <source>&amp;Dataset</source>
         <comment>The Dataset menu entry</comment>
         <translation>Набор &amp;данных</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="556"/>
+        <location filename="vitables/vtgui.py" line="566"/>
         <source>&amp;Settings</source>
         <comment>The Settings menu entry</comment>
         <translation>&amp;Настройки</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="560"/>
+        <location filename="vitables/vtgui.py" line="570"/>
         <source>ToolBars</source>
         <comment>Tools -&gt; ToolBars action</comment>
         <translation>Кнопки управления</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="568"/>
+        <location filename="vitables/vtgui.py" line="578"/>
         <source>&amp;Window</source>
         <comment>The Windows menu entry</comment>
         <translation>О&amp;кно</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="580"/>
+        <location filename="vitables/vtgui.py" line="590"/>
         <source>&amp;Help</source>
         <comment>The Help menu entry</comment>
         <translation>&amp;Справка</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="587"/>
+        <location filename="vitables/vtgui.py" line="597"/>
         <source>Context help</source>
         <comment>Status bar text for the Help -&gt; Whats This action</comment>
         <translation>Контекстная справка</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="786"/>
+        <location filename="vitables/vtgui.py" line="796"/>
         <source>&amp;Clear</source>
         <comment>Recent File submenu entry</comment>
         <translation>О&amp;чистить</translation>
     </message>
     <message>
-        <location filename="vitables/vtgui.py" line="826"/>
+        <location filename="vitables/vtgui.py" line="836"/>
         <source>&amp;More...</source>
         <comment>A Windows submenu</comment>
         <translation>&amp;Больше...</translation>
+    </message>
+    <message>
+        <location filename="vitables/vtgui.py" line="436"/>
+        <source>Calculate...</source>
+        <comment>Calculate action</comment>
+        <translation>Калькулятор...</translation>
+    </message>
+    <message>
+        <location filename="vitables/vtgui.py" line="436"/>
+        <source>Run calculation on opened tables.</source>
+        <comment>Action tip</comment>
+        <translation>Произвести вычисления над данными из открытых таблиц.</translation>
     </message>
 </context>
 </TS>

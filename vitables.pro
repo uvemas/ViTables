@@ -53,7 +53,6 @@ SOURCES = vitables/queries/query.py \
           vitables/plugins/csv/__init__.py \
           vitables/plugins/csv/import_csv.py \
           vitables/plugins/columnorg/columnar_org.py \
-          vitables/plugins/columnorg/aboutpage.py \
           vitables/plugins/columnorg/__init__.py \
           vitables/plugins/dbstreesort/dbs_tree_sort.py \
           vitables/plugins/dbstreesort/aboutpage.py \
@@ -69,5 +68,6 @@ SOURCES = vitables/queries/query.py \
           vitables/vtwidgets/nodenamedlg.py \
           vitables/vtwidgets/__init__.py \
           vitables/vtgui.py \
-          vitables/plugin_utils.py
+          vitables/plugin_utils.py \
+          vitables/calculator/calculator.py
                                         
