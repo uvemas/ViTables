@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
@@ -52,6 +49,30 @@ from vitables.h5db import tnode_editor
 from vitables.h5db import tlink_editor
 
 translate = QtGui.QApplication.translate
+
+
+def _get_node_tooltip(node):
+    """Takes one of vitable nodes and return tooltip text."""
+    attrset = node.node._v_attrs
+    tooltip_lines = []
+    if hasattr(attrset, 'TITLE') and attrset.TITLE:
+        tooltip_lines.append(attrset.TITLE)
+    tooltip_lines.append('{0}: {1}'.format(node.node_kind, node.name))
+    tooltip_lines.extend(
+        ['{0}: {1}'.format(name, str(getattr(attrset, name)))
+         for name in attrset._v_attrnamesuser])
+    return '\n'.join(tooltip_lines)
+
+# Map qt display role onto a function that gets data from a node.
+_ROLE_NODE_GET_FUNCTION_DICT = {
+    QtCore.Qt.DisplayRole: lambda n: getattr(n, 'name'),
+    QtCore.Qt.ToolTipRole: _get_node_tooltip,
+    QtCore.Qt.StatusTipRole: lambda n: getattr(n, 'as_record'),
+    QtCore.Qt.DecorationRole: lambda n: getattr(n, 'icon'),
+    QtCore.Qt.UserRole: lambda n: getattr(n, 'filepath'),
+    QtCore.Qt.UserRole + 1: lambda n: getattr(n, 'nodepath'),
+    QtCore.Qt.UserRole + 2: lambda n: getattr(n, 'node_kind')
+}
 
 
 class DBsTreeModel(QtCore.QAbstractItemModel):
@@ -433,7 +454,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         finally:
             QtGui.qApp.restoreOverrideCursor()
 
-
     def copiedNode(self):
         """The tables.Node currently copied/cut.
         """
@@ -447,7 +467,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             src_nodepath = '{0}/{1}'.format(dirname, basename)
 
         return self.getDBDoc(src_filepath).getNode(src_nodepath)
-
 
     def createGroup(self, index, childname, overwrite=False):
         """Create a `tables.Group` under the given parent.
@@ -478,7 +497,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             self.selectIndex(index, childname)
         finally:
             QtGui.qApp.restoreOverrideCursor()
-
 
     def renameNode(self, index, new_name, overwrite=False):
         """Rename a node.
@@ -515,7 +533,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 pass
         finally:
             QtGui.qApp.restoreOverrideCursor()
-
 
     def updateDBTree(self, index, new_name, node):
         """
@@ -564,7 +581,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                             (child_node.filepath, child_node.nodepath),
                             QtCore.Qt.StatusTipRole)
 
-
     def moveNode(self, src_filepath, childpath, parent_index, overwrite=False):
         """Move a `tables.Node` to a different location.
 
@@ -586,8 +602,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             #
             # Check if the nodename is already in use
             #
-            (nodename, overwrite) = self.validateNodename(src_filepath,
-                childpath, dst_filepath, parentpath)
+            (nodename, overwrite) = self.validateNodename(
+                src_filepath, childpath, dst_filepath, parentpath)
             if nodename is None:
                 return nodename
 
@@ -604,14 +620,13 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             else:
                 editor = tnode_editor.TNodeEditor(db_doc)
             movedname = editor.move(childpath, self.getDBDoc(dst_filepath),
-                parentpath, nodename)
+                                    parentpath, nodename)
         finally:
             QtGui.qApp.restoreOverrideCursor()
             return movedname
 
-
     def validateNodename(self, src_filepath, childpath, dst_filepath,
-        parentpath):
+                         parentpath):
         """
 
         :Parameters:
@@ -641,11 +656,10 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             translate('DBsTreeModel', 'Rename', 'A button label')]
 
         # Validate the nodename
-        nodename, overwrite = vitables.utils.getFinalName(nodename,
-            sibling, pattern, info)
+        nodename, overwrite = vitables.utils.getFinalName(
+            nodename, sibling, pattern, info)
         self.vtgui.editing_dlg = True
         return (nodename, overwrite)
-
 
     def overwriteNode(self, parent_node, parent_index, nodename):
         """Delete from the tree of databases a node being overwritten.
@@ -661,7 +675,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         child_index = self.index(child.row(), 0, parent_index)
         self.deleteNode(child_index)
 
-
     def walkTreeView(self, index):
         """Iterates over a subtree of the tree of databases view.
 
@@ -675,7 +688,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             for crow in range(0, self.rowCount(child)):
                 yield self.index(crow, 0, child)
 
-
     def indexChildren(self, index):
         """Iterate over the children of a given index.
 
@@ -684,7 +696,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         for row in range(0, self.rowCount(index)):
             yield self.index(row, 0, index)
-
 
     def selectIndex(self, parent, name):
         """Select in the tree view the index with the given parent and name.
@@ -699,7 +710,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             node = self.nodeFromIndex(child)
             if node.name == name:
                 self.vtgui.dbs_tree_view.selectNode(child)
-
 
     def flags(self, index):
         """Returns the item flags for the given index.
@@ -736,7 +746,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         return flags
 
-
     def data(self, index, role):
         """Returns the data stored under the given role for the item
         referred to by the index.
@@ -746,36 +755,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         - `index`: the index of a data item
         - `role`: the role being returned
         """
-
         if not index.isValid():
             data = None
             return data
-
         node = self.nodeFromIndex(index)
-        if role == QtCore.Qt.DisplayRole:
-            data = node.name
-        elif role == QtCore.Qt.ToolTipRole:
-            attrset = node.node._v_attrs
-            data_lines = ['{0}: {1}'.format(node.node_kind, node.name),
-                          'Title: {0}'.format(attrset.TITLE)]
-            data_lines.extend(
-                ['{0}: {1}'.format(name, str(getattr(attrset, name)))
-                 for name in attrset._v_attrnamesuser])
-            data = '\n'.join(data_lines)
-        elif role == QtCore.Qt.StatusTipRole:
-            data = node.as_record
-        elif role == QtCore.Qt.DecorationRole:
-            data = node.icon
-        elif role == QtCore.Qt.UserRole:
-            data = node.filepath
-        elif role == QtCore.Qt.UserRole+1:
-            data = node.nodepath
-        elif role == QtCore.Qt.UserRole+2:
-            data = node.node_kind
+        if role in _ROLE_NODE_GET_FUNCTION_DICT:
+            return _ROLE_NODE_GET_FUNCTION_DICT[role](node)
         else:
-            data = None
-        return data
-
+            return None
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
         """Sets the role data for the item at index to value.
