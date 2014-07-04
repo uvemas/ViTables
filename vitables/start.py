@@ -20,11 +20,12 @@
 
 __docformat__ = 'restructuredtext'
 
+import sys
 import locale
 import argparse
-import sys
 import os.path
 import logging
+import traceback
 
 import sip
 sip.setapi('QString', 2)
@@ -43,6 +44,18 @@ _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
 _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 # Folder with vitables translations.
 _I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
+
+
+_uncaught_exception_logger = logging.getLogger('vitables')
+
+
+def _uncaught_exception_hook(type_, value, tb):
+    _uncaught_exception_logger.error(''.join(traceback.format_tb(tb))
+                                     + str(value))
+    sys.__excepthook__(type_, value, tb)
+
+
+sys.excepthook = _uncaught_exception_hook
 
 
 def _check_versions():
