@@ -131,19 +131,25 @@ def long_action(message=None):
     return _long_action
 
 
-def addToMenuBar(menu):
+def addToMenuBar(menu, enable_function=None):
     """Add menu to the menu bar into one before last position.
 
-    Basically insert a menu before Help menu.
+    Basically insert a menu before Help menu. Actions can be enabled
+    or disabled by enable_function which is connected to aboutToShow
+    signal of the submenu.
 
     :parameter menu: QMenu object
+    :parameter enable_function: is connected to aboutToShow for menu
 
     :return: None
+
     """
 
     menu_bar = getGui().menuBar()
     last_action = menu_bar.actions()[-1]
     menu_bar.insertMenu(last_action, menu)
+    if enable_function is not None:
+        menu.aboutToShow.connect(enable_function)
 
 
 def insertInMenu(menu, entries, uid):
@@ -202,19 +208,25 @@ def addToMenu(menu, entries):
         menu.addEntry(a)
 
 
-def addToLeafContextMenu(actions):
+def addToLeafContextMenu(actions, enable_function=None):
     """Add entries at the end of the leaf context menu.
 
-    The function accept a QAction/QMenu or an iterable. Entries will be
-    preceded with a separator and added at the end of the menu.
+    The function accept a QAction/QMenu or an iterable. Entries will
+    be preceded with a separator and added at the end of the
+    menu. Actions can be enabled or disabled by enable_function which
+    is connected to aboutToShow signal of the context menu.
 
     :parameter actions: QAction/QMenu object or a list of such objects
+    :parameter enable_function: is connected to aboutToShow for menu
 
     :return: None
+
     """
 
     context_menu = getGui().leaf_node_cm
     addToMenu(context_menu, actions)
+    if enable_function is not None:
+        context_menu.aboutToShow.connect(enable_function)
 
 
 def addToGroupContextMenu(actions):
