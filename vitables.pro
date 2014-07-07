@@ -68,6 +68,5 @@ SOURCES = vitables/queries/query.py \
           vitables/vtwidgets/nodenamedlg.py \
           vitables/vtwidgets/__init__.py \
           vitables/vtgui.py \
-          vitables/plugin_utils.py \
           vitables/calculator/calculator.py
                                         
