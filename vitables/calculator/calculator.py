@@ -1,5 +1,7 @@
 """This module provides calculator functionality."""
 
+# pylint: disable=W0212
+
 import os
 import re
 import logging
@@ -63,7 +65,7 @@ def get_current_group():
     leaf.
 
     """
-    selected_nodes = vtu.getSelectedLeafs()
+    selected_nodes = vtu.getSelectedNodes()
     if len(selected_nodes) != 1:
         return None
     node = selected_nodes[0]
@@ -280,8 +282,8 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         eval_globals = {}
         for index, (identifier, node) in enumerate(
                 identifier_node_dict.items()):
-            variable_name = identifier.replace('.', '_') \
-                            + '_calculator_index_' + str(index)
+            variable_name = (identifier.replace('.', '_')
+                             + '_calculator_index_' + str(index))
             expression = expression.replace(
                 IDENTIFIER_MARKER + identifier, variable_name)
             eval_globals[variable_name] = node
@@ -373,7 +375,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         if not isinstance(result, np.ndarray) and not isinstance(result, list):
             result = np.array([result])
         try:
-            result_array = result_group._v_file.create_array(
+            result_group._v_file.create_array(
                 result_group, result_name, obj=result,
                 title='Expression: ' + self.expression_edit.toPlainText())
         except Exception as e:
