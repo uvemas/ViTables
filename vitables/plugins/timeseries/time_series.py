@@ -50,7 +50,6 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 import vitables.utils
-import vitables.plugin_utils
 from vitables.plugins.timeseries.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate

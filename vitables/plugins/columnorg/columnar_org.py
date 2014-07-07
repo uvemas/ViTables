@@ -40,7 +40,6 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 
 import vitables
-import vitables.plugin_utils
 from vitables.plugins.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate
@@ -165,7 +164,7 @@ class MenuUpdater(QtCore.QObject):
         """
 
         super(MenuUpdater, self).__init__(parent)
-        self.vtgui = vitables.plugin_utils.getVTGui()
+        self.vtgui = vitables.utils.getGui()
 
         # Connect signals to slots
         self.vtgui.node_menu.aboutToShow.connect(self.updateNodeMenu)
@@ -215,13 +214,12 @@ class MenuUpdater(QtCore.QObject):
                 "Status bar text for the Node -> Ungroup Arrays action"))
 
         # Add the actions to the Node menu
-        vitables.plugin_utils.addToMenu(self.vtgui.node_menu,
-                                        (self.group_action,
-                                         self.ungroup_action))
+        vitables.utils.addToMenu(self.vtgui.node_menu, (self.group_action,
+                                                        self.ungroup_action))
 
         # Add the actions to the leaf context menu
-        vitables.plugin_utils.addToLeafContextMenu((self.group_action,
-                                                   self.ungroup_action))
+        vitables.utils.addToLeafContextMenu(
+            (self.group_action, self.ungroup_action))
 
     def updateNodeMenu(self):
         """Update (un)group_action QActions if the Node menu is about to show.
@@ -283,7 +281,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         """The class constructor.
         """
 
-        self.vtgui = vitables.plugin_utils.getVTGui()
+        self.vtgui = vitables.utils.getGui()
         super(GroupedArrays, self).__init__(self.vtgui.workspace, flags)
 
         # The components from which the GroupedArrays will be made.

@@ -70,7 +70,6 @@ from PyQt4 import QtGui
 
 
 import vitables.utils
-import vitables.plugin_utils
 from vitables.plugins.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate
@@ -453,7 +452,7 @@ class ImportCSV(QtCore.QObject):
         if self.vtapp is None:
             return
 
-        self.vtgui = vitables.plugin_utils.getVTGui()
+        self.vtgui = vitables.utils.getGui()
         self.dbt_model = self.vtgui.dbs_tree_model
         self.dbt_view = self.vtgui.dbs_tree_view
 
@@ -530,17 +529,15 @@ class ImportCSV(QtCore.QObject):
         vitables.utils.addActions(self.import_submenu, keys, actions)
 
         # Add submenu to file menu before the Close File action
-        vitables.plugin_utils.insertInMenu(
+        vitables.utils.insertInMenu(
             self.vtgui.file_menu, self.import_submenu, 'fileClose')
         sep = actions['separator']
-        vitables.plugin_utils.insertInMenu(self.vtgui.file_menu, sep,
-                                           'fileClose')
+        vitables.utils.insertInMenu(self.vtgui.file_menu, sep, 'fileClose')
 
         # Add submenu to file context menu before the Close File action
-        vitables.plugin_utils.insertInMenu(self.vtgui.view_cm,
-                                           self.import_submenu, 'fileClose')
-        vitables.plugin_utils.insertInMenu(self.vtgui.view_cm, sep,
-                                           'fileClose')
+        vitables.utils.insertInMenu(self.vtgui.view_cm,
+                                    self.import_submenu, 'fileClose')
+        vitables.utils.insertInMenu(self.vtgui.view_cm, sep, 'fileClose')
 
     def createDestFile(self, filepath):
         """Create the `PyTables` file where the `CSV` file will be imported.

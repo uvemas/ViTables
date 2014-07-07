@@ -38,7 +38,6 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 import vitables.utils
-import vitables.plugin_utils
 from vitables.plugins.aboutpage import AboutPage
 
 translate = QtGui.QApplication.translate
@@ -88,7 +87,7 @@ class ExportToCSV(QtCore.QObject):
         if self.vtapp is None:
             return
 
-        self.vtgui = vitables.plugin_utils.getVTGui()
+        self.vtgui = vitables.utils.getGui()
 
         # Add an entry under the Dataset menu
         self.addEntry()
@@ -117,11 +116,10 @@ class ExportToCSV(QtCore.QObject):
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
-        vitables.plugin_utils.addToMenu(self.vtgui.dataset_menu,
-                                        self.export_action)
+        vitables.utils.addToMenu(self.vtgui.dataset_menu, self.export_action)
 
         # Add the action to the leaf context menu
-        vitables.plugin_utils.addToLeafContextMenu(self.export_action)
+        vitables.utils.addToLeafContextMenu(self.export_action)
 
     def updateDatasetMenu(self):
         """Update the `export` QAction when the Dataset menu is pulled down.
