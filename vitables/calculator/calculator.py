@@ -167,9 +167,10 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         dictionary.
 
         """
+        current_name = self.saved_list.currentItem().text()
         name, is_accepted = qtgui.QInputDialog.getText(
             self, translate('Calculator', 'Save expression as'),
-            translate('Calculator', 'Name:'))
+            translate('Calculator', 'Name:'), text=current_name)
         if not is_accepted:
             return
         if name not in self._name_expression_dict:

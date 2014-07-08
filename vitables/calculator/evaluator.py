@@ -2,7 +2,9 @@
 
 It is separated into a module in order to import * from numpy and thus
 simplify writing expressions. (Such import is not allowed inside a
-function.)  """
+function.)
+
+"""
 
 from numpy import *
 
