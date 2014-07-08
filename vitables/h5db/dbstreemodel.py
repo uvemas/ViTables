@@ -136,7 +136,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         :Parameter filepath: the full path of an open database.
         """
-
+        filepath = os.path.abspath(filepath)
         if filepath in self.__openDBs:
             return self.__openDBs[filepath]
         else:
@@ -161,7 +161,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         :Parameter filepath: the full path of the file
         """
-
         try:
             # Check if file doesn't exist
             if os.path.isdir(filepath):
@@ -206,7 +205,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         else:
             return True
 
-
     def openDBDoc(self, filepath, mode='a', position=0):
         """
         Open an existing hdf5 file and load it into the tree model.
@@ -217,8 +215,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         - `mode`: the opening mode of the database file. It can be 'r'ead-only
           'w'rite or 'a'ppend
         """
-
-
+        filepath = os.path.abspath(filepath)
         is_open = False
         if self.checkOpening(filepath):
             # Open the database and add it to the tracking system
