@@ -711,6 +711,20 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             if node.name == name:
                 self.vtgui.dbs_tree_view.selectNode(child)
 
+    def updateTreeFromData(self, parent_index=None):
+        """Update tree of expanded nodes from hdf5 data.
+
+        This function should be used if the structure of a file was
+        updated through pytables functions. It is better to use model
+        functions but they need to be better documented and expanded
+        to be usefull. This function is a temporary fix.
+
+        """
+        parent_index = parent_index if parent_index else QtCore.QModelIndex()
+        self.lazyAddChildren(parent_index)
+        for index in self.indexChildren(parent_index):
+            self.updateTreeFromData(index)
+
     def flags(self, index):
         """Returns the item flags for the given index.
 
@@ -935,7 +949,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         row = grandparent.rowOfChild(parent)
         return self.createIndex(row, 0, parent)
 
-
     def lazyAddChildren(self, index):
         """Add children to a group node when it is expanded.
 
@@ -950,13 +963,15 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if not index.isValid():
             return
         node = self.nodeFromIndex(index)
+        if node.node_kind not in ('group', 'root group'):
+            return
         group = node.node
 
         # Find out if children have to be added by comparing the
         # names of children currently added to model with the
         # names of the whole list of children
-        model_children = frozenset([node.childAtRow(row).name \
-            for row in range(0, len(node))])
+        model_children = frozenset([node.childAtRow(row).name
+                                    for row in range(0, len(node))])
         children_groups = frozenset(getattr(group, '_v_groups').keys())
         children_leaves = frozenset(getattr(group, '_v_leaves').keys())
         children_links = frozenset(getattr(group, '_v_links').keys())
@@ -964,13 +979,12 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.ldelta = children_leaves.difference(model_children)
         self.links_delta = children_links.difference(model_children)
         self.fdelta = frozenset([])
-        new_children = len(self.gdelta) + len(self.ldelta) + \
-            len(self.links_delta)
+        new_children = (len(self.gdelta) + len(self.ldelta)
+                        + len(self.links_delta))
         if not new_children:
             return
         else:
             self.insertRows(0, new_children, index)
-
 
     def insertRows(self, position=0, count=1, parent=QtCore.QModelIndex()):
         """Insert `count` rows before the given row.
