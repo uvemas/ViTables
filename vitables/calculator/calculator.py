@@ -1,23 +1,22 @@
 """This module provides calculator functionality."""
 
+# pylint: disable=W0212
+
 import os
 import re
 import logging
 
 import PyQt4.QtGui as qtgui
 import PyQt4.QtCore as qtcore
-from PyQt4 import uic
 
 import tables
 import numpy as np
 
 import vitables.utils as vtu
 import vitables.calculator.evaluator as vtce
+from vitables.calculator.calculator_dlg import Ui_CalculatorDialog
 
 translate = qtcore.QCoreApplication.translate
-
-Ui_Calculator = uic.loadUiType(os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'calculator.ui'))[0]
 
 
 def run():
@@ -63,7 +62,7 @@ def get_current_group():
     leaf.
 
     """
-    selected_nodes = vtu.getSelectedLeafs()
+    selected_nodes = vtu.getSelectedNodes()
     if len(selected_nodes) != 1:
         return None
     node = selected_nodes[0]
@@ -116,30 +115,6 @@ def find_node(start_node, path):
         return None
 
 
-def _update_model_tree(model, path, parent_index):
-    """Update view of given path in model starting from index."""
-    model.lazyAddChildren(parent_index)
-    if not path:
-        return
-    node_name = path[0]
-    for row in range(model.rowCount(parent_index)):
-        index = model.index(row, 0, parent_index)
-        name = model.data(index, qtcore.Qt.DisplayRole)
-        if name == node_name:
-            _update_model_tree(model, path[1:], index)
-
-
-def update_model_tree(model, node):
-    """Update model and view up to given pytable node."""
-    filename = os.path.basename(node._v_file.filename)
-    path = node._v_pathname[1:]
-    if path:
-        path = [filename] + path.split('/')
-    else:
-        path = [filename]
-    _update_model_tree(model, path, qtcore.QModelIndex())
-
-
 def build_identifier_node_dict(identifiers, current_group):
     """Map identifiers to pytables nodes."""
     model = vtu.getModel()
@@ -157,7 +132,7 @@ def build_identifier_node_dict(identifiers, current_group):
     return identifier_node_dict
 
 
-class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
+class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
     def __init__(self, parent=None):
         super(CalculatorDialog, self).__init__(parent)
         self.setupUi(self)
@@ -189,14 +164,16 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         dictionary.
 
         """
+        current_name = self.saved_list.currentItem().text()
         name, is_accepted = qtgui.QInputDialog.getText(
             self, translate('Calculator', 'Save expression as'),
-            translate('Calculator', 'Name:'))
+            translate('Calculator', 'Name:'), text=current_name)
         if not is_accepted:
             return
         if name not in self._name_expression_dict:
             self.saved_list.addItem(name)
-        self._name_expression_dict[name] = (self.expression_edit.toPlainText(),
+        self._name_expression_dict[name] = (self.statements_edit.toPlainText(),
+                                            self.expression_edit.toPlainText(),
                                             self.result_edit.text())
 
     @qtcore.pyqtSlot()
@@ -219,7 +196,8 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         """
         selected_index = self.saved_list.selectedIndexes()[0]
         name = self.saved_list.itemFromIndex(selected_index).text()
-        expression, destination = self._name_expression_dict[name]
+        statements, expression, destination = self._name_expression_dict[name]
+        self.statements_edit.setText(statements)
         self.expression_edit.setText(expression)
         self.result_edit.setText(destination)
 
@@ -231,10 +209,11 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
 
         """
         self._settings.beginWriteArray('expressions')
-        for index, (name, (expression, destination)) in enumerate(
+        for index, (name, (statements, expression, destination)) in enumerate(
                 self._name_expression_dict.items()):
             self._settings.setArrayIndex(index)
             self._settings.setValue('name', name)
+            self._settings.setValue('statements', statements)
             self._settings.setValue('expression', expression)
             self._settings.setValue('destination', destination)
         self._settings.endArray()
@@ -250,9 +229,11 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         for i in range(expressions_count):
             self._settings.setArrayIndex(i)
             name = self._settings.value('name')
+            statements = self._settings.value('statements')
             expression = self._settings.value('expression')
             destination = self._settings.value('destination')
-            self._name_expression_dict[name] = (expression, destination)
+            self._name_expression_dict[name] = (statements, expression,
+                                                destination)
             self.saved_list.addItem(name)
         self._settings.endArray()
 
@@ -280,8 +261,8 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         eval_globals = {}
         for index, (identifier, node) in enumerate(
                 identifier_node_dict.items()):
-            variable_name = identifier.replace('.', '_') \
-                            + '_calculator_index_' + str(index)
+            variable_name = (identifier.replace('.', '_')
+                             + '_calculator_index_' + str(index))
             expression = expression.replace(
                 IDENTIFIER_MARKER + identifier, variable_name)
             eval_globals[variable_name] = node
@@ -348,6 +329,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result.
 
         """
+        statements = self.statements_edit.toPlainText()
         expression = self.expression_edit.toPlainText()
         identifier_strings = extract_identifiers(expression)
         identifiers = [i[1:] for i in identifier_strings]
@@ -362,7 +344,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         if result_group is None:
             return False
         try:
-            result = vtce.evaluate(expression, eval_globals)
+            result = vtce.evaluate(statements, expression, eval_globals)
         except Exception as e:
             self._logger.error(str(e))
             qtgui.QMessageBox.critical(
@@ -373,7 +355,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         if not isinstance(result, np.ndarray) and not isinstance(result, list):
             result = np.array([result])
         try:
-            result_array = result_group._v_file.create_array(
+            result_group._v_file.create_array(
                 result_group, result_name, obj=result,
                 title='Expression: ' + self.expression_edit.toPlainText())
         except Exception as e:
@@ -383,5 +365,5 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
                 translate('Calculator', 'An exception was raised while '
                           'trying to store results, see log for details.'))
             return False
-        update_model_tree(vtu.getModel(), result_group)
+        vtu.getModel().updateTreeFromData()
         return True

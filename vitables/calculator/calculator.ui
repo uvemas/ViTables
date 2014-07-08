@@ -26,12 +26,19 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="saved_list"/>
+        <widget class="QListWidget" name="saved_list">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saved expressions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="list_buttons_layout">
          <item>
           <widget class="QPushButton" name="save_button">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Store expression for future use.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>Save</string>
            </property>
@@ -39,6 +46,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="remove_button">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove the selected expression from the saved expressions list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>Remove</string>
            </property>
@@ -51,6 +61,22 @@
      <item>
       <layout class="QVBoxLayout" name="evaluation_layout">
        <item>
+        <widget class="QLabel" name="statements_label">
+         <property name="text">
+          <string>Statements:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="statements_edit">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Set of python statements that will be executed before the expression is evaluated. This can be used to import additional modules or do preliminary calculations to simplify the expression.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="expression_label">
          <property name="text">
           <string>Expression:</string>
@@ -58,7 +84,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="expression_edit"/>
+        <widget class="QTextEdit" name="expression_edit">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;The results of the expression will be  saved in the result table. This field must contain a valid expression that returns a pytables array, list or scalar.&lt;/p&gt;
+&lt;p&gt;The expression can contain references to open data nodes. A reference can either be absolute and start from a file name or relative to the current group. Data refenrence is a string which is build by joining group names that lead to the data by dots. For example: &amp;quot;filename.h5.some_group.sub_group.mydata&amp;quot;. If &amp;quot;sub_group&amp;quot; is the current group then the string &amp;quot;mydata&amp;quot; can  be used as reference.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="result_label">
@@ -68,7 +101,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="result_edit"/>
+        <widget class="QLineEdit" name="result_edit">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Reference to the destination for the expression result. Data refenrence is a string which is build by joining group names that lead to the data by dots. For example: &amp;quot;filename.h5.some_group.sub_group.myresult&amp;quot;. If &amp;quot;sub_group&amp;quot; is the current group then the string &amp;quot;myresult&amp;quot; can  be used as reference.&lt;/p&gt;
+&lt;p&gt;The result table must not exitst.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
