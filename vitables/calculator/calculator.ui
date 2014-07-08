@@ -51,6 +51,16 @@
      <item>
       <layout class="QVBoxLayout" name="evaluation_layout">
        <item>
+        <widget class="QLabel" name="statements_label">
+         <property name="text">
+          <string>Statements:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="statements_edit"/>
+       </item>
+       <item>
         <widget class="QLabel" name="expression_label">
          <property name="text">
           <string>Expression:</string>
