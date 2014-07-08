@@ -174,7 +174,8 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
             return
         if name not in self._name_expression_dict:
             self.saved_list.addItem(name)
-        self._name_expression_dict[name] = (self.expression_edit.toPlainText(),
+        self._name_expression_dict[name] = (self.statements_edit.toPlainText(),
+                                            self.expression_edit.toPlainText(),
                                             self.result_edit.text())
 
     @qtcore.pyqtSlot()
@@ -197,7 +198,8 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         """
         selected_index = self.saved_list.selectedIndexes()[0]
         name = self.saved_list.itemFromIndex(selected_index).text()
-        expression, destination = self._name_expression_dict[name]
+        statements, expression, destination = self._name_expression_dict[name]
+        self.statements_edit.setText(statements)
         self.expression_edit.setText(expression)
         self.result_edit.setText(destination)
 
@@ -209,10 +211,11 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
 
         """
         self._settings.beginWriteArray('expressions')
-        for index, (name, (expression, destination)) in enumerate(
+        for index, (name, (statements, expression, destination)) in enumerate(
                 self._name_expression_dict.items()):
             self._settings.setArrayIndex(index)
             self._settings.setValue('name', name)
+            self._settings.setValue('statements', statements)
             self._settings.setValue('expression', expression)
             self._settings.setValue('destination', destination)
         self._settings.endArray()
@@ -228,9 +231,11 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         for i in range(expressions_count):
             self._settings.setArrayIndex(i)
             name = self._settings.value('name')
+            statements = self._settings.value('statements')
             expression = self._settings.value('expression')
             destination = self._settings.value('destination')
-            self._name_expression_dict[name] = (expression, destination)
+            self._name_expression_dict[name] = (statements, expression,
+                                                destination)
             self.saved_list.addItem(name)
         self._settings.endArray()
 
