@@ -183,73 +183,149 @@ Error: problems reading records. The dataset maybe corrupted.</source>
 <context>
     <name>Calculator</name>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="28"/>
+        <location filename="vitables/calculator/calculator.py" line="27"/>
         <source>No group is selected. Relative references are disabled. Continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="32"/>
+        <location filename="vitables/calculator/calculator.py" line="31"/>
         <source>Multiple groups are selected. Relative references are disabled. Continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="37"/>
+        <location filename="vitables/calculator/calculator.py" line="36"/>
         <source>Relative references are disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="192"/>
+        <location filename="vitables/calculator/calculator.py" line="168"/>
         <source>Save expression as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="192"/>
+        <location filename="vitables/calculator/calculator.py" line="168"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="263"/>
+        <location filename="vitables/calculator/calculator.py" line="244"/>
         <source>Node not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="269"/>
+        <location filename="vitables/calculator/calculator.py" line="250"/>
         <source>Node type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="332"/>
+        <location filename="vitables/calculator/calculator.py" line="313"/>
         <source>Result name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="294"/>
+        <location filename="vitables/calculator/calculator.py" line="275"/>
         <source>The location to store results is not specified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="308"/>
+        <location filename="vitables/calculator/calculator.py" line="289"/>
         <source>Create group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="368"/>
+        <location filename="vitables/calculator/calculator.py" line="350"/>
         <source>Evaluation error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="368"/>
+        <location filename="vitables/calculator/calculator.py" line="350"/>
         <source>An exception was raised during evaluation, see log for details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="381"/>
+        <location filename="vitables/calculator/calculator.py" line="363"/>
         <source>Result save error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/calculator/calculator.py" line="381"/>
+        <location filename="vitables/calculator/calculator.py" line="363"/>
         <source>An exception was raised while trying to store results, see log for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CalculatorDialog</name>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="85"/>
+        <source>Evaluate expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="86"/>
+        <source>Saved expressions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="89"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="91"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="92"/>
+        <source>Statements:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="96"/>
+        <source>Expression:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="101"/>
+        <source>Result table:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="87"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saved expressions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="88"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Store expression for future use.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="90"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove the selected expression from the saved expressions list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="93"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Set of python statements that will be executed before the expression is evaluated. This can be used to import additional modules or do preliminary calculations to simplify the expression.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="97"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;The results of the expression will be  saved in the result table. This field must contain a valid expression that returns a pytables array, list or scalar.&lt;/p&gt;
+&lt;p&gt;The expression can contain references to open data nodes. A reference can either be absolute and start from a file name or relative to the current group. Data refenrence is a string which is build by joining group names that lead to the data by dots. For example: &amp;quot;filename.h5.some_group.sub_group.mydata&amp;quot;. If &amp;quot;sub_group&amp;quot; is the current group then the string &amp;quot;mydata&amp;quot; can  be used as reference.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/calculator/calculator_dlg.py" line="102"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Reference to the destination for the expression result. Data refenrence is a string which is build by joining group names that lead to the data by dots. For example: &amp;quot;filename.h5.some_group.sub_group.myresult&amp;quot;. If &amp;quot;sub_group&amp;quot; is the current group then the string &amp;quot;myresult&amp;quot; can  be used as reference.&lt;/p&gt;
+&lt;p&gt;The result table must not exitst.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -375,7 +451,7 @@ Node name &apos;{4}&apos; already in use in that group.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vitables/h5db/dbstreemodel.py" line="822"/>
+        <location filename="vitables/h5db/dbstreemodel.py" line="836"/>
         <source>Tree of databases</source>
         <comment>Header of the only column of the tree of databases view</comment>
         <translation type="unfinished"></translation>

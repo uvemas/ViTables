@@ -8,18 +8,15 @@ import logging
 
 import PyQt4.QtGui as qtgui
 import PyQt4.QtCore as qtcore
-from PyQt4 import uic
 
 import tables
 import numpy as np
 
 import vitables.utils as vtu
 import vitables.calculator.evaluator as vtce
+from vitables.calculator.calculator_dlg import Ui_CalculatorDialog
 
 translate = qtcore.QCoreApplication.translate
-
-Ui_Calculator = uic.loadUiType(os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'calculator.ui'))[0]
 
 
 def run():
@@ -135,7 +132,7 @@ def build_identifier_node_dict(identifiers, current_group):
     return identifier_node_dict
 
 
-class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
+class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
     def __init__(self, parent=None):
         super(CalculatorDialog, self).__init__(parent)
         self.setupUi(self)
