@@ -331,6 +331,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         result.
 
         """
+        statements = self.statements_edit.toPlainText()
         expression = self.expression_edit.toPlainText()
         identifier_strings = extract_identifiers(expression)
         identifiers = [i[1:] for i in identifier_strings]
@@ -345,7 +346,7 @@ class CalculatorDialog(qtgui.QDialog, Ui_Calculator):
         if result_group is None:
             return False
         try:
-            result = vtce.evaluate(expression, eval_globals)
+            result = vtce.evaluate(statements, expression, eval_globals)
         except Exception as e:
             self._logger.error(str(e))
             qtgui.QMessageBox.critical(
