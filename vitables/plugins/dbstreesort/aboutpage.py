@@ -30,7 +30,10 @@ dialog selector pane.
 __docformat__ = 'restructuredtext'
 
 import os.path
-import configparser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 from PyQt4 import QtGui
 from PyQt4.uic import loadUiType

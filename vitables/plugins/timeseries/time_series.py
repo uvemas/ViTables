@@ -32,7 +32,10 @@ comment = 'Display time series in a human friendly format'
 
 import time
 import os
-import configparser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 import tables
 
