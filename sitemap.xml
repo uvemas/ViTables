@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-    <loc>http://vitables.org/</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/screenshots/index.html</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/development/index.html</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/download/index.html</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/reading/index.html</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/reading/testimonials/index.html</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/reading/vtfaq/vtfaq.html</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-</url>  
-<url>
-    <loc>http://vitables.org/privacy.html</loc>
-
-    <lastmod>2011-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-</url>  
+<urlset
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+ <url>
+  <loc>http://vitables.org/Development/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/Docs/faq.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/Docs/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/Docs/testimonials.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/Download/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/Presentation/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/archive.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/blog/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/categories/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/galleries/Screenshots/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/galleries/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
+ <url>
+  <loc>http://vitables.org/listings/index.html</loc>
+  <lastmod>2014-10-06</lastmod>
+ </url>
 </urlset>
