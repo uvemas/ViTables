@@ -6,18 +6,18 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
   <loc>http://vitables.org/galleries/Screenshots/rss.xml</loc>
-  <lastmod>2014-10-07</lastmod>
+  <lastmod>2014-10-10</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://vitables.org/galleries/rss.xml</loc>
-  <lastmod>2014-10-07</lastmod>
+  <lastmod>2014-10-10</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://vitables.org/rss.xml</loc>
-  <lastmod>2014-10-07</lastmod>
+  <lastmod>2014-10-10</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://vitables.org/sitemap.xml</loc>
-  <lastmod>2014-10-07</lastmod>
+  <lastmod>2014-10-10</lastmod>
  </sitemap>
 </sitemapindex>
