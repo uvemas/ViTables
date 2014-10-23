@@ -10,7 +10,5 @@ syntax: glob
 doc/html
 doc/index.rst
 run_vitables.py
-MANIFEST
 
 build
-dist
