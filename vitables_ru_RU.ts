@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="2.0" language="ru_RU" sourcelanguage="">
 <context>
+    <name>AboutPage</name>
+    <message>
+        <location filename="vitables/plugins/about_page.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/about_page.ui" line="20"/>
+        <source>Plugin description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/about_page.ui" line="26"/>
+        <source>Version: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/about_page.ui" line="77"/>
+        <source>Module name: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/about_page.ui" line="128"/>
+        <source>Folder: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/about_page.ui" line="179"/>
+        <source>Author: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/about_page.ui" line="230"/>
+        <source>Desription: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ArrayColsOrganizer</name>
     <message>
         <location filename="vitables/plugins/columnorg/columnar_org.py" line="185"/>
@@ -73,6 +111,70 @@ Error: empty field Name in the row {0:d}</source>
 Error: attribute name &quot;{0}&quot; is repeated.</source>
         <comment>User attrs table editing error</comment>
         <translation>Ошибка: повторное использование &quot;{0}&quot; для имени аттрибута.  </translation>
+    </message>
+</context>
+<context>
+    <name>AttrPropDialog</name>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="57"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="177"/>
+        <source>&amp;System attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="185"/>
+        <source>System attributes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="292"/>
+        <source>&amp;User Attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="300"/>
+        <source>User attributes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="387"/>
+        <source>&lt;qt&gt;
+        &lt;h3&gt;User&apos;s attributes editing table&lt;/h3&gt;
+        Here you can perform the editing of user&apos;s attributes for
+        this node. It is quite straightforward. &lt;p&gt;For adding an
+        attribute click the &lt;b&gt;Add&lt;/b&gt; button. A new row will
+        be added to the table. Enter the attribute name and its
+        value in the corresponding cells. Finally, select the
+        attribute datatype in the combobox of the DataType column.
+        In order to delete an attribute just select it by clicking
+        any of its cells, then click the &lt;b&gt;Delete&lt;/b&gt; button.&lt;/p&gt;
+        &lt;p&gt;Beware that PyTables stores scalar attributes as numpy
+        scalar arrays so you will be unable to save them as Python
+        objects even if you choose the Python datatype in the
+        combobox selector. Also note that multidimensional attributes
+         other than Python lists and tuples are not supported.&lt;/p&gt;
+        &lt;/qt&gt;</source>
+        <comment>Help text for the User Attributes page</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="437"/>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="444"/>
+        <source>&amp;Delete</source>
+        <translation type="unfinished">&amp;Удалить</translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/attr_prop_dlg.ui" line="451"/>
+        <source>&amp;What&apos;s this</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -402,6 +504,49 @@ Error: cannot open node {0} in file {1} </source>
     </message>
 </context>
 <context>
+    <name>DBTreeSortPage</name>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="20"/>
+        <source>Plugin description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="26"/>
+        <source>Version: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="77"/>
+        <source>Module name: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="128"/>
+        <source>Folder: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="179"/>
+        <source>Author: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="230"/>
+        <source>Desription: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/dbstreesort/dbs_tree_sort_page.ui" line="284"/>
+        <source>Sorting algorithm</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DBsTreeModel</name>
     <message>
         <location filename="vitables/h5db/dbstreemodel.py" line="168"/>
@@ -577,6 +722,49 @@ Node name &apos;{4}&apos; already in use in that group.
         <source>&lt;qt&gt;&lt;p&gt;Plugin that provides export to CSV files capabilities.&lt;p&gt;Any kind of PyTables dataset can be exported. When exporting tables, a header with the field names can be inserted at top of the CSV file.&lt;/qt&gt;</source>
         <comment>Text of an About plugin message box</comment>
         <translation>Надстройка для экспорта в формате CSV</translation>
+    </message>
+</context>
+<context>
+    <name>FilePropPage</name>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="20"/>
+        <source>Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="28"/>
+        <source>Name:</source>
+        <translation type="unfinished">Имя:</translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="35"/>
+        <source>Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="42"/>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="49"/>
+        <source>Access mode: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="253"/>
+        <source>Root group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/group_prop_page.ui" line="259"/>
+        <source>Number of children: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1031,6 +1219,24 @@ Node name &apos;{4}&apos; already in use in that group.
     </message>
 </context>
 <context>
+    <name>InputNodeNameDlg</name>
+    <message>
+        <location filename="vitables/vtwidgets/nodename_dlg.ui" line="17"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/vtwidgets/nodename_dlg.ui" line="25"/>
+        <source>InfoLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/vtwidgets/nodename_dlg.ui" line="34"/>
+        <source>Node name: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeafPropDlg</name>
     <message>
         <location filename="vitables/nodeprops/leafpropdlg.py" line="75"/>
@@ -1074,6 +1280,89 @@ Node name &apos;{4}&apos; already in use in that group.
         <location filename="vitables/nodeprops/leafproppage.py" line="133"/>
         <source>-</source>
         <translation>-</translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="20"/>
+        <source>Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="28"/>
+        <source>Name:</source>
+        <translation type="unfinished">Имя:</translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="35"/>
+        <source>Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="42"/>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="199"/>
+        <source>Dataspace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="209"/>
+        <source>Dimensions: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="263"/>
+        <source>Shape: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="317"/>
+        <source>Data Type: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/leaf_prop_page.ui" line="371"/>
+        <source>Compression: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LinkPropDialog</name>
+    <message>
+        <location filename="vitables/nodeprops/link_prop_dlg.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/link_prop_dlg.ui" line="20"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/link_prop_dlg.ui" line="28"/>
+        <source>Name:</source>
+        <translation type="unfinished">Имя:</translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/link_prop_dlg.ui" line="82"/>
+        <source>Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/link_prop_dlg.ui" line="136"/>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/nodeprops/link_prop_dlg.ui" line="187"/>
+        <source>Target:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1265,6 +1554,151 @@ There is already a node named &apos;{2}&apos; in that parent group.
     </message>
 </context>
 <context>
+    <name>QueryDialog</name>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="17"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="37"/>
+        <source>Global options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="59"/>
+        <source>Name:</source>
+        <translation type="unfinished">Имя:</translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="66"/>
+        <source>&lt;qt&gt;
+        The name of the table where the query results will be added.
+        &lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="92"/>
+        <source>Original indices into column:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="99"/>
+        <source>&lt;qt&gt;
+        The name of the column where the indices of the selected rows
+        will be added.
+        &lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="105"/>
+        <source>Orig_idx</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="119"/>
+        <source>Query condition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="133"/>
+        <source>&lt;qt&gt;
+        &lt;h3&gt;Conditions syntax&lt;/h3&gt;
+        A condition on a table is just a &lt;em&gt;string&lt;/em&gt; containing a
+        Python expression that involves &lt;em&gt;at least one column&lt;/em&gt;
+        , and maybe some constants and external variables, all combined
+        with algebraic operators or functions.
+        Beware that &lt;tt&gt;&amp;&lt;/tt&gt;, &lt;tt&gt;|&lt;/tt&gt; and &lt;tt&gt;~&lt;/tt&gt; operators
+        are used for logical comparisons. They have higher precedence
+        than logical operators so we recommend to &lt;em&gt;always use
+        parenthesis around logical operators&lt;/em&gt;.&lt;/p&gt;
+        &lt;p&gt;The following table shows some examples of conditions and
+        their equivalent Python expressions.&lt;/p&gt;
+        &lt;div align=&apos;center&apos;&gt;&lt;table border=&apos;1&apos;&gt;
+        &lt;tr&gt;&lt;th&gt;Condition&lt;/th&gt;&lt;th&gt;Python expression&lt;/th&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;a &amp; (b == c)&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;code&gt;a and b == c&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;(0 &amp;lt; x) &amp; (x &amp;lt; 1)&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;code&gt;0 &amp;lt; x &amp;lt; 1&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;a + b  &amp;gt; c&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;code&gt;a + b  &amp;gt; c&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;code&gt;where(a &gt; b, 3, 4)&lt;/code&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;/table&gt;&lt;/div&gt;
+        &lt;p&gt;You can find detailed information about conditions in the
+        Appendix B of the PyTables users guide.&lt;/p&gt;
+        &lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="186"/>
+        <source>&lt;qt&gt;
+        The names of the searchable columns. They must
+        fulfill the following requirements:
+        &lt;ul&gt;&lt;li&gt;must be not nested&lt;/li&gt;
+        &lt;li&gt;must have a scalar data type&lt;/li&gt;
+        &lt;li&gt;their data type cannot be &lt;code&gt;complex&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
+        Columns whose names contains blanks are automatically mapped
+        to variables whose names contain no blanks. For querying
+        those columns the mapped variables will be used.
+        &lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="202"/>
+        <source>&lt;qt&gt;
+        The operators that can be used in a given condition. Operators
+        can be logical, comparison and arithmetic.&lt;br&gt;Not all operators
+        are available for every data type.
+        &lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="213"/>
+        <source>&lt;qt&gt;
+        The set of functions that can appear in a condition.
+        It includes functions for doing selections, trigonometric
+        functions and functions on complex numbers. For ease
+        of use, arguments are automatically included when a
+        function is inserted. The arguments meaning is:
+        &lt;ul&gt;&lt;li&gt;N: number&lt;/li&gt;&lt;li&gt;B: boolean&lt;/li&gt;
+        &lt;li&gt;F: float&lt;/li&gt;&lt;li&gt;C: complex&lt;/li&gt;&lt;/ul&gt;
+        &lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="248"/>
+        <source>The range of rows included in the query.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="251"/>
+        <source>Range of rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="265"/>
+        <source>Start:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="309"/>
+        <source>1</source>
+        <comment>A range selector label</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="279"/>
+        <source>Stop:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/queries/query_dlg.ui" line="302"/>
+        <source>Step:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QueryDlg</name>
     <message>
         <location filename="vitables/queries/querydlg.py" line="125"/>
@@ -1331,6 +1765,183 @@ There is already a node named &apos;{2}&apos; in that parent group.
     </message>
 </context>
 <context>
+    <name>RenameNodeDlg</name>
+    <message>
+        <location filename="vitables/vtwidgets/rename_dlg.ui" line="17"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/vtwidgets/rename_dlg.ui" line="25"/>
+        <source>InfoLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/vtwidgets/rename_dlg.ui" line="34"/>
+        <source>New name: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="14"/>
+        <source>ViTables settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="40"/>
+        <source>Click an item in this tree to select the settings you want to change. Beware that the listed plugins are *loaded* plugins (i.e. the are working in the current ViTables session) not just enabled plugins.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="84"/>
+        <source>Configure the startup behavior of ViTables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="105"/>
+        <source>Startup</source>
+        <comment>The name of the groupbox where startup is configured</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="111"/>
+        <source>If checked, the last working session -i.e. open files and views- will be restored. If not, ViTables will start with an empty session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="114"/>
+        <source>Restore last session</source>
+        <comment>Label of the restore last session check button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="121"/>
+        <source>The working directory used when opening the very first file. It defaults to the current directory if ViTables has been launched from the command line or to the user&apos;s home directory if ViTables started from a menu or a desktop icon. If the checkbox is checked then the last entered directory will be used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="124"/>
+        <source>Start in last working directory</source>
+        <comment>Label of the startup in the last open directory check box</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="139"/>
+        <source>Configure the look and feel of ViTables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="145"/>
+        <source>Customise font and colors of the Logger.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="148"/>
+        <source>Logger</source>
+        <comment>The title of the logger groubox</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="157"/>
+        <source>You can preview your Font settings here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="163"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;En un lugar de La Mancha,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;de cuyo nombre no quiero acordarme,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;no ha mucho tiempo vivia un hidalgo..&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="183"/>
+        <source>Setup the text color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="186"/>
+        <source>F&amp;oreground</source>
+        <comment>The label of the logger text color button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="219"/>
+        <source>Setup the background color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="222"/>
+        <source>&amp;Background</source>
+        <comment>The label of the logger color button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="229"/>
+        <source>Here you can choose the font used in the Logger.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="232"/>
+        <source>&amp;Font</source>
+        <comment>The label of the logger font chooser button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="242"/>
+        <source>Setup the background color of the workspace.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="245"/>
+        <source>Workspace</source>
+        <comment>The title of the workspace groupbox</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="254"/>
+        <source>&amp;Background</source>
+        <comment>The label of the workspace color button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="264"/>
+        <source>Background color sample</source>
+        <comment>A label for the workspace color sample</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="274"/>
+        <source>Choose the global style of ViTables here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="277"/>
+        <source>Style</source>
+        <comment>The title of the global aspect groupbox</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="306"/>
+        <source>Available plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/preferences/settings_dlg.ui" line="318"/>
+        <source>The list of all available plugins. If a plugin is checked then it is enabled (but not necessarely loaded), if it is unchecked then it is disabled (but not necessarely unloaded). Please, note that changes in the check state of plugins will take effect the next time you start ViTables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TimeFormatterPage</name>
     <message>
         <location filename="vitables/plugins/timeseries/time_series.py" line="262"/>
@@ -1342,6 +1953,61 @@ There is already a node named &apos;{2}&apos; in that parent group.
             &lt;/qt&gt;</source>
         <comment>Text of an About plugin message box</comment>
         <translation>Плагин для отображения поля времени</translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="20"/>
+        <source>Plugin description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="26"/>
+        <source>Version: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="77"/>
+        <source>Module name: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="128"/>
+        <source>Folder: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="179"/>
+        <source>Author: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="230"/>
+        <source>Desription: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="284"/>
+        <source>Configure time format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="290"/>
+        <source>Time format: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="299"/>
+        <source>Sample date: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vitables/plugins/timeseries/timeformatter_page.ui" line="319"/>
+        <source>Today</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
