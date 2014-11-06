@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** November 06, 2014 **
+Project file (i.e vitables.pro) and translations have all been updated.
+
 ** December 12, 2013 **
 Context menus on views are now allowed which is a good thing for plugins.
 

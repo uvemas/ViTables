@@ -71,3 +71,15 @@ SOURCES = vitables/queries/query.py \
           vitables/calculator/calculator.py \
           vitables/calculator/calculator_dlg.py
                                         
+FORMS =	  vitables/plugins/about_page.ui \
+	  vitables/plugins/dbstreesort/dbs_tree_sort_page.ui \
+	  vitables/plugins/timeseries/timeformatter_page.ui \
+	  vitables/calculator/calculator.ui \
+	  vitables/nodeprops/link_prop_dlg.ui \
+	  vitables/nodeprops/group_prop_page.ui \
+	  vitables/nodeprops/attr_prop_dlg.ui \
+	  vitables/nodeprops/leaf_prop_page.ui \
+	  vitables/vtwidgets/rename_dlg.ui \
+	  vitables/vtwidgets/nodename_dlg.ui \
+	  vitables/queries/query_dlg.ui \
+	  vitables/preferences/settings_dlg.ui

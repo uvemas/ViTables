@@ -108,7 +108,9 @@ class ArrayColsOrganizer(QtCore.QObject):
 
         if not isinstance(leaf, tables.Table):
             cb = QtGui.QCheckBox(datasheet)
-            cb.setToolTip("Group Arrays into a unique view")
+            cb.setToolTip(translate('ArrayColsOrganizer', 
+                                    "Group Arrays into a unique view", 
+                                    'Checkbox tooltip text'))
             datasheet.leaf_view.setCornerWidget(cb)
             # Attributes for retrieving the state of the checkbox from the
             # datasheet being customized
@@ -142,8 +144,7 @@ class ArrayColsOrganizer(QtCore.QObject):
                 'module_name': os.path.join(os.path.basename(__file__)),
                 'folder': os.path.join(os.path.dirname(__file__)),
                 'author': 'Vicent Mas <vmas@vitables.org>',
-                'comment': translate(
-                    'ArraysColsOrganizer',
+                'comment': translate('ArrayColsOrganizer',
                     '<qt><p>Plugin that provides an alternative view for '
                     'arrays with the same number of rows. <p>'
                     'The user selects the arrays which he want to see in '
@@ -182,16 +183,16 @@ class MenuUpdater(QtCore.QObject):
                                     QtGui.QIcon.On)
 
         self.group_action = QtGui.QAction(
-            translate('ArrayColsOrganizer',
+            translate('MenuUpdater',
                       "&Group Arrays",
                       "Group separated arrays with the same number of rows"),
             self,
             shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.groupArrays,
             icon=object_group_icon,
-            statusTip=translate(
-                'MenuUpdater', 'Use a unique widget to display Arrays as if '
-                'they where columns of a Table',
+            statusTip=translate('MenuUpdater', 
+                """Use a unique widget to display Arrays as if """
+                """they where columns of a Table""",
                 "Status bar text for the Node -> Group Arrays action"))
 
         object_ungroup_icon = QtGui.QIcon()
@@ -202,14 +203,14 @@ class MenuUpdater(QtCore.QObject):
                                       QtGui.QIcon.On)
 
         self.ungroup_action = QtGui.QAction(
-            translate('MenuUpdater', "&Ungroup Arrays",
+            translate('MenuUpdater', 
+                      "&Ungroup Arrays",
                       "Ungroup previously grouped arrays."),
             self,
             shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.ungroupArrays,
             icon=object_ungroup_icon,
-            statusTip=translate(
-                'MenuUpdater',
+            statusTip=translate('MenuUpdater',
                 """Ungroup previously grouped arrays.""",
                 "Status bar text for the Node -> Ungroup Arrays action"))
 
@@ -257,9 +258,11 @@ class MenuUpdater(QtCore.QObject):
             if numrows.count(numrows[0]) == len(numrows):
                 self.group_action.setEnabled(True)
             else:
-                print("""\nError: grouping arrays, operation cancelled. """
-                      """Not all the selected arrays have the same number """
-                      """of rows.""")
+                print(translate('MenuUpdater', 
+                                """\nError: grouping arrays, operation cancelled. """
+                                """Not all the selected arrays have the same number """
+                                """of rows.""", 
+                                'An error message in the ArraysColsOrganizer plugin'))
 
     def groupArrays(self):
         """Group a set of individual arrays into the same view widget.
@@ -505,7 +508,9 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             datasheet.widget().verticalScrollBar().show()
             datasheet.widget().verticalHeader().show()
             cb = QtGui.QCheckBox(datasheet)
-            cb.setToolTip("Group Arrays into a unique view")
+            cb.setToolTip(translate('GroupedArrays', 
+                                    "Group Arrays into a unique view", 
+                                    'Checkbox tooltip'))
             datasheet.leaf_view.setCornerWidget(cb)
             # Attributes for retrieving the state of the checkbox from the
             # datasheet being customized
