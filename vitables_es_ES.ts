@@ -1678,16 +1678,16 @@ Ya hay un nodo llamado &apos;{2}&apos; en el grupo padre.
         &lt;/qt&gt;</source>
         <translation>&lt;qt&gt;
         &lt;h3&gt;Sintaxis de las consultas&lt;/h3&gt;
-        Una condición en una tabla es simplemente una &lt;em&gt;cadena&lt;/em&gt; que contiene una
+        Una consulta en una tabla es simplemente una &lt;em&gt;cadena&lt;/em&gt; que contiene una
         expresión Python que implica &lt;em&gt;como mínimo una columna&lt;/em&gt;
         , y quizás algunas constantes y variables externas, todo ello combinado
-        con operadores algebraicos of funciones.
-        Ten en centa que los operadores &lt;tt&gt;&amp;&lt;/tt&gt;, &lt;tt&gt;|&lt;/tt&gt; and &lt;tt&gt;~&lt;/tt&gt;
-        se usan para lals comparaciones lógicas y tienen mayor precedencia
+        con operadores algebraicos o funciones.
+        Ten en cuenta que los operadores &lt;tt&gt;&amp;&lt;/tt&gt;, &lt;tt&gt;|&lt;/tt&gt; and &lt;tt&gt;~&lt;/tt&gt;
+        se usan para las comparaciones lógicas y tienen mayor precedencia
         que los operadores lógicos, así que recomendamos &lt;em&gt;usar siempre
         paréntesis con los operadores lógicos&lt;/em&gt;.&lt;/p&gt;
         &lt;p&gt;La siguiente tabla muestra algunas consultas y
-        sus expresiones equialentes en Python.&lt;/p&gt;
+        sus expresiones equivalentes en Python.&lt;/p&gt;
         &lt;div align=&apos;center&apos;&gt;&lt;table border=&apos;1&apos;&gt;
         &lt;tr&gt;&lt;th&gt;Consulta&lt;/th&gt;&lt;th&gt;Expresión Python&lt;/th&gt;&lt;/tr&gt;
         &lt;tr&gt;&lt;td&gt;&lt;code&gt;a &amp; (b == c)&lt;/code&gt;&lt;/td&gt;
@@ -1752,7 +1752,7 @@ Ya hay un nodo llamado &apos;{2}&apos; en el grupo padre.
         &lt;/qt&gt;</source>
         <translation>&lt;qt&gt;
         El conjunto de funciones que puede aparecer en una consulta.
-        incluye funciones para seleccionar datos, funciones trigonométricas
+        Incluye funciones para seleccionar datos, funciones trigonométricas
         y funciones para números complejos. Para facilitar el uso,
         los argumentos se incluyen automáticamente cuando se inserta
         una función. El significado de los argumentos es:
