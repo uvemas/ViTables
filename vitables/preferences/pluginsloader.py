@@ -212,8 +212,10 @@ class PluginsLoader(object):
                          format(mod_name))
             return
         except KeyError:
-            LOGGER.error('\nError:  plugin {0} can not be found'.
-                         format(mod_name))
+            # Print UID instead of mod_name, because the mod_name is not
+            # defined in case of a KeyError.
+            LOGGER.error('\nError:  plugin with UID {0} can not be found'.
+                         format(UID))
             return
 
         # Retrieve the plugin class
