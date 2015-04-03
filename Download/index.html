@@ -7,7 +7,11 @@
     <title>How to get it | ViTables</title>
 
     
-            <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+            <link href="../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="../assets/css/rst.css" rel="stylesheet" type="text/css">
+        <link href="../assets/css/code.css" rel="stylesheet" type="text/css">
+        <link href="../assets/css/colorbox.css" rel="stylesheet" type="text/css">
+        <link href="../assets/css/theme.css" rel="stylesheet" type="text/css">
 
     
             <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
@@ -28,11 +32,18 @@
     <meta name="description" itemprop="description" content="getting the software page">
     <meta name="author" content="Vicent Mas">
     
-    <meta name="og:title" content="How to get it">
-    <meta name="og:url" content="http://vitables.org/Download/index.html">
-    <meta name="og:description" content="getting the software page">
-    <meta name="og:site_name" content="ViTables">
-    <meta name="og:type" content="article">
+    <meta property="og:site_name" content="ViTables">
+    <meta property="og:title" content="How to get it">
+    <meta property="og:url" content="http://vitables.org/Download/index.html">
+    <meta property="og:description" content="getting the software page">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2014-09-26T12:09:23+02:00">
+           <meta property="article:tag" content="browser">
+           <meta property="article:tag" content="GUI">
+           <meta property="article:tag" content="HDF5">
+           <meta property="article:tag" content="PyTables">
+           <meta property="article:tag" content="Python">
+           <meta property="article:tag" content="viewer">
 
     
 
@@ -94,7 +105,7 @@
 
 <!-- End of Menubar -->
 
-<div class="container" id="content">
+<div class="container" id="content" role="main">
     <div class="body-content">
         <!--Body content-->
         <div class="row">
@@ -112,9 +123,8 @@
     <div>
 <div class="section" id="stable-versions">
 <h2>Stable versions</h2>
-<p>The stable versions of <em>ViTables</em> are available in the
-<a class="reference external" href="http://code.google.com/p/vitables/downloads/list">downloads area</a> of code
-Google.com.</p>
+<p>The stable versions of <em>ViTables</em> are available in its
+<a class="reference external" href="http://sourceforge.net/projects/vitables/files/?source=navbar/">SourceForge page</a>.</p>
 </div>
 <div class="section" id="gnu-linux-packages">
 <h2>GNU/Linux packages</h2>
@@ -147,17 +157,27 @@ software) from Christoph Gohlke's <a class="reference external" href="http://www
         <!--End of body content-->
 
         <footer>
-            Contents © 2008-2014         <a href="mailto:uvemas@gmail.com">Vicent Mas</a> - Powered by         <a href="http://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2008-2015         <a href="mailto:uvemas@gmail.com">Vicent Mas</a> - Powered by         <a href="http://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
     </div>
 </div>
 
 
-            <script src="../assets/js/all-nocdn.js"></script>
+            <script src="../assets/js/jquery.min.js"></script>
+            <script src="../assets/js/bootstrap.min.js"></script>
+            <script src="../assets/js/moment-with-locales.min.js"></script>
+            <script src="../assets/js/fancydates.js"></script>
+        <script src="../assets/js/jquery.colorbox-min.js"></script>
     
 
-    <script>jQuery("a.image-reference").colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script>
+    <script>$('a.image-reference:not(.islink)').colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script>
+    <!-- fancy dates -->
+    <script>
+    moment.locale("");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script>
+    <!-- end fancy dates -->
     
 
 

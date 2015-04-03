@@ -41,6 +41,7 @@ pre.code .nt { color: #008000; font-weight: bold } /* Name.Tag */
 pre.code .nv { color: #19177C } /* Name.Variable */
 pre.code .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
 pre.code .w { color: #bbbbbb } /* Text.Whitespace */
+pre.code .mb { color: #666666 } /* Literal.Number.Bin */
 pre.code .mf { color: #666666 } /* Literal.Number.Float */
 pre.code .mh { color: #666666 } /* Literal.Number.Hex */
 pre.code .mi { color: #666666 } /* Literal.Number.Integer */
