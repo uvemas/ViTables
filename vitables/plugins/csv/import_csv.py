@@ -634,7 +634,7 @@ class ImportCSV(QtCore.QObject):
             dataset_name = "imported_{0}".format(kind)
             atitle = \
                 'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createTable(
+            dataset = dbdoc.h5file.create_table(
                 '/', dataset_name, descr, title=atitle, filters=io_filters,
                 expectedrows=nrows)
             # Fill the dataset in a memory efficient way
@@ -687,7 +687,7 @@ class ImportCSV(QtCore.QObject):
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = "imported_{0}".format(kind)
             atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createEArray(
+            dataset = dbdoc.h5file.create_earray(
                 '/', dataset_name, atom, array_shape, title=atitle,
                 filters=io_filters, expectedrows=nrows)
 
@@ -740,7 +740,7 @@ class ImportCSV(QtCore.QObject):
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = "imported_{0}".format(kind)
             atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createCArray(
+            dataset = dbdoc.h5file.create_carray(
                 '/', dataset_name, atom, array_shape, title=atitle,
                 filters=io_filters)
 
@@ -801,7 +801,7 @@ class ImportCSV(QtCore.QObject):
                 array_name = "imported_{0}".format(kind)
                 title = 'Imported from CSV file {0}'.\
                     format(os.path.basename(filepath))
-                dbdoc.h5file.createArray('/', array_name, data, title=title)
+                dbdoc.h5file.create_array('/', array_name, data, title=title)
                 dbdoc.h5file.flush()
                 self.updateTree(dbdoc.filepath)
             except TypeError:

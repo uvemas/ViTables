@@ -116,7 +116,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
             return
 
         # Update the underlying data structure
-        model.renameNode(index, nodename, overwrite)
+        model.rename_node(index, nodename, overwrite)
         self.closeEditor.emit(editor, 0)
 
         # Update the application status bar
