@@ -173,8 +173,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
                 temp_file.seek(0)
                 idata = numpy.genfromtxt(temp_file, delimiter=',',
                                          usecols=(field,), dtype=None)
-                itemsizes[field] = \
-                    max(itemsizes[field], idata.dtype.itemsize)
+                itemsizes[field] = max(itemsizes[field], idata.dtype.itemsize)
                 del idata
             temp_file.close()
             buf = read_fh(buf_size)
@@ -254,7 +253,7 @@ def homogeneousTableInfo(input_handler, first_line, data):
                           for i in indices])
     else:
         if data.dtype.name.startswith('string'):
-            descr = dict([('f{0}'.format(field), tables.StringCol(itemsize)) 
+            descr = dict([('f{0}'.format(field), tables.StringCol(itemsize))
                           for field in indices])
         else:
             descr = dict([('f{0}'.format(field),

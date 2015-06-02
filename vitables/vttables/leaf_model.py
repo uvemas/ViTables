@@ -46,8 +46,8 @@ def get_enum_column_description(data_source):
     for _, column_description in data_source.coldescrs.items():
         if not isinstance(column_description, tables.EnumCol):
             continue
-        enum_columns[column_description._v_pos] \
-            = {value: name for name, value in column_description.enum}
+        enum_columns[column_description._v_pos] = \
+            {value: name for name, value in column_description.enum}
     return enum_columns
 
 

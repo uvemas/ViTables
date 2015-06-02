@@ -110,7 +110,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.resetPreferences()
 
         # Connect SIGNALS to SLOTS
-        self.buttonsBox.helpRequested.connect(\
+        self.buttonsBox.helpRequested.connect(
             QtGui.QWhatsThis.enterWhatsThisMode)
 
 
@@ -237,7 +237,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         else:
             self.lastDirCB.setChecked(False)
 
-        self.restoreCB.setChecked(\
+        self.restoreCB.setChecked(
             self.initial_prefs['Startup/restoreLastSession'])
 
         # Style page
@@ -251,8 +251,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.workspaceLabel.setStyleSheet('background-color: {0}'.
             format(self.initial_prefs['Workspace/Background'].color().name()))
 
-        index = self.stylesCB.findText(\
-            self.initial_prefs['Look/currentStyle'])
+        index = self.stylesCB.findText(self.initial_prefs['Look/currentStyle'])
         self.stylesCB.setCurrentIndex(index)
 
         # The visual update done above is not enough, we must reset the
@@ -435,7 +434,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
             about_page = pg_instance.helpAbout(self.stackedPages)
         except AttributeError:
             about_page = QtGui.QWidget(self.stackedPages)
-            label = QtGui.QLabel(translate(\
+            label = QtGui.QLabel(translate(
                 'Preferences',
                 'Sorry, there are no info available for this plugin',
                 'A text label'), about_page)

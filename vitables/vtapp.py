@@ -515,7 +515,7 @@ class VTApp(QtCore.QObject):
                 filename_in_sibling = trier_filename in sibling
                 del dialog
                 if (overwrite == True) and (not is_initial_filepath) and \
-                    (not is_tmp_filepath):
+                        (not is_tmp_filepath):
                     break
             else:
                 del dialog
@@ -628,9 +628,9 @@ class VTApp(QtCore.QObject):
 
         # Open the database and select it in the tree view
         if self.gui.dbs_tree_model.openDBDoc(filepath, mode, position):
-            self.gui.dbs_tree_view.setCurrentIndex(\
-                self.gui.dbs_tree_model.index(\
-                position, 0, QtCore.QModelIndex()))
+            self.gui.dbs_tree_view.setCurrentIndex(
+                self.gui.dbs_tree_model.index(
+                    position, 0, QtCore.QModelIndex()))
             self.updateRecentFiles(filepath, mode)
 
 
@@ -802,7 +802,7 @@ class VTApp(QtCore.QObject):
         parent = self.gui.dbs_tree_model.nodeFromIndex(current)
 
         # Get the new group name
-        dialog = nodenamedlg.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(
             translate('VTApp', 'Creating a new group', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n ',
                 'A dialog label').format(parent.filepath, parent.nodepath),
@@ -859,7 +859,7 @@ class VTApp(QtCore.QObject):
         parent = child.parent
 
         # Get the new nodename
-        dialog = nodenamedlg.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(
             translate('VTApp', 'Renaming a node', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n',
                 'A dialog label').format(parent.filepath, parent.nodepath),
@@ -975,7 +975,7 @@ class VTApp(QtCore.QObject):
             # - target is the source's parent
             if (cni['filepath'] == parent.filepath):
                 if (cni['nodepath'] == parent.nodepath) or \
-                (parent.nodepath == os.path.dirname(cni['nodepath'])):
+                        (parent.nodepath == os.path.dirname(cni['nodepath'])):
                     return
 
         # Soft links cannot be pasted in external files
@@ -1271,7 +1271,7 @@ class VTApp(QtCore.QObject):
         buttons_box.accepted.connect(versions_dlg.accept)
 
         versions_edit.setReadOnly(1)
-        versions_edit.setText(\
+        versions_edit.setText(
             """
             <qt>
             <h3>{title}</h3>

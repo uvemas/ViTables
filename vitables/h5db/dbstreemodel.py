@@ -190,7 +190,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         # Check the file format
         try:
             if not tables.is_hdf5_file(filepath):
-                error = translate('DBsTreeModel', \
+                error = translate('DBsTreeModel',
                     'Opening cancelled: file {0} has not HDF5 format.',
                     'A logger error message').format(filepath)
                 self.logger.error(error)
@@ -349,8 +349,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # node
             try:
                 if self.ccni['is_copied'] and \
-                (self.ccni['filepath'] == node.filepath) and \
-                self.ccni['nodepath'].startswith(node.nodepath):
+                        (self.ccni['filepath'] == node.filepath) and
+                         self.ccni['nodepath'].startswith(node.nodepath):
                     self.ccni = {}
             except KeyError:
                 pass
@@ -574,9 +574,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                             QtCore.Qt.StatusTipRole)
             else:
                 self.setData(child_index,
-                            '{0}->{1}'.format\
-                            (child_node.filepath, child_node.nodepath),
-                            QtCore.Qt.StatusTipRole)
+                             '{0}->{1}'.format(child_node.filepath,
+                                               child_node.nodepath),
+                             QtCore.Qt.StatusTipRole)
 
     def move_node(self, src_filepath, childpath, parent_index, overwrite=False):
         """Move a `tables.Node` to a different location.
@@ -828,8 +828,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         - `role`: the role of the header section being inspected
         """
 
-        if (orientation, role) == (QtCore.Qt.Horizontal, \
-            QtCore.Qt.DisplayRole):
+        if (orientation, role) == (QtCore.Qt.Horizontal,
+                                   QtCore.Qt.DisplayRole):
             return translate('DBsTreeModel',
                 'Tree of databases',
                 'Header of the only column of the tree of databases view')

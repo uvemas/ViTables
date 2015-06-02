@@ -113,8 +113,7 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
         combobox are lost.
         """
 
-        self.config['DBsTreeSorting']['algorithm'] = \
-            self.initial_sorting
+        self.config['DBsTreeSorting']['algorithm'] = self.initial_sorting
         with open(self.ini_filename, 'w') as ini_file:
             self.config.write(ini_file)
         #self.preferences_dlg.reject()
