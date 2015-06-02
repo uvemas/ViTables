@@ -28,6 +28,57 @@ from setuptools import setup, find_packages
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+def find_package_datafiles(package):
+    """
+    Search a package for data files.
+
+    Given a package, replace all occurrences of the '.' with '/' and
+    search the directory for any file that is not a '.py' or '.pyc' file
+    and add it to the list.  For each directory in the package, check to
+    see if it is a package by checking for the '__init__.py' file.  If
+    it is not a subpackage, recursively search it for more data files.
+
+    """
+    pkg_root = package.replace('.', '/')
+    output = []
+    fignores = ('.py', '.pyc')
+    dignores = ('.git', '__pycache__')
+    for filename in os.listdir(pkg_root):
+        if filename in dignores:
+            continue
+
+        path = pkg_root + '/' + filename
+        if os.path.islink(path):
+            continue
+
+        if os.path.isfile(path):
+            if os.path.splitext(path)[1] not in fignores:
+                output.append(filename)
+
+        elif os.path.isdir(path):
+            if os.path.exists(path + '/__init__.py'):
+                # The subpackages are handled separately.
+                continue
+
+            for root, dirs, files in os.walk(path):
+                print(root)
+                for ignore in dignores:
+                    if ignore in dirs:
+                        dirs.remove(ignore)
+
+                for dd in dirs:
+                    if os.path.exists(dd + '/__init__.py'):
+                        dirs.remove(dd)
+
+                for ff in files:
+                    if os.path.splitext(ff)[1] not in fignores:
+                        # The path to the file is relative to the root
+                        # of the package.  So, remove the package root.
+                        fname = os.path.join(root, ff).replace('\\','/')
+                        output.append(fname.replace(pkg_root + '/', ''))
+
+    return output
+
 setup(name='ViTables',
       version=read('VERSION'),
       description='A viewer for PyTables package',
@@ -66,4 +117,7 @@ setup(name='ViTables',
             'vitables.plugins.timeseries.time_series:TSFormatter')]
       },
       packages=find_packages(),
-      include_package_data=True,)
+      include_package_data=True,
+      package_data={
+          pp : find_package_datafiles(pp) for pp in find_packages()
+      },)
