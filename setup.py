@@ -66,4 +66,5 @@ setup(name='ViTables',
             'vitables.plugins.timeseries.time_series:TSFormatter')]
       },
       packages=find_packages(),
-      include_package_data=True,)
+      include_package_data=True,
+      package_data={'' : ['*.ui', '*.ini']},)

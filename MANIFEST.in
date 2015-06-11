@@ -1,0 +1,2 @@
+include *.pro *.txt *.ts VERSION
+recursive-include vitables *.ico *.png *.qm *.svg
