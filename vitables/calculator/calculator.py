@@ -164,7 +164,12 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
         dictionary.
 
         """
-        current_name = self.saved_list.currentItem().text()
+        current_item = self.saved_list.currentItem()
+        if current_item is None:
+            # Either the list is empty or nothing is selected.
+            current_name = ""
+        else:
+            current_name = current_item.text()
         name, is_accepted = qtgui.QInputDialog.getText(
             self, translate('Calculator', 'Save expression as'),
             translate('Calculator', 'Name:'), text=current_name)
