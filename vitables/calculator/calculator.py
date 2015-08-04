@@ -189,7 +189,15 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
         dictionary.
 
         """
-        removed_item = self.saved_list.takeItem(self.saved_list.currentRow())
+        current_row = self.saved_list.currentRow()
+        if current_row < 0:
+            qtgui.QMessageBox.warning(
+                self, translate('Calculator', 'Nothing selected'),
+                translate('Calculator', 'No saved expression selected '
+                          'to be removed.'))
+            return
+        removed_item = self.saved_list.takeItem(
+                self.saved_list.currentRow())
         del self._name_expression_dict[removed_item.text()]
 
     def on_saved_list_itemSelectionChanged(self):
