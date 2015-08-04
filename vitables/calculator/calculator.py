@@ -352,8 +352,11 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
                 translate('Calculator', 'An exception was raised during '
                           'evaluation, see log for details.'))
             return False
-        if not isinstance(result, np.ndarray) and not isinstance(result, list):
-            result = np.array([result])
+        if not isinstance(result, np.ndarray):
+            if isinstance(result, (list, tuple)):
+                result = np.array(result)
+            else:
+                result = np.array([result])
         try:
             result_group._v_file.create_array(
                 result_group, result_name, obj=result,
