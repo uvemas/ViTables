@@ -210,9 +210,15 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
         selected_index = self.saved_list.selectedIndexes()[0]
         name = self.saved_list.itemFromIndex(selected_index).text()
         statements, expression, destination = self._name_expression_dict[name]
-        self.statements_edit.setText(statements)
-        self.expression_edit.setText(expression)
-        self.result_edit.setText(destination)
+        self.statements_edit.setText(
+            statements if statements is not None else ''
+        )
+        self.expression_edit.setText(
+            expression if expression is not None else ''
+        )
+        self.result_edit.setText(
+            destination if destination is not None else ''
+        )
 
     def _store_expressions(self):
         """Store expressions in configuration.
