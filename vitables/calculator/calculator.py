@@ -207,7 +207,15 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
         dictionary and update expression and result widgets.
 
         """
-        selected_index = self.saved_list.selectedIndexes()[0]
+        selected_indexes = self.saved_list.selectedIndexes()
+        if len(selected_indexes) == 0:
+            # KFP 2015-08-04: There is a race condition when removing a
+            # stored expression.  Both this method and
+            # ``on_remove_button_clicked`` are called very close to the
+            # same time meaning ``self.saved_list.count()`` can show the
+            # wrong value.
+            return
+        selected_index = selected_indexes[0]
         name = self.saved_list.itemFromIndex(selected_index).text()
         statements, expression, destination = self._name_expression_dict[name]
         self.statements_edit.setText(
