@@ -27,9 +27,9 @@ reading/writting the ``ViTables`` configuration.
 __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class ConfigFileIOException(Exception):

@@ -30,11 +30,12 @@ mode. Otherwise all shown information is read-only.
 __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from vitables.nodeprops import attrpropdlg
 from vitables.nodeprops import groupproppage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class GroupPropDlg(attrpropdlg.AttrPropDlg):

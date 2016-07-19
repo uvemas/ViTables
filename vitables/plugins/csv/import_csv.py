@@ -67,12 +67,12 @@ import numpy
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-
+from PyQt5 import QtWidgets
 
 import vitables.utils
 from vitables.plugins.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 TYPE_ERROR = translate(
     'ImportCSV', 'Please, make sure that you are importing a '
     'homogeneous dataset.', 'CSV file not imported error')

@@ -33,9 +33,9 @@ __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-
-class LeafDelegate(QtGui.QStyledItemDelegate):
+class LeafDelegate(QtWidgets.QStyledItemDelegate):
     """
     A delegate for rendering selected cells.
 

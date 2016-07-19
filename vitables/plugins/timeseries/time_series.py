@@ -48,11 +48,12 @@ except ImportError:
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 from vitables.plugins.timeseries.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def findTS(leaf, node_kind):

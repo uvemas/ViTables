@@ -38,11 +38,12 @@ import numpy
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.vttables.scrollbar as scrollbar
 import vitables.vttables.leaf_delegate as leaf_delegate
 
-class LeafView(QtGui.QTableView):
+class LeafView(QtWidgets.QTableView):
     """
     A view for real data contained in leaves.
 

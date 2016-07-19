@@ -25,15 +25,16 @@ import logging
 import traceback
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 PLUGIN_GROUP = 'vitables.plugins'
 
 
 def _add_plugin_translator(module_name, plugin_class, logger):
     """Try to load plugin translator."""
-    app = QtGui.QApplication.instance()
+    app = QtWidgets.QApplication.instance()
     if hasattr(plugin_class, 'translator'):
         try:
             app.installTranslator(plugin_class.translator)

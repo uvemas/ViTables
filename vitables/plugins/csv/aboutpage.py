@@ -33,10 +33,11 @@ import os.path
 
 from PyQt5 import QtGui
 from PyQt5.uic import loadUiType
+from PyQt5 import QtWidgets
 
 from vitables.vtsite import PLUGINSDIR
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 # This method of the PyQt4.uic module allows for dynamically loading user
@@ -45,7 +46,7 @@ translate = QtGui.QApplication.translate
 Ui_AboutPage = \
     loadUiType(os.path.join(PLUGINSDIR, 'about_page.ui'))[0]
 
-class AboutPage(QtGui.QWidget, Ui_AboutPage):
+class AboutPage(QtWidgets.QWidget, Ui_AboutPage):
     """
     Configure the About page for the csv plugin in the Preferences dialog.
 

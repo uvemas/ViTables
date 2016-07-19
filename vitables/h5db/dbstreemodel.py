@@ -37,7 +37,7 @@ import tables
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-
+from PyQt5 import QtWidgets
 
 import vitables.utils
 from vitables.h5db import dbdoc
@@ -48,7 +48,7 @@ from vitables.h5db import linknode
 from vitables.h5db import tnode_editor
 from vitables.h5db import tlink_editor
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def _get_node_tooltip(node):

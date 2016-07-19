@@ -33,6 +33,7 @@ sip.setapi('QVariant', 2)
 
 from PyQt5 import QtGui
 import PyQt5.QtCore as qtcore
+from PyQt5 import QtWidgets
 
 from vitables.vtapp import VTApp
 from vitables.preferences import vtconfig
@@ -171,7 +172,7 @@ def gui():
 
     """
     _check_versions()
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     _set_credentials(app)
     translator = _set_locale(app)  # must not be destroyed before app quits
     args = _parse_command_line()

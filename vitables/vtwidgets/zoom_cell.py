@@ -27,6 +27,7 @@ __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
@@ -57,9 +58,7 @@ def getArrayDimensions(shape):
 
     return (nrows, ncols)
 
-
-
-class ZoomCell(QtGui.QMdiSubWindow):
+class ZoomCell(QtWidgets.QMdiSubWindow):
     """
     Display an array/table cell on its own view (table widget).
 

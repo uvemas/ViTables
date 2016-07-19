@@ -27,14 +27,13 @@ __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
-
-class NodeItemDelegate(QtGui.QItemDelegate):
+class NodeItemDelegate(QtWidgets.QItemDelegate):
     """
     A custom delegate for editing items of the tree of databases model.
 

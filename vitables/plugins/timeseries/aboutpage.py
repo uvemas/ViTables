@@ -46,7 +46,7 @@ Ui_TimeFormatterPage = \
     'timeformatter_page.ui'))[0]
 
 
-class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
+class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
     """
     Widget for describing and customizing the Time series plugin.
 
@@ -81,7 +81,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         self.desc_te.setText(desc['about_text'])
 
         # Configuration section of the page
-        self.save_button = self.buttons_box.button(QtGui.QDialogButtonBox.Save)
+        self.save_button = self.buttons_box.button(QtWidgets.QDialogButtonBox.Save)
         self.save_button.setText('Save format')
 
         # The absolute path of the INI file
@@ -112,7 +112,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
                 if e.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
                     self.applyFormat()
                     return True
-        return QtGui.QWidget.eventFilter(self, w, e)
+        return QtWidgets.QWidget.eventFilter(self, w, e)
 
 
     def applyFormat(self):

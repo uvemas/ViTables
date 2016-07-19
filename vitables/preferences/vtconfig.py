@@ -95,12 +95,13 @@ import logging
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from vitables.preferences import cfgexception
 import vitables.utils
 import vitables.vttables.datasheet as datasheet
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 def getVersion():
     """The application version."""
@@ -133,9 +134,9 @@ class Config(QtCore.QSettings):
 
         self.logger = logging.getLogger(__name__)
 
-        organization = QtGui.qApp.organizationName()
-        product = QtGui.qApp.applicationName()
-        version = QtGui.qApp.applicationVersion()
+        organization = QtWidgets.qApp.organizationName()
+        product = QtWidgets.qApp.applicationName()
+        version = QtWidgets.qApp.applicationVersion()
         if sys.platform.startswith('win'):
             path = 'HKEY_CURRENT_USER\\Software\\{0}\\{1}'
             rpath = path.format(product, version)

@@ -35,8 +35,9 @@ __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-class ScrollBar(QtGui.QScrollBar):
+class ScrollBar(QtWidgets.QScrollBar):
     """
     A specialised scrollbar for views of huge datasets.
 

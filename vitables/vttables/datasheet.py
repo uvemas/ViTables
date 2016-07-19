@@ -30,6 +30,7 @@ __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 import vitables.nodeprops.nodeinfo as nodeinfo
@@ -38,7 +39,7 @@ import vitables.vttables.leaf_model as leaf_model
 import vitables.vttables.leaf_view as leaf_view
 import vitables.vttables.buffer as readBuffer
 
-class DataSheet(QtGui.QMdiSubWindow):
+class DataSheet(QtWidgets.QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
 
@@ -107,7 +108,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # Propagate the event. In the process, self.widget().closeEvent
         # will be called
-        QtGui.QMdiSubWindow.closeEvent(self, event)
+        QtWidgets.QMdiSubWindow.closeEvent(self, event)
 
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
@@ -124,7 +125,7 @@ class DataSheet(QtGui.QMdiSubWindow):
         # Sync the workspace with the tree view (if needed) but keep the
         # focus (giving focus to the tree view when a given view is
         # clicked is counter intuitive)
-        QtGui.QMdiSubWindow.focusInEvent(self, event)
+        QtWidgets.QMdiSubWindow.focusInEvent(self, event)
         self.syncTreeView()
         self.setFocus(True)
 

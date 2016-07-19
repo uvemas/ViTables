@@ -38,11 +38,12 @@ import tables
 
 from PyQt5 import QtGui
 from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables
 from vitables.plugins.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 _PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
 
@@ -275,7 +276,7 @@ class MenuUpdater(QtCore.QObject):
         GroupedArrays.ungroupArrays(self.checked_views[0])
 
 
-class GroupedArrays(QtGui.QMdiSubWindow):
+class GroupedArrays(QtWidgets.QMdiSubWindow):
     """A widget that contains a group of Arrays.
     """
 
@@ -349,7 +350,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
 
         self.pindex = QtCore.QModelIndex()
         # The widget of this MdiSubWindow
-        self.container = QtGui.QWidget()
+        self.container = QtWidgets.QWidget()
 
         # Fill the widget with Datasheets arranged in the container layout
         container_layout = QtGui.QHBoxLayout()
@@ -484,7 +485,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             layout.deleteLater()
 
         self.deleteLater()
-        QtGui.QMdiSubWindow.closeEvent(self, event)
+        QtWidgets.QMdiSubWindow.closeEvent(self, event)
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
 

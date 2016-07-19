@@ -31,17 +31,18 @@ import logging
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 import vitables.logger as logger
 from vitables.calculator import calculator
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 _GUI_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
-class VTGUI(QtGui.QMainWindow):
+class VTGUI(QtWidgets.QMainWindow):
     """
     The application GUI.
 
@@ -117,7 +118,7 @@ class VTGUI(QtGui.QMainWindow):
 
         self.setIconSize(QtCore.QSize(22, 22))
         self.setWindowIcon(self.icons_dictionary['vitables_wm'])
-        central_widget = QtGui.QWidget(self)
+        central_widget = QtWidgets.QWidget(self)
         central_layout = QtGui.QVBoxLayout(central_widget)
         # Divide the top region of the window into 2 regions and put there
         # the workspace. The tree of databases will be added later on
@@ -143,7 +144,7 @@ class VTGUI(QtGui.QMainWindow):
 
         # The signal mapper used to keep the the Window menu updated
         self.window_mapper = QtCore.QSignalMapper(self)
-        self.window_mapper.mapped[QtGui.QWidget].connect(
+        self.window_mapper.mapped[QtWidgets.QWidget].connect(
             self.workspace.setActiveSubWindow)
         self.workspace.installEventFilter(self)
 

@@ -36,6 +36,7 @@ import numpy
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.vtwidgets.renamedlg as renamedlg
 from vitables.vtsite import ICONDIR, DOCDIR
@@ -118,12 +119,12 @@ def long_action(message=None):
             status_bar = getGui().statusBar()
             if message is not None:
                 status_bar.showMessage(message)
-            QtGui.QApplication.setOverrideCursor(
+            QtWidgets.QApplication.setOverrideCursor(
                 QtGui.QCursor(QtCore.Qt.WaitCursor))
             try:
                 res = f(*args, **kwargs)
             finally:
-                QtGui.QApplication.restoreOverrideCursor()
+                QtWidgets.QApplication.restoreOverrideCursor()
                 if message is not None:
                     status_bar.clearMessage()
             return res

@@ -29,11 +29,13 @@ __docformat__ = 'restructuredtext'
 import os.path
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+
 from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -42,7 +44,7 @@ Ui_LeafPropPage = \
 
 
 
-class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
+class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
     """
     Leaf properties page.
 

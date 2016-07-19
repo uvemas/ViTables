@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui
+from PyQt5 import QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,12 +17,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_CalculatorDialog(object):
     def setupUi(self, CalculatorDialog):
@@ -73,8 +74,8 @@ class Ui_CalculatorDialog(object):
         self.main_layout.setStretch(0, 1)
         self.main_layout.setStretch(1, 3)
         self.gridLayout.addLayout(self.main_layout, 0, 0, 1, 1)
-        self.buttons = QtGui.QDialogButtonBox(CalculatorDialog)
-        self.buttons.setStandardButtons(QtGui.QDialogButtonBox.Apply|QtGui.QDialogButtonBox.Close)
+        self.buttons = QtWidgets.QDialogButtonBox(CalculatorDialog)
+        self.buttons.setStandardButtons(QtWidgets.QDialogButtonBox.Apply|QtWidgets.QDialogButtonBox.Close)
         self.buttons.setObjectName(_fromUtf8("buttons"))
         self.gridLayout.addWidget(self.buttons, 1, 0, 1, 1)
 

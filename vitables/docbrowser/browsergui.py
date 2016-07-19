@@ -31,15 +31,16 @@ import re
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 from vitables.vtsite import DOCDIR
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
-class HelpBrowserGUI(QtGui.QMainWindow) :
+class HelpBrowserGUI(QtWidgets.QMainWindow) :
     """
     The main window of the documentation browser.
 

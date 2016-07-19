@@ -36,13 +36,14 @@ import tables
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from PyQt5.uic import loadUiType
 
 import vitables.utils
 from vitables.nodeprops import attreditor
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -51,7 +52,7 @@ Ui_AttrPropDialog = \
 
 
 
-class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
+class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
     """
     Node properties dialog.
 
@@ -405,7 +406,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # If the file is in read-only mode or the Attribute Set Instance
         # remains unchanged no attribute needs to be updated
         if (self.mode == 'read-only') or (not self.asiChanged()):
-            QtGui.QDialog.accept(self)
+            QtWidgets.QDialog.accept(self)
             return  # This is mandatory!
 
         # Check the editable attributes
@@ -417,7 +418,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         if attrs_are_ok == True:
             aeditor.setAttributes()
             del aeditor
-            QtGui.QDialog.accept(self)
+            QtWidgets.QDialog.accept(self)
             return
         # If not then keep the dialog opened
         else:

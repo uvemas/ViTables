@@ -33,10 +33,11 @@ import tables
 import numpy
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def checkSyntax(value):

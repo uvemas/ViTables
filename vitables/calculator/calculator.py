@@ -8,6 +8,7 @@ import logging
 
 import PyQt5.QtGui as qtgui
 import PyQt5.QtCore as qtcore
+import PyQt5.QtWidgets as qtwidgets
 
 import tables
 import numpy as np
@@ -132,7 +133,7 @@ def build_identifier_node_dict(identifiers, current_group):
     return identifier_node_dict
 
 
-class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
+class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
     def __init__(self, parent=None):
         super(CalculatorDialog, self).__init__(parent)
         self.setupUi(self)

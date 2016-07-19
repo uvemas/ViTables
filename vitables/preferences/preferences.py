@@ -32,6 +32,7 @@ import os
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from PyQt5.uic import loadUiType
 
@@ -39,7 +40,7 @@ from vitables.vtsite import ICONDIR
 import vitables.utils
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -47,7 +48,7 @@ Ui_SettingsDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'settings_dlg.ui'))[0]
 
 
-class Preferences(QtGui.QDialog, Ui_SettingsDialog):
+class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
     """
     Create the Settings dialog.
 
@@ -216,11 +217,11 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         :Parameter button: the clicked button.
         """
 
-        if button == self.buttonsBox.button(QtGui.QDialogButtonBox.Reset):
+        if button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Reset):
             self.resetPreferences()
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Help):
+        elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Help):
             pass
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Cancel):
+        elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Cancel):
             self.reject()
         else:
             self.applySettings()
@@ -434,7 +435,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         try:
             about_page = pg_instance.helpAbout(self.stackedPages)
         except AttributeError:
-            about_page = QtGui.QWidget(self.stackedPages)
+            about_page = QtWidgets.QWidget(self.stackedPages)
             label = QtGui.QLabel(translate(\
                 'Preferences',
                 'Sorry, there are no info available for this plugin',

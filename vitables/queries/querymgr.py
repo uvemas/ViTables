@@ -35,14 +35,14 @@ import logging
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-
+from PyQt5 import QtWidgets
 
 import vitables.utils
 import vitables.queries.querydlg as querydlg
 import vitables.queries.query as query
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def getTableInfo(table):

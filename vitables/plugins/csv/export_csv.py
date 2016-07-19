@@ -36,11 +36,12 @@ import logging
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 from vitables.plugins.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 _PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
 

@@ -33,6 +33,7 @@ import tables
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 import vitables.vtsplash
@@ -57,7 +58,7 @@ import vitables.vttables.datasheet as datasheet
 
 import vitables.vtgui as vtgui
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def makePage(content):
@@ -66,7 +67,7 @@ def makePage(content):
     :Parameter content: the text displayed on the page
     """
 
-    widget = QtGui.QWidget()
+    widget = QtWidgets.QWidget()
     widget.setLayout(QtGui.QVBoxLayout())
     text_edit = QtGui.QTextEdit(widget)
     text_edit.setReadOnly(1)
@@ -90,7 +91,7 @@ class VTApp(QtCore.QObject):
     # Convenience signals for the plugins. Usually new signals are added
     # when a new plugin is added to ViTables. They are the link between
     # the plugins and the core of the program
-    leaf_model_created = QtCore.pyqtSignal(QtGui.QMdiSubWindow,
+    leaf_model_created = QtCore.pyqtSignal(QtWidgets.QMdiSubWindow,
                                            name="leafModelCreated")
     dbtree_model_created = QtCore.pyqtSignal()
     pluginsLoaded = QtCore.pyqtSignal()
@@ -1111,7 +1112,7 @@ class VTApp(QtCore.QObject):
 
         prefs =  preferences.Preferences()
         try:
-            if prefs.exec_() == QtGui.QDialog.Accepted:
+            if prefs.exec_() == QtWidgets.QDialog.Accepted:
                 self.config.loadConfiguration(prefs.new_prefs)
         finally:
             del prefs
@@ -1189,14 +1190,14 @@ class VTApp(QtCore.QObject):
         license_text = vitables.utils.getLicense()
 
         # Construct the dialog
-        about_dlg = QtGui.QDialog(self.gui)
+        about_dlg = QtWidgets.QDialog(self.gui)
         about_dlg.setWindowTitle(
             translate('VTApp', 'About ViTables {0}',
                 'Caption of the About ViTables dialog').\
                 format(vtconfig.getVersion()))
         layout = QtGui.QVBoxLayout(about_dlg)
         tab_widget = QtGui.QTabWidget(about_dlg)
-        buttons_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        buttons_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         layout.addWidget(tab_widget)
         layout.addWidget(buttons_box)
 
@@ -1259,12 +1260,12 @@ class VTApp(QtCore.QObject):
                     'Part of the library not found text')
 
         # Construct the dialog
-        versions_dlg = QtGui.QDialog(self.gui)
+        versions_dlg = QtWidgets.QDialog(self.gui)
         versions_dlg.setWindowTitle(translate('VTApp', 'Version Numbers',
                                              'Caption of the Versions dialog'))
         layout = QtGui.QVBoxLayout(versions_dlg)
         versions_edit = QtGui.QTextEdit(versions_dlg)
-        buttons_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        buttons_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         layout.addWidget(versions_edit)
         layout.addWidget(buttons_box)
 

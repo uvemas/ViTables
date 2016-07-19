@@ -28,9 +28,9 @@ __docformat__ = 'restructuredtext'
 
 import time
 
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-class VTSplash(QtGui.QSplashScreen):
+class VTSplash(QtWidgets.QSplashScreen):
     """
     The application splash screen.
 

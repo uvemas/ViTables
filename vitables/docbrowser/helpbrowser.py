@@ -30,13 +30,13 @@ __docformat__ = 'restructuredtext'
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-
+from PyQt5 import QtWidgets
 
 import vitables.utils
 from vitables.docbrowser import bookmarksdlg
 from vitables.docbrowser import browsergui
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class HelpBrowser(QtCore.QObject) :

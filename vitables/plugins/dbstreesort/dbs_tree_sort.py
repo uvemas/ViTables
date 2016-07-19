@@ -36,6 +36,7 @@ import configparser
 
 from PyQt5 import QtGui
 from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables
 from vitables.plugins.dbstreesort.aboutpage import AboutPage
@@ -44,7 +45,7 @@ from vitables.h5db import leafnode
 from vitables.h5db import linknode
 from vitables.h5db import dbstreemodel
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def customiseDBsTreeModel():

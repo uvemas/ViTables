@@ -9,7 +9,7 @@ Ui_AboutPage = uic.loadUiType(os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'about_page.ui'))[0]
 
 
-class AboutPage(QtGui.QWidget, Ui_AboutPage):
+class AboutPage(QtWidgets.QWidget, Ui_AboutPage):
     def __init__(self, desc, parent=None):
         super(AboutPage, self).__init__(parent)
         self.setupUi(self)

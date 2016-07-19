@@ -29,12 +29,13 @@ __docformat__ = 'restructuredtext'
 import os.path
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -43,7 +44,7 @@ Ui_LinkPropDialog = \
 
 
 
-class LinkPropDlg(QtGui.QDialog, Ui_LinkPropDialog):
+class LinkPropDlg(QtWidgets.QDialog, Ui_LinkPropDialog):
     """
     Link properties dialog.
 
