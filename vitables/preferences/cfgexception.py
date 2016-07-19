@@ -26,7 +26,7 @@ reading/writting the ``ViTables`` configuration.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 
 translate = QtGui.QApplication.translate

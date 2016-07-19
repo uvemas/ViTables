@@ -36,8 +36,8 @@ __docformat__ = 'restructuredtext'
 
 import numpy
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
 
 import vitables.vttables.scrollbar as scrollbar
 import vitables.vttables.leaf_delegate as leaf_delegate

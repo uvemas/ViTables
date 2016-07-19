@@ -29,8 +29,8 @@ __docformat__ = 'restructuredtext'
 import sys
 import logging
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
 
 import vitables.utils
 import vitables.logger as logger

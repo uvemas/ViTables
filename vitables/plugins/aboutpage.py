@@ -2,8 +2,8 @@
 
 import os
 
-from PyQt4 import QtGui
-from PyQt4 import uic
+from PyQt5 import QtGui
+from PyQt5 import uic
 
 Ui_AboutPage = uic.loadUiType(os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'about_page.ui'))[0]

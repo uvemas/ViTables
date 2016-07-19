@@ -32,8 +32,8 @@ __docformat__ = 'restructuredtext'
 import os.path
 import configparser
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5.uic import loadUiType
 
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more

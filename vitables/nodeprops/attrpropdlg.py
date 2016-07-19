@@ -34,10 +34,10 @@ import logging
 
 import tables
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
 
-from PyQt4.uic import loadUiType
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 from vitables.nodeprops import attreditor

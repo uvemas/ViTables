@@ -31,8 +31,8 @@ import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
-from PyQt4 import QtGui
-import PyQt4.QtCore as qtcore
+from PyQt5 import QtGui
+import PyQt5.QtCore as qtcore
 
 from vitables.vtapp import VTApp
 from vitables.preferences import vtconfig

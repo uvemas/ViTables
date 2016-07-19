@@ -28,7 +28,7 @@ __docformat__ = 'restructuredtext'
 
 import time
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 class VTSplash(QtGui.QSplashScreen):
     """

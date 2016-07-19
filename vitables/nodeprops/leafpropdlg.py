@@ -29,7 +29,7 @@ mode. Otherwise all shown information is read-only.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 from vitables.nodeprops import attrpropdlg
 from vitables.nodeprops import leafproppage

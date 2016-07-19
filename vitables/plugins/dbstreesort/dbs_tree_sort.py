@@ -34,8 +34,8 @@ import os
 import re
 import configparser
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtCore
 
 import vitables
 from vitables.plugins.dbstreesort.aboutpage import AboutPage

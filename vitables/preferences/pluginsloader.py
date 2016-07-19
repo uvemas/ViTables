@@ -24,7 +24,7 @@ import pkg_resources
 import logging
 import traceback
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 translate = QtGui.QApplication.translate
 

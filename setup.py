@@ -23,7 +23,6 @@ Setup script for the vitables package.
 import os
 from setuptools import setup, find_packages
 
-
 # Utility function to read the README file.
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -49,8 +48,8 @@ setup(name='ViTables',
           'Programming Language :: Python',
           'Topic :: Scientific/Engineering'
       ],
-      requires=['sip', 'PyQt4', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
-                'cython (>=0.13)', 'tables (>=3.0)'],
+      requires=['PyQt5', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
+                'tables (>=3.0)'],
       entry_points={
           'gui_scripts': ['vitables = vitables.start:gui'],
           'vitables.plugins':

@@ -6,8 +6,8 @@ import os
 import re
 import logging
 
-import PyQt4.QtGui as qtgui
-import PyQt4.QtCore as qtcore
+import PyQt5.QtGui as qtgui
+import PyQt5.QtCore as qtcore
 
 import tables
 import numpy as np

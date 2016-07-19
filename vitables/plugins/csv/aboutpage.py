@@ -31,8 +31,8 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5.uic import loadUiType
 
 from vitables.vtsite import PLUGINSDIR
 

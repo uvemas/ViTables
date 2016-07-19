@@ -33,9 +33,9 @@ import os.path
 import configparser
 import datetime
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5.uic import loadUiType
 
 
 # This method of the PyQt4.uic module allows for dynamically loading user
