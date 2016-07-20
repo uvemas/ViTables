@@ -77,7 +77,7 @@ class DBsTreeView(QtWidgets.QTreeView):
                 QtGui.QPalette.WindowText)}
 
         # Setup drag and drop
-        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
@@ -85,7 +85,7 @@ class DBsTreeView(QtWidgets.QTreeView):
         # Misc. setup
         self.setRootIsDecorated(True)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setWhatsThis(translate('DBsTreeView',
             """<qt>
             <h3>The Tree of databases</h3>
@@ -353,7 +353,7 @@ class DBsTreeView(QtWidgets.QTreeView):
         """
 
         self.setLineWidth(2)
-        self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
+        self.setFrameStyle(QtWidgets.QFrame.Panel|QtWidgets.QFrame.Plain)
         pal = self.palette()
         pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             QtCore.Qt.darkBlue)

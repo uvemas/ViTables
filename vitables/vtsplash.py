@@ -72,7 +72,7 @@ class VTSplash(QtWidgets.QSplashScreen):
         :Parameter msg: the message to be displayed
         """
 
-        QtGui.qApp.processEvents()
+        QtWidgets.qApp.processEvents()
         self.msg = msg
         self.showMessage(self.msg)
         time.sleep(0.500)

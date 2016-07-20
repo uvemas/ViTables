@@ -68,8 +68,8 @@ def makePage(content):
     """
 
     widget = QtWidgets.QWidget()
-    widget.setLayout(QtGui.QVBoxLayout())
-    text_edit = QtGui.QTextEdit(widget)
+    widget.setLayout(QtWidgets.QVBoxLayout())
+    text_edit = QtWidgets.QTextEdit(widget)
     text_edit.setReadOnly(1)
     text_edit.setAcceptRichText(True)
     text_edit.setText(content)
@@ -542,11 +542,11 @@ class VTApp(QtCore.QObject):
 
         # Make a copy of the selected file
         try:
-            QtGui.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+            QtWidgets.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
             dbdoc = self.gui.dbs_tree_model.getDBDoc(initial_filepath)
             dbdoc.copyFile(filepath)
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
 
         # Close the copied file (which is not necessarely selected in
         # the tree view because closing an overwritten file can change
@@ -1195,7 +1195,7 @@ class VTApp(QtCore.QObject):
             translate('VTApp', 'About ViTables {0}',
                 'Caption of the About ViTables dialog').\
                 format(vtconfig.getVersion()))
-        layout = QtGui.QVBoxLayout(about_dlg)
+        layout = QtWidgets.QVBoxLayout(about_dlg)
         tab_widget = QtGui.QTabWidget(about_dlg)
         buttons_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         layout.addWidget(tab_widget)
@@ -1263,8 +1263,8 @@ class VTApp(QtCore.QObject):
         versions_dlg = QtWidgets.QDialog(self.gui)
         versions_dlg.setWindowTitle(translate('VTApp', 'Version Numbers',
                                              'Caption of the Versions dialog'))
-        layout = QtGui.QVBoxLayout(versions_dlg)
-        versions_edit = QtGui.QTextEdit(versions_dlg)
+        layout = QtWidgets.QVBoxLayout(versions_dlg)
+        versions_edit = QtWidgets.QTextEdit(versions_dlg)
         buttons_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         layout.addWidget(versions_edit)
         layout.addWidget(buttons_box)

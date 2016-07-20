@@ -65,7 +65,7 @@ class BookmarksDlg(QtWidgets.QDialog):
 
         self.setWindowTitle(
             translate('BookmarksDlg', 'Bookmarks editor', 'Dialog caption'))
-        dlg_layout = QtGui.QVBoxLayout(self)
+        dlg_layout = QtWidgets.QVBoxLayout(self)
 
         # Add a tree view
         self.tree = QtWidgets.QTreeView(self)

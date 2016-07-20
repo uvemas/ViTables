@@ -153,7 +153,7 @@ class Config(QtCore.QSettings):
         self.setFallbacksEnabled(False)
 
         # The application default style depends on the platform
-        styles = QtGui.QStyleFactory.keys()
+        styles = QtWidgets.QStyleFactory.keys()
         self.default_style = styles[0]
         self.vtapp = vitables.utils.getVTApp()
         if not (self.vtapp is None):
@@ -198,7 +198,7 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Logger/Font'
-        default_value = QtGui.qApp.font()
+        default_value = QtWidgets.qApp.font()
         setting_value = self.value(key)
         if isinstance(setting_value, QtGui.QFont):
             return setting_value
@@ -231,7 +231,7 @@ class Config(QtCore.QSettings):
         setting_value = self.value(key)
 
         # Check the entry format and value
-        styles = QtGui.QStyleFactory.keys()
+        styles = QtWidgets.QStyleFactory.keys()
         if not isinstance(setting_value, str):
             return default_value
         elif setting_value not in styles:
@@ -646,7 +646,7 @@ class Config(QtCore.QSettings):
         if key in config:
             self.current_style = config[key]
             # Default style is provided by the underlying window manager
-            QtGui.qApp.setStyle(self.current_style)
+            QtWidgets.qApp.setStyle(self.current_style)
 
         key = 'Plugins/Enabled'
         if key in config:

@@ -145,7 +145,7 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
         self.grid.setRowCount(nrows)
 
         # Setup grid editing
-        self.grid.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.grid.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
         # Setup grid horizontal header
         if self.field_names:

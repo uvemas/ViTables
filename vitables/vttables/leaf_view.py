@@ -65,11 +65,11 @@ class LeafView(QtWidgets.QTableView):
         self.tmodel = tmodel  # This is a MUST
         self.leaf_numrows = self.tmodel.rbuffer.leaf_numrows
         self.selection_model = self.selectionModel()
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
 
         # Setup the actual vertical scrollbar
-        self.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerItem)
+        self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerItem)
         self.vscrollbar = self.verticalScrollBar()
 
         # For potentially huge datasets use a customised scrollbar
@@ -269,7 +269,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             self.scrollTo(
                 model.index(new_start - model.rbuffer.start, 0),
-                QtGui.QAbstractItemView.PositionAtTop)
+                QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             self.vscrollbar.triggerAction(1)
 
@@ -292,7 +292,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             self.scrollTo(
                 model.index(new_start - model.rbuffer.start, 0),
-                QtGui.QAbstractItemView.PositionAtTop)
+                QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             self.vscrollbar.triggerAction(3)
 
@@ -314,7 +314,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(
                 model.index(
                     buffer_start + page_step - model.rbuffer.start - 1, 0),
-            QtGui.QAbstractItemView.PositionAtBottom)
+            QtWidgets.QAbstractItemView.PositionAtBottom)
             self.updateView()
         else:
             self.vscrollbar.triggerAction(2)
@@ -339,7 +339,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(
                 model.index(
                     buffer_start + first_vp_row - model.rbuffer.start, 0),
-                QtGui.QAbstractItemView.PositionAtBottom)
+                QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             self.vscrollbar.triggerAction(4)
 
@@ -391,7 +391,7 @@ class LeafView(QtWidgets.QTableView):
         else :
             self.scrollTo(
                 model.index(row - model.rbuffer.start, 0),
-                QtGui.QAbstractItemView.PositionAtTop)
+                QtWidgets.QAbstractItemView.PositionAtTop)
 
 
     def topBF(self, value, row):
@@ -409,13 +409,13 @@ class LeafView(QtWidgets.QTableView):
         if value == self.tricky_vscrollbar.minimum():
             start = 0
             position = 0
-            hint = QtGui.QAbstractItemView.PositionAtTop
+            hint = QtWidgets.QAbstractItemView.PositionAtTop
             self.vscrollbar.triggerAction(\
                 QtGui.QAbstractSlider.SliderToMinimum)
         else:
             start = row - table_rows
             position = table_rows - 1
-            hint = QtGui.QAbstractItemView.PositionAtBottom
+            hint = QtWidgets.QAbstractItemView.PositionAtBottom
 
         self.tmodel.loadData(start, table_rows)
         self.updateView()
@@ -438,13 +438,13 @@ class LeafView(QtWidgets.QTableView):
             row = self.leaf_numrows - 1
             start = self.leaf_numrows - table_rows
             position = table_rows - 1
-            hint = QtGui.QAbstractItemView.PositionAtBottom
+            hint = QtWidgets.QAbstractItemView.PositionAtBottom
             self.vscrollbar.triggerAction(\
                 QtGui.QAbstractSlider.SliderToMinimum)
         else:
             start = row
             position = 0
-            hint = QtGui.QAbstractItemView.PositionAtTop
+            hint = QtWidgets.QAbstractItemView.PositionAtTop
 
         self.tmodel.loadData(start, table_rows)
         self.updateView()
@@ -497,7 +497,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             self.scrollTo(
                           model.index(new_start - model.rbuffer.start, 0),
-                          QtGui.QAbstractItemView.PositionAtTop)
+                          QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
 
@@ -522,7 +522,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(
                 model.index(
                     new_start + table_rows - model.rbuffer.start - 1, 0),
-                QtGui.QAbstractItemView.PositionAtBottom)
+                QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
 
@@ -654,7 +654,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtGui.QAbstractItemView.PositionAtTop)
+                QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             QtGui.QTableView.keyPressEvent(self, event)
 
@@ -686,7 +686,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtGui.QAbstractItemView.PositionAtTop)
+                QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             QtGui.QTableView.keyPressEvent(self, event)
 
@@ -719,7 +719,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtGui.QAbstractItemView.PositionAtBottom)
+                QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             QtGui.QTableView.keyPressEvent(self, event)
 
@@ -752,7 +752,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtGui.QAbstractItemView.PositionAtBottom)
+                QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             QtGui.QTableView.keyPressEvent(self, event)
 

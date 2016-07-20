@@ -54,7 +54,7 @@ def getVTApp():
     """
 
     vtapp = None
-    for widget in QtGui.qApp.topLevelWidgets():
+    for widget in QtWidgets.qApp.topLevelWidgets():
         if widget.objectName() == 'VTGUI':
             vtapp = widget.vtapp
             break
@@ -171,9 +171,9 @@ def insertInMenu(menu, entries, uid):
     if not isinstance(entries, collections.Iterable):
         entries = [entries]
 
-    if isinstance(entries[0], QtGui.QAction):
+    if isinstance(entries[0], QtWidgets.QAction):
         menu.insertEntry = menu.insertAction
-    elif isinstance(entries[0], QtGui.QMenu):
+    elif isinstance(entries[0], QtWidgets.QMenu):
         menu.insertEntry = menu.insertMenu
 
     for item in menu.actions():
@@ -199,9 +199,9 @@ def addToMenu(menu, entries):
     if not isinstance(entries, collections.Iterable):
         entries = [entries]
 
-    if isinstance(entries[0], QtGui.QAction):
+    if isinstance(entries[0], QtWidgets.QAction):
         menu.addEntry = menu.addAction
-    elif isinstance(entries[0], QtGui.QMenu):
+    elif isinstance(entries[0], QtWidgets.QMenu):
         menu.addEntry = menu.addMenu
 
     menu.addSeparator()
@@ -454,7 +454,7 @@ def addActions(target, actions, actions_dict):
     for action in actions:
         if action is None:
             target.addSeparator()
-        elif isinstance(action, QtGui.QMenu):
+        elif isinstance(action, QtWidgets.QMenu):
             target.addMenu(action)
         else:
             target.addAction(actions_dict[action])

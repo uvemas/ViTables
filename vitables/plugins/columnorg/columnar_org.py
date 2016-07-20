@@ -183,7 +183,7 @@ class MenuUpdater(QtCore.QObject):
                                     QtGui.QIcon.Normal,
                                     QtGui.QIcon.On)
 
-        self.group_action = QtGui.QAction(
+        self.group_action = QtWidgets.QAction(
             translate('MenuUpdater',
                       "&Group Arrays",
                       "Group separated arrays with the same number of rows"),
@@ -203,7 +203,7 @@ class MenuUpdater(QtCore.QObject):
                                       QtGui.QIcon.Normal,
                                       QtGui.QIcon.On)
 
-        self.ungroup_action = QtGui.QAction(
+        self.ungroup_action = QtWidgets.QAction(
             translate('MenuUpdater', 
                       "&Ungroup Arrays",
                       "Ungroup previously grouped arrays."),
@@ -329,9 +329,9 @@ class GroupedArrays(QtWidgets.QMdiSubWindow):
         """
 
         if not title:
-            title = QtGui.QLabel(datasheet.windowTitle())
+            title = QtWidgets.QLabel(datasheet.windowTitle())
         datasheet.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        vertical_layout = QtGui.QVBoxLayout()
+        vertical_layout = QtWidgets.QVBoxLayout()
         vertical_layout.addWidget(title)
         vertical_layout.addWidget(datasheet)
         container_layout.addLayout(vertical_layout)

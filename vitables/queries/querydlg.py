@@ -117,7 +117,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         #
         # Create the dialog and customise the content of some widgets
         #
-        super(QueryDlg, self).__init__(QtGui.qApp.activeWindow())
+        super(QueryDlg, self).__init__(QtWidgets.qApp.activeWindow())
         self.setupUi(self)
 
         self.setWindowTitle(translate('QueryDlg', 'New query on table: {0}',
@@ -160,7 +160,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         # Connect signals to slots
         #
         self.buttonBox.helpRequested.connect(
-            QtGui.QWhatsThis.enterWhatsThisMode)
+            QtWidgets.QWhatsThis.enterWhatsThisMode)
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
         self.nameLE.textChanged.emit(self.nameLE.text())

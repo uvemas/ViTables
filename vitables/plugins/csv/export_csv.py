@@ -106,7 +106,7 @@ class ExportToCSV(QtCore.QObject):
                                             'icons/document-export.png'))
         export_icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
-        self.export_action = QtGui.QAction(
+        self.export_action = QtWidgets.QAction(
             translate('ExportToCSV', "E&xport to CSV...",
                       "Save dataset as CSV"),
             self,
@@ -165,7 +165,7 @@ class ExportToCSV(QtCore.QObject):
         # Customise the file selector dialog for exporting to CSV files
         if is_table:
             fs_layout = file_selector.layout()
-            header_label = QtGui.QLabel('Add header:', file_selector)
+            header_label = QtWidgets.QLabel('Add header:', file_selector)
             header_cb = QtGui.QCheckBox(file_selector)
             fs_layout.addWidget(header_label, 4, 0)
             fs_layout.addWidget(header_cb, 4, 1)
@@ -269,7 +269,7 @@ class ExportToCSV(QtCore.QObject):
             filepath, add_header = export_info
 
         try:
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             out_handler = open(filepath, 'w')
             if add_header:
                 header = reduce(lambda x, y: '{0}, {1}'.format(x, y),
@@ -282,7 +282,7 @@ class ExportToCSV(QtCore.QObject):
                 chunk_size = nrows
             nchunks = numpy.divide(nrows, chunk_size)
             for i in numpy.arange(0, nchunks+1):
-                QtGui.qApp.processEvents()
+                QtWidgets.qApp.processEvents()
                 cstart = chunk_size*i
                 if cstart >= nrows:
                     break
@@ -295,7 +295,7 @@ class ExportToCSV(QtCore.QObject):
             vitables.utils.formatExceptionInfo()
         finally:
             out_handler.close()
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
 
     def helpAbout(self, parent):
         """Full description of the plugin.

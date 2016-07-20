@@ -201,7 +201,7 @@ class QueriesManager(QtCore.QObject):
         new_query = query.Query(tmp_h5file, table_uid, table,
                                 query_description)
         new_query.query_completed.connect(self.addQueryResult)
-        QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+        QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
         new_query.run()
 
     def getQueryInfo(self, info, table):
@@ -233,7 +233,7 @@ class QueriesManager(QtCore.QObject):
         finally:
             query_description = dict(query_dlg.query_info)
             del query_dlg
-            QtGui.qApp.processEvents()
+            QtWidgets.qApp.processEvents()
 
         if not query_description['condition']:
             return None
@@ -300,7 +300,7 @@ class QueriesManager(QtCore.QObject):
         - `table_uid`: the UID of the table just queried
         """
 
-        QtGui.qApp.restoreOverrideCursor()
+        QtWidgets.qApp.restoreOverrideCursor()
         if not completed:
             self.logger.error(translate('QueriesManager',
                                         'Query on table {0} failed!',

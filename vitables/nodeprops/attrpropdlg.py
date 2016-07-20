@@ -262,7 +262,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
 
-        self.helpButton.clicked.connect(QtGui.QWhatsThis.enterWhatsThisMode)
+        self.helpButton.clicked.connect(QtWidgets.QWhatsThis.enterWhatsThisMode)
 
 
     @QtCore.pyqtSlot("QModelIndex", name="on_sysTable_clicked")

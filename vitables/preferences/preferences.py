@@ -112,7 +112,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
 
         # Connect SIGNALS to SLOTS
         self.buttonsBox.helpRequested.connect(\
-            QtGui.QWhatsThis.enterWhatsThisMode)
+            QtWidgets.QWhatsThis.enterWhatsThisMode)
 
 
     def setupPluginsPage(self):
@@ -436,11 +436,11 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             about_page = pg_instance.helpAbout(self.stackedPages)
         except AttributeError:
             about_page = QtWidgets.QWidget(self.stackedPages)
-            label = QtGui.QLabel(translate(\
+            label = QtWidgets.QLabel(translate(\
                 'Preferences',
                 'Sorry, there are no info available for this plugin',
                 'A text label'), about_page)
-            layout = QtGui.QVBoxLayout(about_page)
+            layout = QtWidgets.QVBoxLayout(about_page)
             layout.addWidget(label)
 
         self.stackedPages.addWidget(about_page)
