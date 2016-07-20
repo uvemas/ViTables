@@ -85,7 +85,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
     :Parameters vtapp: the VTAPP instance
     """
 
-    def __init__(self, vtapp):
+    def __init__(self, vtgui, vtapp):
         """Create the model.
         """
 
@@ -104,7 +104,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         # The Cut/CopiedNodeInfo dictionary
         self.ccni = {}
         self.vtapp = vtapp
-        self.vtgui = self.vtapp.gui
+        self.vtgui = vtgui
 
         # Sets used to populate the model
         self.fdelta = frozenset([])

@@ -50,15 +50,15 @@ class DBsTreeView(QtWidgets.QTreeView):
 
     dbsTreeViewCreated = QtCore.pyqtSignal(QtWidgets.QTreeView)
 
-    def __init__(self, vtapp, model):
+    def __init__(self, vtapp, vtgui, model, parent=None):
         """Create the view.
         """
 
-        super(DBsTreeView, self).__init__(parent=None)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        super(DBsTreeView, self).__init__(parent)
+        #self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         self.vtapp = vtapp
-        self.vtgui = self.vtapp.gui
+        self.vtgui = vtgui
 
         # The model
         self.setModel(model)
@@ -66,7 +66,7 @@ class DBsTreeView(QtWidgets.QTreeView):
         self.smodel = self.selectionModel()
 
         # The custom delegate used for editing items
-        self.setItemDelegate(NodeItemDelegate(self))
+        self.setItemDelegate(NodeItemDelegate(vtgui, self))
         self.setObjectName('dbs_tree_view')
 
         # The frame specification
@@ -100,10 +100,6 @@ class DBsTreeView(QtWidgets.QTreeView):
         self.expanded.connect(self.updateExpandedGroup)
         self.collapsed.connect(self.updateCollapsedGroup)
         self.dbt_model.layoutChanged.connect(self.updateColumnWidth)
-    #    self.dbsTreeViewCreated.connect(self.vtgui.setup)
-
-    #    self.dbsTreeViewCreated.emit(self)
-        self.vtgui.setup(self)
 
 
     def updateColumnWidth(self):
@@ -195,7 +191,7 @@ class DBsTreeView(QtWidgets.QTreeView):
                 node.updated = True
                 self.smodel.clearSelection()
                 self.smodel.setCurrentIndex(index,
-                    QtGui.QItemSelectionModel.SelectCurrent)
+                    QtCore.QItemSelectionModel.SelectCurrent)
 
 
     def createCustomContextMenu(self, pos):
@@ -217,35 +213,6 @@ class DBsTreeView(QtWidgets.QTreeView):
             kind = node.node_kind
         pos = self.mapToGlobal(pos)
         self.vtgui.popupContextMenu(kind, pos)
-
-
-    def currentChanged(self, current, previous):
-        """This slot is automatically called when the current item changes.
-
-        The slot is not called if the item doesn't actually changed.
-        When the current item changes the menus, toolbars and statusbar have
-        to be updated. Probably some QActions will be enabled and other will
-        be disabled. Also the databases tree and the workspace have to be
-        synchronised again (if possible).
-
-        :Parameters:
-
-          - `current`: the index model of the new current item
-          - `previous`: the index model of the previous current item
-        """
-
-        QtWidgets.QTreeView.currentChanged(self, current, previous)
-        self.vtgui.updateActions()
-        self.vtgui.updateStatusBar()
-
-        # Sync the tree view with the workspace (if needed) but keep the
-        # focus (giving focus to the workspace when a given item is
-        # selected is counter intuitive)
-        pcurrent = QtCore.QPersistentModelIndex(current)
-        for window in self.vtgui.workspace.subWindowList():
-            if pcurrent == window.pindex:
-                self.vtgui.workspace.setActiveSubWindow(window)
-                self.setFocus(True)
 
 
     def selectNode(self, index):

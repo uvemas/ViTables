@@ -130,8 +130,6 @@ class VTApp(QtCore.QObject):
         splash.drawMessage(translate('VTApp', 'Creating the GUI...',
                                      'A splash screen message'))
         self.gui = vtgui.VTGUI(self, vtconfig.getVersion())
-        dbs_tmodel = dbstreemodel.DBsTreeModel(self)
-        dbstreeview.DBsTreeView(self, dbs_tmodel)
 
         # Apply the configuration stored on disk
         splash.drawMessage(translate('VTApp', 'Configuration setup...',

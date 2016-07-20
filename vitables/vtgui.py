@@ -36,6 +36,8 @@ from PyQt5 import QtWidgets
 import vitables.utils
 import vitables.logger as logger
 from vitables.calculator import calculator
+import vitables.h5db.dbstreemodel as dbstreemodel
+import vitables.h5db.dbstreeview as dbstreeview
 
 translate = QtWidgets.QApplication.translate
 
@@ -74,15 +76,18 @@ class VTGUI(QtWidgets.QMainWindow):
         self.logger_dock = None
         self.logger = None
         self.setup_logger_window()
+        self.setup(vtapp)
 
-    def setup(self, tree_view):
+    def setup(self, vtapp):
         """Add widgets, actions, menus and toolbars to the GUI.
 
         :Parameter tree_view: The databases tree view
         """
 
-        self.dbs_tree_view = tree_view
-        self.dbs_tree_model = self.dbs_tree_view.model()
+        self.dbs_tree_model =  dbstreemodel.DBsTreeModel(self, vtapp)
+        self.dbs_tree_view = dbstreeview.DBsTreeView(vtapp, self,
+                                                     self.dbs_tree_model,
+                                                     self)
         self.addComponents()
         self.gui_actions = self.setupActions()
         self.setupToolBars()
@@ -107,6 +112,7 @@ class VTGUI(QtWidgets.QMainWindow):
         stream_handler = logging.StreamHandler(self.logger)
         stream_handler.setFormatter(logging.Formatter(_GUI_LOG_FORMAT))
         vitables_logger.addHandler(stream_handler)
+
 
     def addComponents(self):
         """Add widgets to the main window.
@@ -147,6 +153,19 @@ class VTGUI(QtWidgets.QMainWindow):
         self.window_mapper.mapped[QtWidgets.QWidget].connect(
             self.workspace.setActiveSubWindow)
         self.workspace.installEventFilter(self)
+        self.dbs_tree_view.clicked.connect(self.selection_changed)
+
+    def selection_changed(self, index):
+        self.updateActions()
+        self.updateStatusBar()
+        # Sync the tree view with the workspace (if needed) but keep the
+        # focus (giving focus to the workspace when a given item is
+        # selected is counter intuitive)
+        pcurrent = QtCore.QPersistentModelIndex(index)
+        for window in self.workspace.subWindowList():
+            if pcurrent == window.pindex:
+                self.workspace.setActiveSubWindow(window)
+                self.setFocus(True)
 
     def setupActions(self):
         """Provide actions to the menubar and the toolbars.

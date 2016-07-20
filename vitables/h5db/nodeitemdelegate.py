@@ -42,14 +42,14 @@ class NodeItemDelegate(QtWidgets.QItemDelegate):
     used to edit the name of the nodes in a database object tree.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, vtgui, parent=None):
         """
         Creates the custom delegate.
         """
 
         super(NodeItemDelegate, self).__init__(parent)
         self.current_name = None
-        self.vtgui = vitables.utils.getVTApp().gui
+        self.vtgui = vtgui
 
 
     def setEditorData(self, editor, index):
