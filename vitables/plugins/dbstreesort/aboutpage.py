@@ -33,6 +33,7 @@ import os.path
 import configparser
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.uic import loadUiType
 
 # This method of the PyQt4.uic module allows for dynamically loading user

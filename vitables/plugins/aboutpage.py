@@ -3,6 +3,7 @@
 import os
 
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5 import uic
 
 Ui_AboutPage = uic.loadUiType(os.path.join(os.path.dirname(
