@@ -108,7 +108,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
 
         # Table of system attributes
         self.sysTable.horizontalHeader().setResizeMode(\
-            QtGui.QHeaderView.Stretch)
+            QtWidgets.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
@@ -184,7 +184,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
 
         # Table of user attributes
         self.userTable.horizontalHeader().\
-                        setResizeMode(QtGui.QHeaderView.Stretch)
+                        setResizeMode(QtWidgets.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',

@@ -575,8 +575,8 @@ class ImportCSV(QtCore.QObject):
             dfilter=translate('ImportCSV', """CSV Files (*.csv);;"""
                               """All Files (*)""",
                               'Filter for the Import from CSV dialog'),
-            settings={'accept_mode': QtGui.QFileDialog.AcceptOpen,
-                      'file_mode': QtGui.QFileDialog.ExistingFile,
+            settings={'accept_mode': QtWidgets.QFileDialog.AcceptOpen,
+                      'file_mode': QtWidgets.QFileDialog.ExistingFile,
                       'history': self.vtapp.file_selector_history,
                       'label': translate('ImportCSV', 'Import',
                                          'Accept button text for QFileDialog')}

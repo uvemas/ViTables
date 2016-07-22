@@ -155,8 +155,8 @@ class ExportToCSV(QtCore.QObject):
             dfilter=translate('ExportToCSV', """CSV Files (*.csv);;"""
                               """All Files (*)""",
                               'Filter for the Export to CSV dialog'),
-            settings={'accept_mode': QtGui.QFileDialog.AcceptSave,
-                      'file_mode': QtGui.QFileDialog.AnyFile,
+            settings={'accept_mode': QtWidgets.QFileDialog.AcceptSave,
+                      'file_mode': QtWidgets.QFileDialog.AnyFile,
                       'history': self.vtapp.file_selector_history,
                       'label': translate('ExportToCSV', 'Export',
                                          'Accept button text for QFileDialog')}

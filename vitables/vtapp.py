@@ -377,8 +377,8 @@ class VTApp(QtCore.QObject):
         """Create a new file."""
 
         # Launch the file selector
-        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen,
-                   'file_mode': QtGui.QFileDialog.AnyFile,
+        fs_args = {'accept_mode': QtWidgets.QFileDialog.AcceptOpen,
+                   'file_mode': QtWidgets.QFileDialog.AnyFile,
                    'history': self.file_selector_history,
                    'label': translate('VTApp', 'Create',
                                       'Accept button text for QFileDialog')}
@@ -433,8 +433,8 @@ class VTApp(QtCore.QObject):
             self.gui.dbs_tree_model.nodeFromIndex(current_index).filepath
 
         # Launch the file selector
-        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave,
-                   'file_mode': QtGui.QFileDialog.AnyFile,
+        fs_args = {'accept_mode': QtWidgets.QFileDialog.AcceptSave,
+                   'file_mode': QtWidgets.QFileDialog.AnyFile,
                    'history': self.file_selector_history,
                    'label': translate('VTApp', 'Create',
                                       'Accept button text for QFileDialog')}
@@ -600,8 +600,8 @@ class VTApp(QtCore.QObject):
 
         if not filepath:
             # Launch the file selector
-            fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen,
-                'file_mode': QtGui.QFileDialog.ExistingFile,
+            fs_args = {'accept_mode': QtWidgets.QFileDialog.AcceptOpen,
+                'file_mode': QtWidgets.QFileDialog.ExistingFile,
                 'history': self.file_selector_history,
                 'label':
                     translate('VTApp', 'Open', 'Accept text for QFileDialog')}

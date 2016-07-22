@@ -258,11 +258,11 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
         `history` (file selector history) , `accept_mode` and `file_mode`
     """
 
-    file_selector = QtGui.QFileDialog(parent, caption, '', dfilter)
+    file_selector = QtWidgets.QFileDialog(parent, caption, '', dfilter)
     # Misc. setup
     file_selector.setDirectory(settings['history'][-1])
     file_selector.setAcceptMode(settings['accept_mode'])
-    if settings['accept_mode'] == QtGui.QFileDialog.AcceptSave:
+    if settings['accept_mode'] == QtWidgets.QFileDialog.AcceptSave:
         file_selector.setConfirmOverwrite(False)
     file_selector.setFileMode(settings['file_mode'])
     file_selector.setHistory(settings['history'])
@@ -270,13 +270,13 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
         file_selector.selectFile(filepath)
     if settings['label'] != '':
         file_selector.setLabelText(
-            QtGui.QFileDialog.Accept, settings['label'])
+            QtWidgets.QFileDialog.Accept, settings['label'])
 
     # Uncomment next line if you want native dialogs. Removing the comment
     # comes at the price of an annoying KDE warning in your console. See the
     # thread "A dire warning message" (July, 2011) in the pyQt4 mailing list
     # for details.
-    #file_selector.setOption(QtGui.QFileDialog.DontUseNativeDialog)
+    #file_selector.setOption(QtWidgets.QFileDialog.DontUseNativeDialog)
     return file_selector
 
 

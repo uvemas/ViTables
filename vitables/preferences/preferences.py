@@ -122,7 +122,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         nrows = len(self.all_plugins)
         self.plugins_model = QtGui.QStandardItemModel(nrows, 2, self)
         self.pluginsTV.setModel(self.plugins_model)
-        header = QtGui.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
+        header = QtWidgets.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
         header.setStretchLastSection(True)
         self.pluginsTV.setHeader(header)
         self.plugins_model.setHorizontalHeaderLabels(['Name', 'Comment'])

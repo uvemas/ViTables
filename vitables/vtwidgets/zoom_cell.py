@@ -167,7 +167,7 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
 
         self.show()
 
-        rmode = QtGui.QHeaderView.Stretch
+        rmode = QtWidgets.QHeaderView.Stretch
         if self.grid.columnCount() == 1:
             self.grid.horizontalHeader().setResizeMode(rmode)
         if self.grid.rowCount() == 1:

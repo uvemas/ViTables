@@ -84,7 +84,7 @@ class LeafView(QtWidgets.QTableView):
             self.interval_size = self.mapSlider2Leaf()
 
         # Setup the vertical header width
-        self.vheader = QtGui.QHeaderView(QtCore.Qt.Vertical)
+        self.vheader = QtWidgets.QHeaderView(QtCore.Qt.Vertical)
         self.setVerticalHeader(self.vheader)
         font = self.vheader.font()
         font.setBold(True)
@@ -94,7 +94,7 @@ class LeafView(QtWidgets.QTableView):
         self.vheader.setClickable(True)
 
         # Setup the headers' resize mode
-        rmode = QtGui.QHeaderView.Stretch
+        rmode = QtWidgets.QHeaderView.Stretch
         if self.tmodel.columnCount() == 1:
             self.horizontalHeader().setResizeMode(rmode)
         if self.tmodel.rowCount() == 1:
@@ -474,7 +474,7 @@ class LeafView(QtWidgets.QTableView):
             # Filter the event so it will not be passed to the parent widget
             event.accept()
         else:
-            QtGui.QTableView.wheelEvent(self, event)
+            QtWidgets.QTableView.wheelEvent(self, event)
 
 
     def wheelDown(self, event):
@@ -554,9 +554,9 @@ class LeafView(QtWidgets.QTableView):
                 event.accept()
                 self.pageDownKeyPressEvent(event)
             else:
-                QtGui.QTableView.keyPressEvent(self, event)
+                QtWidgets.QTableView.keyPressEvent(self, event)
         else:
-            QtGui.QTableView.keyPressEvent(self, event)
+            QtWidgets.QTableView.keyPressEvent(self, event)
 
 
     def homeKeyPressEvent(self):
@@ -656,7 +656,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(index,
                 QtWidgets.QAbstractItemView.PositionAtTop)
         else:
-            QtGui.QTableView.keyPressEvent(self, event)
+            QtWidgets.QTableView.keyPressEvent(self, event)
 
         # Eventually synchronize the position of the visible scrollbar
         # with the displayed data using the first visible cell as
@@ -688,7 +688,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(index,
                 QtWidgets.QAbstractItemView.PositionAtTop)
         else:
-            QtGui.QTableView.keyPressEvent(self, event)
+            QtWidgets.QTableView.keyPressEvent(self, event)
 
         # Eventually synchronize the position of the visible scrollbar
         # with the displayed data using the first visible cell as
@@ -721,7 +721,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(index,
                 QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
-            QtGui.QTableView.keyPressEvent(self, event)
+            QtWidgets.QTableView.keyPressEvent(self, event)
 
         # Eventually synchronize the position of the visible scrollbar
         # with the displayed data using the first visible cell as
@@ -754,7 +754,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(index,
                 QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
-            QtGui.QTableView.keyPressEvent(self, event)
+            QtWidgets.QTableView.keyPressEvent(self, event)
 
         # Eventually synchronize the position of the visible scrollbar
         # with the displayed data using the first visible cell as
@@ -785,7 +785,7 @@ class LeafView(QtWidgets.QTableView):
         - `previous`: the previous current index
         """
 
-        QtGui.QTableView.currentChanged(self, current, previous)
+        QtWidgets.QTableView.currentChanged(self, current, previous)
         if self.tmodel.numrows < self.leaf_numrows:
             self.valid_current_buffer = self.tmodel.rbuffer.start
 
@@ -826,4 +826,4 @@ class LeafView(QtWidgets.QTableView):
                     'buffer_start': model.rbuffer.start,
                 }
         else:
-            QtGui.QTableView.selectionChanged(self, selected, deselected)
+            QtWidgets.QTableView.selectionChanged(self, selected, deselected)
