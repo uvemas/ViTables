@@ -112,7 +112,7 @@ class Query(QtCore.QObject):
         # The query range is made of numpy scalars with dtype int64
         (start, stop, step) = self.qdescr['rows_range']
         chunk_size = 10000
-        div = numpy.divide(stop - start, chunk_size)
+        div = int((stop - start) // chunk_size)
 
         # Create the destination table: its first column will contain
         # the indices of the rows selected in the source table so a new
@@ -131,7 +131,7 @@ class Query(QtCore.QObject):
         # Get the array of rows that fulfill the condition
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
-        for i in numpy.arange(0, div+1):
+        for i in range(div+1):
             QtGui.qApp.processEvents()
             lstart = start + chunk_size*i
             if lstart > stop:
@@ -175,7 +175,7 @@ class Query(QtCore.QObject):
         # The query range is made of numpy scalars with dtype int64
         (start, stop, step) = self.qdescr['rows_range']
         chunk_size = 10000
-        div = numpy.divide(stop - start, chunk_size)
+        div = int((stop - start) // chunk_size)
 
         # Create the destination table
         f_table = self.tmp_h5file.createTable(\
@@ -187,7 +187,7 @@ class Query(QtCore.QObject):
         # Get the array of rows that fulfill the condition
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
-        for i in numpy.arange(0, div+1):
+        for i in range(div+1):
             QtGui.qApp.processEvents()
             lstart = start + chunk_size*i
             if lstart > stop:
