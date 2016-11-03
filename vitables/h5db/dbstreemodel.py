@@ -1042,15 +1042,18 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         last = position + count - 1
         self.beginInsertRows(parent, first, last)
         node = self.nodeFromIndex(parent)
+
+	row_sort_func = lambda rows: sorted(rows, reverse=True)
+
         for file_node in self.fdelta:
             self.root.insertChild(file_node, position)
-        for name in self.gdelta:
+        for name in row_sort_func(self.gdelta):
             group = groupnode.GroupNode(self, node, name)
             node.insertChild(group, position)
-        for name in self.ldelta:
+        for name in row_sort_func(self.ldelta):
             leaf = leafnode.LeafNode(self, node, name)
             node.insertChild(leaf, position)
-        for name in self.links_delta:
+        for name in row_sort_func(self.links_delta):
             link = linknode.LinkNode(self, node, name)
             node.insertChild(link, position)
         self.dataChanged.emit(parent, parent)
