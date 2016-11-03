@@ -62,7 +62,7 @@ class RootGroupNode(object):
         self.filepath = None
         self.node_kind = 'root group'
         if data_source:
-            self.node = data_source.getNode('/')
+            self.node = data_source.get_node('/')
 
             self.has_view = False
 

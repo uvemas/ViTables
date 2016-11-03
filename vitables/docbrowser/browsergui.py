@@ -276,7 +276,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             history_toolbar)
         history_toolbar.addWidget(go_selector)
         self.combo_history = QtGui.QComboBox(history_toolbar)
-        self.combo_history.setSizeAdjustPolicy(\
+        self.combo_history.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
         history_toolbar.addWidget(self.combo_history)
 
@@ -289,8 +289,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         controller, :meth:`vitables.docbrowser.helpbrowser.HelpBrowser`.
         """
 
-        self.combo_history.activated[str].connect(\
-            self.browser.displaySrc)
+        self.combo_history.activated[str].connect(self.browser.displaySrc)
 
         # This is the most subtle connection. It encompasses source
         # changes coming from anywhere, including slots (home, backward
@@ -298,10 +297,10 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         # programatic changes (setSource calls).
         self.text_browser.sourceChanged.connect(self.browser.updateHistory)
 
-        self.text_browser.backwardAvailable.connect(\
+        self.text_browser.backwardAvailable.connect(
             self.browser.updateBackward)
 
-        self.text_browser.forwardAvailable.connect(\
+        self.text_browser.forwardAvailable.connect(
             self.browser.updateForward)
 
         # The Bookmarks menu is special case due to its dynamic nature.

@@ -289,7 +289,7 @@ class AttrEditor(object):
                                         for row in self.edited_attrs.keys()])
         for attr in (all_attrs - edited_attrs_names):
             try:
-                self.asi._v_node._f_delAttr(attr)
+                self.asi._v_node._f_delattr(attr)
             except (tables.NodeError, AttributeError):
                 vitables.utils.formatExceptionInfo()
 

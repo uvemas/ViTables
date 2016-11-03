@@ -106,7 +106,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         self.sattrLE.setText(str(len(info.system_attrs)))
 
         # Table of system attributes
-        self.sysTable.horizontalHeader().setResizeMode(\
+        self.sysTable.horizontalHeader().setResizeMode(
             QtGui.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
@@ -235,8 +235,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
                     value_item.setText(str(value)[1:-1])
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
-            if (hasattr(value, 'shape') and value.shape != ())or\
-            (info.mode == 'read-only'):
+            if (hasattr(value, 'shape') and value.shape != ()) or \
+                    info.mode == 'read-only':
                 editable = False
                 brush = bg_brush
             else:
