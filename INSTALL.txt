@@ -2,8 +2,43 @@ System requirements
 -------------------
 
 ViTables 2.1 has been tested against Python 2.6 and 2.7 and the latest
-versions of PyTables and PyQt4 (you can try older versions at your own risk
-:).
+versions of PyTables (up to version 3.2) and PyQt4. You can try other
+versions at your own risk :).
+
+Installation on a conda environment
+-----------------------------------
+
+Using conda you should be able to run vitables on any system, let it
+be linux, mac or windows. The following are instructions for linux-like
+systems.
+
+Install conda:
+  http://www.conda.io
+
+Clone vitables...
+```sh
+  git clone git@github.com:uvemas/ViTables.git
+  cd ViTables
+```
+...or download it
+```sh
+  wget https://github.com/uvemas/ViTables/archive/master.tar.gz
+  tar xzvf master.tar.gz
+  rm -f master.tar.gz
+  cd ViTables-master
+```
+
+You can use the provided ```environment.yml``` file to create a new
+environment with the minimal dependencies needed to run vitables:
+```sh
+  conda env create -n vitables -f environment.yml
+```
+
+Activate the environment whenever you want to run vitables
+```sh
+  source activate vitables
+  vitables [whatever.h5]
+```
 
 Installation on Windows platforms
 ---------------------------------
