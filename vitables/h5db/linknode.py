@@ -53,7 +53,7 @@ class LinkNode(object):
 
         self.dbt_model = model
         self.parent = parent
-        self.node = parent.node._f_getChild(name)
+        self.node = parent.node._f_get_child(name)
 
         self.has_view = False
 

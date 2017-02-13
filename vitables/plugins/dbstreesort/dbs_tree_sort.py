@@ -32,7 +32,10 @@ comment = 'Sorts the display of the databases tree'
 
 import os
 import re
-import configparser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 from PyQt4 import QtGui
 from PyQt4 import QtCore

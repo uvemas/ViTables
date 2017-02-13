@@ -164,7 +164,12 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
         dictionary.
 
         """
-        current_name = self.saved_list.currentItem().text()
+        current_item = self.saved_list.currentItem()
+        if current_item is None:
+            # Either the list is empty or nothing is selected.
+            current_name = ""
+        else:
+            current_name = current_item.text()
         name, is_accepted = qtgui.QInputDialog.getText(
             self, translate('Calculator', 'Save expression as'),
             translate('Calculator', 'Name:'), text=current_name)
@@ -184,7 +189,15 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
         dictionary.
 
         """
-        removed_item = self.saved_list.takeItem(self.saved_list.currentRow())
+        current_row = self.saved_list.currentRow()
+        if current_row < 0:
+            qtgui.QMessageBox.warning(
+                self, translate('Calculator', 'Nothing selected'),
+                translate('Calculator', 'No saved expression selected '
+                          'to be removed.'))
+            return
+        removed_item = self.saved_list.takeItem(
+                self.saved_list.currentRow())
         del self._name_expression_dict[removed_item.text()]
 
     def on_saved_list_itemSelectionChanged(self):
@@ -194,12 +207,26 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
         dictionary and update expression and result widgets.
 
         """
-        selected_index = self.saved_list.selectedIndexes()[0]
+        selected_indexes = self.saved_list.selectedIndexes()
+        if len(selected_indexes) == 0:
+            # KFP 2015-08-04: There is a race condition when removing a
+            # stored expression.  Both this method and
+            # ``on_remove_button_clicked`` are called very close to the
+            # same time meaning ``self.saved_list.count()`` can show the
+            # wrong value.
+            return
+        selected_index = selected_indexes[0]
         name = self.saved_list.itemFromIndex(selected_index).text()
         statements, expression, destination = self._name_expression_dict[name]
-        self.statements_edit.setText(statements)
-        self.expression_edit.setText(expression)
-        self.result_edit.setText(destination)
+        self.statements_edit.setText(
+            statements if statements is not None else ''
+        )
+        self.expression_edit.setText(
+            expression if expression is not None else ''
+        )
+        self.result_edit.setText(
+            destination if destination is not None else ''
+        )
 
     def _store_expressions(self):
         """Store expressions in configuration.
@@ -352,8 +379,11 @@ class CalculatorDialog(qtgui.QDialog, Ui_CalculatorDialog):
                 translate('Calculator', 'An exception was raised during '
                           'evaluation, see log for details.'))
             return False
-        if not isinstance(result, np.ndarray) and not isinstance(result, list):
-            result = np.array([result])
+        if not isinstance(result, np.ndarray):
+            if isinstance(result, (list, tuple)):
+                result = np.array(result)
+            else:
+                result = np.array([result])
         try:
             result_group._v_file.create_array(
                 result_group, result_name, obj=result,

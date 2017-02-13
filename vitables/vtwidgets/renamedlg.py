@@ -119,7 +119,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
             translate('RenameDlg', 'Rename', 'A button label'),
             QtGui.QDialogButtonBox.AcceptRole)
         self.rename_button.setDefault(1)
-        self.cancel_button = self.buttonsBox.button(\
+        self.cancel_button = self.buttonsBox.button(
             QtGui.QDialogButtonBox.Cancel)
 
         # Setup a validator for checking the entered node name
@@ -168,8 +168,8 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         # group 1 of the pattern is matched
         result = self.cpattern.search(new_name)
         if (result == None) or \
-            ((result != None) and (result.lastindex == 1)) or \
-            (not new_name):
+                ((result != None) and (result.lastindex == 1)) or \
+                (not new_name):
             self.rename_button.setEnabled(0)
             self.overwrite_button.setEnabled(0)
         elif new_name == self.troubled_name:
@@ -191,7 +191,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         """
 
         if button == self.rename_button:
-            self.renameNode()
+            self.rename_node()
         elif button == self.overwrite_button:
             self.overwriteNode()
 
@@ -209,7 +209,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         self.accept()
 
 
-    def renameNode(self):
+    def rename_node(self):
         """
         Set the new name and exit.
 

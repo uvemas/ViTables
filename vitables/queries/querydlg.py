@@ -361,7 +361,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
 
         syntax_ok = True
         try:
-            self.source_table.willQueryUseIndexing(condition, self.condvars)
+            self.source_table.will_query_use_indexing(condition, self.condvars)
         except SyntaxError as error:
             syntax_ok = False
             self.logger.error(error.__doc__)

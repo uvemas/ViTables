@@ -30,8 +30,11 @@ dialog selector tree.
 __docformat__ = 'restructuredtext'
 
 import os.path
-import configparser
 import datetime
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 from PyQt4 import QtGui
 from PyQt4 import QtCore

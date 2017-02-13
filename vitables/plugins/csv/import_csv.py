@@ -173,8 +173,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
                 temp_file.seek(0)
                 idata = numpy.genfromtxt(temp_file, delimiter=',',
                                          usecols=(field,), dtype=None)
-                itemsizes[field] = \
-                    max(itemsizes[field], idata.dtype.itemsize)
+                itemsizes[field] = max(itemsizes[field], idata.dtype.itemsize)
                 del idata
             temp_file.close()
             buf = read_fh(buf_size)
@@ -254,7 +253,7 @@ def homogeneousTableInfo(input_handler, first_line, data):
                           for i in indices])
     else:
         if data.dtype.name.startswith('string'):
-            descr = dict([('f{0}'.format(field), tables.StringCol(itemsize)) 
+            descr = dict([('f{0}'.format(field), tables.StringCol(itemsize))
                           for field in indices])
         else:
             descr = dict([('f{0}'.format(field),
@@ -634,7 +633,7 @@ class ImportCSV(QtCore.QObject):
             dataset_name = "imported_{0}".format(kind)
             atitle = \
                 'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createTable(
+            dataset = dbdoc.h5file.create_table(
                 '/', dataset_name, descr, title=atitle, filters=io_filters,
                 expectedrows=nrows)
             # Fill the dataset in a memory efficient way
@@ -687,7 +686,7 @@ class ImportCSV(QtCore.QObject):
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = "imported_{0}".format(kind)
             atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createEArray(
+            dataset = dbdoc.h5file.create_earray(
                 '/', dataset_name, atom, array_shape, title=atitle,
                 filters=io_filters, expectedrows=nrows)
 
@@ -740,7 +739,7 @@ class ImportCSV(QtCore.QObject):
             io_filters = tables.Filters(complevel=9, complib='lzo')
             dataset_name = "imported_{0}".format(kind)
             atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createCArray(
+            dataset = dbdoc.h5file.create_carray(
                 '/', dataset_name, atom, array_shape, title=atitle,
                 filters=io_filters)
 
@@ -801,7 +800,7 @@ class ImportCSV(QtCore.QObject):
                 array_name = "imported_{0}".format(kind)
                 title = 'Imported from CSV file {0}'.\
                     format(os.path.basename(filepath))
-                dbdoc.h5file.createArray('/', array_name, data, title=title)
+                dbdoc.h5file.create_array('/', array_name, data, title=title)
                 dbdoc.h5file.flush()
                 self.updateTree(dbdoc.filepath)
             except TypeError:
