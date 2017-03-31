@@ -251,7 +251,7 @@ class VTApp(QtCore.QObject):
             for nodepath in item:  # '/group1/group2/...groupN/leaf'
                 # Check if the node still exists because the database
                 # could have changed since last ViTables session
-                node = db_doc.getNode(nodepath)
+                node = db_doc.get_node(nodepath)
                 if node is None:
                     continue
                 # groups is ['', 'group1', 'group2', ..., 'groupN']
@@ -514,7 +514,7 @@ class VTApp(QtCore.QObject):
                 filename_in_sibling = trier_filename in sibling
                 del dialog
                 if (overwrite == True) and (not is_initial_filepath) and \
-                    (not is_tmp_filepath):
+                        (not is_tmp_filepath):
                     break
             else:
                 del dialog
@@ -542,7 +542,7 @@ class VTApp(QtCore.QObject):
         try:
             QtWidgets.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
             dbdoc = self.gui.dbs_tree_model.getDBDoc(initial_filepath)
-            dbdoc.copyFile(filepath)
+            dbdoc.copy_file(filepath)
         finally:
             QtWidgets.qApp.restoreOverrideCursor()
 
@@ -627,9 +627,9 @@ class VTApp(QtCore.QObject):
 
         # Open the database and select it in the tree view
         if self.gui.dbs_tree_model.openDBDoc(filepath, mode, position):
-            self.gui.dbs_tree_view.setCurrentIndex(\
-                self.gui.dbs_tree_model.index(\
-                position, 0, QtCore.QModelIndex()))
+            self.gui.dbs_tree_view.setCurrentIndex(
+                self.gui.dbs_tree_model.index(
+                    position, 0, QtCore.QModelIndex()))
             self.updateRecentFiles(filepath, mode)
 
 
@@ -801,7 +801,7 @@ class VTApp(QtCore.QObject):
         parent = self.gui.dbs_tree_model.nodeFromIndex(current)
 
         # Get the new group name
-        dialog = nodenamedlg.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(
             translate('VTApp', 'Creating a new group', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n ',
                 'A dialog label').format(parent.filepath, parent.nodepath),
@@ -837,10 +837,10 @@ class VTApp(QtCore.QObject):
         # If the creation overwrites a group with attached views then these
         # views are closed before the renaming is done
         if overwrite:
-            nodepath = tables.path.joinPath(parent.nodepath, nodename)
+            nodepath = tables.path.join_path(parent.nodepath, nodename)
             self.gui.closeChildrenViews(nodepath, parent.filepath)
 
-        self.gui.dbs_tree_model.createGroup(current, nodename, overwrite)
+        self.gui.dbs_tree_model.create_group(current, nodename, overwrite)
 
 
     def nodeRename(self):
@@ -858,7 +858,7 @@ class VTApp(QtCore.QObject):
         parent = child.parent
 
         # Get the new nodename
-        dialog = nodenamedlg.InputNodeName(\
+        dialog = nodenamedlg.InputNodeName(
             translate('VTApp', 'Renaming a node', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n',
                 'A dialog label').format(parent.filepath, parent.nodepath),
@@ -896,11 +896,11 @@ class VTApp(QtCore.QObject):
         # If the renaming overwrites a node with attached views then these
         # views are closed before the renaming is done
         if overwrite:
-            nodepath = tables.path.joinPath(parent.nodepath, nodename)
+            nodepath = tables.path.join_path(parent.nodepath, nodename)
             self.gui.closeChildrenViews(nodepath, child.filepath)
 
         # Rename the node
-        self.gui.dbs_tree_model.renameNode(index, nodename, overwrite)
+        self.gui.dbs_tree_model.rename_node(index, nodename, overwrite)
 
         # Update the Selected node indicator of the status bar
         self.gui.updateStatusBar()
@@ -947,7 +947,7 @@ class VTApp(QtCore.QObject):
                     return
 
         # Copy the node
-        self.gui.dbs_tree_model.copyNode(current)
+        self.gui.dbs_tree_model.copy_node(current)
 
 
     def nodePaste(self):
@@ -974,7 +974,7 @@ class VTApp(QtCore.QObject):
             # - target is the source's parent
             if (cni['filepath'] == parent.filepath):
                 if (cni['nodepath'] == parent.nodepath) or \
-                (parent.nodepath == os.path.dirname(cni['nodepath'])):
+                        (parent.nodepath == os.path.dirname(cni['nodepath'])):
                     return
 
         # Soft links cannot be pasted in external files
@@ -1013,7 +1013,7 @@ class VTApp(QtCore.QObject):
         # If the pasting overwrites a node with attached views then these
         # views are closed before the pasting is done
         if overwrite:
-            nodepath = tables.path.joinPath(parent.nodepath, nodename)
+            nodepath = tables.path.join_path(parent.nodepath, nodename)
             self.gui.closeChildrenViews(nodepath, parent.filepath)
 
         # Paste the node
@@ -1250,7 +1250,7 @@ class VTApp(QtCore.QObject):
         # Add new items to the dictionary
         libraries = ('HDF5', 'Zlib', 'LZO', 'BZIP2')
         for lib in libraries:
-            lversion = tables.whichLibVersion(lib.lower())
+            lversion = tables.which_lib_version(lib.lower())
             if lversion:
                 libs_versions[lib] = lversion[1]
             else:
@@ -1270,7 +1270,7 @@ class VTApp(QtCore.QObject):
         buttons_box.accepted.connect(versions_dlg.accept)
 
         versions_edit.setReadOnly(1)
-        versions_edit.setText(\
+        versions_edit.setText(
             """
             <qt>
             <h3>{title}</h3>

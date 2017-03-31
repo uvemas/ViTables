@@ -136,9 +136,9 @@ class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
                         translate('LeafPropPage', '-'))
                 else:
                     pathname_item = QtGui.QStandardItem(str(pathname))
-                    type_item = QtGui.QStandardItem(\
+                    type_item = QtGui.QStandardItem(
                             str(info.columns_types[pathname]))
-                    shape_item = QtGui.QStandardItem(\
+                    shape_item = QtGui.QStandardItem(
                                         str(info.columns_shapes[pathname]))
                 self.fields_model.appendRow([pathname_item, type_item,
                                             shape_item])

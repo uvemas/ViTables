@@ -107,7 +107,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         self.sattrLE.setText(str(len(info.system_attrs)))
 
         # Table of system attributes
-        self.sysTable.horizontalHeader().setResizeMode(\
+        self.sysTable.horizontalHeader().setResizeMode(
             QtWidgets.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([

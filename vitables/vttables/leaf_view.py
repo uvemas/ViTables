@@ -105,7 +105,7 @@ class LeafView(QtWidgets.QTableView):
 
         # Connect signals to slots
         if self.leaf_numrows > self.tmodel.numrows:
-            self.tricky_vscrollbar.actionTriggered.connect(\
+            self.tricky_vscrollbar.actionTriggered.connect(
                 self.navigateWithMouse)
 
 
@@ -410,8 +410,8 @@ class LeafView(QtWidgets.QTableView):
             start = 0
             position = 0
             hint = QtWidgets.QAbstractItemView.PositionAtTop
-            self.vscrollbar.triggerAction(\
-                QtGui.QAbstractSlider.SliderToMinimum)
+            self.vscrollbar.triggerAction(
+                QtWidgets.QAbstractSlider.SliderToMinimum)
         else:
             start = row - table_rows
             position = table_rows - 1
@@ -439,8 +439,8 @@ class LeafView(QtWidgets.QTableView):
             start = self.leaf_numrows - table_rows
             position = table_rows - 1
             hint = QtWidgets.QAbstractItemView.PositionAtBottom
-            self.vscrollbar.triggerAction(\
-                QtGui.QAbstractSlider.SliderToMinimum)
+            self.vscrollbar.triggerAction(
+                QtWidgets.QAbstractSlider.SliderToMinimum)
         else:
             start = row
             position = 0
@@ -488,7 +488,7 @@ class LeafView(QtWidgets.QTableView):
         # row of the dataset we still can go downwards so we have to
         # read the next contiguous buffer
         if (last_vp_row + self.wheel_step + 1 > table_rows) and \
-            (buffer_start + table_rows < self.leaf_numrows):
+                (buffer_start + table_rows < self.leaf_numrows):
             # Buffer fault. The new buffer and the old one overlap to ensure
             # that no jumps occur.
             new_start = \
@@ -709,7 +709,7 @@ class LeafView(QtWidgets.QTableView):
         # row of the dataset we still can go downwards so we have to
         # read the next contiguous buffer
         if (buffer_row == table_rows - 1) and \
-            (buffer_start + table_rows < self.leaf_numrows):
+                (buffer_start + table_rows < self.leaf_numrows):
             model.loadData(dataset_row - page_step + 1, table_rows)
             self.updateView()
             # The position of the new current row
@@ -742,7 +742,7 @@ class LeafView(QtWidgets.QTableView):
         # row of the dataset we still can go downwards so we have to
         # read the next contiguous buffer
         if (buffer_row + page_step > table_rows - 1) and \
-            (buffer_start + table_rows < self.leaf_numrows):
+                (buffer_start + table_rows < self.leaf_numrows):
             model.loadData(dataset_row + 1, table_rows)
             self.updateView()
             # The position of the new current row

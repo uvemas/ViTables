@@ -136,8 +136,8 @@ class DBsTreeView(QtWidgets.QTreeView):
         """
 
         modifiers = QtWidgets.QApplication.keyboardModifiers()
-        if (modifiers & QtCore.Qt.ShiftModifier) \
-           or (modifiers & QtCore.Qt.ControlModifier):
+        if (modifiers & QtCore.Qt.ShiftModifier) or \
+                (modifiers & QtCore.Qt.ControlModifier):
             return
         node = self.dbt_model.nodeFromIndex(index)
         if node.node_kind.count('group'):
@@ -264,7 +264,7 @@ class DBsTreeView(QtWidgets.QTreeView):
 
         mime_data = event.mimeData()
         if mime_data.hasFormat('text/uri-list'):
-            if self.dbt_model.dropMimeData(\
+            if self.dbt_model.dropMimeData(
                 mime_data, QtCore.Qt.CopyAction, -1, -1, self.currentIndex()):
                 event.setDropAction(QtCore.Qt.CopyAction)
                 event.accept()

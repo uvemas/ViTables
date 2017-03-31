@@ -113,17 +113,15 @@ class Query(QtCore.QObject):
         # The query range is made of numpy scalars with dtype int64
         (start, stop, step) = self.qdescr['rows_range']
         chunk_size = 10000
-        div = numpy.divide(stop - start, chunk_size)
+        div = int((stop - start) // chunk_size)
 
         # Create the destination table: its first column will contain
         # the indices of the rows selected in the source table so a new
         # description dictionary is needed. Int64 values are necessary
         # to keep full 64-bit indices
-        ft_dict = \
-            {self.qdescr['indices_field_name']: \
-            tables.Int64Col(pos=-1)}
+        ft_dict = {self.qdescr['indices_field_name']: tables.Int64Col(pos=-1)}
         ft_dict.update(src_dict)
-        f_table = self.tmp_h5file.createTable(\
+        f_table = self.tmp_h5file.create_table(
             '/_p_query_results',
             self.qdescr['ft_name'],
             ft_dict,
@@ -140,17 +138,17 @@ class Query(QtCore.QObject):
             lstop = lstart + chunk_size
             if lstop > stop:
                 lstop = stop
-            coordinates = self.table.getWhereList(\
+            coordinates = self.table.get_where_list(
                 self.qdescr['condition'],
                 self.qdescr['condvars'],
                 start=lstart, stop=lstop, step=step)
-            selection = self.table.readCoordinates(coordinates)
+            selection = self.table.read_coordinates(coordinates)
             if selection.shape == (0, ):
                 continue
 
-            coord_dtype = numpy.dtype(\
+            coord_dtype = numpy.dtype(
                 [(str(self.qdescr['indices_field_name']), '<i8')])
-            new_dtype = numpy.dtype(\
+            new_dtype = numpy.dtype(
                 coord_dtype.descr + selection.dtype.descr)
 
             new_buffer = numpy.empty(selection.shape, dtype=new_dtype)
@@ -162,7 +160,7 @@ class Query(QtCore.QObject):
             self.flushTable(f_table)
 
         # Move the intermediate table to its final destination
-        self.tmp_h5file.moveNode(\
+        self.tmp_h5file.move_node(
             '/_p_query_results/' + self.qdescr['ft_name'],
             '/', newname=self.qdescr['ft_name'],
             overwrite=True)
@@ -176,10 +174,10 @@ class Query(QtCore.QObject):
         # The query range is made of numpy scalars with dtype int64
         (start, stop, step) = self.qdescr['rows_range']
         chunk_size = 10000
-        div = numpy.divide(stop - start, chunk_size)
+        div = int((stop - start) // chunk_size)
 
         # Create the destination table
-        f_table = self.tmp_h5file.createTable(\
+        f_table = self.tmp_h5file.create_table(
             '/_p_query_results',
             self.qdescr['ft_name'],
             src_dict,
@@ -196,7 +194,7 @@ class Query(QtCore.QObject):
             lstop = lstart + chunk_size
             if lstop > stop:
                 lstop = stop
-            selection = self.table.readWhere(\
+            selection = self.table.read_where(
                 self.qdescr['condition'],
                 self.qdescr['condvars'],
                 start=lstart, stop=lstop, step=step)
@@ -204,7 +202,7 @@ class Query(QtCore.QObject):
             self.flushTable(f_table)
 
         # Move the intermediate table to its final destination
-        self.tmp_h5file.moveNode(\
+        self.tmp_h5file.move_node(
             '/_p_query_results/' + self.qdescr['ft_name'],
             '/', newname=self.qdescr['ft_name'],
             overwrite=True)
@@ -216,7 +214,7 @@ class Query(QtCore.QObject):
         """
 
         try:
-            src_dict = self.table.description._v_colObjects
+            src_dict = self.table.description._v_colobjects
             # Add an `indexes` column to the result table
             if self.qdescr['indices_field_name']:
                 self.queryWithIndex(src_dict)
@@ -225,7 +223,7 @@ class Query(QtCore.QObject):
                 self.queryWithNoIndex(src_dict)
         except KeyError:
             vitables.utils.formatExceptionInfo()
-            self.tmp_h5file.removeNode(\
+            self.tmp_h5file.remove_node(
                 '/_p_query_results/' + self.qdescr['ft_name'])
         else:
             self.tmp_h5file.flush()

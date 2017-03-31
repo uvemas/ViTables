@@ -70,7 +70,7 @@ class LeafDelegate(QtWidgets.QStyledItemDelegate):
             buffer_start = model.rbuffer.start
             cell = index.model().selected_cell
             if ((index == cell['index']) and \
-            (buffer_start != cell['buffer_start'])):
+                    (buffer_start != cell['buffer_start'])):
                 painter.save()
                 self.initStyleOption(option, index)
                 background = option.palette.color(QtGui.QPalette.Base)

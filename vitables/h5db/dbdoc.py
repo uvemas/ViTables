@@ -147,7 +147,7 @@ class DBDoc(QtCore.QObject):
 
         return file_format
 
-    def getNode(self, where):
+    def get_node(self, where):
         """
         The node whose path is where.
 
@@ -155,7 +155,7 @@ class DBDoc(QtCore.QObject):
         """
 
         try:
-            node = self.h5file.getNode(where)
+            node = self.h5file.get_node(where)
             return node
         except tables.exceptions.NoSuchNodeError:
             self.logger.error(
@@ -165,15 +165,15 @@ class DBDoc(QtCore.QObject):
             vitables.utils.formatExceptionInfo()
             return None
 
-    def listNodes(self):
+    def list_nodes(self):
         """:Returns: the recursive list of full nodepaths for the file"""
-        return [node._v_pathname for node in self.h5file.walkNodes('/')]
+        return [node._v_pathname for node in self.h5file.walk_nodes('/')]
 
     #
     # Editing databases
     #
 
-    def copyFile(self, dst_filepath):
+    def copy_file(self, dst_filepath):
         """
         Copy the contents of this file to another one.
 
@@ -190,7 +190,7 @@ class DBDoc(QtCore.QObject):
         """
 
         try:
-            self.h5file.copyFile(dst_filepath, overwrite=True)
+            self.h5file.copy_file(dst_filepath, overwrite=True)
         except tables.exceptions.HDF5ExtError:
             self.logger.error(
                 translate('DBDoc',
@@ -208,5 +208,5 @@ class DBDoc(QtCore.QObject):
 
         group_name = '_p_' + str(uuid.uuid4())
         self.hidden_group = '/' + group_name
-        self.h5file.createGroup('/', group_name, 'Hide cut nodes')
+        self.h5file.create_group('/', group_name, 'Hide cut nodes')
         self.h5file.flush()

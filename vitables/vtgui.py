@@ -945,8 +945,8 @@ class VTGUI(QtWidgets.QMainWindow):
                 # If active mdi subwindow can handle context menu
                 # pass the event to it
                 active_window = self.workspace.activeSubWindow()
-                if active_window is not None \
-                   and hasattr(active_window, 'is_context_menu_custom'):
+                if active_window is not None and \
+                        hasattr(active_window, 'is_context_menu_custom'):
                     is_cm_custom = active_window.is_context_menu_custom
                 else:
                     is_cm_custom = False

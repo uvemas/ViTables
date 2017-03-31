@@ -354,12 +354,12 @@ def createIcons(large_icons, small_icons, icons_dict):
     for name in all_icons:
         icon = QtGui.QIcon()
         if name in large_icons:
-            pixmap = QtGui.QPixmap(\
+            pixmap = QtGui.QPixmap(
                 os.path.join(ICONDIR, '22x22', '{0}.png').format(name))
             pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
-            pixmap = QtGui.QPixmap(\
+            pixmap = QtGui.QPixmap(
                 os.path.join(ICONDIR,'16x16', '{0}.png').format(name))
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
@@ -368,8 +368,8 @@ def createIcons(large_icons, small_icons, icons_dict):
     icons_dict[''] = QtGui.QIcon()
 
     # Application icon
-    icons_dict['vitables_wm'] = QtGui.QIcon(\
-        os.path.join(ICONDIR,'vitables_wm.png'))
+    icons_dict['vitables_wm'] = QtGui.QIcon(
+        os.path.join(ICONDIR, 'vitables_wm.png'))
 
 
 def getIcons():

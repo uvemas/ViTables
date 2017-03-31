@@ -32,7 +32,10 @@ comment = 'Display time series in a human friendly format'
 
 import time
 import os
-import configparser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 import tables
 
@@ -88,20 +91,20 @@ def findTS(leaf, node_kind):
         coltypes = leaf.coltypes
         # Check for Pandas timeseries
         if pd and hasattr(attrs, 'index_kind') and \
-        (attrs.index_kind in ('datetime64', 'datetime32')):
+                (attrs.index_kind in ('datetime64', 'datetime32')):
             return 'pandas_ts'
         # Check for scikits.timeseries timeseries
         if ts and hasattr(attrs, 'CLASS') and \
-        (attrs.CLASS == 'TimeSeriesTable'):
+                (attrs.CLASS == 'TimeSeriesTable'):
             return 'scikits_ts'
         # Check for PyTables timeseries
         for name in leaf.colnames:
             if (name in coltypes) and (coltypes[name] in time_types):
                 return 'pytables_ts'
     elif (leaf.atom.type in time_types) and \
-    (len(leaf.shape) < 3) and \
-    (leaf.atom.shape == ()) and \
-    (node_kind != 'vlarray'):
+            (len(leaf.shape) < 3) and \
+            (leaf.atom.shape == ()) and \
+            (node_kind != 'vlarray'):
         return 'pytables_ts'
     else:
         return None
