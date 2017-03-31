@@ -71,4 +71,4 @@ class ScrollBar(QtWidgets.QScrollBar):
         if (e.type() == QtCore.QEvent.Wheel):
             self.view.wheelEvent(e)
             return True
-        return QtGui.QScrollBar.event(self, e)
+        return QtWidgets.QScrollBar.event(self, e)

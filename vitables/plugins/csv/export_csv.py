@@ -166,7 +166,7 @@ class ExportToCSV(QtCore.QObject):
         if is_table:
             fs_layout = file_selector.layout()
             header_label = QtWidgets.QLabel('Add header:', file_selector)
-            header_cb = QtGui.QCheckBox(file_selector)
+            header_cb = QtWidgets.QCheckBox(file_selector)
             fs_layout.addWidget(header_label, 4, 0)
             fs_layout.addWidget(header_cb, 4, 1)
 
@@ -272,6 +272,7 @@ class ExportToCSV(QtCore.QObject):
             QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             out_handler = open(filepath, 'w')
             if add_header:
+                from functools import reduce
                 header = reduce(lambda x, y: '{0}, {1}'.format(x, y),
                                 leaf.colnames)
                 # Ensure consistency with numpy.savetxt i.e. use \n line breaks

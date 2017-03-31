@@ -67,7 +67,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         self.browser = browser
 
         # The browser widget
-        self.text_browser = QtGui.QTextBrowser()
+        self.text_browser = QtWidgets.QTextBrowser()
         self.text_browser.setSearchPaths([DOCDIR])
         self.setCentralWidget(self.text_browser)
         self.text_browser.setAcceptRichText(True)
@@ -224,7 +224,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         # Create the View menu and toolbar
         view_menu = self.menuBar().addMenu(
             translate('HelpBrowserGUI', "&View", 'The View menu entry'))
-        view_toolbar = QtGui.QToolBar(
+        view_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'View operations', 'Toolbar title'),
             self)
         self.addToolBar(view_toolbar)
@@ -235,7 +235,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         # Create the Go menu and toolbar
         go_menu = self.menuBar().addMenu(translate('HelpBrowserGUI', "&Go",
             'The Go menu entry'))
-        go_toolbar = QtGui.QToolBar(
+        go_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'Go operations', 'Toolbar title'),
             self)
         self.addToolBar(go_toolbar)
@@ -247,7 +247,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         # Create the Bookmarks menu and toolbar
         self.bookmarks_menu = self.menuBar().addMenu(
             translate('HelpBrowserGUI', "&Bookmarks", 'Bookmarks menu entry'))
-        bookmarks_toolbar = QtGui.QToolBar(
+        bookmarks_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'Bookmarks operations',
             'Toolbar title'), self)
         self.addToolBar(bookmarks_toolbar)
@@ -265,7 +265,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         vitables.utils.addActions(help_menu, help_actions, self.actions)
 
         # Create the History toolbar
-        history_toolbar = QtGui.QToolBar(
+        history_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'History operations', 'Toolbar title'),
             self)
         self.addToolBar(history_toolbar)
@@ -276,9 +276,9 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
             translate('HelpBrowserGUI', 'Go: ', 'Text of the Go: label'),
             history_toolbar)
         history_toolbar.addWidget(go_selector)
-        self.combo_history = QtGui.QComboBox(history_toolbar)
+        self.combo_history = QtWidgets.QComboBox(history_toolbar)
         self.combo_history.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
+            QtWidgets.QComboBox.AdjustToContents)
         history_toolbar.addWidget(self.combo_history)
 
 
@@ -363,4 +363,4 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         # close button then history is not saved at all.
         # We fix this misbehavior by overwriting this method.
         self.browser.exitBrowser()
-        QtGui.QMainWindow.closeEvent(self, event)
+        QtWidgets.QMainWindow.closeEvent(self, event)

@@ -94,7 +94,7 @@ class PluginsLoader(object):
         """Find plugins in the system and crete instances of enabled ones."""
         self._logger.debug('Enabled plugins: {0}'.format(
             str(self.enabled_plugins)))
-        for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
+        for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):  # @UndefinedVariable
             plugin_class = _load_entrypoint(entrypoint, self._logger)
             if plugin_class is None:
                 continue

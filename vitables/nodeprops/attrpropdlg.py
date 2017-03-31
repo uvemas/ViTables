@@ -107,7 +107,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         self.sattrLE.setText(str(len(info.system_attrs)))
 
         # Table of system attributes
-        self.sysTable.horizontalHeader().setResizeMode(
+        self.sysTable.horizontalHeader().setSectionResizeMode(
             QtWidgets.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
@@ -184,7 +184,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
 
         # Table of user attributes
         self.userTable.horizontalHeader().\
-                        setResizeMode(QtWidgets.QHeaderView.Stretch)
+                        setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
@@ -208,7 +208,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             name_item = QtGui.QStandardItem(name)
             value_item = QtGui.QStandardItem(str(value))
             dtype_item = QtGui.QStandardItem()
-            dtypes_combo = QtGui.QComboBox()
+            dtypes_combo = QtWidgets.QComboBox()
             dtypes_combo.addItems(dtypes_list)
             dtypes_combo.setEditable(False)
             # In PyTables >=1.1 scalar attributes are stored as numarray arrays
@@ -252,7 +252,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         self.user_attrs_before = sorted(self.user_attrs_before[:])
 
         # The group of buttons Add, Delete, What's This
-        self.page_buttons = QtGui.QButtonGroup(self.userattrs_page)
+        self.page_buttons = QtWidgets.QButtonGroup(self.userattrs_page)
         self.page_buttons.addButton(self.addButton, 0)
         self.page_buttons.addButton(self.delButton, 1)
         self.page_buttons.addButton(self.helpButton, 2)
@@ -296,7 +296,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         name_item = QtGui.QStandardItem()
         value_item = QtGui.QStandardItem()
         dtype_item = QtGui.QStandardItem()
-        dtypes_combo = QtGui.QComboBox()
+        dtypes_combo = QtWidgets.QComboBox()
         dtypes_combo.addItems(dtypes_list)
         dtypes_combo.setEditable(False)
         self.userattr_model.appendRow([name_item, value_item, dtype_item])
@@ -347,10 +347,10 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         buttons = {
             'Delete':
                 (translate('AttrPropDlg', 'Delete', 'Button text'),
-                QtGui.QMessageBox.YesRole),
+                QtWidgets.QMessageBox.YesRole),
             'Cancel':
                 (translate('AttrPropDlg', 'Cancel', 'Button text'),
-                QtGui.QMessageBox.NoRole),
+                QtWidgets.QMessageBox.NoRole),
             }
 
         # Ask for confirmation

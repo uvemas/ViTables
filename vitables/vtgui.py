@@ -955,4 +955,4 @@ class VTGUI(QtWidgets.QMainWindow):
                     self.mdi_cm.popup(pos)
             return QtWidgets.QMdiArea.eventFilter(widget, widget, event)
         else:
-            return QtGui.QMainWindow.eventFilter(self, widget, event)
+            return QtWidgets.QMainWindow.eventFilter(self, widget, event)

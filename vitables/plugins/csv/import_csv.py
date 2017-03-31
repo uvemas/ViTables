@@ -276,6 +276,7 @@ def askForHelp(first_line):
                      'a table header or regular data?', 'Message box text')
     itext = ''
     try:
+        from functools import reduce
         dtext = reduce(lambda x, y: '{0}, {1}'.format(x, y), first_line)
     except TypeError:
         # If first_line has only one field reduce raises a TypeError
@@ -283,10 +284,10 @@ def askForHelp(first_line):
     buttons = {
         'Header':
         (translate('ImportCSV', 'Header', 'Button text'),
-         QtGui.QMessageBox.YesRole),
+         QtWidgets.QMessageBox.YesRole),
         'Data':
         (translate('ImportCSV', 'Data', 'Button text'),
-         QtGui.QMessageBox.NoRole),
+         QtWidgets.QMessageBox.NoRole),
         }
     return vitables.utils.questionBox(title, text, itext, dtext, buttons)
 

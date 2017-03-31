@@ -266,9 +266,9 @@ class QueriesManager(QtCore.QObject):
         dtext = ''
         buttons = {
             'Delete': (translate('QueriesManager', 'Delete', 'Button text'),
-                       QtGui.QMessageBox.YesRole),
+                       QtWidgets.QMessageBox.YesRole),
             'Cancel': (translate('QueriesManager', 'Cancel', 'Button text'),
-                       QtGui.QMessageBox.NoRole)}
+                       QtWidgets.QMessageBox.NoRole)}
         # Ask for confirmation
         answer = vitables.utils.questionBox(title, text, itext, dtext, buttons)
         if answer == 'Cancel':

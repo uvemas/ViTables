@@ -162,7 +162,7 @@ class DBsTreeView(QtWidgets.QTreeView):
                 QtCore.Qt.DecorationRole)
         self.smodel.clearSelection()
         self.smodel.setCurrentIndex(index,
-            QtGui.QItemSelectionModel.SelectCurrent)
+            QtCore.QItemSelectionModel.SelectCurrent)
         self.update(index)
 
 
@@ -223,7 +223,7 @@ class DBsTreeView(QtWidgets.QTreeView):
 
         self.smodel.clearSelection()
         self.smodel.setCurrentIndex(index,
-            QtGui.QItemSelectionModel.SelectCurrent)
+            QtCore.QItemSelectionModel.SelectCurrent)
 
 
     def mouseDoubleClickEvent(self, event):

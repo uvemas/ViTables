@@ -91,14 +91,14 @@ class LeafView(QtWidgets.QTableView):
         fmetrics = QtGui.QFontMetrics(font)
         max_width = fmetrics.width(" {0} ".format(str(self.leaf_numrows)))
         self.vheader.setMinimumWidth(max_width)
-        self.vheader.setClickable(True)
+        self.vheader.setSectionsClickable(True)
 
         # Setup the headers' resize mode
         rmode = QtWidgets.QHeaderView.Stretch
         if self.tmodel.columnCount() == 1:
-            self.horizontalHeader().setResizeMode(rmode)
+            self.horizontalHeader().setSectionResizeMode(rmode)
         if self.tmodel.rowCount() == 1:
-            self.vheader.setResizeMode(rmode)
+            self.vheader.setSectionResizeMode(rmode)
 
         # Setup the text elide mode
         self.setTextElideMode(QtCore.Qt.ElideRight)
@@ -382,11 +382,11 @@ class LeafView(QtWidgets.QTableView):
         # We are at top of the dataset
         elif value == self.tricky_vscrollbar.minimum():
             self.vscrollbar.triggerAction(
-                QtGui.QAbstractSlider.SliderToMinimum)
+                QtWidgets.QAbstractSlider.SliderToMinimum)
         # We are at bottom of the dataset
         elif value == self.tricky_vscrollbar.maximum():
             self.vscrollbar.triggerAction(
-                QtGui.QAbstractSlider.SliderToMaximum)
+                QtWidgets.QAbstractSlider.SliderToMaximum)
         # we are somewhere in the middle of the dataset
         else :
             self.scrollTo(

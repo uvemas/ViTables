@@ -578,15 +578,15 @@ def questionBox(title='', text='', info='', detail='', buttons_def=''):
 
     """
 
-    qmbox = QtGui.QMessageBox()
-    qmbox.setIcon(QtGui.QMessageBox.Question)
+    qmbox = QtWidgets.QMessageBox()
+    qmbox.setIcon(QtWidgets.QMessageBox.Question)
     qmbox.setWindowTitle(title)
     qmbox.setText(text)
     if info:
         qmbox.setInformativeText(info)
     if detail:
         qmbox.setDetailedText(detail)
-    qmbox.setDefaultButton(QtGui.QMessageBox.NoButton)
+    qmbox.setDefaultButton(QtWidgets.QMessageBox.NoButton)
 
     buttons = {}
     for name, (text, role) in buttons_def.items():

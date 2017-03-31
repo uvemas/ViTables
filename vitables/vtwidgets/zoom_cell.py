@@ -121,7 +121,7 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
         self.dbt_leaf = leaf
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         # The internal widget
-        self.grid = QtGui.QTableWidget()
+        self.grid = QtWidgets.QTableWidget()
         self.setWidget(self.grid)
         # Configure the titlebar
         self.setWindowTitle(self.title)
@@ -150,12 +150,12 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
         # Setup grid horizontal header
         if self.field_names:
             for section in range(0, ncols):
-                item = QtGui.QTableWidgetItem()
+                item = QtWidgets.QTableWidgetItem()
                 item.setText(self.field_names[section])
                 self.grid.setHorizontalHeaderItem(section, item)
         else:
             for section in range(0, ncols):
-                item = QtGui.QTableWidgetItem()
+                item = QtWidgets.QTableWidgetItem()
                 item.setText('{0}'.format(section + 1))
                 self.grid.setHorizontalHeaderItem(section, item)
 
@@ -169,9 +169,9 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
 
         rmode = QtWidgets.QHeaderView.Stretch
         if self.grid.columnCount() == 1:
-            self.grid.horizontalHeader().setResizeMode(rmode)
+            self.grid.horizontalHeader().setSectionResizeMode(rmode)
         if self.grid.rowCount() == 1:
-            self.grid.verticalHeader().setResizeMode(rmode)
+            self.grid.verticalHeader().setSectionResizeMode(rmode)
 
         # Connect signals to slots
         self.grid.cellDoubleClicked.connect(self.zoomView)
@@ -250,7 +250,7 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
         for column in range(0, self.grid.columnCount()):
             content = self.data[self.field_names[column]]
             text = self.formatContent(content)
-            item = QtGui.QTableWidgetItem(text)
+            item = QtWidgets.QTableWidgetItem(text)
             self.grid.setItem(0, column, item)
 
 
@@ -263,14 +263,14 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
         if num_rows == num_cols == 1:
             content = self.data
             text = self.formatContent(content)
-            item = QtGui.QTableWidgetItem(text)
+            item = QtWidgets.QTableWidgetItem(text)
             self.grid.setItem(0, 0, item)
         # 1-D arrays
         elif num_cols == 1:
             for row in range(0, num_rows):
                 content = self.data[row]
                 text = self.formatContent(content)
-                item = QtGui.QTableWidgetItem(text)
+                item = QtWidgets.QTableWidgetItem(text)
                 self.grid.setItem(row, 0, item)
         # N-D arrays
         else:
@@ -278,7 +278,7 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
                 for column in range(0, num_cols):
                     content = self.data[row][column]
                     text = self.formatContent(content)
-                    item = QtGui.QTableWidgetItem(text)
+                    item = QtWidgets.QTableWidgetItem(text)
                     self.grid.setItem(row, column, item)
 
 

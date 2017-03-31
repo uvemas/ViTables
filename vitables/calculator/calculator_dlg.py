@@ -7,14 +7,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
 
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
@@ -26,49 +20,49 @@ except AttributeError:
 
 class Ui_CalculatorDialog(object):
     def setupUi(self, CalculatorDialog):
-        CalculatorDialog.setObjectName(_fromUtf8("CalculatorDialog"))
+        CalculatorDialog.setObjectName("CalculatorDialog")
         CalculatorDialog.resize(640, 480)
-        self.gridLayout = QtGui.QGridLayout(CalculatorDialog)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.main_layout = QtGui.QHBoxLayout()
-        self.main_layout.setObjectName(_fromUtf8("main_layout"))
+        self.gridLayout = QtWidgets.QGridLayout(CalculatorDialog)
+        self.gridLayout.setObjectName("gridLayout")
+        self.main_layout = QtWidgets.QHBoxLayout()
+        self.main_layout.setObjectName("main_layout")
         self.save_layout = QtWidgets.QVBoxLayout()
-        self.save_layout.setObjectName(_fromUtf8("save_layout"))
+        self.save_layout.setObjectName("save_layout")
         self.saved_label = QtWidgets.QLabel(CalculatorDialog)
-        self.saved_label.setObjectName(_fromUtf8("saved_label"))
+        self.saved_label.setObjectName("saved_label")
         self.save_layout.addWidget(self.saved_label)
-        self.saved_list = QtGui.QListWidget(CalculatorDialog)
-        self.saved_list.setObjectName(_fromUtf8("saved_list"))
+        self.saved_list =QtWidgets.QListWidget(CalculatorDialog)
+        self.saved_list.setObjectName("saved_list")
         self.save_layout.addWidget(self.saved_list)
-        self.list_buttons_layout = QtGui.QHBoxLayout()
-        self.list_buttons_layout.setObjectName(_fromUtf8("list_buttons_layout"))
-        self.save_button = QtGui.QPushButton(CalculatorDialog)
-        self.save_button.setObjectName(_fromUtf8("save_button"))
+        self.list_buttons_layout = QtWidgets.QHBoxLayout()
+        self.list_buttons_layout.setObjectName("list_buttons_layout")
+        self.save_button = QtWidgets.QPushButton(CalculatorDialog)
+        self.save_button.setObjectName("save_button")
         self.list_buttons_layout.addWidget(self.save_button)
-        self.remove_button = QtGui.QPushButton(CalculatorDialog)
-        self.remove_button.setObjectName(_fromUtf8("remove_button"))
+        self.remove_button = QtWidgets.QPushButton(CalculatorDialog)
+        self.remove_button.setObjectName("remove_button")
         self.list_buttons_layout.addWidget(self.remove_button)
         self.save_layout.addLayout(self.list_buttons_layout)
         self.main_layout.addLayout(self.save_layout)
         self.evaluation_layout = QtWidgets.QVBoxLayout()
-        self.evaluation_layout.setObjectName(_fromUtf8("evaluation_layout"))
+        self.evaluation_layout.setObjectName("evaluation_layout")
         self.statements_label = QtWidgets.QLabel(CalculatorDialog)
-        self.statements_label.setObjectName(_fromUtf8("statements_label"))
+        self.statements_label.setObjectName("statements_label")
         self.evaluation_layout.addWidget(self.statements_label)
         self.statements_edit = QtWidgets.QTextEdit(CalculatorDialog)
-        self.statements_edit.setObjectName(_fromUtf8("statements_edit"))
+        self.statements_edit.setObjectName("statements_edit")
         self.evaluation_layout.addWidget(self.statements_edit)
         self.expression_label = QtWidgets.QLabel(CalculatorDialog)
-        self.expression_label.setObjectName(_fromUtf8("expression_label"))
+        self.expression_label.setObjectName("expression_label")
         self.evaluation_layout.addWidget(self.expression_label)
         self.expression_edit = QtWidgets.QTextEdit(CalculatorDialog)
-        self.expression_edit.setObjectName(_fromUtf8("expression_edit"))
+        self.expression_edit.setObjectName("expression_edit")
         self.evaluation_layout.addWidget(self.expression_edit)
         self.result_label = QtWidgets.QLabel(CalculatorDialog)
-        self.result_label.setObjectName(_fromUtf8("result_label"))
+        self.result_label.setObjectName("result_label")
         self.evaluation_layout.addWidget(self.result_label)
-        self.result_edit = QtGui.QLineEdit(CalculatorDialog)
-        self.result_edit.setObjectName(_fromUtf8("result_edit"))
+        self.result_edit = QtWidgets.QLineEdit(CalculatorDialog)
+        self.result_edit.setObjectName("result_edit")
         self.evaluation_layout.addWidget(self.result_edit)
         self.main_layout.addLayout(self.evaluation_layout)
         self.main_layout.setStretch(0, 1)
@@ -76,7 +70,7 @@ class Ui_CalculatorDialog(object):
         self.gridLayout.addLayout(self.main_layout, 0, 0, 1, 1)
         self.buttons = QtWidgets.QDialogButtonBox(CalculatorDialog)
         self.buttons.setStandardButtons(QtWidgets.QDialogButtonBox.Apply|QtWidgets.QDialogButtonBox.Close)
-        self.buttons.setObjectName(_fromUtf8("buttons"))
+        self.buttons.setObjectName("buttons")
         self.gridLayout.addWidget(self.buttons, 1, 0, 1, 1)
 
         self.retranslateUi(CalculatorDialog)

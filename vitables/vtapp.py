@@ -39,9 +39,9 @@ import vitables.utils
 import vitables.vtsplash
 from vitables.vtsite import ICONDIR
 
-from  vitables.preferences import vtconfig
+from vitables.preferences import vtconfig
 import vitables.preferences.pluginsloader as pluginsloader
-from  vitables.preferences import preferences
+from vitables.preferences import preferences
 
 import vitables.h5db.dbstreemodel as dbstreemodel
 import vitables.h5db.dbstreeview as dbstreeview
@@ -741,7 +741,7 @@ class VTApp(QtCore.QObject):
 
         # tables.UnImplemented datasets cannot be read so are not opened
         if isinstance(leaf, tables.UnImplemented):
-            QtGui.QMessageBox.information(self.gui,
+            QtWidgets.QMessageBox.information(self.gui,
                 translate('VTApp',
                     'About UnImplemented nodes', 'A dialog caption'),
                 translate('VTApp',
@@ -937,7 +937,7 @@ class VTApp(QtCore.QObject):
             if not hasattr(leaf, 'target'):
                 leaf_buffer = rbuffer.Buffer(leaf)
                 if not leaf_buffer.isDataSourceReadable():
-                    QtGui.QMessageBox.information(self,
+                    QtWidgets.QMessageBox.information(self,
                         translate('VTApp', 'About unreadable datasets',
                             'Dialog caption'),
                         translate('VTApp',
@@ -1047,10 +1047,10 @@ class VTApp(QtCore.QObject):
             buttons = {
                 'Delete':
                     (translate('VTApp', 'Delete', 'Button text'),
-                    QtGui.QMessageBox.YesRole),
+                    QtWidgets.QMessageBox.YesRole),
                 'Cancel':
                     (translate('VTApp', 'Cancel', 'Button text'),
-                    QtGui.QMessageBox.NoRole),
+                    QtWidgets.QMessageBox.NoRole),
                 }
 
             # Ask for confirmation
@@ -1074,7 +1074,7 @@ class VTApp(QtCore.QObject):
         # Ensure that the new current node (if any) gets selected
         select_model = self.gui.dbs_tree_view.selectionModel()
         new_current = self.gui.dbs_tree_view.currentIndex()
-        select_model.select(new_current, QtGui.QItemSelectionModel.Select)
+        select_model.select(new_current, QtCore.QItemSelectionModel.Select)
 
 
     def nodeProperties(self):
@@ -1194,7 +1194,7 @@ class VTApp(QtCore.QObject):
                 'Caption of the About ViTables dialog').\
                 format(vtconfig.getVersion()))
         layout = QtWidgets.QVBoxLayout(about_dlg)
-        tab_widget = QtGui.QTabWidget(about_dlg)
+        tab_widget = QtWidgets.QTabWidget(about_dlg)
         buttons_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         layout.addWidget(tab_widget)
         layout.addWidget(buttons_box)
@@ -1223,7 +1223,7 @@ class VTApp(QtCore.QObject):
         """
         Show a message box with the Qt About info.
         """
-        QtGui.QMessageBox.aboutQt(self.gui, translate('VTApp', 'About Qt',
+        QtWidgets.QMessageBox.aboutQt(self.gui, translate('VTApp', 'About Qt',
             'Caption of the About Qt dialog'))
 
 

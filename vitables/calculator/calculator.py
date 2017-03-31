@@ -6,9 +6,9 @@ import os
 import re
 import logging
 
-import PyQt5.QtGui as qtgui
-import PyQt5.QtCore as qtcore
-import PyQt5.QtWidgets as qtwidgets
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import tables
 import numpy as np
@@ -17,7 +17,7 @@ import vitables.utils as vtu
 import vitables.calculator.evaluator as vtce
 from vitables.calculator.calculator_dlg import Ui_CalculatorDialog
 
-translate = qtcore.QCoreApplication.translate
+translate = QtCore.QCoreApplication.translate
 
 
 def run():
@@ -34,10 +34,10 @@ def run():
                              'Relative references are disabled. '
                              'Continue?')
     if question:
-        answer = qtgui.QMessageBox.question(
+        answer = QtWidgets.QMessageBox.question(
             gui, translate('Calculator', 'Relative references are disabled'),
-            question, buttons=qtgui.QMessageBox.Yes | qtgui.QMessageBox.No)
-        if answer != qtgui.QMessageBox.Yes:
+            question, buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if answer != QtWidgets.QMessageBox.Yes:
             return
     dialog = CalculatorDialog()
     dialog.exec_()
@@ -94,10 +94,10 @@ def find_identifier_root(model, identifier):
     to to identifier node relative to root.
 
     """
-    root_index = qtcore.QModelIndex()
+    root_index = QtCore.QModelIndex()
     for row in range(model.rowCount(root_index)):
         index = model.index(row, 0, root_index)
-        name = model.data(index, qtcore.Qt.DisplayRole)
+        name = model.data(index, QtCore.Qt.DisplayRole)
         if identifier.startswith(name):
             return (model.nodeFromIndex(index).node,
                     identifier[len(name) + 1:])
@@ -133,13 +133,13 @@ def build_identifier_node_dict(identifiers, current_group):
     return identifier_node_dict
 
 
-class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
+class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
     def __init__(self, parent=None):
         super(CalculatorDialog, self).__init__(parent)
         self.setupUi(self)
         self._logger = logging.getLogger(__name__)
         self._name_expression_dict = {}
-        self._settings = qtcore.QSettings()
+        self._settings = QtCore.QSettings()
         self._settings.beginGroup('Calculator')
         self._restore_expressions()
 
@@ -151,12 +151,12 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
     def on_buttons_clicked(self, button):
         """Slot for apply button, run and store saved expressions."""
         button_id = self.buttons.standardButton(button)
-        if button_id == qtgui.QDialogButtonBox.Apply:
+        if button_id == QtWidgets.QDialogButtonBox.Apply:
             if self._execute_expression():
                 self._store_expressions()
                 self.accept()
 
-    @qtcore.pyqtSlot()
+    @QtCore.pyqtSlot()
     def on_save_button_clicked(self):
         """Store expression for future use.
 
@@ -171,7 +171,7 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
             current_name = ""
         else:
             current_name = current_item.text()
-        name, is_accepted = qtgui.QInputDialog.getText(
+        name, is_accepted = QtWidgets.QInputDialog.getText(
             self, translate('Calculator', 'Save expression as'),
             translate('Calculator', 'Name:'), text=current_name)
         if not is_accepted:
@@ -182,7 +182,7 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
                                             self.expression_edit.toPlainText(),
                                             self.result_edit.text())
 
-    @qtcore.pyqtSlot()
+    @QtCore.pyqtSlot()
     def on_remove_button_clicked(self):
         """Remove stored expression.
 
@@ -192,7 +192,7 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
         """
         current_row = self.saved_list.currentRow()
         if current_row < 0:
-            qtgui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self, translate('Calculator', 'Nothing selected'),
                 translate('Calculator', 'No saved expression selected '
                           'to be removed.'))
@@ -269,13 +269,13 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
         """Return false if identifier is not found or references a group."""
         for identifier in identifiers:
             if identifier not in identifier_node_dict:
-                qtgui.QMessageBox.critical(
+                QtWidgets.QMessageBox.critical(
                     self, translate('Calculator', 'Node not found'),
                     translate('Calculator',
                               'Node "{0}" not found'.format(identifier)))
                 return False
             if not isinstance(identifier_node_dict[identifier], tables.Leaf):
-                qtgui.QMessageBox.critical(
+                QtWidgets.QMessageBox.critical(
                     self, translate('Calculator', 'Node type'),
                     translate('Calculator',
                               'Node "{0}" does not contain data. '
@@ -300,7 +300,7 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
         """Find or create a group for result based on provided name."""
         result_identifier = self.result_edit.text()
         if not result_identifier:
-            qtgui.QMessageBox.critical(
+            QtWidgets.QMessageBox.critical(
                 self, translate('Calculator', 'Result name'),
                 translate('Calculator',
                           'The location to store results is not specified'))
@@ -314,19 +314,19 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
         relative_path = relative_path.split('.')
         result_group = find_node(result_ancestor, relative_path[:-1])
         if result_group is None:
-            answer = qtgui.QMessageBox.question(
+            answer = QtWidgets.QMessageBox.question(
                 self, translate('Calculator', 'Create group'),
                 translate('Calculator', 'There is no group "{group}" in '
                           '"{ancestor}". File "{filename}". Create it?'.format(
                               group='/'.join(relative_path[:-1]),
                               ancestor=result_ancestor._v_pathname,
                               filename=result_ancestor._v_file.filename)),
-                buttons=qtgui.QMessageBox.Yes | qtgui.QMessageBox.No)
-            if answer != qtgui.QMessageBox.Yes:
+                buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            if answer != QtWidgets.QMessageBox.Yes:
                 return None
             result_group = create_group(result_ancestor, relative_path[:-1])
             if result_group is None:
-                qtgui.QMessageBox.critical(
+                QtWidgets.QMessageBox.critical(
                     self, translate('Calculator', 'Result name'),
                     translate('Calculator',
                               'Failed to create group "{group}" inside '
@@ -338,7 +338,7 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
                 return None
         result_name = relative_path[-1]
         if result_name in result_group._v_children:
-            qtgui.QMessageBox.critical(
+            QtWidgets.QMessageBox.critical(
                 self, translate('Calculator', 'Result name'),
                 translate('Calculator',
                           'Node "{node}" already exists in group "{group}". '
@@ -375,7 +375,7 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
             result = vtce.evaluate(statements, expression, eval_globals)
         except Exception as e:
             self._logger.error(str(e))
-            qtgui.QMessageBox.critical(
+            QtWidgets.QMessageBox.critical(
                 self, translate('Calculator', 'Evaluation error'),
                 translate('Calculator', 'An exception was raised during '
                           'evaluation, see log for details.'))
@@ -391,7 +391,7 @@ class CalculatorDialog(qtwidgets.QDialog, Ui_CalculatorDialog):
                 title='Expression: ' + self.expression_edit.toPlainText())
         except Exception as e:
             self._logger.error(str(e))
-            qtgui.QMessageBox.critical(
+            QtWidgets.QMessageBox.critical(
                 self, translate('Calculator', 'Result save error'),
                 translate('Calculator', 'An exception was raised while '
                           'trying to store results, see log for details.'))

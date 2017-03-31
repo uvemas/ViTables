@@ -6,8 +6,8 @@ import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
-import PyQt5.QtGui as qtgui
-import PyQt5.QtCore as qtcore
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 import PyQt5.QtTest as qtest
 
 import vitables.start as vtstart
@@ -20,11 +20,11 @@ TABLES_PATH = os.path.join('examples', 'tables')
 
 def get_index(model, node_name, start_index=None):
     """Return index of the node with the given name or None."""
-    start_index = start_index if start_index else qtcore.QModelIndex()
+    start_index = start_index if start_index else QtCore.QModelIndex()
     for c in range(model.columnCount(start_index)):
         for r in range(model.rowCount(start_index)):
             index = model.index(r, c, start_index)
-            if index.data(qtcore.Qt.DisplayRole) == node_name:
+            if index.data(QtCore.Qt.DisplayRole) == node_name:
                 return index
             child_search_result = get_index(model, node_name, index)
             if child_search_result:
@@ -176,7 +176,7 @@ class TestTableOpening:
     @classmethod
     def setup_class(cls):
         """Create app and store shortcuts to the application objects."""
-        cls.app = qtgui.QApplication(sys.argv)
+        cls.app = QtWidgets.QApplication(sys.argv)
         cls.vtapp = VTApp(keep_splash=False)
         cls.vtgui = cls.vtapp.gui
         cls.model = cls.vtgui.dbs_tree_model
@@ -195,7 +195,7 @@ class TestTableOpening:
             for row in range(leaf_model.rowCount()):
                 for column in range(leaf_model.columnCount()):
                     cell_index = leaf_model.index(row, column,
-                                                  qtcore.QModelIndex())
+                                                  QtCore.QModelIndex())
                     cell_data = leaf_model.data(cell_index)
         finally:
             self.vtapp.fileClose()

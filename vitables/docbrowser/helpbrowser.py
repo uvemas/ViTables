@@ -267,7 +267,7 @@ class HelpBrowser(QtCore.QObject) :
         Shows a message box with the application `About` info.
         """
 
-        QtGui.QMessageBox.information(self.gui,
+        QtWidgets.QMessageBox.information(self.gui,
             translate('HelpBrowser', 'About HelpBrowser', 'A dialog caption'),
             translate('HelpBrowser', """<html><h3>HelpBrowser</h3>
                 HelpBrowser is a very simple tool for displaying the HTML
@@ -284,4 +284,4 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         caption = translate('HelpBrowser', 'About Qt', 'A dialog caption')
-        QtGui.QMessageBox.aboutQt(self.gui, caption)
+        QtWidgets.QMessageBox.aboutQt(self.gui, caption)

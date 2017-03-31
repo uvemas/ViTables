@@ -86,7 +86,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.setupSelector()
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
-        styles = QtGui.QStyleFactory.keys()
+        styles = QtWidgets.QStyleFactory.keys()
         self.stylesCB.insertItems(0, styles)
 
         # The dictionary of current ViTables preferences
@@ -340,7 +340,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         """Slot for setting the logger font."""
 
         new_font, is_ok = \
-            QtGui.QFontDialog.getFont(self.sampleTE.currentFont())
+            QtWidgets.QFontDialog.getFont(self.sampleTE.currentFont())
         # The selected font is applied to the sample text
         if is_ok:
             self.new_prefs['Logger/Font'] = new_font
@@ -354,7 +354,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         """Slot for setting the logger foreground color."""
 
         text_color = self.sampleTE.textColor()
-        color = QtGui.QColorDialog.getColor(text_color)
+        color = QtWidgets.QColorDialog.getColor(text_color)
         # The selected text color is applied to the sample text
         if color.isValid():
             self.new_prefs['Logger/Text'] = color
@@ -369,7 +369,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
 
         stylesheet = self.sampleTE.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QtWidgets.QColorDialog.getColor(QtGui.QColor(background))
         # The selected paper color is applied to the sample text window
         if color.isValid():
             self.new_prefs['Logger/Paper'] = color
@@ -383,7 +383,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
 
         stylesheet = self.workspaceLabel.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QtWidgets.QColorDialog.getColor(QtGui.QColor(background))
         # The selected color is applied to the sample label besides the button
         if color.isValid():
             self.new_prefs['Workspace/Background'] = QtGui.QBrush(color)

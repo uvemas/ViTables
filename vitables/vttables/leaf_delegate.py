@@ -65,7 +65,7 @@ class LeafDelegate(QtWidgets.QStyledItemDelegate):
         """
 
         # option.state is an ORed combination of flags
-        if (option.state & QtGui.QStyle.State_Selected):
+        if (option.state & QtWidgets.QStyle.State_Selected):
             model = index.model()
             buffer_start = model.rbuffer.start
             cell = index.model().selected_cell
@@ -85,6 +85,6 @@ class LeafDelegate(QtWidgets.QStyledItemDelegate):
                     model.data(index))
                 painter.restore()
             else:
-                QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+                QtWidgets.QStyledItemDelegate.paint(self, painter, option, index)
         else:
-            QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+            QtWidgets.QStyledItemDelegate.paint(self, painter, option, index)

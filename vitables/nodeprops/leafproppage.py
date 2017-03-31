@@ -106,7 +106,7 @@ class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
         if info.node_type == 'table':
             table = self.recordsTable
             # The Table's fields description
-            table.horizontalHeader().setResizeMode(QtWidgets.QHeaderView.Stretch)
+            table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             # QtGui.QPalette.Window constant is 10
             bg_name = table.palette().brush(10).color().name()
             table.setStyleSheet("background-color: {0}".format(bg_name))

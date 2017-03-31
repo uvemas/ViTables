@@ -106,7 +106,7 @@ class GroupPropPage(QtWidgets.QWidget, Ui_GroupPropPage):
 
         # The group's children table
         table = self.nchildrenTable
-        table.horizontalHeader().setResizeMode(QtWidgets.QHeaderView.Stretch)
+        table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
         table.setStyleSheet("background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()
