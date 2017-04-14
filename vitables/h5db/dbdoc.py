@@ -85,7 +85,7 @@ class DBDoc(QtCore.QObject):
         self.hidden_group = None
 
         if is_tmp_dbdoc:
-            self.h5file.createGroup(u'/', u'_p_query_results',
+            self.h5file.create_group(u'/', u'_p_query_results',
                 u'Hide the result of queries')
             self.h5file.flush()
 
@@ -104,7 +104,7 @@ class DBDoc(QtCore.QObject):
                     'A logger error message'))
 
         try:
-            h5file = tables.openFile(self.filepath, self.mode)
+            h5file = tables.open_file(self.filepath, self.mode)
         except IOError, inst:
             print(translate('DBDoc',
                 "\nError: {0}.", 'A logger error message').format(inst))
@@ -154,7 +154,7 @@ class DBDoc(QtCore.QObject):
         """
 
         try:
-            node = self.h5file.getNode(where)
+            node = self.h5file.get_node(where)
             return node
         except tables.exceptions.NoSuchNodeError:
             print(translate('DBDoc',
@@ -166,7 +166,7 @@ class DBDoc(QtCore.QObject):
 
     def listNodes(self):
         """:Returns: the recursive list of full nodepaths for the file"""
-        return [node._v_pathname for node in self.h5file.walkNodes('/')]
+        return [node._v_pathname for node in self.h5file.walk_nodes('/')]
 
     #
     # Editing databases
@@ -206,5 +206,5 @@ class DBDoc(QtCore.QObject):
 
         group_name = '_p_' + unicode(uuid.uuid4())
         self.hidden_group = '/' + group_name
-        self.h5file.createGroup('/', group_name, 'Hide cut nodes')
+        self.h5file.create_group('/', group_name, 'Hide cut nodes')
         self.h5file.flush()

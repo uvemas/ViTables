@@ -54,7 +54,7 @@ class GroupNode(object):
         self.updated = False
         self.children = []
         self.parent = parent
-        self.node = parent.node._f_getChild(name)
+        self.node = parent.node._f_get_child(name)
         self.node_kind = u'group'
 
         self.has_view = False

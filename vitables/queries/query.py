@@ -224,7 +224,7 @@ class Query(QtCore.QObject):
                 self.queryWithNoIndex(src_dict)
         except KeyError:
             vitables.utils.formatExceptionInfo()
-            self.tmp_h5file.removeNode(\
+            self.tmp_h5file.remove_node(\
                 u'/_p_query_results/' + self.qdescr[u'ft_name'])
         else:
             self.tmp_h5file.flush()

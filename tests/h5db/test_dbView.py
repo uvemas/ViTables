@@ -269,7 +269,7 @@ class DBViewTestCase(unittest.TestCase):
             'The item has been pasted to the wrong parent.')
 
         # Leave source database unchanged
-        h5file.removeNode('/table_samples/pasted_item')
+        h5file.remove_node('/table_samples/pasted_item')
         # TODO: drag and drop behavior should also be checked
 
 

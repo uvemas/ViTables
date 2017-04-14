@@ -177,7 +177,7 @@ class DBDocTestCase(unittest.TestCase):
 
         # Database level test
         h5file = self.doc.getH5File()
-        node = h5file.getNode('/test_group')
+        node = h5file.get_node('/test_group')
         self.assert_(node, 'The group creation has failed.')
 
         # Tree pane level test
@@ -186,7 +186,7 @@ class DBDocTestCase(unittest.TestCase):
             'The node has not been added to the tree pane.')
 
         # Leave source database unchanged
-        h5file.removeNode('/test_group')
+        h5file.remove_node('/test_group')
 
 
     #
@@ -204,7 +204,7 @@ class DBDocTestCase(unittest.TestCase):
         # The destination database
         tmp_dbdoc = VTAPP.dbManager.tmp_dbdoc
         tmp_h5file = tmp_dbdoc.getH5File()
-        target_node = tmp_h5file.getNode('/_p_cutNode')
+        target_node = tmp_h5file.get_node('/_p_cutNode')
 
         # Create a group and cut it. After that no item is selected
         # The cut node will be stored in a hidden group in the temporary
@@ -216,7 +216,7 @@ class DBDocTestCase(unittest.TestCase):
 
         # Database level tests
         h5file = self.doc.getH5File()
-        self.assertRaises(tables.exceptions.NoSuchNodeError, h5file.getNode,
+        self.assertRaises(tables.exceptions.NoSuchNodeError, h5file.get_node,
             '/test_group')
 
         hidden_nodes = target_node._v_children.keys()
@@ -264,8 +264,8 @@ class DBDocTestCase(unittest.TestCase):
             'The node has not been pasted in the destination database tree.')
 
         # Leave source database unchanged
-        h5file.removeNode('/test_group')
-        h5file.removeNode('/new_group')
+        h5file.remove_node('/test_group')
+        h5file.remove_node('/new_group')
 
 
     #
@@ -304,7 +304,7 @@ class DBDocTestCase(unittest.TestCase):
         self.assert_(group_item, 'The node has not been renamed.')
 
         # Leave source database unchanged
-        h5file.removeNode('/', final_name)
+        h5file.remove_node('/', final_name)
 
 
     #

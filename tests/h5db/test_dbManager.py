@@ -303,11 +303,11 @@ class DBManagerTestCase(unittest.TestCase):
 
         # Database level test
         h5file = self.doc.getH5File()
-        node = h5file.getNode('/test_group')
+        node = h5file.get_node('/test_group')
         self.assert_(node, 'The group creation has failed.')
 
         # Leave source database unchanged
-        h5file.removeNode('/test_group')
+        h5file.remove_node('/test_group')
 
 
     #
@@ -330,12 +330,12 @@ class DBManagerTestCase(unittest.TestCase):
 
         # Database level tests
         h5file = self.doc.getH5File()
-        self.assertRaises(tables.exceptions.NoSuchNodeError, h5file.getNode,
+        self.assertRaises(tables.exceptions.NoSuchNodeError, h5file.get_node,
             '/test_group')
 
         tmp_dbdoc = VTAPP.dbManager.tmp_dbdoc
         tmp_h5file = tmp_dbdoc.getH5File()
-        hidden_nodes = tmp_h5file.getNode('/_p_cutNode')._v_children.keys()
+        hidden_nodes = tmp_h5file.get_node('/_p_cutNode')._v_children.keys()
         self.assertEqual(hidden_nodes, ['test_group'],
             'Cut nodes are not properly hidden.')
 
@@ -379,8 +379,8 @@ class DBManagerTestCase(unittest.TestCase):
             'The node has not been pasted in the destination database tree.')
 
         # Leave source database unchanged
-        h5file.removeNode('/test_group')
-        h5file.removeNode('/new_group')
+        h5file.remove_node('/test_group')
+        h5file.remove_node('/new_group')
 
 
     def test45_rename(self):
@@ -413,7 +413,7 @@ class DBManagerTestCase(unittest.TestCase):
         self.assert_(group_item, 'The node has not been renamed.')
 
         # Leave source database unchanged
-        h5file.removeNode('/', final_name)
+        h5file.remove_node('/', final_name)
 
 
     def test48_delete(self):
