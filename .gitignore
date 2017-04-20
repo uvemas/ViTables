@@ -12,3 +12,5 @@ doc/index.rst
 run_vitables.py
 
 build
+
+*.egg-info
