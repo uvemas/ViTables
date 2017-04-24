@@ -181,3 +181,7 @@ def gui():
     vtapp.gui.show()
     logger.removeHandler(console_log_handler)
     app.exec_()
+
+
+if __name__ == '__main__':
+    gui()
