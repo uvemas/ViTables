@@ -61,7 +61,6 @@ class LeafView(QtWidgets.QTableView):
 
         super(LeafView, self).__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setModel(tmodel)
         self.tmodel = tmodel  # This is a MUST
         self.leaf_numrows = self.tmodel.rbuffer.leaf_numrows
         self.selection_model = self.selectionModel()
@@ -71,6 +70,8 @@ class LeafView(QtWidgets.QTableView):
         # Setup the actual vertical scrollbar
         self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerItem)
         self.vscrollbar = self.verticalScrollBar()
+
+        self.setModel(tmodel)
 
         # For potentially huge datasets use a customised scrollbar
         if self.leaf_numrows > self.tmodel.numrows:
