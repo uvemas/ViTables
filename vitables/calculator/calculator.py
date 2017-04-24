@@ -368,9 +368,10 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
             return False
         eval_globals, expression = self._create_eval_globals_and_epsression(
             expression, identifier_node_dict)
-        result_group, result_name = self._get_result_group_and_name()
-        if result_group is None:
+        results = self._get_result_group_and_name()
+        if results is None:
             return False
+        result_group, result_name = results
         try:
             result = vtce.evaluate(statements, expression, eval_globals)
         except Exception as e:
