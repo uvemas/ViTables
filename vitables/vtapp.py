@@ -804,7 +804,7 @@ class VTApp(QtCore.QObject):
         dialog = nodenamedlg.InputNodeName(
             translate('VTApp', 'Creating a new group', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n ',
-                'A dialog label').format(parent.filepath, parent.nodepath),
+                      'A dialog label').format(parent.filepath, parent.nodepath),
             translate('VTApp', 'Create', 'A button label'))
         self.gui.editing_dlg = True
         if dialog.exec_():
@@ -861,8 +861,9 @@ class VTApp(QtCore.QObject):
         dialog = nodenamedlg.InputNodeName(
             translate('VTApp', 'Renaming a node', 'A dialog caption'),
             translate('VTApp', 'Source file: {0}\nParent group: {1}\n\n',
-                'A dialog label').format(parent.filepath, parent.nodepath),
-            translate('VTApp', 'Rename', 'A button label'))
+                      'A dialog label').format(parent.filepath, parent.nodepath),
+            translate('VTApp', 'Rename', 'A button label'),
+            child.name)
         self.gui.editing_dlg = True
         if dialog.exec_():
             suggested_nodename = dialog.node_name

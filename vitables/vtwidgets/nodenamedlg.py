@@ -65,7 +65,7 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
     - `action`: string with the editing action to be done, Create or Rename
     """
 
-    def __init__(self, title, info, action):
+    def __init__(self, title, info, action, default_value=None):
         """A customised `QInputDialog`.
         """
 
@@ -88,6 +88,9 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
         validator.setRegExp(pattern)
         self.valueLE.setValidator(validator)
 
+        if default_value:
+            self.valueLE.setText(default_value)
+            
         # Make sure that buttons are in the proper activation state
         self.valueLE.textChanged.emit(self.valueLE.text())
 
