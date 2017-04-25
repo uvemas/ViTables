@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -22,7 +22,7 @@
 """
 This module implements a controller for managing the queries.
 
-The manager tracks the existing filtered tables and their names, launches the 
+The manager tracks the existing filtered tables and their names, launches the
 Query dialog and executes the queries at low level (i.e. `PyTables` level).
 It also keeps a description of the last executed query and tracks the tables
 currently being queried, in order to ensure that no more than 1 query at a time
@@ -31,16 +31,18 @@ is executed on a given table.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+import logging
 
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 import vitables.queries.querydlg as querydlg
 import vitables.queries.query as query
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def getTableInfo(table):
@@ -48,24 +50,27 @@ def getTableInfo(table):
 
     :Parameter table: the `tables.Table` instance being queried.
     """
-    info = {}
-    info[u'nrows'] = table.nrows
-    info[u'src_filepath'] = unicode(table._v_file.filename)
-    info[u'src_path'] = table._v_pathname
-    info[u'name'] = table._v_name
-    # Fields info: top level fields names, flat fields shapes and types
-    info[u'col_names'] = frozenset(table.colnames)
-    info[u'col_shapes'] = \
-        dict((k, v.shape) for (k, v) in table.coldescrs.iteritems())
-    info[u'col_types'] = table.coltypes
-    # Fields that can be queried
-    info[u'condvars'] = {}
-    info[u'valid_fields'] = []
+    logger = logging.getLogger(__name__)
 
-    if info[u'nrows'] <= 0:
-        print(translate('QueriesManager', 
-            "Caveat: table {0} is empty. Nothing to query.", 
-            'Warning message for users').format(info[u'name']))
+    info = {}
+    info['nrows'] = table.nrows
+    info['src_filepath'] = table._v_file.filename
+    info['src_path'] = table._v_pathname
+    info['name'] = table._v_name
+    # Fields info: top level fields names, flat fields shapes and types
+    info['col_names'] = frozenset(table.colnames)
+    info['col_shapes'] = \
+        dict((k, v.shape) for (k, v) in table.coldescrs.items())
+    info['col_types'] = table.coltypes
+    # Fields that can be queried
+    info['condvars'] = {}
+    info['valid_fields'] = []
+
+    if info['nrows'] <= 0:
+        logger.error(
+            translate('QueriesManager',
+                      "Table {0} is empty. Nothing to query.",
+                      'Warning message for users').format(info['name']))
         return None
 
     # Find out the valid (i.e. searchable) fields and condition variables.
@@ -73,14 +78,14 @@ def getTableInfo(table):
     # Beware that order matters in binary operations that mix set instances
     # with frozensets: set & frozenset returns a set but frozenset & set
     # returns a frozenset
-    valid_fields = \
-    set(info[u'col_shapes'].keys()).intersection(info[u'col_names'])
-#    info[u'col_names'].intersection(info[u'col_shapes'].keys())
+    valid_fields = set(info['col_shapes'].keys()).intersection(
+        info['col_names'])
+    # info['col_names'].intersection(info['col_shapes'].keys())
 
     # Then discard fields that aren't scalar and those that are complex
     for name in valid_fields.copy():
-        if (info[u'col_shapes'][name] != ()) or \
-        info[u'col_types'][name].count(u'complex'):
+        if (info['col_shapes'][name] != ()) or \
+           info['col_types'][name].count('complex'):
             valid_fields.remove(name)
 
     # Among the remaining fields, those whose names contain blanks
@@ -89,30 +94,33 @@ def getTableInfo(table):
     index = 0
     for name in valid_fields.copy():
         if name.count(' '):
-            while (u'col{0}'.format(index)) in valid_fields:
+            while ('col{0}'.format(index)) in valid_fields:
                 index = index + 1
-            info[u'condvars'][u'col{0}'.format(index)] = \
+            info['condvars']['col{0}'.format(index)] = \
                 table.cols._f_col(name)
             valid_fields.remove(name)
-            valid_fields.add(u'col{0} ({1})'.format(index, name))
+            valid_fields.add('col{0} ({1})'.format(index, name))
             index = index + 1
-    info[u'valid_fields'] = valid_fields
+    info['valid_fields'] = valid_fields
 
     # If table has not columns suitable to be filtered does nothing
-    if not info[u'valid_fields']:
-        print(translate('QueriesManager', 
-            """\nError: table {0} has no columns suitable to be """
-            """queried. All columns are nested, multidimensional or have a """
-            """Complex data type.""", 
-            'An error when trying to query a table').format(info['name']))
+    if not info['valid_fields']:
+        logger.error(
+            translate('QueriesManager',
+                      """Table {0} has no columns suitable to be """
+                      """queried. All columns are nested, multidimensional """
+                      """or have a Complex data type.""",
+                      'An error when trying to query a table').format(
+                          info['name']))
         return None
-    elif len(info[u'valid_fields']) != len(info[u'col_names']):
+    elif len(info['valid_fields']) != len(info['col_names']):
     # Log a message if non selectable fields exist
-        print(translate('QueriesManager', 
-            """\nWarning: some table columns contain multidimensional, """
-            """nested or Complex data. They cannot be queried so are not """
-            """included in the Column selector of the query dialog.""", 
-           'An informational note for users'))
+        logger.warning(
+            translate('QueriesManager',
+                      """Some table columns contain multidimensional, """
+                      """nested or Complex data. They cannot be queried so """
+                      """are not included in the Column selector of the """
+                      """query dialog.""", 'An informational note for users'))
 
     return info
 
@@ -145,6 +153,8 @@ class QueriesManager(QtCore.QObject):
 
         super(QueriesManager, self).__init__(parent)
 
+        self.logger = logging.getLogger(__name__)
+
         # Description of the last query made
         self.last_query = [None, None, None]
         # UID for automatically generating query names
@@ -156,7 +166,6 @@ class QueriesManager(QtCore.QObject):
         self.vtgui = self.vtapp.gui
         self.dbt_view = self.vtgui.dbs_tree_view
         self.dbt_model = self.vtgui.dbs_tree_model
-
 
     def newQuery(self):
         """Process the query requests launched by users.
@@ -182,18 +191,18 @@ class QueriesManager(QtCore.QObject):
             return
 
         # Update the list of names in use for filtered tables
-        self.ft_names.append(query_description[u'ft_name'])
-        self.last_query = [query_description[u'src_filepath'], 
-            query_description[u'src_path'], query_description[u'condition']]
+        self.ft_names.append(query_description['ft_name'])
+        self.last_query = [query_description['src_filepath'],
+                           query_description['src_path'],
+                           query_description['condition']]
 
         # Run the query
         tmp_h5file = self.dbt_model.tmp_dbdoc.h5file
-        new_query = query.Query(tmp_h5file, table_uid, table, 
-            query_description)
+        new_query = query.Query(tmp_h5file, table_uid, table,
+                                query_description)
         new_query.query_completed.connect(self.addQueryResult)
-        QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+        QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
         new_query.run()
-
 
     def getQueryInfo(self, info, table):
         """Retrieves useful info about the query.
@@ -207,8 +216,8 @@ class QueriesManager(QtCore.QObject):
         # Information about table
         # Setup the initial condition
         last_query = self.last_query
-        if (last_query[0], last_query[1]) == \
-        (info[u'src_filepath'], info[u'src_path']):
+        if (last_query[0], last_query[1]) == (info['src_filepath'],
+                                              info['src_path']):
             initial_condition = last_query[2]
         else:
             initial_condition = ''
@@ -217,54 +226,49 @@ class QueriesManager(QtCore.QObject):
         # Get a complete query description from user input: condition to
         # be applied, involved range of rows, name of the
         # filtered table and name of the column of returned indices
-        query_dlg = querydlg.QueryDlg(info, self.ft_names, 
-            self.counter, initial_condition, table)
+        query_dlg = querydlg.QueryDlg(info, self.ft_names,
+                                      self.counter, initial_condition, table)
         try:
             query_dlg.exec_()
         finally:
             query_description = dict(query_dlg.query_info)
             del query_dlg
-            QtGui.qApp.processEvents()
+            QtWidgets.qApp.processEvents()
 
-        if not query_description[u'condition']:
+        if not query_description['condition']:
             return None
 
         # SET THE TITLE OF THE RESULT TABLE
-        title = query_description[u'condition']
-        for name in info[u'valid_fields']:
-            # Valid fields can have the format 'fieldname' or 
+        title = query_description['condition']
+        for name in info['valid_fields']:
+            # Valid fields can have the format 'fieldname' or
             # 'varname (name with blanks)' so a single blank shouldn't
             # be used as separator
-            components = name.split(u' (')
+            components = name.split(' (')
             if len(components) > 1:
-                fieldname = u'({0}'.format(components[-1])
+                fieldname = '({0}'.format(components[-1])
                 title = title.replace(components[0], fieldname)
-        query_description[u'title'] = title
+        query_description['title'] = title
 
         return query_description
-
 
     def deleteAllQueries(self):
         """
         Delete all nodes under the `Query results` node of the databases tree.
         """
 
-        title = translate('QueriesManager', 'Cleaning the Query results file', 
-            'Caption of the QueryDeleteAll dialog')
-        text = translate('QueriesManager', 
-            "\n\nYou are about to delete all nodes under Query results\n\n", 
-            'Ask for confirmation')
+        title = translate('QueriesManager', 'Cleaning the Query results file',
+                          'Caption of the QueryDeleteAll dialog')
+        text = translate('QueriesManager', ('\n\nYou are about to delete all '
+                                            'nodes under Query results\n\n'),
+                         'Ask for confirmation')
         itext = ''
         dtext = ''
         buttons = {
-            'Delete': 
-                (translate('QueriesManager', 'Delete', 'Button text'), 
-                QtGui.QMessageBox.YesRole), 
-            'Cancel': 
-                (translate('QueriesManager', 'Cancel', 'Button text'), 
-                QtGui.QMessageBox.NoRole), 
-            }
-
+            'Delete': (translate('QueriesManager', 'Delete', 'Button text'),
+                       QtWidgets.QMessageBox.YesRole),
+            'Cancel': (translate('QueriesManager', 'Cancel', 'Button text'),
+                       QtWidgets.QMessageBox.NoRole)}
         # Ask for confirmation
         answer = vitables.utils.questionBox(title, text, itext, dtext, buttons)
         if answer == 'Cancel':
@@ -272,10 +276,10 @@ class QueriesManager(QtCore.QObject):
 
         # Remove every filtered table from the tree of databases model/view
         model_rows = self.dbt_model.rowCount(QtCore.QModelIndex())
-        tmp_index = self.dbt_model.index(model_rows - 1, 0, 
-            QtCore.QModelIndex())
-        rows_range = range(0, self.dbt_model.rowCount(tmp_index))
-        rows_range.reverse()
+        tmp_index = self.dbt_model.index(model_rows - 1, 0,
+                                         QtCore.QModelIndex())
+        rows_range = list(
+            range(0, self.dbt_model.rowCount(tmp_index)).__reversed__())
         for row in rows_range:
             index = self.dbt_model.index(row, 0, tmp_index)
             self.vtapp.nodeDelete(index, force=True)
@@ -283,7 +287,6 @@ class QueriesManager(QtCore.QObject):
         # Reset the queries manager
         self.counter = 0
         self.ft_names = []
-
 
     def addQueryResult(self, completed, table_uid):
         """Update the GUI once the query has finished.
@@ -297,16 +300,18 @@ class QueriesManager(QtCore.QObject):
         - `table_uid`: the UID of the table just queried
         """
 
-        QtGui.qApp.restoreOverrideCursor()
+        QtWidgets.qApp.restoreOverrideCursor()
         if not completed:
-            print(translate('QueriesManager', 'Query on table {0} failed!', 
-                'Warning log message about a failed query').format(table_uid))
+            self.logger.error(translate('QueriesManager',
+                                        'Query on table {0} failed!',
+                                        'Warning log message about a failed '
+                                        'query').format(table_uid))
             return
 
         # Update temporary database view i.e. call lazyAddChildren
         model_rows = self.dbt_model.rowCount(QtCore.QModelIndex())
-        tmp_index = self.dbt_model.index(model_rows - 1, 0, 
-            QtCore.QModelIndex())
+        tmp_index = self.dbt_model.index(model_rows - 1, 0,
+                                         QtCore.QModelIndex())
         self.dbt_model.lazyAddChildren(tmp_index)
 
         # The new filtered table is inserted in first position under

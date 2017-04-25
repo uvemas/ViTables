@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -28,12 +28,14 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -42,7 +44,7 @@ Ui_LeafPropPage = \
 
 
 
-class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
+class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
     """
     Leaf properties page.
 
@@ -92,23 +94,22 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
         self.pathLE.setToolTip(info.nodepath)
         self.typeLE.setText(info.node_type)
 
-        self.dimLE.setText(unicode(len(info.shape)))
-        self.shapeLE.setText(unicode(info.shape))
+        self.dimLE.setText(str(len(info.shape)))
+        self.shapeLE.setText(str(info.shape))
         self.dtypeLE.setText(info.type)
         if info.filters.complib is None:
             self.compressionLE.setText('uncompressed')
         else:
-            self.compressionLE.setText(unicode(info.filters.complib,
-                'utf_8'))
+            self.compressionLE.setText(str(info.filters.complib))
 
         # Information about the fields of Table instances
         if info.node_type == 'table':
             table = self.recordsTable
             # The Table's fields description
-            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+            table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             # QtGui.QPalette.Window constant is 10
             bg_name = table.palette().brush(10).color().name()
-            table.setStyleSheet(u"background-color: {0}".format(bg_name))
+            table.setStyleSheet("background-color: {0}".format(bg_name))
             self.fields_model = QtGui.QStandardItemModel()
             self.fields_model.setHorizontalHeaderLabels([
                 translate('LeafPropPage', 'Field name',
@@ -134,12 +135,11 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
                     shape_item = QtGui.QStandardItem(
                         translate('LeafPropPage', '-'))
                 else:
-                    pathname_item = QtGui.QStandardItem(unicode(pathname,
-                                                                'utf_8'))
-                    type_item = QtGui.QStandardItem(\
-                            unicode(info.columns_types[pathname], 'utf_8'))
-                    shape_item = QtGui.QStandardItem(\
-                                        unicode(info.columns_shapes[pathname]))
+                    pathname_item = QtGui.QStandardItem(str(pathname))
+                    type_item = QtGui.QStandardItem(
+                            str(info.columns_types[pathname]))
+                    shape_item = QtGui.QStandardItem(
+                                        str(info.columns_shapes[pathname]))
                 self.fields_model.appendRow([pathname_item, type_item,
                                             shape_item])
 

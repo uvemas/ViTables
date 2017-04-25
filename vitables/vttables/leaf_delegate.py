@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -22,7 +22,7 @@
 """
 A custom delegate for rendering selected cells.
 
-As explained in the leafView module the current cell must be rendered
+As explained in the leaf_view module the current cell must be rendered
 differently depending on the buffer being displayed. If the dataset row of the
 current/selected cell is in the range of rows being displayed then the cell
 should be rendered in the standard way. If it is not then it should always be
@@ -31,11 +31,11 @@ rendered unselected.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-
-class LeafDelegate(QtGui.QStyledItemDelegate):
+class LeafDelegate(QtWidgets.QStyledItemDelegate):
     """
     A delegate for rendering selected cells.
 
@@ -65,12 +65,12 @@ class LeafDelegate(QtGui.QStyledItemDelegate):
         """
 
         # option.state is an ORed combination of flags
-        if (option.state & QtGui.QStyle.State_Selected):
+        if (option.state & QtWidgets.QStyle.State_Selected):
             model = index.model()
             buffer_start = model.rbuffer.start
             cell = index.model().selected_cell
             if ((index == cell['index']) and \
-            (buffer_start != cell['buffer_start'])):
+                    (buffer_start != cell['buffer_start'])):
                 painter.save()
                 self.initStyleOption(option, index)
                 background = option.palette.color(QtGui.QPalette.Base)
@@ -85,6 +85,6 @@ class LeafDelegate(QtGui.QStyledItemDelegate):
                     model.data(index))
                 painter.restore()
             else:
-                QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+                QtWidgets.QStyledItemDelegate.paint(self, painter, option, index)
         else:
-            QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+            QtWidgets.QStyledItemDelegate.paint(self, painter, option, index)

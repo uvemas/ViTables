@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -54,8 +54,8 @@ class GroupNode(object):
         self.updated = False
         self.children = []
         self.parent = parent
-        self.node = parent.node._f_getChild(name)
-        self.node_kind = u'group'
+        self.node = parent.node._f_get_child(name)
+        self.node_kind = 'group'
 
         self.has_view = False
 
@@ -66,15 +66,15 @@ class GroupNode(object):
         # icon --> DecorationRole
         self.name = name
         parentpath = parent.nodepath
-        if parentpath.endswith(u'/'):
+        if parentpath.endswith('/'):
             parentpath = parentpath[:-1]
-        self.nodepath = u'{0}/{1}'.format(parentpath, name)
+        self.nodepath = '{0}/{1}'.format(parentpath, name)
         self.filepath = parent.filepath
-        self.as_record = u'{0}->{1}'.format(self.filepath, self.nodepath)
+        self.as_record = '{0}->{1}'.format(self.filepath, self.nodepath)
         icons = vitables.utils.getIcons()
-        self.closed_folder = icons[u'folder']
-        self.open_folder = icons[u'document-open-folder']
-        self.icon = icons[u'folder']
+        self.closed_folder = icons['folder']
+        self.open_folder = icons['document-open-folder']
+        self.icon = icons['folder']
 
 
     def __len__(self):

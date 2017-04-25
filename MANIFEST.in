@@ -1,14 +1,2 @@
-include *.txt VERSION LICENSE.html
-include scripts/vitables
-recursive-include unixapp vitables.desktop vitables.svg
-recursive-include doc *
-exclude doc/images/title_page_plain.svg
-exclude doc/index.rst
-recursive-include examples *
-recursive-include macosxapp *
-recursive-include vitables/* *.ui *.ini
-recursive-include vitables/icons *
-exclude vitables/icons/vitables_logo.svg
-recursive-include vitables/htmldocs *
-recursive-include vitables/plugins/csv/icons *.png
-recursive-include vitables/plugins/csv/examples *.csv
+include *.pro *.txt *.ts VERSION
+recursive-include vitables *.ico *.ini *.png *.qm *.svg *.ui

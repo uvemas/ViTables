@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -41,7 +41,8 @@ group1 = fileh.create_group(root, "group1")
 group2 = fileh.create_group(root, "group2")
 
 # Now, create an array in root group
-array1 = fileh.create_array(root, "array1", ["string", "array"], "String array")
+array1 = fileh.create_array(root, "array1",
+    [bytes("string", encoding="utf-8"), bytes("array", encoding="utf-8")], "Data array")
 # Create 2 new tables in group1
 table1 = fileh.create_table(group1, "table1", Particle)
 table2 = fileh.create_table("/group2", "table2", Particle)
@@ -53,7 +54,7 @@ for table in (table1, table2):
     # Get the record object associated with the table:
     row = table.row
     # Fill the table with 10 records
-    for i in xrange(10):
+    for i in range(10):
         # First, assign the values to the Particle record
         row['identity']  = 'This is particle: %2d' % (i)
         row['idnumber'] = i

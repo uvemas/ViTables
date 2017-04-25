@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
@@ -30,28 +30,27 @@ dialog selector tree.
 __docformat__ = 'restructuredtext'
 
 import os.path
-import ConfigParser
 import datetime
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-from PyQt4.uic import loadUiType
-
-import vitables.utils
-
-
-translate = QtGui.QApplication.translate
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
 
-# This method of the PyQt4.uic module allows for dinamically loading user 
+# This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_TimeFormatterPage = \
-    loadUiType(os.path.join(os.path.dirname(__file__), 
+    loadUiType(os.path.join(os.path.dirname(__file__),
     'timeformatter_page.ui'))[0]
 
 
-class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
+class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
     """
     Widget for describing and customizing the Time series plugin.
 
@@ -72,7 +71,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         :Parameters:
 
             - `desc`: a dictionary with the plugin description
-            -`parent`: the sctaked widget of the Preferences dialog
+            -`parent`: the stacked widget of the Preferences dialog
         """
 
         # Makes the dialog and gives it a layout
@@ -86,17 +85,19 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         self.desc_te.setText(desc['about_text'])
 
         # Configuration section of the page
-        self.save_button = self.buttons_box.button(QtGui.QDialogButtonBox.Save)
+        self.save_button = self.buttons_box.button(QtWidgets.QDialogButtonBox.Save)
         self.save_button.setText('Save format')
 
+        # The absolute path of the INI file
+        self.ini_filename = \
+            os.path.join(os.path.dirname(__file__), 'time_format.ini')
         # Setup initial configuration
-        config = ConfigParser.RawConfigParser()
-        def_tformat = '%c' 
+        self.config = configparser.ConfigParser(interpolation=None)
+        def_tformat = '%c'
         try:
-            config.read(\
-                os.path.join(os.path.dirname(__file__), u'time_format.ini'))
-            self.tformat = config.get('Timeseries', 'strftime')
-        except (IOError, ConfigParser.Error):
+            self.config.read_file(open(self.ini_filename))
+            self.tformat = self.config['Timeseries']['strftime']
+        except (IOError, configparser.ParsingError):
             self.tformat = def_tformat
 
         self.tformat_editor.setText(self.tformat)
@@ -115,7 +116,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
                 if e.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
                     self.applyFormat()
                     return True
-        return QtGui.QWidget.eventFilter(self, w, e)
+        return QtWidgets.QWidget.eventFilter(self, w, e)
 
 
     def applyFormat(self):
@@ -124,7 +125,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
 
         The time format currently entered in the line editor is applied to the
         sample label showing the today date. If the result is that expected by
-        user then she can click safely the OK button. Otherwhise she should try
+        user then she can click safely the OK button. Otherwise she should try
         another time format.
         """
 
@@ -133,16 +134,10 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         self.today_label.setText(today)
 
 
-
-
     def saveFormat(self):
         """Slot for saving the entered time format.
         """
 
-        config = ConfigParser.RawConfigParser()
-        filename = os.path.join(os.path.dirname(__file__), u'time_format.ini')
-        config.read(filename)
-        config.set(\
-            'Timeseries', 'strftime', self.tformat_editor.text())
-        with open(filename, 'wb') as ini_file:
-            config.write(ini_file)
+        self.config['Timeseries']['strftime'] = self.tformat_editor.text()
+        with open(self.ini_filename, 'w') as ini_file:
+            self.config.write(ini_file)

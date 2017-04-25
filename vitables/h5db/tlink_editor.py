@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -64,7 +64,7 @@ class TLinkEditor(object):
         """
 
         try:
-            link = self.h5file.getNode(nodepath)
+            link = self.h5file.get_node(nodepath)
             link.remove()
             self.h5file.flush()
         except (tables.NodeError, OSError):
@@ -88,13 +88,13 @@ class TLinkEditor(object):
         nodename = os.path.basename(nodepath)
         try:
             # The hidden group should contain at most 1 node
-            for node in self.h5file.listNodes(self.hidden_group):
+            for node in self.h5file.list_nodes(self.hidden_group):
                 self.h5file.deleteNode(node._v_pathname)
 
-            link = self.h5file.getNode(nodepath)
+            link = self.h5file.get_node(nodepath)
             link.move(newparent=self.hidden_group, newname=nodename)
             self.h5file.flush()
-        except (tables.NodeError, OSError):
+        except(tables.NodeError, OSError):
             vitables.utils.formatExceptionInfo()
 
 
@@ -127,7 +127,7 @@ class TLinkEditor(object):
         """
 
         try:
-            link = self.h5file.getNode(nodepath)
+            link = self.h5file.get_node(nodepath)
             link.rename(new_name)
             self.h5file.flush()
         except (tables.NodeError, OSError):
@@ -147,15 +147,15 @@ class TLinkEditor(object):
 
         try:
             dst_h5file = dst_dbdoc.h5file
-            parent_node = dst_h5file.getNode(parentpath)
-            link = self.h5file.getNode(childpath)
+            parent_node = dst_h5file.get_node(parentpath)
+            link = self.h5file.get_node(childpath)
             if self.h5file is dst_h5file:
                 link.move(newparent=parentpath, newname=childname)
             else:
                 link.copy(newparent=parent_node, newname=childname)
                 dst_h5file.flush()
                 src_where, src_nodename = os.path.split(childpath)
-                self.h5file.removeNode(src_where, src_nodename, recursive=1)
+                self.h5file.remove_node(src_where, src_nodename, recursive=1)
             self.h5file.flush()
             return childname
         except (tables.NodeError, OSError):

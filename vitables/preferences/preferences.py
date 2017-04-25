@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -22,7 +22,7 @@
 """
 This module provides a dialog for changing ``ViTables`` settings at runtime.
 
-The dialog has 3 pages managed via QtGui.QStackedWidget: General settings 
+The dialog has 3 pages managed via QtGui.QStackedWidget: General settings
 page, Look&Feel settings page and Plugins settings page.
 """
 
@@ -30,25 +30,25 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-from PyQt4.uic import loadUiType
+from PyQt5.uic import loadUiType
 
 from vitables.vtsite import ICONDIR
 import vitables.utils
 
 
-translate = QtGui.QApplication.translate
-
-# This method of the PyQt4.uic module allows for dinamically loading user
+translate = QtWidgets.QApplication.translate
+# This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_SettingsDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'settings_dlg.ui'))[0]
 
 
-class Preferences(QtGui.QDialog, Ui_SettingsDialog):
+class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
     """
     Create the Settings dialog.
 
@@ -69,7 +69,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         self.vtapp = vitables.utils.getVTApp()
         self.vtgui = self.vtapp.gui
-        # Create the Settings dialog and customise it
+        # Create the Settings dialog and customize it
         super(Preferences, self).__init__(self.vtgui)
         self.setupUi(self)
 
@@ -86,7 +86,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.setupSelector()
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
-        styles = QtGui.QStyleFactory.keys()
+        styles = QtWidgets.QStyleFactory.keys()
         self.stylesCB.insertItems(0, styles)
 
         # The dictionary of current ViTables preferences
@@ -111,8 +111,8 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.resetPreferences()
 
         # Connect SIGNALS to SLOTS
-        self.buttonsBox.helpRequested.connect(\
-            QtGui.QWhatsThis.enterWhatsThisMode)
+        self.buttonsBox.helpRequested.connect(
+            QtWidgets.QWhatsThis.enterWhatsThisMode)
 
 
     def setupPluginsPage(self):
@@ -122,15 +122,16 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         nrows = len(self.all_plugins)
         self.plugins_model = QtGui.QStandardItemModel(nrows, 2, self)
         self.pluginsTV.setModel(self.plugins_model)
-        header = QtGui.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
+        header = QtWidgets.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
         header.setStretchLastSection(True)
         self.pluginsTV.setHeader(header)
         self.plugins_model.setHorizontalHeaderLabels(['Name', 'Comment'])
 
         # Populate the model
         row = 0
-        for UID in self.all_plugins.keys():
-            name, comment = UID.split('#@#')
+        for UID, desc in self.all_plugins.items():
+            name = desc['name']
+            comment = desc['comment']
             nitem = QtGui.QStandardItem(name)
             nitem.setData(UID)
             nitem.setCheckable(True)
@@ -154,25 +155,25 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         alignment = QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
         flags = QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
         general_item = QtGui.QStandardItem()
-        general_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        general_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
             'preferences-other.png')))
-        general_item.setText(translate('Preferences', "  General  ", 
+        general_item.setText(translate('Preferences', "  General  ",
             "Text for page selector icon"))
         general_item.setTextAlignment(alignment)
         general_item.setFlags(flags)
 
         style_item = QtGui.QStandardItem()
-        style_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        style_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
             'preferences-desktop-theme.png')))
-        style_item.setText(translate('Preferences', "Look & Feel", 
+        style_item.setText(translate('Preferences', "Look & Feel",
             "Text for page selector icon"))
         style_item.setTextAlignment(alignment)
         style_item.setFlags(flags)
 
         self.plugins_item = QtGui.QStandardItem()
-        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(iconsdir, 
+        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
             'preferences-plugin.png')))
-        self.plugins_item.setText(translate('Preferences', "  Plugins  ", 
+        self.plugins_item.setText(translate('Preferences', "  Plugins  ",
             "Text for page selector icon"))
         self.plugins_item.setTextAlignment(alignment)
         self.plugins_item.setFlags(flags)
@@ -216,11 +217,11 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         :Parameter button: the clicked button.
         """
 
-        if button == self.buttonsBox.button(QtGui.QDialogButtonBox.Reset):
+        if button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Reset):
             self.resetPreferences()
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Help):
+        elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Help):
             pass
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Cancel):
+        elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Cancel):
             self.reject()
         else:
             self.applySettings()
@@ -232,12 +233,12 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         # Startup page
-        if self.initial_prefs['Startup/startupWorkingDir'] == u'last':
+        if self.initial_prefs['Startup/startupWorkingDir'] == 'last':
             self.lastDirCB.setChecked(True)
         else:
             self.lastDirCB.setChecked(False)
 
-        self.restoreCB.setChecked(\
+        self.restoreCB.setChecked(
             self.initial_prefs['Startup/restoreLastSession'])
 
         # Style page
@@ -245,14 +246,13 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.sampleTE.setCurrentFont(self.initial_prefs['Logger/Font'])
         self.sampleTE.setTextColor(self.initial_prefs['Logger/Text'])
         self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
-        self.sampleTE.setStyleSheet(u"background-color: {0}".
+        self.sampleTE.setStyleSheet("background-color: {0}".
             format(self.initial_prefs['Logger/Paper'].name()))
 
-        self.workspaceLabel.setStyleSheet(u'background-color: {0}'.
+        self.workspaceLabel.setStyleSheet('background-color: {0}'.
             format(self.initial_prefs['Workspace/Background'].color().name()))
 
-        index = self.stylesCB.findText(\
-            self.initial_prefs['Look/currentStyle'])
+        index = self.stylesCB.findText(self.initial_prefs['Look/currentStyle'])
         self.stylesCB.setCurrentIndex(index)
 
         # The visual update done above is not enough, we must reset the
@@ -262,7 +262,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.enabled_plugins = self.pg_loader.enabled_plugins[:]
         self.all_plugins = \
             dict(item for item in self.pg_loader.all_plugins.items())
-        UIDs = self.all_plugins.keys()
+#        UIDs = self.all_plugins.keys()
         for row in range(0, self.plugins_model.rowCount()):
             item = self.plugins_model.item(row, 0)
             if item.data() in self.enabled_plugins:
@@ -310,9 +310,9 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """
 
         if cb_on:
-            self.new_prefs['Startup/startupWorkingDir'] = u'last'
+            self.new_prefs['Startup/startupWorkingDir'] = 'last'
         else:
-            self.new_prefs['Startup/startupWorkingDir'] = u'home'
+            self.new_prefs['Startup/startupWorkingDir'] = 'home'
 
 
     @QtCore.pyqtSlot("bool", name="on_restoreCB_toggled")
@@ -340,7 +340,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """Slot for setting the logger font."""
 
         new_font, is_ok = \
-            QtGui.QFontDialog.getFont(self.sampleTE.currentFont())
+            QtWidgets.QFontDialog.getFont(self.sampleTE.currentFont())
         # The selected font is applied to the sample text
         if is_ok:
             self.new_prefs['Logger/Font'] = new_font
@@ -354,7 +354,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """Slot for setting the logger foreground color."""
 
         text_color = self.sampleTE.textColor()
-        color = QtGui.QColorDialog.getColor(text_color)
+        color = QtWidgets.QColorDialog.getColor(text_color)
         # The selected text color is applied to the sample text
         if color.isValid():
             self.new_prefs['Logger/Text'] = color
@@ -369,7 +369,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         stylesheet = self.sampleTE.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QtWidgets.QColorDialog.getColor(QtGui.QColor(background))
         # The selected paper color is applied to the sample text window
         if color.isValid():
             self.new_prefs['Logger/Paper'] = color
@@ -383,7 +383,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         stylesheet = self.workspaceLabel.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QtWidgets.QColorDialog.getColor(QtGui.QColor(background))
         # The selected color is applied to the sample label besides the button
         if color.isValid():
             self.new_prefs['Workspace/Background'] = QtGui.QBrush(color)
@@ -434,12 +434,12 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         try:
             about_page = pg_instance.helpAbout(self.stackedPages)
         except AttributeError:
-            about_page = QtGui.QWidget(self.stackedPages)
-            label = QtGui.QLabel(translate(\
-                'Preferences', 
-                'Sorry, there are no info available for this plugin', 
+            about_page = QtWidgets.QWidget(self.stackedPages)
+            label = QtWidgets.QLabel(translate(
+                'Preferences',
+                'Sorry, there are no info available for this plugin',
                 'A text label'), about_page)
-            layout = QtGui.QVBoxLayout(about_page)
+            layout = QtWidgets.QVBoxLayout(about_page)
             layout.addWidget(label)
 
         self.stackedPages.addWidget(about_page)

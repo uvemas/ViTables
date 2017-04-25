@@ -1,8 +1,52 @@
 ViTables ChangeLog
 ==================
+** November 06, 2014 **
+Project file (i.e vitables.pro) and translations have all been updated.
+
+** December 12, 2013 **
+Context menus on views are now allowed which is a good thing for plugins.
+
 ** November 19, 2013 **
 First working version of the columnar_org plugin is available.
 I think I've fixed all serious bugs.
+
+** November 15, 2013 **
+Ungrouping arrays has been implemented in the columnar_org plugin.
+At the moment I just see one minor bug. All functionality has been
+implemented so its time for a final debug and refactor sessions.
+
+** November 14, 2013 **
+Code in the columnar_org plugin has been debugged and refactored.
+A small bug in the closing arrays process remains open. Ungrouping hasn't
+been implemented yet.
+
+** November 13, 2013 **
+Still working in the columnar_org plugin.
+Grouping arrays has been debugged and now it works well in most cases.
+Closing arrays has been implemented. More debugging and breaking-up the
+groups to recover their components are pending tasks.
+
+** November 11, 2013 **
+Still working in the columnar_org plugin.
+Grouping arrays has been debugged and now it works well in most cases.
+Closing arrays and breaking-up the groups to recover components remains
+to be done.
+
+** October 23, 2013 **
+Still working in the columnar_org plugin.
+Grouping arrays is working with some minor (I think) bugs.
+
+** October 23, 2013 **
+Still working in the columnar_org plugin.
+How the plugin should work is now clearer: select several arrays via their
+checkboxes and launch the command Join Arrays. If the selected collection of
+arrays cannot be joined in a unique view then the launch command is disabled.
+
+
+** October 21, 2013 **
+A new plugin, columnar_org, is being developed.
+It will allow to combine several Array views with the same number of rows to
+be combined in a unique view (it is a feature request).
 
 ** October 20, 2013 **
 Minor changes have been done in vtapp, plugin_utils and vtgui modules.
@@ -11,17 +55,35 @@ In addition, the docstrings of several modules have been fixed.
 ** October 14, 2013 **
 The docstrings of csv, dbstreesort and timeseries plugins have been fixed.
 
-** October 08, 2013**
-Fixed some white space inconsistencies in several modules.
+** October 10, 2013 **
+The Plugins manager has been debugged and made more robust.
+Also some typos in docstrings have been corrected.
 
-The pluginsloader module has been refactored and make more robust.
+Revert the commit of time_series.py. A non working version was pushed by
+error to the repo.
 
-The plugin for sorting the DBs tree has been added. At the moment
-it supports alphabetical and human sorting.
+** October 07, 2013 **
+Added a new plugin for sorting the tree of DBs.
 
-Some docstrings and one plugin information page have been improved.
+** October 06, 2013 **
+Fixed a bug regarding unicode strings.
 
-** October 01, 2013**
+Some minor changes (typos and similar things) have been done.
+
+The Plugins Manager has been debugged.
+
+The timeseries plugin has been debugged. Interpolation errors have been fixed.
+
+The development of a plugin for sorting the databases tree has started :)
+
+** October 02, 2013 **
+The package preferences has been analyzed with pylint.
+
+The package plugins has been analyzed with pylint.
+
+** September 30, 2013 **
+refactoring module names to follow PEP 8.
+
 Checking modules directly under the vitables package with pylint.
 
 The package docbrowser has been analyzed with pylint.
@@ -36,58 +98,178 @@ The package vttables has been analyzed with pylint.
 
 The package queries has been analyzed with pylint.
 
-** September 30, 2013 **
-The modules vtSite and vtGUI hav been renamed accordingly to PEP 8.
+** September 25, 2013 **
+Refactoring module names to follow PEP 8.
+nodeInfo.py -> nodeinfo.py
 
-** September 29, 2013 **
-The module dataSheet has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+linkPropDlg.py -> linkpropdlg.py
 
-The module scrollBar has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+leafPropPage.py -> leafproppage.py
 
-The module leafView has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+leafPropDlg.py -> leafpropdlg.py
 
-The module leafModel has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+groupPropPage.py -> groupproppage.py
 
-The module leafDelegate has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+groupPropDlg.py -> grouppropdlg.py
 
-The modules aboutPage have been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+attrPropDlg.py -> attrpropdlg.py
 
-The modules aboutPage has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+attrEditor.py -> attreditor.py
 
-The module configIOException has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+tnodeEditor.py -> tnode_editor.py
 
-Some minor changes done.
+Refactoring module names to follow PEP 8.
+tlinkEditor.py -> tlink_editor.py
 
-Some changes that should have been added 2 commits ago :-(
+Refactoring module names to follow PEP 8.
+rootGroupNode.py -> rootgroupnode.py
 
-Modules queriesManager and queryDlg have been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+nodeItemDelegate.py -> nodeitemdelegate.py
 
-Modules in the nodeprops package have been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+linkNode.py -> linknode.py
 
-Modules in the h5db package have been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+leafNode.py -> leafnode.py
 
-Modules in the docBrowser package have been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+groupNode.py -> groupnode.py
 
-** September 28, 2013 **
-The package vtWidgets has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+dbsTreeView.py -> dbstreeview.py
 
-The package vtTables has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+dbsTreeModel.py -> dbstreemodel.py
 
-The package nodeProperties has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+bookmarksDlg.py -> bookmarksdlg.py
 
-The package docBrowser has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+browserGUI.py -> browsergui.py
 
-The module zoomCell has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+helpBrowser.py -> helpbrowser.py
 
-The module inputNodeName has been renamed accordingly to PEP 8.
+Refactoring module names to follow PEP 8.
+dbDoc.py -> dbdoc.py
 
-** September 20, 2013 **
-data presentation of EArray has been debugged and simplified.
+Fixed a typo made during the renaming of vtgui.py module.
 
-** September 16, 2013 **
-Fixed a bug in the cut node operation.
+Removed some calls to methods non required with Python3.
 
-The example scripts have been migrated to PyTables3 syntax with pt2to3.
+** September 24, 2013 **
+Several small typos have been fixed.
+
+Removed some non required code and fixed an small bug.
+
+Refactoring package names to follow PEP 8.
+docBrowser -> docbrowser
+
+Refactoring package names to follow PEP 8.
+nodeProperties -> nodeprops
+
+Refactoring package names to follow PEP 8.
+vtTables -> vttables
+
+Refactoring package names to follow PEP 8.
+vtWidgets -> vtwidgets
+
+Refactoring module names to follow PEP 8.
+vtSite -> vtsite
+
+Refactoring module names to follow PEP 8.
+vtGUI -> vtgui
+
+Refactoring module names to follow PEP 8.
+zoomCell -> zoom_cell
+
+Refactoring module names to follow PEP 8.
+rename_dlg.py -> renamedlg.py
+
+Refactoring module names to follow PEP 8.
+inputNodeName.py -> nodenamedlg.py
+
+Refactoring module names to follow PEP 8.
+scrollBar.py -> scrollbar.py
+
+Refactoring module names to follow PEP 8.
+leafView.py -> leaf_view.py
+
+Refactoring module names to follow PEP 8.
+leafModel.py -> leaf_model.py
+
+Refactoring module names to follow PEP 8.
+leafDelegate.py -> leaf_delegate.py
+
+Refactoring module names to follow PEP 8.
+dataSheeet.py -> datasheet.py
+
+Refactoring module names to follow PEP 8.
+queryDlg.py -> querydlg.py
+
+Refactoring module names to follow PEP 8.
+queriesManager.py -> querymgr.py
+
+Refactoring module names to follow PEP 8.
+pluginsLoader.py -> pluginsloader.py
+
+Refactoring module names to follow PEP 8.
+configException.py -> cfgexception.py
+
+Refactoring module names to follow PEP 8.
+aboutPage.py -> aboutpage.py
+
+** September 23, 2013 **
+Added support for raw strings attributes.
+
+** September 21, 2013 **
+Some modules regarding plugins have been debugged.
+
+Fixed a small bug in the timeseries plugin.
+
+** September 19, 2013 **
+Data presentation has been debugged and simplified.
+
+** September 18, 2013 **
+The use of range has been reviewed.
+
+A workaround for an annoying KDE bug has been applied.
+
+** September 17, 2013 **
+The tests folder has been removed.
+
+The node Properties dialog has been partially reworked.
+
+** September 12, 2013 **
+Fixed minor errors in several modules.
+
+Fixed some syntax errors in several modules.
+
+Fixed the use of the logger console by the logging module.
+
+New syntax used in a couple of methods in vtapp.py.
+
+The examples directory has been updated.
+
+** September 11, 2013 **
+Local branch python3-support has been added.
+
+Shebang lines updated.
+
+Old style u'some text' has been replaced with 'some text'.
+
+Calls to unicode() replaced with calls to str()
+
+Remaining old style unicode literals removed.
 
 ** September 03, 2013 **
 Bug #22 has been fixed.

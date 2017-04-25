@@ -1,6 +1,0 @@
-w#@#examples/array3.h5
-a#@#examples/array4.h5
-r#@#examples/carray1.h5
-x#@#examples/ctable1.h5
-r#@#examples/earray24.h5
-r###examples/earray25.h5

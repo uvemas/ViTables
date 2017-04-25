@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -20,16 +20,16 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module defines an Exception to be used when there is a problem 
+This module defines an Exception to be used when there is a problem
 reading/writting the ``ViTables`` configuration.
 """
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class ConfigFileIOException(Exception):

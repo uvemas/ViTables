@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -29,12 +29,13 @@ mode. Otherwise all shown information is read-only.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from vitables.nodeprops import attrpropdlg
 from vitables.nodeprops import leafproppage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class LeafPropDlg(attrpropdlg.AttrPropDlg):

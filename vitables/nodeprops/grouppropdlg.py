@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -29,12 +29,13 @@ mode. Otherwise all shown information is read-only.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from vitables.nodeprops import attrpropdlg
 from vitables.nodeprops import groupproppage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class GroupPropDlg(attrpropdlg.AttrPropDlg):
@@ -71,7 +72,7 @@ class GroupPropDlg(attrpropdlg.AttrPropDlg):
         self.tabw.insertTab(0, general_page, 'General')
         self.tabw.setCurrentIndex(0)
 
-        if info.node_type == u'root group':
+        if info.node_type == 'root group':
             self.setWindowTitle(translate('GroupPropDlg', 'File properties',
             'Dlg caption'))
         else:

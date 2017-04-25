@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -25,8 +25,9 @@ Display recursively the content of a given cell of a view.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
@@ -57,9 +58,7 @@ def getArrayDimensions(shape):
 
     return (nrows, ncols)
 
-
-
-class ZoomCell(QtGui.QMdiSubWindow):
+class ZoomCell(QtWidgets.QMdiSubWindow):
     """
     Display an array/table cell on its own view (table widget).
 
@@ -114,7 +113,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # The WA_DeleteOnClose flag makes that when the widget is
         # closed either programatically (see VTAPP.windowClose)
         # or by the user (clicking the close button in the titlebar)
-        # the widget is hiden AND destroyed --> the workspace
+        # the widget is hidden AND destroyed --> the workspace
         # updates automatically its list of open windows --> the
         # Windows menu content is automatically updated
         super(ZoomCell, self).__init__(workspace)
@@ -122,7 +121,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         self.dbt_leaf = leaf
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         # The internal widget
-        self.grid = QtGui.QTableWidget()
+        self.grid = QtWidgets.QTableWidget()
         self.setWidget(self.grid)
         # Configure the titlebar
         self.setWindowTitle(self.title)
@@ -135,7 +134,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         # - other Python object
         if self.data_shape:
             self.formatContent = vitables.utils.formatArrayContent
-        elif isinstance(self.data, str) or isinstance(self.data, unicode):
+        elif isinstance(self.data, str):
             self.formatContent = vitables.utils.formatStringContent
         else:
             self.formatContent = vitables.utils.formatObjectContent
@@ -146,18 +145,18 @@ class ZoomCell(QtGui.QMdiSubWindow):
         self.grid.setRowCount(nrows)
 
         # Setup grid editing
-        self.grid.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.grid.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
         # Setup grid horizontal header
         if self.field_names:
             for section in range(0, ncols):
-                item = QtGui.QTableWidgetItem()
+                item = QtWidgets.QTableWidgetItem()
                 item.setText(self.field_names[section])
                 self.grid.setHorizontalHeaderItem(section, item)
         else:
             for section in range(0, ncols):
-                item = QtGui.QTableWidgetItem()
-                item.setText(u'{0}'.format(section + 1))
+                item = QtWidgets.QTableWidgetItem()
+                item.setText('{0}'.format(section + 1))
                 self.grid.setHorizontalHeaderItem(section, item)
 
         # Fill the grid
@@ -168,11 +167,11 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
         self.show()
 
-        rmode = QtGui.QHeaderView.Stretch
+        rmode = QtWidgets.QHeaderView.Stretch
         if self.grid.columnCount() == 1:
-            self.grid.horizontalHeader().setResizeMode(rmode)
+            self.grid.horizontalHeader().setSectionResizeMode(rmode)
         if self.grid.rowCount() == 1:
-            self.grid.verticalHeader().setResizeMode(rmode)
+            self.grid.verticalHeader().setSectionResizeMode(rmode)
 
         # Connect signals to slots
         self.grid.cellDoubleClicked.connect(self.zoomView)
@@ -251,7 +250,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         for column in range(0, self.grid.columnCount()):
             content = self.data[self.field_names[column]]
             text = self.formatContent(content)
-            item = QtGui.QTableWidgetItem(text)
+            item = QtWidgets.QTableWidgetItem(text)
             self.grid.setItem(0, column, item)
 
 
@@ -264,14 +263,14 @@ class ZoomCell(QtGui.QMdiSubWindow):
         if num_rows == num_cols == 1:
             content = self.data
             text = self.formatContent(content)
-            item = QtGui.QTableWidgetItem(text)
+            item = QtWidgets.QTableWidgetItem(text)
             self.grid.setItem(0, 0, item)
         # 1-D arrays
         elif num_cols == 1:
             for row in range(0, num_rows):
                 content = self.data[row]
                 text = self.formatContent(content)
-                item = QtGui.QTableWidgetItem(text)
+                item = QtWidgets.QTableWidgetItem(text)
                 self.grid.setItem(row, 0, item)
         # N-D arrays
         else:
@@ -279,7 +278,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
                 for column in range(0, num_cols):
                     content = self.data[row][column]
                     text = self.formatContent(content)
-                    item = QtGui.QTableWidgetItem(text)
+                    item = QtWidgets.QTableWidgetItem(text)
                     self.grid.setItem(row, column, item)
 
 
@@ -314,8 +313,8 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
         # Get caption
         if self.field_names:
-            caption = u'{0}: {1}[{2}]'.format(self.title,
+            caption = '{0}: {1}[{2}]'.format(self.title,
                 self.field_names[col], row + 1)
         else:
-            caption = u'{0}: ({1}, {2})'.format(self.title, row + 1, col + 1)
+            caption = '{0}: ({1}, {2})'.format(self.title, row + 1, col + 1)
         ZoomCell(cell, caption, self.workspace, self.dbt_leaf)

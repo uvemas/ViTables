@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
@@ -19,246 +16,99 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """The plugins loader module.
-
-Every module under the plugins directory is a plugin.
-This module finds, loads, instantiates and registers the available plugins.
-
-There are (at least) 2 approaches for loading the plugins under
-the plugins directory:
-
-a) to iterate over a list of module names
-b) to iterate over the content of the plugins directory
-
-Syntax of a) is simpler (see below) but b) seems to be more general and
-powerful as it can deal with packages too. So *at the moment* I'll use the
-approach b). In the future a better defined plugins infrastructure may be used.
-
-FYI, approach a) looks like::
-
-    from vitables.plugins import __all__ as plugins
-    for plugin in plugins:
-        try:
-            module_name = 'vitables.plugins.' + plugin
-            __import__(module_name)
-            module = sys.modules[module_name]
-        except ImportError:
-            print "Error: module %s cannot be loaded" % module_name
 """
 
 __docformat__ = 'restructuredtext'
 
-import os
-import importlib
-import pkgutil
-import sys
+import pkg_resources
+import logging
+import traceback
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-import vitables.utils
-from vitables.vtsite import PLUGINSDIR
-from vitables.plugin_utils import getLogger
+translate = QtWidgets.QApplication.translate
 
-LOGGER = getLogger()
+PLUGIN_GROUP = 'vitables.plugins'
 
 
-translate = QtGui.QApplication.translate
+def _add_plugin_translator(module_name, plugin_class, logger):
+    """Try to load plugin translator."""
+    app = QtWidgets.QApplication.instance()
+    if hasattr(plugin_class, 'translator'):
+        try:
+            app.installTranslator(plugin_class.translator)
+        except Exception as e:
+            logger.error('Failed to install {0} plugin '
+                         'translator'.format(module_name))
+            logger.error(e)
 
 
-def pluginDesc(mod_path, folder=None):
-    """Check if a given module is a plugin and return its description.
-
-    :Parameter mod_path: the import absolute path of the module being tested
-    """
-
-    # Import the module
-    # This is a little bit convoluted but when doing things in the common way
-    # some errors are swallowed by the system for reasons unknown to me and no
-    # error is raised
+def _load_entrypoint(entrypoint, logger):
+    plugin_class = None
     try:
-        imported_module = importlib.import_module(mod_path)
-        if type(imported_module) != type(os):
-            raise ImportError
-    except (SyntaxError, ImportError, IOError, SystemError):
-        LOGGER.error("""Failed to load the module {0} which belongs to a plugin
-                     .\ntraceback: {1}""".format(mod_path, sys.exc_info()[:2]))
-        return False
+        plugin_class = entrypoint.load()
+    except Exception as e:
+        logger.error('Failed to load plugin: {0}'.format(
+            entrypoint.module_name))
+        logger.error(e)
+        logger.info(traceback.format_exc())
+    return plugin_class
 
-    # Check if module is a plugin
+
+def _create_instance(plugin_class, logger):
+    instance = None
     try:
-        plugin_name = getattr(imported_module, 'plugin_name')
-        comment = getattr(imported_module, 'comment')
-        pkg_name = mod_path.split('.')[-2]
-        mod_name = mod_path.split('.')[-1]
-        folder = os.path.join(PLUGINSDIR, pkg_name)
-        desc = {'UID': '{0}#@#{1}'.format(plugin_name, comment),
-            'mod_name': mod_name,
-            'mod_path': mod_path,
-            'folder': folder,}
-        return desc
-    except AttributeError:
-        # then unexpected errors can occur
-        return False
-
-    #######################################################
-    #
-    # WARNING!!! DO NOT DELETE MODULES AFTER CHECKING
-    #
-    # Deletion has unwanted side effects. For instance,
-    # deleting the time_series module results in deleting
-    # the tables module!!!
-    #
-    #######################################################
-
-    # finally:
-        # path = '%s.py' % os.path.join(folder, name)
-        # modname = inspect.getmodulename(path)
-        # del sys.modules[modname]
-        # del module
-
-
-def scanFolder(package_root):
-    """Scan a package looking for plugins.
-
-    This is a non recursive method. It scans only the top level of
-    the package.
-
-    :Parameter package_root: the top level folder of the package being scanned
-    """
-
-    pkg_plugins = {}
-    folder = os.path.join(PLUGINSDIR, package_root)
-    if not os.path.exists(folder):
-        LOGGER.error('Failed to find a plugin in folder {folder}:'
-                     'Folder does not exist'.format(folder))
-    else:
-        for module_finder, name, ispkg in pkgutil.iter_modules([folder]):
-            if not ispkg:
-                module_path = '.'.join(['vitables', 'plugins', package_root,
-                                        name])
-                desc = pluginDesc(module_path)
-                if desc:
-                    pkg_plugins[desc['UID']] = desc
-    return pkg_plugins
+        instance = plugin_class()
+    except Exception as e:
+        logger.error('Failed to create plugin instance')
+        logger.error(e)
+        logger.info(traceback.format_exc())
+    return instance
 
 
 class PluginsLoader(object):
     """Plugins loader class.
 
-    Every module|package under the plugins directory is a plugin. At the
-    moment packages can contain module plugins only at top level because
-    the plugins manager doesn't iterate recursively over the package looking
-    for plugins.
+    The class loads enabled plugins and their translations and stores
+    info about them.
 
-    :Parameter enabled_plugins: a list with the UIDs of the enabled plugins
     """
 
     def __init__(self, enabled_plugins):
-        """Dynamically load and instantiate the available plugins.
+        """Assign default values to members.
         """
 
-        self.enabled_plugins = enabled_plugins[:]
+        self._logger = logging.getLogger(__name__)
+        # list of UID of enabled plugins, stored in configuration
+        self.enabled_plugins = enabled_plugins
+        # dictionary that contains all available plugins
         self.all_plugins = {}
+        # instances of loaded plugins
         self.loaded_plugins = {}
 
-        # Update plugins information: available plugins, disabled plugins
-        self.register()
-
-
-    def register(self):
-        """Update the list of available plugins.
-
-        This method MUST be called every time that the plugins
-        configuration changes.
-        """
-
-        # Traverse the plugins folder looking for plugins
-        self.all_plugins = {}
-        for loader, name, ispkg in pkgutil.iter_modules([PLUGINSDIR]):
-            if not ispkg:
-                desc = pluginDesc(name)
-                if desc:
-                    self.all_plugins[desc['UID']] = desc
-            else:
-                pkg_plugins = scanFolder(name)
-                self.all_plugins.update(pkg_plugins)
-
-
+    def _disable_not_loaded(self):
+        self.enabled_plugins = list(self.loaded_plugins.keys())
 
     def loadAll(self):
-        """Try to load the enabled plugins.
-        """
-
-        if self.enabled_plugins == []:
-            return
-        for UID in self.enabled_plugins:
-            self.load(UID)
-
-
-    def load(self, UID):
-        """Load a given plugin.
-
-        :Parameter UID: the UID of the plugin being loaded
-        """
-
-        # Load the module where the plugin lives
-        try:
-            plugin = self.all_plugins[UID]
-            mod_path = plugin['mod_path']
-            mod_name = '.'.split(mod_path)[-1]
-            imported_module = importlib.import_module(mod_path)
-        except (ImportError, IOError, SystemError):
-            self.untrack(UID)
-            LOGGER.error("\nError: plugin {0} cannot be loaded.".
-                         format(mod_name))
-            return
-        except KeyError:
-            # Print UID instead of mod_name, because the mod_name is not
-            # defined in case of a KeyError.
-            LOGGER.error('\nError:  plugin with UID {0} can not be found'.
-                         format(UID))
-            return
-
-        # Retrieve the plugin class
-        try:
-            class_name = getattr(imported_module, 'plugin_class')
-            cls = getattr(imported_module, class_name)
-        except AttributeError:
-            self.untrack(UID)
-            LOGGER.error("\nError: module {0} is not a valid plugin.".
-                         format(mod_name))
-            return
-
-        # Load the plugin
-        try:
-            instance = cls()
-
-            # Register plugin
-            # In some cases keeping a reference to instance is a must
-            # (for example, the time_series plugin)
-            self.loaded_plugins[UID] = instance
-        except (KeyError, ValueError):
-            self.untrack(UID)
-            LOGGER.error("\nError: plugin {0} cannot be loaded.".
-                         format(mod_name))
-            vitables.utils.formatExceptionInfo()
-            return
-
-
-    def untrack(self, UID):
-        """Remove a plugin from the lists of available/enabled plugins.
-
-        Plugins that cannot be loaded should be removed using this method.
-
-        :Parameter UID: the UID of the plugin being removed
-        """
-
-        try:
-            del self.all_plugins[UID]
-        except KeyError:
-            pass
-
-        try:
-            self.enabled_plugins.remove(UID)
-        except IndexError:
-            pass
-
+        """Find plugins in the system and crete instances of enabled ones."""
+        self._logger.debug('Enabled plugins: {0}'.format(
+            str(self.enabled_plugins)))
+        for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):  # @UndefinedVariable
+            plugin_class = _load_entrypoint(entrypoint, self._logger)
+            if plugin_class is None:
+                continue
+            self._logger.debug('Found plugin: {0}'.format(
+                entrypoint.module_name))
+            self.all_plugins[plugin_class.UID] = {
+                'UID': plugin_class.UID, 'name': plugin_class.NAME,
+                'comment': plugin_class.COMMENT}
+            if plugin_class.UID in self.enabled_plugins:
+                self._logger.debug('Loading plugin: {0}'.format(
+                    entrypoint.name))
+                _add_plugin_translator(entrypoint.module_name,
+                                       plugin_class, self._logger)
+                instance = _create_instance(plugin_class, self._logger)
+                if instance is not None:
+                    self.loaded_plugins[plugin_class.UID] = instance
+        self._disable_not_loaded()

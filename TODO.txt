@@ -1,5 +1,5 @@
-Possible future aditions
-------------------------
+Possible future additions
+-------------------------
 * Python shell
 * Make datasets editable
 * Images support

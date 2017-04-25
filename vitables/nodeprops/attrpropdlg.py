@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -30,19 +30,21 @@ mode. Otherwise all shown information is read-only.
 __docformat__ = 'restructuredtext'
 
 import os.path
+import logging
 
 import tables
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-from PyQt4.uic import loadUiType
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 from vitables.nodeprops import attreditor
 
-translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user
+translate = QtWidgets.QApplication.translate
+# This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_AttrPropDialog = \
@@ -50,7 +52,7 @@ Ui_AttrPropDialog = \
 
 
 
-class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
+class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
     """
     Node properties dialog.
 
@@ -65,8 +67,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     user attributes in a tabular way.
 
     Beware that data types shown in the General page are `PyTables` data
-    types so we can deal with `enum`, `time64` and `pseudoatoms` (none of them
-    are supported by ``numpy``).
+    types so we can deal with `bytes`, `enum`, `time64` and `pseudoatoms`
+    (not all of them are supported by ``numpy``).
     However data types shown in the System and User attributes pages are
     ``numpy`` data types because `PyTables` attributes are stored as ``numpy``
     arrays.
@@ -81,6 +83,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         vtapp = vitables.utils.getVTApp()
         super(AttrPropDlg, self).__init__(vtapp.gui)
         self.setupUi(self)
+
+        self.logger = logging.getLogger(__name__)
 
         # Customise the dialog's pages
         self.fillSysAttrsPage(info)
@@ -100,12 +104,11 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         """
 
         # Number of attributes label
-        self.sattrLE.setText(\
-            vitables.utils.toUnicode(len(info.system_attrs)))
+        self.sattrLE.setText(str(len(info.system_attrs)))
 
         # Table of system attributes
-        self.sysTable.horizontalHeader().setResizeMode(\
-            QtGui.QHeaderView.Stretch)
+        self.sysTable.horizontalHeader().setSectionResizeMode(
+            QtWidgets.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
@@ -120,7 +123,6 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         bg_brush = self.sysTable.palette().brush(QtGui.QPalette.Window)
         base_brush = self.sysTable.palette().brush(QtGui.QPalette.Base)
         for name, value in info.system_attrs.items():
-            name = vitables.utils.toUnicode(name)
             name_item = QtGui.QStandardItem(name)
             name_item.setEditable(False)
             name_item.setBackground(bg_brush)
@@ -137,32 +139,32 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             # type(asi.test2) returns numpy.string_
             # isinstance(asi.test2, str) returns True
             # asi.test2.shape returns ()
-            # Beware that objects whose shape is () are not warrantied
+            # Beware that objects whose shape is () are not warranted
             # to be Python objects, for instance
             # x = numpy.array(3) ->
             # x.shape returns ()
             # type(x) returns numpy.ndarray
             # isinstance(x, int) returns False
             if isinstance(value, tables.Filters):
-                dtype_name = u'tables.filters.Filters'
-            elif hasattr(value, u'shape'):
-                dtype_name = vitables.utils.toUnicode(value.dtype.name)
+                dtype_name = 'tables.filters.Filters'
+            elif hasattr(value, 'shape'):
+                dtype_name = value.dtype.name
             else:
                 # Attributes can be scalar Python objects (PyTables <1.1)
                 # or non scalar Python objects, e.g. sequences
-                dtype_name = vitables.utils.toUnicode(type(value))
+                dtype_name = str(type(value))
             dtype_item = QtGui.QStandardItem(dtype_name)
             dtype_item.setEditable(False)
             dtype_item.setBackground(bg_brush)
-            value_item = QtGui.QStandardItem(vitables.utils.toUnicode(value))
+            value_item = QtGui.QStandardItem(str(value))
             value_item.setEditable(False)
             value_item.setBackground(bg_brush)
             # When the database is in read-only mode the TITLE attribute
             # cannot be edited
-            if (name == u'TITLE') and (info.mode != u'read-only'):
+            if (name == 'TITLE') and (info.mode != 'read-only'):
                 # The position of the TITLE value in the table
                 self.title_row = self.sysattr_model.rowCount()
-                self.title_before = vitables.utils.toUnicode(value_item.text())
+                self.title_before = value_item.text()
                 value_item.setEditable(True)
                 value_item.setBackground(base_brush)
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
@@ -178,12 +180,11 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         self.user_attrs_before = []
 
         # Number of attributes label
-        self.uattrLE.setText(\
-            vitables.utils.toUnicode(len(info.user_attrs)))
+        self.uattrLE.setText(str(len(info.user_attrs)))
 
         # Table of user attributes
         self.userTable.horizontalHeader().\
-                        setResizeMode(QtGui.QHeaderView.Stretch)
+                        setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
@@ -198,45 +199,45 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # The Data Type cell is a combobox with static content
         dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16',
             'uint32', 'uint64', 'float32', 'float64', 'complex64',
-            'complex128', 'bool', 'string', 'unicode', 'python']
+            'complex128', 'bool', 'bytes', 'string', 'python']
 
+        # Brushes used for read-only and writable cells
         bg_brush = self.userTable.palette().brush(QtGui.QPalette.Window)
         base_brush = self.userTable.palette().brush(QtGui.QPalette.Base)
         for name, value in info.user_attrs.items():
-            name_item = QtGui.QStandardItem(vitables.utils.toUnicode(name))
+            name_item = QtGui.QStandardItem(name)
+            value_item = QtGui.QStandardItem(str(value))
             dtype_item = QtGui.QStandardItem()
-            dtypes_combo = QtGui.QComboBox()
+            dtypes_combo = QtWidgets.QComboBox()
             dtypes_combo.addItems(dtypes_list)
             dtypes_combo.setEditable(False)
             # In PyTables >=1.1 scalar attributes are stored as numarray arrays
             # In PyTables >= 2.0 scalar attributes are stored as numpy arrays
-            if hasattr(value, u'shape'):
-                dtype_name = vitables.utils.toUnicode(value.dtype.name)
-                if dtype_name.startswith(u'string'):
-                    dtype_name = u'string'
-                if dtype_name.startswith(u'unicode'):
-                    dtype_name = u'unicode'
+            if hasattr(value, 'shape'):
+                dtype_name = value.dtype.name
+                if dtype_name.startswith('bytes'):
+                    dtype_name = 'bytes'
+                elif dtype_name.startswith('str'):
+                    dtype_name = 'string'
             else:
                 # Attributes can be scalar Python objects (PyTables <1.1)
                 # or non scalar Python objects, e.g. sequences
-                dtype_name = u'python'
-            value_item = QtGui.QStandardItem(vitables.utils.toUnicode(value))
+                dtype_name = 'python'
             self.userattr_model.appendRow([name_item, value_item, dtype_item])
             dtypes_combo.setCurrentIndex(dtypes_combo.findText(dtype_name))
             self.userTable.setIndexWidget(dtype_item.index(), dtypes_combo)
 
             # Complex attributes and ND_array attributes need some visual
             # adjustments
-            if dtype_name.startswith(u'complex'):
+            if dtype_name.startswith('complex'):
                 # Remove parenthesis from the str representation of
                 # complex numbers.
-                if (vitables.utils.toUnicode(value)[0], \
-                    vitables.utils.toUnicode(value)[-1]) == (u'(', u')'):
-                    value_item.setText(vitables.utils.toUnicode(value)[1:-1])
+                if (str(value)[0], str(value)[-1]) == ('(', ')'):
+                    value_item.setText(str(value)[1:-1])
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
-            if (hasattr(value, u'shape') and value.shape != ())or\
-            (info.mode == u'read-only'):
+            if (hasattr(value, 'shape') and value.shape != ())or\
+            (info.mode == 'read-only'):
                 editable = False
                 brush = bg_brush
             else:
@@ -248,20 +249,20 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             value_item.setBackground(brush)
             self.user_attrs_before.append((name_item.text(),
                 value_item.text(), dtypes_combo.currentText()))
-        self.user_attrs_before.sort()
+        self.user_attrs_before = sorted(self.user_attrs_before[:])
 
         # The group of buttons Add, Delete, What's This
-        self.page_buttons = QtGui.QButtonGroup(self.userattrs_page)
+        self.page_buttons = QtWidgets.QButtonGroup(self.userattrs_page)
         self.page_buttons.addButton(self.addButton, 0)
         self.page_buttons.addButton(self.delButton, 1)
         self.page_buttons.addButton(self.helpButton, 2)
 
         # If the database is in read-only mode user attributes cannot be edited
-        if info.mode == u'read-only':
+        if info.mode == 'read-only':
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
 
-        self.helpButton.clicked.connect(QtGui.QWhatsThis.enterWhatsThisMode)
+        self.helpButton.clicked.connect(QtWidgets.QWhatsThis.enterWhatsThisMode)
 
 
     @QtCore.pyqtSlot("QModelIndex", name="on_sysTable_clicked")
@@ -287,18 +288,18 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
     def addAttribute(self):
         """Add a new attribute to the user's attributes table."""
 
-        name_item = QtGui.QStandardItem()
-        value_item = QtGui.QStandardItem()
-        dtype_item = QtGui.QStandardItem()
-        self.userattr_model.appendRow([name_item, value_item, dtype_item])
-
         # The Data Type cell is a combobox with static content
         dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16',
             'uint32', 'uint64', 'float32', 'float64', 'complex64',
-            'complex128', 'bool', 'string', 'unicode', 'python']
-        dtypes_combo = QtGui.QComboBox()
+            'complex128', 'bool', 'bytes', 'string', 'python']
+
+        name_item = QtGui.QStandardItem()
+        value_item = QtGui.QStandardItem()
+        dtype_item = QtGui.QStandardItem()
+        dtypes_combo = QtWidgets.QComboBox()
         dtypes_combo.addItems(dtypes_list)
         dtypes_combo.setEditable(False)
+        self.userattr_model.appendRow([name_item, value_item, dtype_item])
         self.userTable.setIndexWidget(dtype_item.index(), dtypes_combo)
 
         # Start editing the proper cell. If not, clicking Add+Delete
@@ -322,9 +323,10 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # If there is not a selected attribute then return
         current_index = self.userTable.currentIndex()
         if not current_index.isValid():
-            print(translate('AttrPropDlg',
-                'Please, select the attribute to be deleted.',
-                'A usage text'))
+            self.logger.error(
+                translate('AttrPropDlg',
+                          'Please, select the attribute to be deleted.',
+                          'A usage text'))
             return
 
         # Get the name of the attribute being deleted
@@ -345,10 +347,10 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         buttons = {
             'Delete':
                 (translate('AttrPropDlg', 'Delete', 'Button text'),
-                QtGui.QMessageBox.YesRole),
+                QtWidgets.QMessageBox.YesRole),
             'Cancel':
                 (translate('AttrPropDlg', 'Cancel', 'Button text'),
-                QtGui.QMessageBox.NoRole),
+                QtWidgets.QMessageBox.NoRole),
             }
 
         # Ask for confirmation
@@ -370,7 +372,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # because the attribute is mandatory in PyTables but not in
         # generic HDF5 files
         self.title_after = None
-        if hasattr(self, u'title_row'):
+        if hasattr(self, 'title_row'):
             self.title_after = \
                 self.sysattr_model.item(self.title_row, 1).text()
             if self.title_before != self.title_after:
@@ -386,8 +388,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             dtype_after = dtype_combo.currentText()
             self.user_attrs_after.append((name_after, value_after,
                 dtype_after))
-        self.user_attrs_after.sort()
-        if self.user_attrs_before != self.user_attrs_after:
+        if sorted(self.user_attrs_before) != sorted(self.user_attrs_after) :
             return True
 
         return False
@@ -404,8 +405,8 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
 
         # If the file is in read-only mode or the Attribute Set Instance
         # remains unchanged no attribute needs to be updated
-        if (self.mode == u'read-only') or (not self.asiChanged()):
-            QtGui.QDialog.accept(self)
+        if (self.mode == 'read-only') or (not self.asiChanged()):
+            QtWidgets.QDialog.accept(self)
             return  # This is mandatory!
 
         # Check the editable attributes
@@ -417,7 +418,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         if attrs_are_ok == True:
             aeditor.setAttributes()
             del aeditor
-            QtGui.QDialog.accept(self)
+            QtWidgets.QDialog.accept(self)
             return
         # If not then keep the dialog opened
         else:

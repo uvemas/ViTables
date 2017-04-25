@@ -16,5 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-
 __all__ = ['aboutpage', 'columnar_org']

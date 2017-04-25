@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -28,7 +28,9 @@ that leaf will be displayed in the workspace using this wrapper widget.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 import vitables.nodeprops.nodeinfo as nodeinfo
@@ -37,7 +39,7 @@ import vitables.vttables.leaf_model as leaf_model
 import vitables.vttables.leaf_view as leaf_view
 import vitables.vttables.buffer as readBuffer
 
-class DataSheet(QtGui.QMdiSubWindow):
+class DataSheet(QtWidgets.QMdiSubWindow):
     """
     The widget containing the displayed data of a given dataset.
 
@@ -69,16 +71,17 @@ class DataSheet(QtGui.QMdiSubWindow):
         self.leaf_model = leaf_model.LeafModel(rbuffer)
         self.leaf_view = leaf_view.LeafView(self.leaf_model)
 
-        super(DataSheet, self).__init__(self.vtgui.workspace)
+        super(DataSheet, self).__init__(self.vtgui.workspace,
+                                        QtCore.Qt.SubWindow)
         self.setWidget(self.leaf_view)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         # Customize the title bar
-        if not isinstance(leaf.title, unicode):
-            title = unicode(leaf.title, 'utf_8')
+        if not isinstance(leaf.title, str):
+            title = str(leaf.title, 'utf_8')
         else:
             title = leaf.title
-        wtitle = u"{0}\t{1}".format(self.dbt_leaf.name, title)
+        wtitle = "{0}\t{1}".format(self.dbt_leaf.name, title)
         self.setWindowTitle(wtitle)
         self.setWindowIcon(self.dbt_leaf.icon)
 
@@ -105,7 +108,7 @@ class DataSheet(QtGui.QMdiSubWindow):
 
         # Propagate the event. In the process, self.widget().closeEvent
         # will be called
-        QtGui.QMdiSubWindow.closeEvent(self, event)
+        QtWidgets.QMdiSubWindow.closeEvent(self, event)
 
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
@@ -122,7 +125,7 @@ class DataSheet(QtGui.QMdiSubWindow):
         # Sync the workspace with the tree view (if needed) but keep the
         # focus (giving focus to the tree view when a given view is
         # clicked is counter intuitive)
-        QtGui.QMdiSubWindow.focusInEvent(self, event)
+        QtWidgets.QMdiSubWindow.focusInEvent(self, event)
         self.syncTreeView()
         self.setFocus(True)
 
@@ -158,10 +161,10 @@ class DataSheet(QtGui.QMdiSubWindow):
         info = nodeinfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
-            title = u'{0}: {1}[{2}]'.format(node.name, col,
+            title = '{0}: {1}[{2}]'.format(node.name, col,
                 tmodel.rbuffer.start + row + 1)
         else:
-            title = u'{0}: ({1},{2})'.format(node.name,
+            title = '{0}: ({1},{2})'.format(node.name,
                 tmodel.rbuffer.start + row + 1, column + 1)
 
         zoom_cell.ZoomCell(data, title, self.vtgui.workspace,

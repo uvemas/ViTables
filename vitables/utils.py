@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
@@ -18,6 +15,7 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
+from PyQt5.QtWidgets import QFileDialog
 
 """
 This is the utilities module. It contains functions that perform
@@ -30,11 +28,16 @@ import sys
 import os
 import traceback
 import locale
+import re
+import logging
+import collections
+import functools
 
 import numpy
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.vtwidgets.renamedlg as renamedlg
 from vitables.vtsite import ICONDIR, DOCDIR
@@ -45,31 +48,6 @@ HB_ICONS_DICT = {}
 DEFAULT_ENCODING = locale.getdefaultlocale()[1]
 
 
-def toUnicode(thing):
-    """Convert byte strings into unicode strings using the default locale.
-
-    Conversion to unicode is required when showing data in dialogs and
-    tables. The User Attributes of the node Properties dialog requires
-    special care because it can show data with a wide variety of types.
-    """
-
-    if isinstance(thing, str):
-        # thing is a byte string, e.g. an attribute whose type is numpy.string_
-        try:
-            return unicode(thing, DEFAULT_ENCODING)
-        except TypeError:
-            return unicode(thing)
-    else:
-        # thing can be:
-        # - a PyQt object or
-        # - a numpy array, eg. a multidimensional attribute
-        #   like in examples/misc/MDobjects.h5
-        # - a numpy scalar object, e.g. an attribute whose
-        #   type is numpy.int32
-        # - a pure Python object e.g. a sequence
-        return unicode(thing)
-
-
 def getVTApp():
     """Get a reference to the `VTApp` instance.
 
@@ -77,12 +55,195 @@ def getVTApp():
     """
 
     vtapp = None
-    for widget in QtGui.qApp.topLevelWidgets():
-        if widget.objectName() == u'VTGUI':
+    for widget in QtWidgets.qApp.topLevelWidgets():
+        if widget.objectName() == 'VTGUI':
             vtapp = widget.vtapp
             break
 
     return vtapp
+
+
+def getApp():
+    """Return getVTApp."""
+    return getVTApp()
+
+
+def getGui():
+    """Small wrapper to hide the fact that vtapp object contains gui.
+
+    :return: main window object
+    """
+    return getApp().gui
+
+
+def getModel():
+    """Small wrapper to hide that vtapp.gui object contains dbs_tree_model.
+
+    :return: the DBs tree model
+    """
+    return getGui().dbs_tree_model
+
+
+def getView():
+    """Small wrapper to hide that vtapp.gui object contains dbs_tree_view.
+
+    :return: the DBs tree view
+    """
+    return getGui().dbs_tree_view
+
+
+def getSelectedIndexes():
+    """Return the list of selected indices."""
+    return getView().selectedIndexes()
+
+
+def getSelectedNodes():
+    """Return list of selected nodes."""
+    return [getModel().nodeFromIndex(index).node
+            for index in getSelectedIndexes()]
+
+
+def long_action(message=None):
+    """Decorator that changes the cursor to the wait cursor.
+
+    Used with functions that take some time finish. The provided
+    message is displayed in the status bar while the function is
+    running (the status bar is cleaned afterwards). If the message is
+    not provided then the status bar is not updated.
+
+    :parameter message: string to display in status bar
+
+    """
+    def _long_action(f):
+        @functools.wraps(f)
+        def __long_action(*args, **kwargs):
+            status_bar = getGui().statusBar()
+            if message is not None:
+                status_bar.showMessage(message)
+            QtWidgets.QApplication.setOverrideCursor(
+                QtGui.QCursor(QtCore.Qt.WaitCursor))
+            try:
+                res = f(*args, **kwargs)
+            finally:
+                QtWidgets.QApplication.restoreOverrideCursor()
+                if message is not None:
+                    status_bar.clearMessage()
+            return res
+        return __long_action
+    return _long_action
+
+
+def addToMenuBar(menu, enable_function=None):
+    """Add menu to the menu bar into one before last position.
+
+    Basically insert a menu before Help menu. Actions can be enabled
+    or disabled by enable_function which is connected to aboutToShow
+    signal of the submenu.
+
+    :parameter menu: QMenu object
+    :parameter enable_function: is connected to aboutToShow for menu
+
+    :return: None
+
+    """
+
+    menu_bar = getGui().menuBar()
+    last_action = menu_bar.actions()[-1]
+    menu_bar.insertMenu(last_action, menu)
+    if enable_function is not None:
+        menu.aboutToShow.connect(enable_function)
+
+
+def insertInMenu(menu, entries, uid):
+    """Insert entries to the given menu before the action named uid.
+
+    The function accept a QAction/QMenu or an iterable. The entries will
+    be added before the action whose name is uid.
+
+    :Parameters:
+
+    - `menu`: the menu or context menu being updated
+    - `entries`: QAction/Qmenu object or a list of such objects
+    - `uid`: indicates the insertion position for the new entries
+
+    :return: None
+    """
+
+    if not isinstance(entries, collections.Iterable):
+        entries = [entries]
+
+    if isinstance(entries[0], QtWidgets.QAction):
+        menu.insertEntry = menu.insertAction
+    elif isinstance(entries[0], QtWidgets.QMenu):
+        menu.insertEntry = menu.insertMenu
+
+    for item in menu.actions():
+        if item.objectName() == uid:
+            for a in entries:
+                menu.insertEntry(item, a)
+
+
+def addToMenu(menu, entries):
+    """Add entries at the end of the given menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
+
+    :Parameters:
+
+    - `menu`: the menu or context menu being updated
+    - `entries`: QAction/QMenu object or a list of such objects
+
+    :return: None
+    """
+
+    if not isinstance(entries, collections.Iterable):
+        entries = [entries]
+
+    if isinstance(entries[0], QtWidgets.QAction):
+        menu.addEntry = menu.addAction
+    elif isinstance(entries[0], QtWidgets.QMenu):
+        menu.addEntry = menu.addMenu
+
+    menu.addSeparator()
+    for a in entries:
+        menu.addEntry(a)
+
+
+def addToLeafContextMenu(actions, enable_function=None):
+    """Add entries at the end of the leaf context menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will
+    be preceded with a separator and added at the end of the
+    menu. Actions can be enabled or disabled by enable_function which
+    is connected to aboutToShow signal of the context menu.
+
+    :parameter actions: QAction/QMenu object or a list of such objects
+    :parameter enable_function: is connected to aboutToShow for menu
+
+    :return: None
+
+    """
+
+    context_menu = getGui().leaf_node_cm
+    addToMenu(context_menu, actions)
+    if enable_function is not None:
+        context_menu.aboutToShow.connect(enable_function)
+
+
+def addToGroupContextMenu(actions):
+    """Add entries at the end of the group context menu.
+
+    The function accept a QAction/QMenu or an iterable. Entries will be
+    preceded with a separator and added at the end of the menu.
+
+    :parameter actions: QAction/QMenu object or a list of such objects
+
+    :return: None
+    """
+
+    context_menu = getGui().group_node_cm
+    addToMenu(context_menu, actions)
 
 
 def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
@@ -98,25 +259,25 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
         `history` (file selector history) , `accept_mode` and `file_mode`
     """
 
-    file_selector = QtGui.QFileDialog(parent, caption, '', dfilter)
+    file_selector = QtWidgets.QFileDialog(parent, caption, '', dfilter)
     # Misc. setup
     file_selector.setDirectory(settings['history'][-1])
     file_selector.setAcceptMode(settings['accept_mode'])
-    if settings['accept_mode'] == QtGui.QFileDialog.AcceptSave:
-        file_selector.setConfirmOverwrite(False)
+    if settings['accept_mode'] == QtWidgets.QFileDialog.AcceptSave:
+        file_selector.setOption(QFileDialog.DontConfirmOverwrite)
     file_selector.setFileMode(settings['file_mode'])
     file_selector.setHistory(settings['history'])
     if filepath:
         file_selector.selectFile(filepath)
     if settings['label'] != '':
-        file_selector.setLabelText(QtGui.QFileDialog.Accept,
-            settings['label'])
+        file_selector.setLabelText(
+            QtWidgets.QFileDialog.Accept, settings['label'])
 
     # Uncomment next line if you want native dialogs. Removing the comment
     # comes at the price of an annoying KDE warning in your console. See the
     # thread "A dire warning message" (July, 2011) in the pyQt4 mailing list
     # for details.
-    #file_selector.setOption(QtGui.QFileDialog.DontUseNativeDialog)
+    #file_selector.setOption(QtWidgets.QFileDialog.DontUseNativeDialog)
     return file_selector
 
 
@@ -151,7 +312,8 @@ def getFilepath(parent, caption, dfilter, filepath='', settings=None):
         del file_selector
     return filepath, working_dir
 
-def checkFileExtension(self, filepath):
+
+def checkFileExtension(filepath):
     """
     Check the filename extension of a given file.
 
@@ -168,7 +330,6 @@ def checkFileExtension(self, filepath):
         ext = '.h5'
         filepath = filepath + ext
     return filepath
-
 
 #
 # Icons related functions
@@ -194,13 +355,13 @@ def createIcons(large_icons, small_icons, icons_dict):
     for name in all_icons:
         icon = QtGui.QIcon()
         if name in large_icons:
-            pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR, '22x22',u'{0}.png').format(name))
+            pixmap = QtGui.QPixmap(
+                os.path.join(ICONDIR, '22x22', '{0}.png').format(name))
             pixmap.scaled(QtCore.QSize(22, 22), QtCore.Qt.KeepAspectRatio)
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
-            pixmap = QtGui.QPixmap(\
-                os.path.join(ICONDIR,'16x16', u'{0}.png').format(name))
+            pixmap = QtGui.QPixmap(
+                os.path.join(ICONDIR,'16x16', '{0}.png').format(name))
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 
@@ -208,8 +369,8 @@ def createIcons(large_icons, small_icons, icons_dict):
     icons_dict[''] = QtGui.QIcon()
 
     # Application icon
-    icons_dict['vitables_wm'] = QtGui.QIcon(\
-        os.path.join(ICONDIR,'vitables_wm.png'))
+    icons_dict['vitables_wm'] = QtGui.QIcon(
+        os.path.join(ICONDIR, 'vitables_wm.png'))
 
 
 def getIcons():
@@ -294,7 +455,7 @@ def addActions(target, actions, actions_dict):
     for action in actions:
         if action is None:
             target.addSeparator()
-        elif isinstance(action, QtGui.QMenu):
+        elif isinstance(action, QtWidgets.QMenu):
             target.addMenu(action)
         else:
             target.addAction(actions_dict[action])
@@ -314,16 +475,7 @@ def formatArrayContent(content):
             return content.decode(DEFAULT_ENCODING)
         except UnicodeDecodeError:
             pass
-   
-    elif isinstance(content, numpy.ndarray):
-        if content.dtype.char == 'S':
-            sep = ', '
-            try:
-                unicode_content = [('%s' % col).decode(DEFAULT_ENCODING)
-                                for col in content]
-                return '[%s]' % sep.join(unicode_content)
-            except UnicodeDecodeError:
-                pass
+
     ret = numpy.array2string(content, separator=',')
     return ret
 
@@ -335,20 +487,14 @@ def formatObjectContent(content):
     Used in `VLArrays` with `object` pseudo atoms.
 
     Reading a `VLArray` with `object` pseudo atom returns a list of
-    Python objects. This method formats that objects as unicode strings.
-    str(content) will return an `ASCII` string so it can be converted
-    into a unicode string via `unicode(str(content), 'latin-1')`.
-    This will fail only if content is a unicode string with some ordinal
-    not in `range(128)` (raising a UnicodeEncodeError) but no problem
-    because in that case content is already a unicode string and will be
-    returned as is. So this method always returns the read object as a
-    unicode string.
+    Python objects. This method formats that objects as unicode strings
+    via str(content).
 
     :Parameter content: the Python list contained in the view cell
     """
 
     try:
-        text = unicode(str(content), 'latin-1')
+        text = str(content)
     except UnicodeEncodeError:
         text = content
     return text
@@ -359,12 +505,20 @@ def formatStringContent(content):
     Nicely format the contents of a view (table widget) cell.
 
     Used in `VLArrays` with `vlstring` or `vlunicode` pseudo atoms.
-    If the pseudo atom is `vlstring` the method return a string. If
+    If the pseudo atom is `vlstring` the method return a encoded string. If
     the pseudo atom is `vlunicode` then a unicode string is returned.
 
     :Parameter content: the Python list contained in the view cell
     """
 
+    # Content is a encoded string i.e. a sequence of raw bytes
+    if isinstance(content, bytes):
+        try:
+            fcontent = content.decode(encoding=DEFAULT_ENCODING)
+            return fcontent
+        except UnicodeDecodeError:
+            logger = logging.getLogger(__name__)
+            logger.error('UnicodeDecodeError exception')
     return content
 
 
@@ -377,12 +531,13 @@ def formatExceptionInfo(limit=1):
 
     :Parameter limit: the number of stack trace entries to be printed
     """
-
-    print(u'\n{0}\n'.format(traceback.format_exc(limit)))
+    logger = logging.getLogger(__name__)
+    logger.error('{0}'.format(traceback.format_exc(limit)))
 
 #
 # Path related functions
 #
+
 
 def getHomeDir():
     """
@@ -424,15 +579,15 @@ def questionBox(title='', text='', info='', detail='', buttons_def=''):
 
     """
 
-    qmbox = QtGui.QMessageBox()
-    qmbox.setIcon(QtGui.QMessageBox.Question)
+    qmbox = QtWidgets.QMessageBox()
+    qmbox.setIcon(QtWidgets.QMessageBox.Question)
     qmbox.setWindowTitle(title)
     qmbox.setText(text)
     if info:
         qmbox.setInformativeText(info)
     if detail:
         qmbox.setDetailedText(detail)
-    qmbox.setDefaultButton(QtGui.QMessageBox.NoButton)
+    qmbox.setDefaultButton(QtWidgets.QMessageBox.NoButton)
 
     buttons = {}
     for name, (text, role) in buttons_def.items():

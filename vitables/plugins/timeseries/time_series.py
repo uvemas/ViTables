@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
@@ -20,7 +20,7 @@
 
 """Plugin that provides nice string formatting for time fields.
 
-It supports not only native `PyTables` time datatypes but also the time 
+It supports not only native `PyTables` time datatypes but also the time
 series contained in `PyTables` tables generated via ``scikits.timeseries``.
 """
 
@@ -32,12 +32,12 @@ comment = 'Display time series in a human friendly format'
 
 import time
 import os
-import ConfigParser
-import datetime
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 import tables
-
-import numpy as np
 
 try:
     import scikits.timeseries as ts
@@ -49,15 +49,14 @@ try:
 except ImportError:
     pd = None
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
-import vitables.plugin_utils
-from vitables.vtsite import PLUGINSDIR
 from vitables.plugins.timeseries.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def findTS(leaf, node_kind):
@@ -69,7 +68,7 @@ def findTS(leaf, node_kind):
           module is not available
         - time series created via ``scikits.timeseries`` module are
           ignored if that module is not available
-        - time fields that are displayed in a multidimensional cell 
+        - time fields that are displayed in a multidimensional cell
           are ignored
 
     The last restriction includes the following cases:
@@ -92,20 +91,20 @@ def findTS(leaf, node_kind):
         coltypes = leaf.coltypes
         # Check for Pandas timeseries
         if pd and hasattr(attrs, 'index_kind') and \
-        (attrs.index_kind in ('datetime64', 'datetime32')):
+                (attrs.index_kind in ('datetime64', 'datetime32')):
             return 'pandas_ts'
         # Check for scikits.timeseries timeseries
         if ts and hasattr(attrs, 'CLASS') and \
-        (attrs.CLASS == 'TimeSeriesTable'):
+                (attrs.CLASS == 'TimeSeriesTable'):
             return 'scikits_ts'
         # Check for PyTables timeseries
         for name in leaf.colnames:
-            if (name in coltypes) and (coltypes[name] in time_types): 
+            if (name in coltypes) and (coltypes[name] in time_types):
                 return 'pytables_ts'
     elif (leaf.atom.type in time_types) and \
-    (len(leaf.shape) < 3) and \
-    (leaf.atom.shape == ()) and \
-    (node_kind != u'vlarray'): 
+            (len(leaf.shape) < 3) and \
+            (leaf.atom.shape == ()) and \
+            (node_kind != 'vlarray'):
         return 'pytables_ts'
     else:
         return None
@@ -152,7 +151,7 @@ def tsFrequency(ts_kind, leaf):
     ts_freq = None
     if ts_kind == 'scikits_ts':
         # The frequency of the time serie. Default is 6000 (daily)
-        special_attrs = getattr(leaf._v_attrs, 'special_attrs', 
+        special_attrs = getattr(leaf._v_attrs, 'special_attrs',
             {'freq': 6000})
         ts_freq = special_attrs['freq']
     return ts_freq
@@ -162,36 +161,39 @@ def datetimeFormat():
     """The format string to be used when rendering the time series.
     """
 
-    config = ConfigParser.RawConfigParser()
-    def_dtformat = '%c' 
+    config = configparser.ConfigParser(interpolation=None)
+    ini_filename = os.path.join(os.path.dirname(__file__), 'time_format.ini')
+    def_dtformat = '%c'
     try:
-        config.read(\
-            os.path.join(os.path.dirname(__file__), u'time_format.ini'))
-        datetime_format = config.get('Timeseries', 'strftime')
-    except (IOError, ConfigParser.Error):
+        config.read_file(open(ini_filename))
+        datetime_format = config['Timeseries']['strftime']
+    except (IOError, configparser.ParsingError):
         datetime_format = def_dtformat
-    
+
     return datetime_format
 
 
 class TSFormatter(object):
     """Human friendly formatting of time series in a dataset.
 
-    An inspector class intended for finding out if a `tables.Leaf` instance contains
-    a time series suitable to be formatted in a user friendly way.
+    An inspector class intended for finding out if a `tables.Leaf` instance
+    contains a time series suitable to be formatted in a user friendly way.
     """
+
+    UID = 'vitables.plugin.time_series'
+    NAME = plugin_name
+    COMMENT = comment
 
     def __init__(self):
         """Class constructor.
 
-        Dynamically finds new instances of 
+        Dynamically finds new instances of
         :meth:`vitables.vttables.leaf_model.LeafModel` and customises them if
         they contain time fields.
         """
 
         self.vtapp = vitables.utils.getVTApp()
         self.vtapp.leaf_model_created.connect(self.customiseModel)
-
 
     def customiseModel(self, datasheet):
         """Inspect a leaf model and customise it if a time series is found.
@@ -234,7 +236,7 @@ class TSFormatter(object):
             'numrows': model.rowCount(),
             'formatContent': model.formatContent,
         }
-        
+
         # Add required attributes to model
         for k in ts_info:
             setattr(model, k, ts_info[k])
@@ -257,14 +259,14 @@ class TSFormatter(object):
         """
 
         # Plugin full description
-        desc = {'version': __version__, 
-            'module_name': os.path.join(os.path.basename(__file__)), 
-            'folder': os.path.join(os.path.dirname(__file__)), 
-            'author': 'Vicent Mas <vmas@vitables.org>', 
-            'about_text': translate('TimeFormatterPage', 
+        desc = {'version': __version__,
+            'module_name': os.path.join(os.path.basename(__file__)),
+            'folder': os.path.join(os.path.dirname(__file__)),
+            'author': 'Vicent Mas <vmas@vitables.org>',
+            'about_text': translate('TimeFormatterPage',
             """<qt>
             <p>Plugin that provides nice string formatting for time fields.
-            <p>It supports not only native PyTables time datatypes but 
+            <p>It supports not only native PyTables time datatypes but
             also time series generated (and stored in PyTables tables) via
             Pandas and scikits.timeseries packages.
             </qt>""",
@@ -327,7 +329,7 @@ class TSLeafModel(object):
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
             index.column())
         if role == QtCore.Qt.DisplayRole:
             if index.column() in self.ts_cols:
@@ -354,7 +356,7 @@ class TSLeafModel(object):
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
             index.column())
         if role == QtCore.Qt.DisplayRole:
             return self.tsFormatter(cell)
@@ -384,7 +386,7 @@ class TSLeafModel(object):
         Format a given date in a user friendly way.
 
         The textual representation of the date index is converted to a UTC
-        time that can be easily formatted. This method is called when the 
+        time that can be easily formatted. This method is called when the
         timeseries has not been created using a third party library (i.e;
         Pandas, scikits.timeseries packages).
         """
@@ -404,7 +406,7 @@ class TSLeafModel(object):
         :Parameter content: the content of the table cell being formatted
         """
 
-        date = pd.Timestamp(long(content))
+        date = pd.Timestamp(int(content))
         try:
             return date.strftime(self.ts_format)
         except ValueError:

@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
@@ -28,7 +25,7 @@ The pipeline for importing a `CSV` file is::
 
     CSV file --> numpy array --> tables.Leaf
 
-The ``numpy`` array is created via `numpy.genfromtxt`. The `tables.Leaf` 
+The ``numpy`` array is created via `numpy.genfromtxt`. The `tables.Leaf`
 instance is created using the appropriate constructors.
 
 Beware that importing big files is a slow process because the whole file
@@ -38,7 +35,7 @@ there is a lot of disk IO.
 Other aspects to take into account:
 
   - creation of `tables.Array` datasets requires the ``numpy`` array containing
-    the whole `CSV` file to be loaded in memory. If the file is large enough 
+    the whole `CSV` file to be loaded in memory. If the file is large enough
     you can run out of memory.
 
   - creation of `tables.CArray` datasets requires an additional parsing of the
@@ -51,7 +48,7 @@ Other aspects to take into account:
     storing those string fields with no lose of data. This step requires an
     additional parsing of the whole `CSV` file.
 
-  - `CSV` files containing N-dimensional fields are always imported with `str` 
+  - `CSV` files containing N-dimensional fields are always imported with `str`
     dtype. This is a limitation of `numpy.genfromtxt`.
 """
 
@@ -63,23 +60,25 @@ comment = 'Import CSV files into datasets.'
 
 import os
 import tempfile
+import logging
 
 import tables
 import numpy
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
-import vitables.plugin_utils
-from vitables.vtsite import PLUGINSDIR
-from vitables.plugins.csv.aboutpage import AboutPage
+from vitables.plugins.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
-TYPE_ERROR = translate('ImportCSV', 
-            """\nError: please, make sure that you are importing a """
-            """homogeneous dataset.""", 'CSV file not imported error')
+translate = QtWidgets.QApplication.translate
+TYPE_ERROR = translate(
+    'ImportCSV', 'Please, make sure that you are importing a '
+    'homogeneous dataset.', 'CSV file not imported error')
+
+_PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
+
 
 def getArray(buf):
     """Fill an intermediate ``numpy`` array with data read from the `CSV` file.
@@ -103,7 +102,7 @@ def getArray(buf):
 def tableInfo(input_handler):
     """Return useful information about the `tables.Table` being created.
 
-    :Parameter input_handler: the file handler of the inspected file    
+    :Parameter input_handler: the file handler of the inspected file
     """
 
     # Inspect the CSV file reading its second line
@@ -143,7 +142,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
     :Parameters:
 
     - `input_handler`: the file handler of the inspected `CSV` file
-    - `first_line`: a numpy array which contains the first line of the `CSV` 
+    - `first_line`: a numpy array which contains the first line of the `CSV`
       file
     - `data`: a numpy array which contains the second line of the `CSV` file
     """
@@ -172,10 +171,9 @@ def heterogeneousTableInfo(input_handler, first_line, data):
             temp_file.writelines(buf)
             for field in itemsizes.keys():
                 temp_file.seek(0)
-                idata = numpy.genfromtxt(temp_file, delimiter=',', 
-                    usecols=(field,), dtype=None)
-                itemsizes[field] = \
-                    max(itemsizes[field], idata.dtype.itemsize)
+                idata = numpy.genfromtxt(temp_file, delimiter=',',
+                                         usecols=(field,), dtype=None)
+                itemsizes[field] = max(itemsizes[field], idata.dtype.itemsize)
                 del idata
             temp_file.close()
             buf = read_fh(buf_size)
@@ -188,7 +186,7 @@ def heterogeneousTableInfo(input_handler, first_line, data):
         for i in itemsizes:
             descr[first_line[i]] = tables.StringCol(itemsizes[i], pos=i)
     else:
-        descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in 
+        descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in
             data.dtype.fields.items()])
         for i in itemsizes:
             descr['f{0}'.format(i)] = tables.StringCol(itemsizes[i])
@@ -204,7 +202,7 @@ def homogeneousTableInfo(input_handler, first_line, data):
     :Parameters:
 
     - `input_handler`: the file handler of the inspected `CSV` file
-    - `first_line`: a ``numpy`` array which contains the first line of the 
+    - `first_line`: a ``numpy`` array which contains the first line of the
       `CSV` file
     - `data`: a numpy array which contains the second line of the `CSV` file
     """
@@ -243,24 +241,24 @@ def homogeneousTableInfo(input_handler, first_line, data):
     # scalar array and cannot be iterated so we reshape it
     if first_line.shape == ():
         first_line = first_line.reshape(1,)
-    indices = range(0, first_line.shape[0])
+    indices = list(range(0, first_line.shape[0]))
 
     if has_header:
         if data.dtype.name.startswith('string'):
-            descr = dict([(first_line[i], 
-                tables.StringCol(itemsize, pos=i)) for i in indices])
+            descr = dict([(first_line[i], tables.StringCol(itemsize, pos=i))
+                          for i in indices])
         else:
-            descr = dict([(first_line[i], 
-                tables.Col.from_dtype(data.dtype, pos=i)) for i in indices])
+            descr = dict([(first_line[i],
+                           tables.Col.from_dtype(data.dtype, pos=i))
+                          for i in indices])
     else:
         if data.dtype.name.startswith('string'):
-            descr = dict(
-                [('f{0}'.format(field), tables.StringCol(itemsize)) \
-                for field in indices])
+            descr = dict([('f{0}'.format(field), tables.StringCol(itemsize))
+                          for field in indices])
         else:
-            descr = dict(
-                [('f{0}'.format(field), tables.Col.from_dtype(data.dtype)) \
-                for field in indices])
+            descr = dict([('f{0}'.format(field),
+                           tables.Col.from_dtype(data.dtype))
+                          for field in indices])
 
     return descr, has_header
 
@@ -268,27 +266,28 @@ def homogeneousTableInfo(input_handler, first_line, data):
 def askForHelp(first_line):
     """Ask to user if the first row is a header.
 
-    :Parameter first_line: a numpy array which contains the first line of 
+    :Parameter first_line: a numpy array which contains the first line of
       the `CSV` file
     """
 
-    title = translate('ImportCSV', 'Resolving first line role', 
-        'Message box title')
-    text = translate('ImportCSV', """Does the first line of the file contain"""
-        """ a table header or regular data?""", 'Message box text')
+    title = translate('ImportCSV', 'Resolving first line role',
+                      'Message box title')
+    text = translate('ImportCSV', 'Does the first line of the file contain '
+                     'a table header or regular data?', 'Message box text')
     itext = ''
     try:
-        dtext = reduce(lambda x, y: u'{0}, {1}'.format(x, y), first_line)
+        from functools import reduce
+        dtext = reduce(lambda x, y: '{0}, {1}'.format(x, y), first_line)
     except TypeError:
         # If first_line has only one field reduce raises a TypeError
         dtext = first_line.tostring()
     buttons = {
-        'Header': 
-            (translate('ImportCSV', 'Header', 'Button text'), 
-            QtGui.QMessageBox.YesRole), 
-        'Data': 
-            (translate('ImportCSV', 'Data', 'Button text'), 
-            QtGui.QMessageBox.NoRole),
+        'Header':
+        (translate('ImportCSV', 'Header', 'Button text'),
+         QtWidgets.QMessageBox.YesRole),
+        'Data':
+        (translate('ImportCSV', 'Data', 'Button text'),
+         QtWidgets.QMessageBox.NoRole),
         }
     return vitables.utils.questionBox(title, text, itext, dtext, buttons)
 
@@ -412,20 +411,19 @@ def isValidFilepath(filepath):
 
     :Parameter filepath: the filepath where the imported dataset will live
     """
-
-
+    logger = logging.getLogger(__name__)
     valid = True
     if os.path.exists(filepath):
-        print(translate('ImportCSV', 
-            """\nWarning: """
-            """import failed because destination file already exists.""",
+        logger.warning(translate(
+            'ImportCSV',
+            'Import failed because destination file already exists.',
             'A file creation error'))
         valid = False
 
     elif os.path.isdir(filepath):
-        print(translate('ImportCSV', 
-            """\nWarning: import failed """
-            """because destination container is a directory.""",
+        logger.warning(translate(
+            'ImportCSV',
+            'Import failed because destination container is a directory.',
             'A file creation error'))
         valid = False
 
@@ -439,6 +437,10 @@ class ImportCSV(QtCore.QObject):
     They are imported as strings.
     """
 
+    UID = 'vitables.plugin.import_csv'
+    NAME = plugin_name
+    COMMENT = comment
+
     def __init__(self):
         """The class constructor.
         """
@@ -450,116 +452,114 @@ class ImportCSV(QtCore.QObject):
         if self.vtapp is None:
             return
 
-        self.vtgui = vitables.plugin_utils.getVTGui()
+        self.vtgui = vitables.utils.getGui()
         self.dbt_model = self.vtgui.dbs_tree_model
         self.dbt_view = self.vtgui.dbs_tree_view
 
         # Add an entry under the File menu
         self.addEntry()
 
-
     def addEntry(self):
         """Add the `Import CSV...` entry to the `File` menu.
         """
 
         icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
-            'csv/icons/document-import.png'))
+        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
+                                            'icons/document-import.png'))
         icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
-        self.import_submenu = \
-            QtGui.QMenu(translate('ImportCSV', 
-                'I&mport from CSV...','File -> Import CSV'))
+        self.import_submenu = QtWidgets.QMenu(
+            translate('ImportCSV', 'I&mport from CSV...',
+                      'File -> Import CSV'))
         self.import_submenu.setSeparatorsCollapsible(False)
         self.import_submenu.setIcon(icon)
 
         # Create the actions
         actions = {}
-        actions['import_table'] = QtGui.QAction(
-            translate('ImportCSV', "Import &Table...", 
-                "Import table from CSV file"), 
-            self, 
-            shortcut=QtGui.QKeySequence.UnknownKey, 
-            triggered=self.csv2Table, 
-            statusTip=translate('ImportCSV', 
-                "Import Table from plain CSV file", 
+        actions['import_table'] = QtWidgets.QAction(
+            translate('ImportCSV', "Import &Table...",
+                      "Import table from CSV file"),
+            self,
+            shortcut=QtGui.QKeySequence.UnknownKey,
+            triggered=self.csv2Table,
+            statusTip=translate(
+                'ImportCSV',
+                "Import Table from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import Table"))
 
-        actions['import_array'] = QtGui.QAction(
-            translate('ImportCSV', "Import &Array...", 
-                "Import array from CSV file"), 
-            self, 
-            shortcut=QtGui.QKeySequence.UnknownKey, 
-            triggered=self.csv2Array, 
-            statusTip=translate('ImportCSV', 
-                "Import Array from plain CSV file", 
+        actions['import_array'] = QtWidgets.QAction(
+            translate('ImportCSV', "Import &Array...",
+                      "Import array from CSV file"),
+            self,
+            shortcut=QtGui.QKeySequence.UnknownKey,
+            triggered=self.csv2Array,
+            statusTip=translate(
+                'ImportCSV',
+                "Import Array from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import Array"))
 
-        actions['import_carray'] = QtGui.QAction(
-            translate('ImportCSV', "Import &CArray...", 
-                "Import carray from CSV file"), 
-            self, 
-            shortcut=QtGui.QKeySequence.UnknownKey, 
-            triggered=self.csv2CArray, 
-            statusTip=translate('ImportCSV', 
+        actions['import_carray'] = QtWidgets.QAction(
+            translate('ImportCSV', "Import &CArray...",
+                      "Import carray from CSV file"),
+            self,
+            shortcut=QtGui.QKeySequence.UnknownKey,
+            triggered=self.csv2CArray,
+            statusTip=translate(
+                'ImportCSV',
                 "Import CArray from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import CArray"))
 
-        actions['import_earray'] = QtGui.QAction(
-            translate('ImportCSV', "Import &EArray...", 
-                "Import earray from CSV file"), 
-            self, 
-            shortcut=QtGui.QKeySequence.UnknownKey, 
+        actions['import_earray'] = QtWidgets.QAction(
+            translate('ImportCSV', "Import &EArray...",
+                      "Import earray from CSV file"),
+            self,
+            shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.csv2EArray,
-            statusTip=translate('ImportCSV', 
-                "Import EArray from plain CSV file", 
+            statusTip=translate(
+                'ImportCSV',
+                "Import EArray from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import EArray"))
 
-        actions['separator'] = QtGui.QAction(self)
+        actions['separator'] = QtWidgets.QAction(self)
         actions['separator'].setSeparator(True)
 
         # Add actions to the Import submenu
-        keys = ('import_table', 'import_array', 'import_carray', 
-            'import_earray')
+        keys = ('import_table', 'import_array', 'import_carray',
+                'import_earray')
         vitables.utils.addActions(self.import_submenu, keys, actions)
 
         # Add submenu to file menu before the Close File action
-        vitables.plugin_utils.insertInMenu(self.vtgui.file_menu,
-            self.import_submenu, 'fileClose')
+        vitables.utils.insertInMenu(
+            self.vtgui.file_menu, self.import_submenu, 'fileClose')
         sep = actions['separator']
-        vitables.plugin_utils.insertInMenu(self.vtgui.file_menu, sep,
-            'fileClose')
+        vitables.utils.insertInMenu(self.vtgui.file_menu, sep, 'fileClose')
 
         # Add submenu to file context menu before the Close File action
-        vitables.plugin_utils.insertInMenu(self.vtgui.view_cm,
-            self.import_submenu, 'fileClose')
-        vitables.plugin_utils.insertInMenu(self.vtgui.view_cm, sep,
-            'fileClose')
-
+        vitables.utils.insertInMenu(self.vtgui.view_cm,
+                                    self.import_submenu, 'fileClose')
+        vitables.utils.insertInMenu(self.vtgui.view_cm, sep, 'fileClose')
 
     def createDestFile(self, filepath):
         """Create the `PyTables` file where the `CSV` file will be imported.
 
         :Parameter filepath: the `PyTables` file filepath
         """
-
-
+        logger = logging.getLogger(__name__)
         dbdoc = None
         try:
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
-            dest_filepath = os.path.join(dirname, u'{0}.h5'.format(root))
+            dest_filepath = os.path.join(dirname, '{0}.h5'.format(root))
             if isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
-            print(translate('ImportCSV', 
-                """\nWarning: import failed """
-                """because destination file cannot be created.""",
-                'A file creation error'))
+            logger.warning(
+                translate('ImportCSV', 'Import failed because destination '
+                          'file cannot be created.',
+                          'A file creation error'))
             vitables.utils.formatExceptionInfo()
 
         return dbdoc
-
 
     def csvFilepath(self, leaf_kind):
         """Get the filepath of the source `CSV` file.
@@ -568,17 +568,18 @@ class ImportCSV(QtCore.QObject):
         """
 
         # Call the file selector (and, if needed, customise it)
-        filepath, working_dir = vitables.utils.getFilepath(\
-            self.vtgui, 
-            translate('ImportCSV', 'Importing CSV file into {0}',
-                'Caption of the Import from CSV dialog').format(leaf_kind), 
+        filepath, working_dir = vitables.utils.getFilepath(
+            self.vtgui, translate(
+                'ImportCSV', 'Importing CSV file into {0}',
+                'Caption of the Import from CSV dialog').format(leaf_kind),
             dfilter=translate('ImportCSV', """CSV Files (*.csv);;"""
-                """All Files (*)""", 'Filter for the Import from CSV dialog'), 
-            settings={'accept_mode': QtGui.QFileDialog.AcceptOpen, 
-            'file_mode': QtGui.QFileDialog.ExistingFile, 
-            'history': self.vtapp.file_selector_history, 
-            'label': translate('ImportCSV', 'Import', 
-                'Accept button text for QFileDialog')}
+                              """All Files (*)""",
+                              'Filter for the Import from CSV dialog'),
+            settings={'accept_mode': QtWidgets.QFileDialog.AcceptOpen,
+                      'file_mode': QtWidgets.QFileDialog.ExistingFile,
+                      'history': self.vtapp.file_selector_history,
+                      'label': translate('ImportCSV', 'Import',
+                                         'Accept button text for QFileDialog')}
             )
 
         if not filepath:
@@ -590,14 +591,13 @@ class ImportCSV(QtCore.QObject):
 
         return filepath
 
-
     def updateTree(self, filepath):
         """Update the databases tree once the `CSV` file has been imported.
 
         When the destination h5 file is created and added to the databases tree
-        it has no nodes. Once the `CSV` file has been imported into a 
+        it has no nodes. Once the `CSV` file has been imported into a
         `PyTables` container we update the representation of the h5 file in the
-        tree so that users can see that the file has a leaf. Eventually, the 
+        tree so that users can see that the file has a leaf. Eventually, the
         root node of the imported file is selected so that users can locate it
         immediately.
 
@@ -610,7 +610,6 @@ class ImportCSV(QtCore.QObject):
                 self.dbt_model.lazyAddChildren(index)
                 self.dbt_view.setCurrentIndex(index)
 
-
     def csv2Table(self):
         """Import a plain `CSV` file into a `tables.Array` object.
         """
@@ -622,8 +621,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             input_handler = open(filepath, 'r+')
             (nrows, descr, has_header) = tableInfo(input_handler)
 
@@ -632,12 +631,12 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = u"imported_{0}".format(kind)
+            dataset_name = "imported_{0}".format(kind)
             atitle = \
-                u'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createTable('/', dataset_name, descr, 
-                title=atitle, filters=io_filters, expectedrows=nrows)
-
+                'Source CSV file {0}'.format(os.path.basename(filepath))
+            dataset = dbdoc.h5file.create_table(
+                '/', dataset_name, descr, title=atitle, filters=io_filters,
+                expectedrows=nrows)
             # Fill the dataset in a memory efficient way
             input_handler.seek(0)
             if has_header:
@@ -659,9 +658,8 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
             input_handler.close()
-
 
     def csv2EArray(self):
         """Import a plain `CSV` file into a `tables.EArray` object.
@@ -676,8 +674,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
             (nrows, atom, array_shape) = earrayInfo(input_handler)
@@ -687,12 +685,11 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = u"imported_{0}".format(kind)
-            atitle = \
-                u'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createEArray('/', dataset_name, atom, 
-                array_shape, title=atitle, filters=io_filters, 
-                expectedrows=nrows)
+            dataset_name = "imported_{0}".format(kind)
+            atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
+            dataset = dbdoc.h5file.create_earray(
+                '/', dataset_name, atom, array_shape, title=atitle,
+                filters=io_filters, expectedrows=nrows)
 
             # Fill the dataset in a memory effcient way
             input_handler.seek(0)
@@ -714,9 +711,8 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
             input_handler.close()
-
 
     def csv2CArray(self):
         """Import a plain `CSV` file into a `tables.CArray` object.
@@ -731,8 +727,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
             (atom, array_shape) = carrayInfo(input_handler)
@@ -742,11 +738,11 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = u"imported_{0}".format(kind)
-            atitle = \
-                u'Source CSV file {0}'.format(os.path.basename(filepath))
-            dataset = dbdoc.h5file.createCArray('/', dataset_name, atom, 
-                array_shape, title=atitle, filters=io_filters)
+            dataset_name = "imported_{0}".format(kind)
+            atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
+            dataset = dbdoc.h5file.create_carray(
+                '/', dataset_name, atom, array_shape, title=atitle,
+                filters=io_filters)
 
             # Fill the dataset in a memory effcient way
             input_handler.seek(0)
@@ -771,9 +767,8 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
             input_handler.close()
-
 
     def csv2Array(self):
         """Import a plain `CSV` file into a `tables.Array` object.
@@ -788,8 +783,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             # The dtypes are determined by the contents of each column
             # Multidimensional columns will have string datatype
             data = numpy.genfromtxt(filepath, delimiter=',', dtype=None)
@@ -803,20 +798,19 @@ class ImportCSV(QtCore.QObject):
                 dbdoc = self.createDestFile(filepath)
                 if dbdoc is None:
                     return
-                array_name = u"imported_{0}".format(kind)
-                title = u'Imported from CSV file {0}'.\
+                array_name = "imported_{0}".format(kind)
+                title = 'Imported from CSV file {0}'.\
                     format(os.path.basename(filepath))
-                dbdoc.h5file.createArray('/', array_name, data, title=title)
+                dbdoc.h5file.create_array('/', array_name, data, title=title)
                 dbdoc.h5file.flush()
                 self.updateTree(dbdoc.filepath)
             except TypeError:
                 print(TYPE_ERROR)
-            except:
+            except tables.NodeError:
                 vitables.utils.formatExceptionInfo()
         finally:
             del data
-            QtGui.qApp.restoreOverrideCursor()
-
+            QtWidgets.qApp.restoreOverrideCursor()
 
     def helpAbout(self, parent):
         """Full description of the plugin.
@@ -830,22 +824,21 @@ class ImportCSV(QtCore.QObject):
         """
 
         # Plugin full description
-        desc = {'version': __version__, 
-            'module_name': os.path.join(os.path.basename(__file__)), 
-            'folder': os.path.join(os.path.dirname(__file__)), 
-            'author': 'Vicent Mas <vmas@vitables.org>', 
-            'about_text': translate('ImportCSV', 
-            """<qt>
-            <p>Plugin that provides import CSV files capabilities.
-            <p>CSV files can be imported into any of the following 
-            PyTables containers: Array, EArray, CArray and Table.
-            <p>When a file is imported into a Table automatic header
-            detection is provided.
-            <p>Beware that importing large files is a potentially slow 
-            process because the whole file has to be read from disk, 
-            transformed and write back to disk again so there is a lot 
-            of disk IO.
-            </qt>""",
-            'Text of an About plugin message box')}
+        desc = {'version': __version__,
+                'module_name': os.path.join(os.path.basename(__file__)),
+                'folder': os.path.join(os.path.dirname(__file__)),
+                'author': 'Vicent Mas <vmas@vitables.org>',
+                'comment': translate(
+                    'ImportCSV',
+                    '<qt><p>Plugin that provides import CSV files '
+                    'capabilities.<p>CSV files can be imported into any of '
+                    'the following PyTables containers: Array, EArray, CArray '
+                    'and Table.<p>When a file is imported into a Table '
+                    'automatic header detection is provided. <p>Beware that '
+                    'importing large files is a potentially slow process '
+                    'because the whole file has to be read from disk, '
+                    'transformed and write back to disk again so there is '
+                    'a lot of disk IO.</qt>',
+                    'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
         return about_page

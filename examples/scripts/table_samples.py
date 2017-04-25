@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -51,7 +51,7 @@ table = fileh.create_table(group, 'table', Particle, "A table",
 particle = table.row
 
 # Fill the table with 10 particles
-for i in xrange(10):
+for i in range(10):
     # First, assign the values to the Particle record
     particle['name']  = 'Particle: %6d' % (i)
     particle['lati'] = i
@@ -130,7 +130,7 @@ table2 = fileh.create_table(group, 'table', Particle4, "Title example")
 particle = table2.row
 
 # Fill the table with 10 particles
-for i in xrange(10):
+for i in range(10):
     # First, assign the values to the Particle record
     particle['name']  = 'Particle: %6d' % (i)
     particle['TDCcount'] = i % 256
@@ -174,7 +174,7 @@ table3 = fileh.root.detector.table
 
 # Append 5 new particles to table (yes, tables can be enlarged!)
 particle = table3.row
-for i in xrange(10, 15):
+for i in range(10, 15):
     # First, assign the values to the Particle record
     particle['name']  = 'Particle: %6d' % (i)
     particle['TDCcount'] = i % 256

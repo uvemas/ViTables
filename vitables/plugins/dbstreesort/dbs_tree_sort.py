@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
@@ -35,10 +32,14 @@ comment = 'Sorts the display of the databases tree'
 
 import os
 import re
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables
 from vitables.plugins.dbstreesort.aboutpage import AboutPage
@@ -47,21 +48,24 @@ from vitables.h5db import leafnode
 from vitables.h5db import linknode
 from vitables.h5db import dbstreemodel
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def customiseDBsTreeModel():
-    """Slot connected to the convenience dbtree_model_created signal."""
+    """Slot connected to the convenience dbtree_model_created signal.
+
+    :Parameter `mode`: the model representing the tree of databases.
+    """
 
     # The absolute path of the INI file
-    ini_filename = \
-        os.path.join(os.path.dirname(__file__), 'sorting_algorithm.ini')
-    config = ConfigParser.ConfigParser()
+    ini_filename = os.path.join(os.path.dirname(__file__),
+                                'sorting_algorithm.ini')
+    config = configparser.ConfigParser()
     default_sorting = 'default'
     try:
-        config.readfp(open(ini_filename))
+        config.read(ini_filename)
         initial_sorting = config.get('DBsTreeSorting', 'algorithm')
-    except (IOError, ConfigParser.ParsingError):
+    except (IOError, configparser.ParsingError):
         initial_sorting = default_sorting
 
     # The essence of the plugin is pretty simple, just monkeypatch
@@ -127,7 +131,7 @@ def alphanum_key(key):
     """
     convert = lambda text: int(text) if text.isdigit() else text
 
-    return [convert(c) for c in re.split('(\d+)', key)]
+    return [convert(c) for c in re.split(r'(\d+)', key)]
 
 
 def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
@@ -175,9 +179,14 @@ def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
 
     return True
 
+
 class DBsTreeSort(object):
     """Provides convenience methods and functions for sorting the tree of DBs.
     """
+
+    UID = 'vitables.plugin.dbs_tree_sort'
+    NAME = plugin_name
+    COMMENT = comment
 
     def __init__(self):
         """Class constructor.
@@ -185,9 +194,6 @@ class DBsTreeSort(object):
 
         self.vtapp = vitables.utils.getVTApp()
         self.vtapp.dbtree_model_created.connect(customiseDBsTreeModel)
-
-
-
 
     def helpAbout(self, parent):
         """Full description of the plugin.
@@ -202,16 +208,16 @@ class DBsTreeSort(object):
 
         # Plugin full description
         desc = {'version': __version__,
-            'module_name': os.path.join(os.path.basename(__file__)),
-            'folder': os.path.join(os.path.dirname(__file__)),
-            'author': 'Vicent Mas <vmas@vitables.org>',
-            'about_text': translate('DBsTreeSortingPage',
-            """<qt>
-            <p>Plugin that provides sorting capabilities to the tree of DBs.
-            <p>At the moment only two sorting algorithms are supported: human
-            (a.k.a. natural sorting) and alphabetical.
-            </qt>""",
-            'Text of an About plugin message box')}
+                'module_name': os.path.join(os.path.basename(__file__)),
+                'folder': os.path.join(os.path.dirname(__file__)),
+                'author': 'Vicent Mas <vmas@vitables.org>',
+                'about_text': translate(
+                    'DBsTreeSortingPage',
+                    '<qt><p>Plugin that provides sorting capabilities to '
+                    'the tree of DBs.<p>At the moment only two sorting '
+                    'algorithms are supported: human (a.k.a. natural sorting) '
+                    'and alphabetical.</qt>',
+                    'Text of an About plugin message box')}
         self.about_page = AboutPage(desc, parent)
 
         return self.about_page

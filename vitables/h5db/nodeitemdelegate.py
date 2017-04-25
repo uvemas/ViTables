@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -25,16 +25,15 @@ Here is defined the NodeItemDelegate class.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
-
-class NodeItemDelegate(QtGui.QItemDelegate):
+class NodeItemDelegate(QtWidgets.QItemDelegate):
     """
     A custom delegate for editing items of the tree of databases model.
 
@@ -43,14 +42,14 @@ class NodeItemDelegate(QtGui.QItemDelegate):
     used to edit the name of the nodes in a database object tree.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, vtgui, parent=None):
         """
         Creates the custom delegate.
         """
 
         super(NodeItemDelegate, self).__init__(parent)
         self.current_name = None
-        self.vtgui = vitables.utils.getVTApp().gui
+        self.vtgui = vtgui
 
 
     def setEditorData(self, editor, index):
@@ -98,8 +97,8 @@ class NodeItemDelegate(QtGui.QItemDelegate):
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
-        pattern = u"""(^{0}$)|""" \
-            u"""(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(self.current_name)
+        pattern = """(^{0}$)|""" \
+            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(self.current_name)
         info = [translate('NodeItemDelegate',
             'Renaming a node: name already in use',
             'A dialog caption'),
@@ -116,7 +115,7 @@ class NodeItemDelegate(QtGui.QItemDelegate):
             return
 
         # Update the underlying data structure
-        model.renameNode(index, nodename, overwrite)
+        model.rename_node(index, nodename, overwrite)
         self.closeEditor.emit(editor, 0)
 
         # Update the application status bar

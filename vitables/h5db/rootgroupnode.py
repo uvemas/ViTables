@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -58,11 +58,11 @@ class RootGroupNode(object):
         self.updated = False
         self.children = []
         self.parent = parent
-        self.name = u'root node'
+        self.name = 'root node'
         self.filepath = None
+        self.node_kind = 'root group'
         if data_source:
-            self.node = data_source.getNode(u'/')
-            self.node_kind = u'root group'
+            self.node = data_source.get_node('/')
 
             self.has_view = False
 
@@ -72,20 +72,20 @@ class RootGroupNode(object):
             # as_record --> StatusTipRole
             # icon --> DecorationRole
             if tmp_db:
-                self.name = u'Query results'
+                self.name = 'Query results'
             else:
                 self.name = data_source.filename
-            self.nodepath = u'/'
+            self.nodepath = '/'
             self.filepath = data_source.filepath
-            self.as_record = u'{0}->{1}'.format(self.filepath, self.nodepath)
+            self.as_record = '{0}->{1}'.format(self.filepath, self.nodepath)
             self.mode = data_source.mode
             icons = vitables.utils.getIcons()
             if tmp_db:
-                self.icon = icons[u'dbfilters']
-            elif self.mode == u'r':
-                self.icon = icons[u'file_ro']
+                self.icon = icons['dbfilters']
+            elif self.mode == 'r':
+                self.icon = icons['file_ro']
             else:
-                self.icon = icons[u'file_rw']
+                self.icon = icons['file_rw']
 
 
     def __len__(self):

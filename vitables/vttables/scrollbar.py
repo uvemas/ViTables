@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -23,20 +23,21 @@
 This minimal module makes a QScrollBar for browsing huge datasets.
 
 The use of this scrollbar is very tricky. It will be painted over the scrollbar
-of views bound to huge datasets so the view will look as usual but will have 2 
-scrollbars. The hidden scrollbar is not useful for browsing huge datasets (it 
+of views bound to huge datasets so the view will look as usual but will have 2
+scrollbars. The hidden scrollbar is not useful for browsing huge datasets (it
 is tightly bound to the dimensions (number of rows) of the view widget. But the
-visible scrollbar is independent of the dimensions of the view widget and can 
-be used for customising the view in a way that makes it useful for browsing 
+visible scrollbar is independent of the dimensions of the view widget and can
+be used for customising the view in a way that makes it useful for browsing
 datasets with a larger number of rows than that provided by the view widget.
 """
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-class ScrollBar(QtGui.QScrollBar):
+class ScrollBar(QtWidgets.QScrollBar):
     """
     A specialised scrollbar for views of huge datasets.
 
@@ -70,4 +71,4 @@ class ScrollBar(QtGui.QScrollBar):
         if (e.type() == QtCore.QEvent.Wheel):
             self.view.wheelEvent(e)
             return True
-        return QtGui.QScrollBar.event(self, e)
+        return QtWidgets.QScrollBar.event(self, e)

@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
@@ -35,16 +32,18 @@ import re
 
 import tables
 import numpy
+import logging
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
-import vitables.plugin_utils
-from vitables.vtsite import PLUGINSDIR
-from vitables.plugins.csv.aboutpage import AboutPage
+from vitables.plugins.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
+
+_PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
 
 
 def checkFilenameExtension(filepath):
@@ -59,7 +58,7 @@ def checkFilenameExtension(filepath):
     :Returns: the filepath with the proper extension
     """
 
-    if not re.search('\.(.+)$', os.path.basename(filepath)):
+    if not re.search(r'\.(.+)$', os.path.basename(filepath)):
         ext = '.csv'
         filepath = filepath + ext
     return filepath
@@ -68,9 +67,13 @@ def checkFilenameExtension(filepath):
 class ExportToCSV(QtCore.QObject):
     """Provides `CSV` export capabilities for arrays.
 
-    Some minor flaws: `tables.VLArray` nodes can't be exported. Neither can 
+    Some minor flaws: `tables.VLArray` nodes can't be exported. Neither can
     ``numpy`` scalar arrays.
     """
+
+    UID = 'vitables.plugin.export_csv'
+    NAME = plugin_name
+    COMMENT = comment
 
     def __init__(self):
         """The class constructor.
@@ -78,12 +81,14 @@ class ExportToCSV(QtCore.QObject):
 
         super(ExportToCSV, self).__init__()
 
+        self.logger = logging.getLogger(__name__)
+
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
         if self.vtapp is None:
             return
 
-        self.vtgui = vitables.plugin_utils.getVTGui()
+        self.vtgui = vitables.utils.getGui()
 
         # Add an entry under the Dataset menu
         self.addEntry()
@@ -92,34 +97,30 @@ class ExportToCSV(QtCore.QObject):
         self.vtgui.dataset_menu.aboutToShow.connect(self.updateDatasetMenu)
         self.vtgui.leaf_node_cm.aboutToShow.connect(self.updateDatasetMenu)
 
-
     def addEntry(self):
         """Add the `Export to CSV..`. entry to `Dataset` menu.
         """
 
         export_icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(PLUGINSDIR, \
-            'csv/icons/document-export.png'))
+        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
+                                            'icons/document-export.png'))
         export_icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
-        self.export_action = QtGui.QAction(
-            translate('ExportToCSV', 
-                "E&xport to CSV...", 
-                "Save dataset as CSV"), 
-            self, 
-            shortcut=QtGui.QKeySequence.UnknownKey, triggered=self.export, 
-            icon=export_icon, 
-            statusTip=translate('ExportToCSV', 
-                "Save the dataset as a plain text with CSV format", 
+        self.export_action = QtWidgets.QAction(
+            translate('ExportToCSV', "E&xport to CSV...",
+                      "Save dataset as CSV"),
+            self,
+            shortcut=QtGui.QKeySequence.UnknownKey, triggered=self.export,
+            icon=export_icon, statusTip=translate(
+                'ExportToCSV',
+                "Save the dataset as a plain text with CSV format",
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
-        vitables.plugin_utils.addToMenu(self.vtgui.dataset_menu,
-            self.export_action)
+        vitables.utils.addToMenu(self.vtgui.dataset_menu, self.export_action)
 
         # Add the action to the leaf context menu
-        vitables.plugin_utils.addToLeafContextMenu(self.export_action)
-
+        vitables.utils.addToLeafContextMenu(self.export_action)
 
     def updateDatasetMenu(self):
         """Update the `export` QAction when the Dataset menu is pulled down.
@@ -131,11 +132,10 @@ class ExportToCSV(QtCore.QObject):
         current = self.vtgui.dbs_tree_view.currentIndex()
         if current:
             leaf = self.vtgui.dbs_tree_model.nodeFromIndex(current)
-            if leaf.node_kind in (u'group', u'root group'):
+            if leaf.node_kind in ('group', 'root group'):
                 enabled = False
 
         self.export_action.setEnabled(enabled)
-
 
     def getExportInfo(self, is_table):
         """Get info about the file where dataset will be stored.
@@ -143,29 +143,30 @@ class ExportToCSV(QtCore.QObject):
         The retrieved info is the filepath and whether or not a header
         must be added.
 
-        :Parameter is_table: True if the exported dataset is a tables.Table 
+        :Parameter is_table: True if the exported dataset is a tables.Table
           instance
         """
 
         # Call the file selector (and, if needed, customise it)
-        file_selector = vitables.utils.getFileSelector(\
-            self.vtgui, 
-            translate('ExportToCSV', 'Exporting dataset to CSV format', 
-                'Caption of the Export to CSV dialog'), 
+        file_selector = vitables.utils.getFileSelector(
+            self.vtgui,
+            translate('ExportToCSV', 'Exporting dataset to CSV format',
+                      'Caption of the Export to CSV dialog'),
             dfilter=translate('ExportToCSV', """CSV Files (*.csv);;"""
-                """All Files (*)""", 'Filter for the Export to CSV dialog'), 
-            settings={'accept_mode': QtGui.QFileDialog.AcceptSave, 
-            'file_mode': QtGui.QFileDialog.AnyFile, 
-            'history': self.vtapp.file_selector_history, 
-            'label': translate('ExportToCSV', 'Export', 
-                'Accept button text for QFileDialog')
-            })
+                              """All Files (*)""",
+                              'Filter for the Export to CSV dialog'),
+            settings={'accept_mode': QtWidgets.QFileDialog.AcceptSave,
+                      'file_mode': QtWidgets.QFileDialog.AnyFile,
+                      'history': self.vtapp.file_selector_history,
+                      'label': translate('ExportToCSV', 'Export',
+                                         'Accept button text for QFileDialog')}
+        )
 
         # Customise the file selector dialog for exporting to CSV files
         if is_table:
             fs_layout = file_selector.layout()
-            header_label = QtGui.QLabel('Add header:', file_selector)
-            header_cb = QtGui.QCheckBox(file_selector)
+            header_label = QtWidgets.QLabel('Add header:', file_selector)
+            header_cb = QtWidgets.QCheckBox(file_selector)
             fs_layout.addWidget(header_label, 4, 0)
             fs_layout.addWidget(header_cb, 4, 1)
 
@@ -179,7 +180,7 @@ class ExportToCSV(QtCore.QObject):
                 # Update the working directory
                 working_dir = file_selector.directory().canonicalPath()
             else:  # Cancel clicked
-                filepath = working_dir = u''
+                filepath = working_dir = ''
         finally:
             add_header = False
             if is_table:
@@ -196,21 +197,20 @@ class ExportToCSV(QtCore.QObject):
 
         # Check the returned path
         if os.path.exists(filepath):
-            print(translate('ExportToCSV', 
-                """\nWarning: """
-                """export failed because destination file already exists.""",
+            self.logger.warning(translate(
+                'ExportToCSV',
+                'Export failed because destination file already exists.',
                 'A file creation error'))
             return
 
         if os.path.isdir(filepath):
-            print(translate('ExportToCSV', 
-                """\nWarning: export failed """
-                """because destination container is a directory.""",
+            self.logger.warning(translate(
+                'ExportToCSV',
+                'Export failed because destination container is a directory.',
                 'A file creation error'))
             return
 
         return filepath, add_header
-
 
     def export(self):
         """Export a given dataset to a `CSV` file.
@@ -225,28 +225,28 @@ class ExportToCSV(QtCore.QObject):
 
         # Empty datasets can't be saved as CSV files
         if leaf.nrows == 0:
-            print(translate('ExportToCSV', 
-                "\nWarning: Empty dataset. Nothing to export."))
+            self.logger.warning(translate(
+                'ExportToCSV', 'Empty dataset. Nothing to export.'))
             return
 
         # Scalar arrays can't be saved as CSV files
         if leaf.shape == ():
-            print(translate('ExportToCSV', 
-                "\nWarning: Scalar array. Nothing to export."))
+            self.logger.warning(translate(
+                'ExportToCSV', 'Scalar array. Nothing to export.'))
             return
 
         # Datasets with more than 2 dimensions can't be saved as CSV files
         if len(leaf.shape) > 2:
-            print(translate('ExportToCSV', 
-                """\nWarning: The selected node has more than """
-                """2 dimensions. I can't export it to CSV format."""))
+            self.logger.warning(translate(
+                'ExportToCSV', 'The selected node has more than '
+                '2 dimensions. I can\'t export it to CSV format.'))
             return
 
         # Variable lenght arrays can't be saved as CSV files
         if isinstance(leaf, tables.VLArray):
-            print(translate('ExportToCSV', 
-                """\nWarning: The selected node is a VLArray. """
-                """I can't export it to CSV format."""))
+            self.logger.warning(translate(
+                'ExportToCSV', 'The selected node is a VLArray. '
+                'I can\'t export it to CSV format.'))
             return
 
         # Tables with Ndimensional fields can't be saved as CSV files
@@ -255,9 +255,10 @@ class ExportToCSV(QtCore.QObject):
             first_row = leaf[0]
             for item in first_row:
                 if item.shape != ():
-                    print(translate('ExportToCSV', 
-                        """\nWarning: Some fields aren't scalars """
-                        """I can't export the table to CSV format."""))
+                    self.logger.warning(translate(
+                        'ExportToCSV',
+                        'Some fields aren\'t scalars. '
+                        'I can\'t export the table to CSV format.'))
                     return
 
         # Get the required info for exporting the dataset
@@ -268,11 +269,12 @@ class ExportToCSV(QtCore.QObject):
             filepath, add_header = export_info
 
         try:
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             out_handler = open(filepath, 'w')
             if add_header:
-                header = \
-                    reduce(lambda x, y: u'{0}, {1}'.format(x, y), leaf.colnames)
+                from functools import reduce
+                header = reduce(lambda x, y: '{0}, {1}'.format(x, y),
+                                leaf.colnames)
                 # Ensure consistency with numpy.savetxt i.e. use \n line breaks
                 out_handler.write(header + '\n')
             chunk_size = 10000
@@ -281,22 +283,20 @@ class ExportToCSV(QtCore.QObject):
                 chunk_size = nrows
             nchunks = numpy.divide(nrows, chunk_size)
             for i in numpy.arange(0, nchunks+1):
-                QtGui.qApp.processEvents()
+                QtWidgets.qApp.processEvents()
                 cstart = chunk_size*i
                 if cstart >= nrows:
                     break
                 cstop = cstart + chunk_size
                 if cstop > nrows:
                     cstop = nrows
-                numpy.savetxt(out_handler, 
-                    leaf.read(cstart, cstop), 
-                    fmt='%s', delimiter=',')
-        except:
+                numpy.savetxt(out_handler, leaf.read(cstart, cstop),
+                              fmt='%s', delimiter=',')
+        except OSError:
             vitables.utils.formatExceptionInfo()
         finally:
             out_handler.close()
-            QtGui.qApp.restoreOverrideCursor()
-
+            QtWidgets.qApp.restoreOverrideCursor()
 
     def helpAbout(self, parent):
         """Full description of the plugin.
@@ -310,17 +310,16 @@ class ExportToCSV(QtCore.QObject):
         """
 
         # Plugin full description
-        desc = {'version': __version__, 
-            'module_name': os.path.join(os.path.basename(__file__)), 
-            'folder': os.path.join(os.path.dirname(__file__)), 
-            'author': 'Vicent Mas <vmas@vitables.org>', 
-            'about_text': translate('ExportToCSV', 
-            """<qt>
-            <p>Plugin that provides export to CSV files capabilities.
-            <p>Any kind of PyTables dataset can be exported. When 
-            exporting tables, a header with the field names can be 
-            inserted at top of the CSV file.
-            </qt>""",
-            'Text of an About plugin message box')}
+        desc = {'version': __version__,
+                'module_name': os.path.join(os.path.basename(__file__)),
+                'folder': os.path.join(os.path.dirname(__file__)),
+                'author': 'Vicent Mas <vmas@vitables.org>',
+                'comment': translate(
+                    'ExportToCSV',
+                    '<qt><p>Plugin that provides export to CSV files '
+                    'capabilities.<p>Any kind of PyTables dataset can be '
+                    'exported. When exporting tables, a header with the '
+                    'field names can be inserted at top of the CSV file.</qt>',
+                    'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
         return about_page

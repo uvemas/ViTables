@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -22,15 +22,15 @@
 """
 This module manages the ``ViTables`` configuration.
 
-The module provides methods for reading and writting settings. Whether the 
+The module provides methods for reading and writing settings. Whether the
 settings are stored in a plain text file or in a Windows registry is
-transparent for this module because it deals with settings via 
+transparent for this module because it deals with settings via
 `QtCore.QSettings`.
 
-Every access to the config settings is done via a `QSettings` instance that, 
-in turn, will access the config file and return the read setting to the 
-application. Saving settings works in a similar way, the application passes 
-the setting to the `QSetting` instance and it (the instance) will write the 
+Every access to the config settings is done via a `QSettings` instance that,
+in turn, will access the config file and return the read setting to the
+application. Saving settings works in a similar way, the application passes
+the setting to the `QSetting` instance and it (the instance) will write the
 setting into the config file.
 
 .. Note:: *About the config file location*.
@@ -91,15 +91,17 @@ __docformat__ = 'restructuredtext'
 __version__ = '2.1'
 
 import sys
+import logging
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from vitables.preferences import cfgexception
 import vitables.utils
 import vitables.vttables.datasheet as datasheet
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 def getVersion():
     """The application version."""
@@ -111,9 +113,9 @@ class Config(QtCore.QSettings):
     Manages the application configuration dynamically.
 
     This class defines accessor methods that allow the application (a
-    :meth:`vitables.vtapp.VTApp` instance) to read the configuration file/registry/plist.
-    The class also provides a method to save the current configuration
-    in the configuration file/registry/plist.
+    :meth:`vitables.vtapp.VTApp` instance) to read the configuration in
+    file/registry/plist. The class also provides a method to save the current
+    configuration in the configuration file/registry/plist.
     """
 
     def __init__(self):
@@ -124,15 +126,17 @@ class Config(QtCore.QSettings):
         under the HKCU\Software\ViTables\__version__ key
         Mac OS X saves settings in a properties list stored in a
         standard location, either on a global or user basis (see
-        docstring.for more information).
+        docstring for more information).
 
         In all platforms QSettings format is NativeFormat and scope
         is UserScope.
         """
 
-        organization = QtGui.qApp.organizationName()
-        product = QtGui.qApp.applicationName()
-        version = QtGui.qApp.applicationVersion()
+        self.logger = logging.getLogger(__name__)
+
+        organization = QtWidgets.qApp.organizationName()
+        product = QtWidgets.qApp.applicationName()
+        version = QtWidgets.qApp.applicationVersion()
         if sys.platform.startswith('win'):
             path = 'HKEY_CURRENT_USER\\Software\\{0}\\{1}'
             rpath = path.format(product, version)
@@ -149,7 +153,7 @@ class Config(QtCore.QSettings):
         self.setFallbacksEnabled(False)
 
         # The application default style depends on the platform
-        styles = QtGui.QStyleFactory.keys()
+        styles = QtWidgets.QStyleFactory.keys()
         self.default_style = styles[0]
         self.vtapp = vitables.utils.getVTApp()
         if not (self.vtapp is None):
@@ -194,7 +198,7 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Logger/Font'
-        default_value = QtGui.qApp.font()
+        default_value = QtWidgets.qApp.font()
         setting_value = self.value(key)
         if isinstance(setting_value, QtGui.QFont):
             return setting_value
@@ -224,16 +228,16 @@ class Config(QtCore.QSettings):
         default_value = self.default_style
 
         # Read the entry from the configuration file/registry
-        entry = self.value(key)
+        setting_value = self.value(key)
 
         # Check the entry format and value
-        styles = QtGui.QStyleFactory.keys()
-        if not isinstance(entry, unicode):
+        styles = QtWidgets.QStyleFactory.keys()
+        if not isinstance(setting_value, str):
             return default_value
-        elif entry not in styles:
+        elif setting_value not in styles:
             return default_value
         else:
-            return entry
+            return setting_value
 
 
     def windowPosition(self):
@@ -280,21 +284,6 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
-    def vsplitterPosition(self):
-        """
-        Returns the vertical splitter geometry setting.
-        """
-
-        key = 'Geometry/VSplitter'
-        default_value = None
-        setting_value = self.value(key)
-        if isinstance(setting_value, QtCore.QByteArray):
-            return setting_value
-        else:
-            return default_value
-
-
     def startupLastSession(self):
         """
         Returns the `Restore last session` setting.
@@ -316,15 +305,18 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
+
+
+    #TODO: remove this setting
     def startupWorkingDir(self):
         """
         Returns the `Startup working directory` setting.
         """
 
         key = 'Startup/startupWorkingDir'
-        default_value = u'home'
+        default_value = 'home'
         setting_value = self.value(key)
-        if isinstance(setting_value, unicode):
+        if isinstance(setting_value, str):
             return setting_value
         else:
             return default_value
@@ -338,7 +330,7 @@ class Config(QtCore.QSettings):
         key = 'Startup/lastWorkingDir'
         default_value = vitables.utils.getHomeDir()
         setting_value = self.value(key)
-        if isinstance(setting_value, unicode):
+        if isinstance(setting_value, str):
             return setting_value
         else:
             return default_value
@@ -426,11 +418,10 @@ class Config(QtCore.QSettings):
         try:
             self.setValue(key, value)
             if self.status():
-                raise cfgexception.ConfigFileIOException, \
-                    u'{0}={1}'.format(key, value)
-        except cfgexception.ConfigFileIOException, inst:
-            print(inst.error_message)
-
+                raise cfgexception.ConfigFileIOException(
+                    '{0}={1}'.format(key, value))
+        except cfgexception.ConfigFileIOException as inst:
+            self.logger.error(inst.error_message)
 
     def readConfiguration(self):
         """
@@ -457,7 +448,6 @@ class Config(QtCore.QSettings):
         config['Geometry/Position'] = self.windowPosition()
         config['Geometry/Layout'] = self.windowLayout()
         config['Geometry/HSplitter'] = self.hsplitterPosition()
-        config['Geometry/VSplitter'] = self.vsplitterPosition()
         config['Recent/Files'] = self.recentFiles()
         config['Session/Files'] = self.sessionFiles()
         config['HelpBrowser/History'] = self.helpHistory()
@@ -490,10 +480,10 @@ class Config(QtCore.QSettings):
         # Style
         self.writeValue('Look/currentStyle', self.current_style)
         # Startup working directory
-        self.writeValue('Startup/startupWorkingDir', 
+        self.writeValue('Startup/startupWorkingDir',
             self.startup_working_directory)
         # Startup restore last session
-        self.writeValue('Startup/restoreLastSession', 
+        self.writeValue('Startup/restoreLastSession',
             self.restore_last_session)
         # Startup last working directory
         self.writeValue('Startup/lastWorkingDir', self.last_working_directory)
@@ -503,8 +493,6 @@ class Config(QtCore.QSettings):
         self.writeValue('Geometry/Layout', vtgui.saveState())
         # Horizontal splitter geometry
         self.writeValue('Geometry/HSplitter', vtgui.hsplitter.saveState())
-        # Vertical splitter geometry
-        self.writeValue('Geometry/VSplitter', vtgui.vsplitter.saveState())
         # The list of recent files
         self.writeValue('Recent/Files', self.recent_files)
         # The list of session files and nodes
@@ -515,8 +503,8 @@ class Config(QtCore.QSettings):
         # The Help Browser bookmarks
         self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
         # The list of enabled plugins
-        self.writeValue('Plugins/Enabled', 
-            self.vtapp.plugins_mgr.enabled_plugins)
+        self.writeValue('Plugins/Enabled',
+                        self.vtapp.plugins_mgr.enabled_plugins)
         self.sync()
 
 
@@ -539,17 +527,18 @@ class Config(QtCore.QSettings):
         dbt_model = self.vtapp.gui.dbs_tree_model
         session_files_nodes = []
         filepaths = dbt_model.getDBList()
+
         for path in filepaths:
             mode = dbt_model.getDBDoc(path).mode
             # If a new file has been created during the current session
             # then write mode must be replaced by append mode or the file
             # will be created from scratch in the next ViTables session
-            if mode == u'w':
-                mode = u'a'
-            item_path = mode + u'#@#' + path
+            if mode == 'w':
+                mode = 'a'
+            item_path = mode + '#@#' + path
             for view in node_views:
                 if view.dbt_leaf.filepath == path:
-                    item_path = item_path + u'#@#' + view.dbt_leaf.nodepath
+                    item_path = item_path + '#@#' + view.dbt_leaf.nodepath
             session_files_nodes.append(item_path)
 
         # Format the list in a handy way to store it on disk
@@ -564,7 +553,7 @@ class Config(QtCore.QSettings):
         Settings dialog and `internal settings` to the rest of settings.
 
         At startup all settings will be loaded. At any time later the
-        `users settings` can be explicitely changed via Settings dialog.
+        `users settings` can be explicitly changed via Settings dialog.
 
         :Parameter config: a dictionary with the settings to be (re)loaded
         """
@@ -592,12 +581,6 @@ class Config(QtCore.QSettings):
             if isinstance(value, QtCore.QByteArray):
                 # Default geometry provided by the underlying Qt installation
                 gui.hsplitter.restoreState(value)
-
-            key = 'Geometry/VSplitter'
-            value = config[key]
-            if isinstance(value, QtCore.QByteArray):
-                # Default geometry provided by the underlying Qt installation
-                gui.vsplitter.restoreState(value)
 
             key = 'Startup/lastWorkingDir'
             self.last_working_directory = config[key]
@@ -663,7 +646,7 @@ class Config(QtCore.QSettings):
         if key in config:
             self.current_style = config[key]
             # Default style is provided by the underlying window manager
-            QtGui.qApp.setStyle(self.current_style)
+            QtWidgets.qApp.setStyle(self.current_style)
 
         key = 'Plugins/Enabled'
         if key in config:

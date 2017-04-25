@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -20,8 +20,8 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-When a user edits the attributes of a node using the Properties dialog and 
-presses `OK` the attributes correctness is checked by this module. Datatypes 
+When a user edits the attributes of a node using the Properties dialog and
+presses `OK` the attributes correctness is checked by this module. Datatypes
 and overflow conditions are checked. If no errors are detected the new set of
 attributes is stored in the `PyTables` node. Otherwise the user is reported
 about the error and the dialog remains open so the user can fix her mistake.
@@ -32,11 +32,12 @@ __docformat__ = 'restructuredtext'
 import tables
 import numpy
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def checkSyntax(value):
@@ -68,21 +69,21 @@ def formatStrValue(dtype, str_value):
     - str_value: the string representation of a value
     """
 
-    if dtype == u'bool':
+    if dtype == 'bool':
         # Every listed value is valid but none of them would
         # pass the out of range test later so we use a fake
         # valid value.
         # Beware that numpy.array(True).astype('bool')[()] fails
         # with a TypeError so we use '1' as a fake value
-        if str_value in [u'1', u'TRUE', u'True', u'true']:
-            str_value = u'1'
-        elif str_value in [u'0', u'FALSE', u'False', u'false']:
-            str_value = u'0'
+        if str_value in ['1', 'TRUE', 'True', 'true']:
+            str_value = '1'
+        elif str_value in ['0', 'FALSE', 'False', 'false']:
+            str_value = '0'
         else:
             raise ValueError
-    elif dtype.startswith(u'complex'):
+    elif dtype.startswith('complex'):
         # Valid complex literal strings do not have parenthesis
-        if str_value.startswith(u'(') and str_value.endswith(u')'):
+        if str_value.startswith('(') and str_value.endswith(')'):
             str_value = str_value[1:-1]
 
     return str_value
@@ -110,24 +111,22 @@ def checkValue(dtype, str_value):
     """
 
     dtypes_map = {
-        u'int8': numpy.int8, u'int16': numpy.int16,
-        u'int32': numpy.int32, u'int64': numpy.int64,
-        u'uint8': numpy.uint8, u'uint16': numpy.uint16,
-        u'uint32': numpy.uint32, u'uint64': numpy.uint64,
-        u'float32': numpy.float32, u'float64': numpy.float64,
+        'int8': numpy.int8, 'int16': numpy.int16,
+        'int32': numpy.int32, 'int64': numpy.int64,
+        'uint8': numpy.uint8, 'uint16': numpy.uint16,
+        'uint32': numpy.uint32, 'uint64': numpy.uint64,
+        'float32': numpy.float32, 'float64': numpy.float64,
         }
 
     # For Python objects and strings no overflow can occur
     if dtype not in dtypes_map:
         return str_value
 
-    # astype() doesn't support unicode arguments
-    dtype_enc = dtype.encode('utf_8')
-    new_array = numpy.array(str_value).astype(dtype_enc)
+    new_array = numpy.array(str_value).astype(dtype)
     # Catches unexpected results from conversions
     # Examples: numpy.array('-23').astype('unint8') -> mismatch dtype
     # or numpy.array('99999').astype('int8') -> overflow
-    if unicode(new_array[()]) != str_value:
+    if str(new_array[()]) != str_value:
         raise RuntimeWarning
     # If no errors are found return the original value
     return str_value
@@ -173,12 +172,12 @@ class AttrEditor(object):
             name = model.item(row, 0).text()
             value = model.item(row, 1).text()
             dtype_index = model.indexFromItem(model.item(row, 2))
-            dtype = user_table.indexWidget(dtype_index).currentText() 
+            dtype = user_table.indexWidget(dtype_index).currentText()
             self.edited_attrs[row] = (name, value, dtype, multidim)
 
         # Add the TITLE attribute to the dictionary
         if title is not None:
-            self.edited_attrs[rows] = (u'TITLE', title, u'string', False)
+            self.edited_attrs[rows] = ('TITLE', title, 'string', False)
 
 
     def checkAttributes(self):
@@ -189,6 +188,9 @@ class AttrEditor(object):
         attribute type or out of range values are found then an error is
         reported. If the table is OK the node `ASI` is updated and the
         Properties dialog is closed.
+
+        The attributes checked here are those of self.edited_attrs dict so the
+        values are all string
         """
 
         # Error message for mismatching value/type pairs
@@ -219,10 +221,10 @@ class AttrEditor(object):
             name = self.edited_attrs[row][0]
             # Empty Value cells are acceptable for string attributes
             # but empty Name cells are invalid
-            if name == u'':
-                return (False, 
-                        translate('AttrEditor', 
-                            "\nError: empty field Name in the row {0:d}", 
+            if name == '':
+                return (False,
+                        translate('AttrEditor',
+                            "\nError: empty field Name in the row {0:d}",
                             'User attrs editing error').format(int(row + 1)))
 
         # Check for repeated names
@@ -232,9 +234,9 @@ class AttrEditor(object):
             if not name in names_list:
                 names_list.append(name)
             else:
-                return (False, 
-                        translate('AttrEditor', 
-                            '\nError: attribute name "{0}" is repeated.', 
+                return (False,
+                        translate('AttrEditor',
+                            '\nError: attribute name "{0}" is repeated.',
                             'User attrs table editing error').format(name))
 
         # Check for dtype, range and syntax correctness of scalar attributes
@@ -246,6 +248,10 @@ class AttrEditor(object):
                 # Check the syntax of the Python expression
                 if not checkSyntax(value):
                     return (False, syntax_error.format(name))
+            elif dtype == 'string':
+                dtype = 'str'
+            elif dtype == 'bytes':
+                pass
             else:
                 # Format properly the string representation of value
                 # and check for dtype and overflow errors
@@ -270,21 +276,21 @@ class AttrEditor(object):
         """
         Update edited attributes.
 
-        This method is called when the user has succesfuly edited some
+        This method is called when the user has successfully edited some
         attribute in the Properties dialog. If it happens then this method
         updates the `ASI` of the inspected `PyTables` node.
         """
 
         # Get rid of deleted attributes
-        if u'TITLE' in self.edited_attrs:
-            all_attrs = frozenset(self.asi._v_attrnamesuser + [u"TITLE"])
+        if 'TITLE' in self.edited_attrs:
+            all_attrs = frozenset(self.asi._v_attrnamesuser + ["TITLE"])
         else:
             all_attrs = frozenset(self.asi._v_attrnamesuser)
-        edited_attrs_names = frozenset([self.edited_attrs[row][0] 
+        edited_attrs_names = frozenset([self.edited_attrs[row][0]
                                         for row in self.edited_attrs.keys()])
         for attr in (all_attrs - edited_attrs_names):
             try:
-                self.asi._v_node._f_delAttr(attr)
+                self.asi._v_node._f_delattr(attr)
             except (tables.NodeError, AttributeError):
                 vitables.utils.formatExceptionInfo()
 
@@ -295,11 +301,14 @@ class AttrEditor(object):
             if multidim == True:
                 continue
 
-            if dtype == u'python':
-                value = eval(u'{0}'.format(value))
+            if dtype == 'python':
+                value = eval('{0}'.format(value))
+            elif dtype == 'bytes':
+                # Remove the prefix and enclosing quotes
+                value = value[2:-1]
+                value = numpy.array(value).astype(dtype)[()]
             else:
-                dtype_enc = dtype.encode('utf_8')
-                value = numpy.array(value).astype(dtype_enc)[()]
+                value = numpy.array(value).astype(dtype)[()]
 
             # Updates the ASI
             try:

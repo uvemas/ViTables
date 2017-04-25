@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -30,9 +30,10 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
@@ -42,7 +43,7 @@ import vitables.utils
 Ui_InputNodenameDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'nodename_dlg.ui'))[0]
 
-class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
+class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
     """
     Dialog for interactively entering a name for a given node.
 
@@ -64,7 +65,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
     - `action`: string with the editing action to be done, Create or Rename
     """
 
-    def __init__(self, title, info, action):
+    def __init__(self, title, info, action, default_value=None):
         """A customised `QInputDialog`.
         """
 
@@ -79,7 +80,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
 
         # The Create/Rename button
         self.edit_button = self.buttonsBox.addButton(action,
-            QtGui.QDialogButtonBox.AcceptRole)
+            QtWidgets.QDialogButtonBox.AcceptRole)
 
         # Setup a validator for checking the entered node name
         validator = QtGui.QRegExpValidator(self)
@@ -87,6 +88,9 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
         validator.setRegExp(pattern)
         self.valueLE.setValidator(validator)
 
+        if default_value:
+            self.valueLE.setText(default_value)
+            
         # Make sure that buttons are in the proper activation state
         self.valueLE.textChanged.emit(self.valueLE.text())
 

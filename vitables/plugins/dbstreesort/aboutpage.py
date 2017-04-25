@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
@@ -27,14 +27,17 @@ The widget is displayed when the plugin is selected in the Preferences
 dialog selector pane.
 """
 
-
 __docformat__ = 'restructuredtext'
 
 import os.path
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
@@ -42,7 +45,8 @@ from PyQt4.uic import loadUiType
 Ui_DBsTreeSortPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),
                             'dbs_tree_sort_page.ui'))[0]
-class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
+
+class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
     """
     Widget for describing and customizing the Sorting of DBs Tree plugin.
 
@@ -52,7 +56,7 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
         - use multiple inheritance, MyParentClass(BaseClass, FormClass)
 
     This widget is inserted as a page in the stacked widget of the
-    Preferences dialog when the CVS import/export item is clicked in the
+    Preferences dialog when the sorting of DBs Tree item is clicked in the
     selector tree.
 
     """
@@ -85,12 +89,12 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
             os.path.join(os.path.dirname(__file__), 'sorting_algorithm.ini')
 
         # Read initial configuration from the INI file
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         default_sorting = 'human'
         try:
-            self.config.readfp(open(self.ini_filename))
-            self.initial_sorting = self.config.get('DBsTreeSorting','algorithm')
-        except (IOError, ConfigParser.ParsingError):
+            self.config.read_file(open(self.ini_filename))
+            self.initial_sorting = self.config['DBsTreeSorting']['algorithm']
+        except (IOError, configparser.ParsingError):
             self.initial_sorting = default_sorting
 
         # Fill the combo with values and choose the current sorting algorithm
@@ -100,9 +104,9 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
         self.algorithms_combobox.setCurrentIndex(current_index)
 
         # Connect signals to slots
-        self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Cancel).clicked.\
+        self.dlg_box_buttons.button(QtWidgets.QDialogButtonBox.Cancel).clicked.\
             connect(self.cancelAlgorithmChange)
-        self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Ok).clicked.\
+        self.dlg_box_buttons.button(QtWidgets.QDialogButtonBox.Ok).clicked.\
             connect(self.saveAlgorithmChange)
 
 
@@ -113,8 +117,7 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
         combobox are lost.
         """
 
-        self.config.set('DBsTreeSorting', 'algorithm',
-                        self.initial_sorting)
+        self.config['DBsTreeSorting']['algorithm'] = self.initial_sorting
         with open(self.ini_filename, 'w') as ini_file:
             self.config.write(ini_file)
         #self.preferences_dlg.reject()
@@ -124,8 +127,8 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
         """Save the combobox current algorithm.
         """
 
-        self.config.set('DBsTreeSorting', 'algorithm',
-                        self.algorithms_combobox.currentText())
+        self.config['DBsTreeSorting']['algorithm'] = \
+            self.algorithms_combobox.currentText()
         with open(self.ini_filename, 'w') as ini_file:
             self.config.write(ini_file)
         #self.parent().parent().accept()

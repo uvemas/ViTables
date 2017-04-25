@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -21,7 +21,7 @@
 
 """Several simple VLArrays."""
 
-import cPickle
+import pickle
 
 import tables
 import numpy
@@ -72,7 +72,7 @@ vlarray5.append(["456", "3"])
 # Binary strings
 vlarray6 = fileh.create_vlarray(root, 'vlarray6', tables.UInt8Atom(), 
     "pickled bytes")
-data = cPickle.dumps((["123", "456"], "3"))
+data = pickle.dumps((["123", "456"], "3"))
 vlarray6.append(numpy.ndarray(buffer=data, dtype=numpy.uint8, shape=len(data)))
 
 # The next is a way of doing the same than before
@@ -98,10 +98,10 @@ vlarray9.append("aaana")
 # Unicode variable length strings
 vlarray10 = fileh.create_vlarray(root, 'vlarray10', tables.VLUnicodeAtom(), 
     "Variable Length Unicode String")
-vlarray10.append(u"aaana")
-vlarray10.append(u"")   # The empty string
-vlarray10.append(u"asd")
-vlarray10.append(u"para\u0140lel")
+vlarray10.append("aaana")
+vlarray10.append("")   # The empty string
+vlarray10.append("asd")
+vlarray10.append("para\u0140lel")
 
 # Still more vlarrays...
 N = 100
@@ -111,9 +111,9 @@ vlarray11 = fileh.create_vlarray(root, 'vlarray11',
     tables.Float64Atom(shape=shape), "ragged array of arrays")
 
 k = 0
-for i in xrange(N):
+for i in range(N):
     l = []
-    for j in xrange(numpy.random.randint(N)):
+    for j in range(numpy.random.randint(N)):
         l.append(numpy.random.randn(*shape))
         k += 1
     vlarray11.append(l)

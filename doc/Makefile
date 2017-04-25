@@ -6,6 +6,12 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
+SPHINXAPIDOC  = sphinx-apidoc
+
+# Variables needed to create build dependent index file
+MKDIR = mkdir -p
+CP = cp
+ACTUAL_INDEX = index.rst
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -13,6 +19,7 @@ PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest
+.PHONY: builddir devhtml
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -32,14 +39,22 @@ help:
 	@echo "  changes    to make an overview of all changed/added/deprecated items"
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
+	@echo "  devhtml    to make HTML docs for developers"
+	@echo "  apidoc     to regenerate api documentation rst file (use with caution)"
 
 clean:
 	-rm -rf $(BUILDDIR)/*
+	-rm -f index.rst
 
-html:
+html: htmlindex
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+devhtml: devindex apidocs
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/devhtml
+	@echo
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/devhtml."
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
@@ -129,8 +144,26 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-pdf:
+pdf: pdfindex
 	$(SPHINXBUILD) -b pdf $(ALLSPHINXOPTS) $(BUILDDIR)/pdf
 	@echo
 	@echo "pdf build finished; the PDF files are in $(BUILDDIR)/pdf."
 
+# targets that generate output specific index file
+htmlindex: indices/index_html.rst | $(BUILDDIR)
+	$(CP) $< $(ACTUAL_INDEX)
+
+pdfindex: indices/index_pdf.rst | $(BUILDDIR)
+	$(CP) $< $(ACTUAL_INDEX)
+
+devindex: indices/index_dev.rst | $(BUILDDIR)
+	$(CP) $< $(ACTUAL_INDEX)
+
+# regenerate apidoc rst files
+.PHONY: apidocs
+apidocs:
+	@echo "Building apidocs ..."
+	$(SPHINXAPIDOC) -f -o api -H "ViTables API" ../vitables
+
+$(BUILDDIR):
+	$(MKDIR) $(BUILDDIR)

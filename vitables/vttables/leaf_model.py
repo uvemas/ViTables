@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -20,17 +20,36 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """
-This module implements a model (in the `MVC` sense) for the real data stored 
+This module implements a model (in the `MVC` sense) for the real data stored
 in a `tables.Leaf`.
 """
 
 __docformat__ = 'restructuredtext'
 
-import tables
+import collections
 
-from PyQt4 import QtCore
+import tables
+import numpy as np
+
+from PyQt5 import QtCore
 
 import vitables.utils
+
+_ENUM_DTYPE = np.dtype('S32')
+
+
+def get_enum_column_description(data_source):
+    """Return the dictionary which maps column index to enum dict."""
+    if not isinstance(data_source, tables.Table):
+        return {}
+    enum_columns = {}
+    for _, column_description in data_source.coldescrs.items():
+        if not isinstance(column_description, tables.EnumCol):
+            continue
+        enum_columns[column_description._v_pos] = \
+            {value: name for name, value in column_description.enum}
+    return enum_columns
+
 
 class LeafModel(QtCore.QAbstractTableModel):
     """
@@ -54,7 +73,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         self.rbuffer = rbuffer
 
         # The number of digits of the last row
-        self.last_row_width = len(unicode(self.rbuffer.leaf_numrows))
+        self.last_row_width = len(str(self.rbuffer.leaf_numrows))
 
         #
         # The table dimensions
@@ -90,6 +109,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         #
 
         self.formatContent = vitables.utils.formatArrayContent
+        self._enum_columns_desc = get_enum_column_description(self.data_source)
 
         # Time series (if they are found) are formatted transparently
         # via the time_series.py plugin
@@ -110,6 +130,8 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         super(LeafModel, self).__init__(parent)
 
+    def _collect_enum_indices(self):
+        """Initialize structures required to properly display enum columns."""
 
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
@@ -136,10 +158,10 @@ class LeafModel(QtCore.QAbstractTableModel):
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
             if hasattr(self.data_source, 'description'):
-                return unicode(self.data_source.colnames[section])
-            return unicode(section + 1)
+                return str(self.data_source.colnames[section])
+            return str(section + 1)
         # The section label for vertical header. This is a 64 bits integer
-        return unicode(self.rbuffer.start + section + 1)
+        return str(self.rbuffer.start + section + 1)
 
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
@@ -154,25 +176,33 @@ class LeafModel(QtCore.QAbstractTableModel):
         - `role`: the role being returned
         """
 
-        if not index.isValid() or \
-            not (0 <= index.row() < self.numrows):
+        if not index.isValid() \
+           or not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(), 
-            index.column())
+        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
+                                    index.column())
+        if index.column() in self._enum_columns_desc:
+            if isinstance(cell, collections.Iterable):
+                cell = np.array([
+                    _ENUM_DTYPE.type(
+                        self._enum_columns_desc[index.column()].get(c, c))
+                    for c in cell])
+            else:
+                cell = _ENUM_DTYPE.type(
+                    self._enum_columns_desc[index.column()].get(cell, cell))
         if role == QtCore.Qt.DisplayRole:
             return self.formatContent(cell)
         elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+            return int(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         else:
             return None
-
 
     def columnCount(self, index=QtCore.QModelIndex()):
         """The number of columns of the given model index.
 
         When implementing a table based model this method has to be overriden
         -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the 
+        indices (because they have no children). If the index is not valid the
         method  should return the number of columns exposed by the model.
 
         :Parameter index: the model index being inspected.
@@ -189,7 +219,7 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         When implementing a table based model this method has to be overriden
         -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the 
+        indices (because they have no children). If the index is not valid the
         method  should return the number of rows exposed by the model.
 
         :Parameter index: the model index being inspected.

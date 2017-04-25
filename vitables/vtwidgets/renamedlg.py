@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -47,21 +47,22 @@ __docformat__ = 'restructuredtext'
 import os.path
 import re
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-from PyQt4.uic import loadUiType
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_RenameNodeDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'rename_dlg.ui'))[0]
 
-class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
+class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
     """
     Ask user for help when a name issue raises.
 
@@ -114,13 +115,13 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         # The dialog buttons: Rename, Overwrite and Cancel
         self.overwrite_button = self.buttonsBox.addButton(
             translate('RenameDlg', 'Overwrite', 'A button label'),
-            QtGui.QDialogButtonBox.AcceptRole)
+            QtWidgets.QDialogButtonBox.AcceptRole)
         self.rename_button = self.buttonsBox.addButton(
             translate('RenameDlg', 'Rename', 'A button label'),
-            QtGui.QDialogButtonBox.AcceptRole)
+            QtWidgets.QDialogButtonBox.AcceptRole)
         self.rename_button.setDefault(1)
-        self.cancel_button = self.buttonsBox.button(\
-            QtGui.QDialogButtonBox.Cancel)
+        self.cancel_button = self.buttonsBox.button(
+            QtWidgets.QDialogButtonBox.Cancel)
 
         # Setup a validator for checking the entered node name
         validator = QtGui.QRegExpValidator(self)
@@ -168,8 +169,8 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         # group 1 of the pattern is matched
         result = self.cpattern.search(new_name)
         if (result == None) or \
-            ((result != None) and (result.lastindex == 1)) or \
-            (not new_name):
+                ((result != None) and (result.lastindex == 1)) or \
+                (not new_name):
             self.rename_button.setEnabled(0)
             self.overwrite_button.setEnabled(0)
         elif new_name == self.troubled_name:
@@ -191,7 +192,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         """
 
         if button == self.rename_button:
-            self.renameNode()
+            self.rename_node()
         elif button == self.overwrite_button:
             self.overwriteNode()
 
@@ -209,7 +210,7 @@ class RenameDlg(QtGui.QDialog, Ui_RenameNodeDialog):
         self.accept()
 
 
-    def renameNode(self):
+    def rename_node(self):
         """
         Set the new name and exit.
 

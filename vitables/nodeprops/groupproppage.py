@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -28,12 +28,14 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dinamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
@@ -42,7 +44,7 @@ Ui_GroupPropPage = \
 
 
 
-class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
+class GroupPropPage(QtWidgets.QWidget, Ui_GroupPropPage):
     """
     Group properties page.
 
@@ -87,7 +89,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
           describing a given node
         """
 
-        if info.node_type == u'root group':
+        if info.node_type == 'root group':
             self.nameLE.setText(info.filename)
             self.pathLE.setText(info.filepath)
             self.pathLE.setToolTip(info.filepath)
@@ -100,13 +102,13 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
             self.typeLE.setText(info.node_type)
 
         # Number of children label
-        self.nchildrenLE.setText(unicode(len(info.hanging_nodes)))
+        self.nchildrenLE.setText(str(len(info.hanging_nodes)))
 
         # The group's children table
         table = self.nchildrenTable
-        table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
-        table.setStyleSheet(u"background-color: {0}".format(background.name()))
+        table.setStyleSheet("background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()
         self.children_model.setHorizontalHeaderLabels([
             translate('GroupPropPage', 'Child name',

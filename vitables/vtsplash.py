@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
@@ -28,9 +28,9 @@ __docformat__ = 'restructuredtext'
 
 import time
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-class VTSplash(QtGui.QSplashScreen):
+class VTSplash(QtWidgets.QSplashScreen):
     """
     The application splash screen.
 
@@ -46,6 +46,7 @@ class VTSplash(QtGui.QSplashScreen):
         """
 
         super(VTSplash, self).__init__(png)
+        self.msg = ''
 
 
     def drawContents(self, painter):
@@ -71,7 +72,7 @@ class VTSplash(QtGui.QSplashScreen):
         :Parameter msg: the message to be displayed
         """
 
-        QtGui.qApp.processEvents()
+        QtWidgets.qApp.processEvents()
         self.msg = msg
         self.showMessage(self.msg)
         time.sleep(0.500)

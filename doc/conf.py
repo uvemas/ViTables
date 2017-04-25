@@ -16,7 +16,7 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -25,7 +25,8 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['rst2pdf.pdfbuilder']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
+              'sphinx.ext.todo', 'sphinx.ext.coverage']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -40,8 +41,8 @@ source_encoding = 'utf-8-sig'
 master_doc = 'index'
 
 # General information about the project.
-project = u'ViTables Users\' Guide'
-copyright = u'2013, Vicent Mas'
+project = 'ViTables Users\' Guide'
+copyright = '2013, Vicent Mas'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -64,7 +65,7 @@ release = '2.1'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', 'indices']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -91,12 +92,12 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'basic'
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {'nosidebar': True}
+# html_theme_options = {'nosidebar': True}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -178,8 +179,8 @@ latex_paper_size = 'a4'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'UsersGuide.tex', u'ViTables Users\' Guide Documentation',
-   u'Vicent Mas', 'manual'),
+  ('index', 'UsersGuide.tex', 'ViTables Users\' Guide Documentation',
+   'Vicent Mas', 'manual'),
 ]
 
 latex_elements = {'babel': '\\usepackage[english]{babel}', 'classoptions': ', openany'}
@@ -211,8 +212,8 @@ latex_domain_indices = False
 # -- Options for PDF output via rst2pdf --------------------------------------------------
 
 pdf_documents = [
-  ('index', 'UsersGuide', u'ViTables Users\' Guide Documentation',
-   u'Vicent Mas'),
+  ('index', 'UsersGuide', 'ViTables Users\' Guide Documentation',
+   'Vicent Mas'),
 ]
 
 pdf_stylesheets = ['users_guide', 'kerning', 'a4']
@@ -240,6 +241,6 @@ pdf_page_template = 'cutePage'
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'vitablesusersguide', u'ViTables Users\' Guide Documentation',
-     [u'Vicent Mas'], 1)
+    ('index', 'vitablesusersguide', 'ViTables Users\' Guide Documentation',
+     ['Vicent Mas'], 1)
 ]
