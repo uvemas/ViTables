@@ -402,10 +402,10 @@ class VTGUI(QtWidgets.QMainWindow):
         actions['windowSeparator'].setObjectName('windowSeparator')
 
         actions['mdiTabbed'] = QtWidgets.QAction(
-            translate('VTGUI', 'Change view mode', 'MDI -> Tabbed'), self,
+            translate('VTGUI', 'Toggle MDI/Tabs', 'MDI -> Tabbed'), self,
             triggered=self.changeMDIViewMode,
             statusTip=translate(
-                'VTGUI', 'Change the workspace view mode',
+                'VTGUI', 'Toggle workspace view mode between Tabs <--> Multi Document Interface',
                 'Status bar text for the MDI -> Tabbed action'))
         actions['mdiTabbed'].setObjectName('mdiTabbed')
 
@@ -592,7 +592,8 @@ class VTGUI(QtWidgets.QMainWindow):
         self.window_menu.setObjectName('window_menu')
         windows_actions = ['windowCascade', 'windowTile',
                            'windowRestoreAll', 'windowMinimizeAll',
-                           'windowClose', 'windowCloseAll', 'windowSeparator']
+                           'windowClose', 'windowCloseAll', None, 'mdiTabbed',
+                           'windowSeparator']
         vitables.utils.addActions(self.window_menu, windows_actions,
                                   self.gui_actions)
         self.window_menu.setSeparatorsCollapsible(True)
@@ -641,7 +642,7 @@ class VTGUI(QtWidgets.QMainWindow):
         vitables.utils.addActions(self.leaf_node_cm, actions, self.gui_actions)
 
         self.mdi_cm = QtWidgets.QMenu()
-        actions = ['mdiTabbed', None, self.window_menu]
+        actions = [self.window_menu]
         vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
 
     def closeEvent(self, event):
@@ -827,7 +828,7 @@ class VTGUI(QtWidgets.QMainWindow):
         wmenu.clear()
         window_actions = ['windowCascade', 'windowTile', 'windowRestoreAll',
                           'windowMinimizeAll', 'windowClose', 'windowCloseAll',
-                          'windowSeparator']
+                          None, 'mdiTabbed', 'windowSeparator']
         vitables.utils.addActions(wmenu, window_actions, self.gui_actions)
 
         windows_list = self.workspace.subWindowList()
