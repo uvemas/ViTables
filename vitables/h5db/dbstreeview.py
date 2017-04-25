@@ -143,7 +143,15 @@ class DBsTreeView(QtWidgets.QTreeView):
         if node.node_kind.count('group'):
             if not self.isExpanded(index):
                 self.expand(index)
-        elif not node.has_view:
+        elif node.has_view:
+            ## Activate already-open window.
+            #
+            wrkspc = self.vtgui.workspace
+            pcurrent = QtCore.QPersistentModelIndex(index)
+            for window in wrkspc .subWindowList():
+                if pcurrent == window.pindex:
+                    wrkspc.setActiveSubWindow(window)
+        else:
             self.vtapp.nodeOpen(index)
 
 

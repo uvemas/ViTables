@@ -158,14 +158,6 @@ class VTGUI(QtWidgets.QMainWindow):
     def selection_changed(self, index):
         self.updateActions()
         self.updateStatusBar()
-        # Sync the tree view with the workspace (if needed) but keep the
-        # focus (giving focus to the workspace when a given item is
-        # selected is counter intuitive)
-        pcurrent = QtCore.QPersistentModelIndex(index)
-        for window in self.workspace.subWindowList():
-            if pcurrent == window.pindex:
-                self.workspace.setActiveSubWindow(window)
-                self.setFocus(True)
 
     def setupActions(self):
         """Provide actions to the menubar and the toolbars.
