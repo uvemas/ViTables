@@ -15,6 +15,7 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
+from PyQt5.QtWidgets import QFileDialog
 
 """
 This is the utilities module. It contains functions that perform
@@ -263,7 +264,7 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     file_selector.setDirectory(settings['history'][-1])
     file_selector.setAcceptMode(settings['accept_mode'])
     if settings['accept_mode'] == QtWidgets.QFileDialog.AcceptSave:
-        file_selector.setConfirmOverwrite(False)
+        file_selector.setOption(QFileDialog.DontConfirmOverwrite)
     file_selector.setFileMode(settings['file_mode'])
     file_selector.setHistory(settings['history'])
     if filepath:
