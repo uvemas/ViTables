@@ -1,0 +1,19 @@
+# Install conda:
+#   http://conda.io/
+# Create an environment for vitables
+#   conda env create -n vitables -f environment.yml
+# Activate the environment
+#   source activate vitables
+# Explore those old pesky hdf5s
+#   vitables
+name: vitables
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=2
+  - pytables=3.2
+  - pyqt=4
+  - pip:
+    - "--editable=./"
+    # weird syntax until https://github.com/conda/conda/pull/3969 is merged
