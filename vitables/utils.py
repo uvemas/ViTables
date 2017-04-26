@@ -649,11 +649,11 @@ def getFinalName(nodename, sibling, pattern, info):
 
 def getLicense():
     """The ``ViTables`` license in Rich Text format."""
+    # From: http://stackoverflow.com/a/20885799/548792
+    import pkg_resources
 
-    input_file = QtCore.QFile(os.path.join(DOCDIR, 'LICENSE.html'))
-    input_file.open(QtCore.QIODevice.ReadOnly)
-    stream = QtCore.QTextStream(input_file)
-    license_text = stream.readAll()
-    input_file.close()
+    resource_package = __name__
+    resource_path = 'LICENSE.html'
+    license_text = pkg_resources.resource_string(resource_package, resource_path)  # @UndefinedVariable
 
-    return license_text
+    return str(license_text, 'UTF-8')

@@ -61,7 +61,7 @@ htmldoc:
 	mkdir $(HTML_OUTDIR)
 	xcopy $(ROOT)\doc\_build\html\*.* /E $(HTML_OUTDIR)
 	rmdir /q /s $(HTML_OUTDIR)\_sources
-	copy $(ROOT)\LICENSE.html $(HTML_OUTDIR)
+	copy $(ROOT)\vitables\LICENSE.html $(HTML_OUTDIR)
 	rmdir /q /s $(ROOT)\doc\_build
 
 pdfdoc:
@@ -72,7 +72,7 @@ pdfdoc:
 	rmdir /q /s $(ROOT)\doc\_build
 
 installer: vitables.nsi.in $(VERSIONFILE) $(LICENSEFILE) vtdoc vitables.exe
-	copy ..\LICENSE.html LICENSE.html
+	copy ..\vitables\LICENSE.html LICENSE.html
 	type vitables.nsi.in | sed -e "s/@VERSION@/$(VERSION)/g" \
 	-e "s/@PYTHONVERSION@/$(PYTHONVERSION)/g" \
 	-e "s/@DOTPYTHONVERSION@/$(DOTPYTHONVERSION)/g" \
