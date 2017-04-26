@@ -215,7 +215,7 @@ Section "ViTables @VERSION@" VT
 
   SetOutPath $INSTDIR
   File @ROOT@\*.txt
-  File ..\LICENSE.html
+  File ..\vitables\LICENSE.html
 
   SetOutPath $INSTDIR\doc
   File @ROOT@\doc\UsersGuide.pdf

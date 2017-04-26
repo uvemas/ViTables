@@ -912,7 +912,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             group = self.nodeFromIndex(parent)
             try:
                 node = group.childAtRow(row)
-                return self.createIndex(row, column, node)
+                return self.create_index(row, column, node)
             except IndexError:
                 return QtCore.QModelIndex()
         return QtCore.QModelIndex()
@@ -944,7 +944,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             return QtCore.QModelIndex()
         grandparent = parent.parent
         row = grandparent.rowOfChild(parent)
-        return self.createIndex(row, 0, parent)
+        return self.create_index(row, 0, parent)
 
     def lazyAddChildren(self, index):
         """Add children to a group node when it is expanded.

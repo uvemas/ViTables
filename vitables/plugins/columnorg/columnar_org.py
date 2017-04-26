@@ -111,7 +111,7 @@ class ArrayColsOrganizer(QtCore.QObject):
         if not isinstance(leaf, tables.Table):
             cb = QtWidgets.QCheckBox(datasheet)
             cb.setToolTip(translate('ArrayColsOrganizer',
-                                    "Group Arrays into a unique view",
+                                    "Include this Array in the 'columnar Group'",
                                     'Checkbox tooltip text'))
             datasheet.leaf_view.setCornerWidget(cb)
             # Attributes for retrieving the state of the checkbox from the
@@ -147,12 +147,18 @@ class ArrayColsOrganizer(QtCore.QObject):
                 'folder': os.path.join(os.path.dirname(__file__)),
                 'author': 'Vicent Mas <vmas@vitables.org>',
                 'comment': translate('ArrayColsOrganizer',
-                    '<qt><p>Plugin that provides an alternative view for '
-                    'arrays with the same number of rows. <p>'
-                    'The user selects the arrays which he want to see in '
-                    'a unique viewer. Then clicks on the Node -> Linked View '
-                    'menu entry and the arrays are displayed as expected '
-                    'by the user.</qt>',
+                    """
+                    <qt><p>Plugin that provides an alternative view for
+                    arrays with the same number of rows. <p>
+                    The user has to open all the arrays she whishes to see in
+                    a unique viewer, and tick their bottom-right corner
+                    checkbox.
+                    She may then click on the `Node -> Group Arrays`
+                    menu entry and these arrays will be grouped
+                    in a single sub-window.
+                    <p>Note that all ticked arrays must have the same
+                    dimensions for the `Group` menu item to enable.</qt>
+                    """,
                     'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
         return about_page
@@ -193,8 +199,9 @@ class MenuUpdater(QtCore.QObject):
             triggered=self.groupArrays,
             icon=object_group_icon,
             statusTip=translate('MenuUpdater',
-                """Use a unique widget to display Arrays as if """
-                """they where columns of a Table""",
+                """
+                Use a unique widget to display Arrays as if
+                they where columns of a Table""",
                 "Status bar text for the Node -> Group Arrays action"))
 
         object_ungroup_icon = QtGui.QIcon()
@@ -235,7 +242,6 @@ class MenuUpdater(QtCore.QObject):
         selected.
 
         """
-
         self.group_action.setEnabled(False)
         self.ungroup_action.setEnabled(False)
         checked_views = []
