@@ -31,7 +31,7 @@ import collections
 import tables
 import numpy as np
 
-from PyQt5 import QtCore
+from qtpy import QtCore
 
 import vitables.utils
 

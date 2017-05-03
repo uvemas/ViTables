@@ -65,9 +65,9 @@ import logging
 import tables
 import numpy
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import vitables.utils
 from vitables.plugins.aboutpage import AboutPage

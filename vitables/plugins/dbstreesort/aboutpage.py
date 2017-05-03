@@ -35,9 +35,9 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-from PyQt5.uic import loadUiType
+from qtpy import QtGui
+from qtpy import QtWidgets
+from qtpy.uic import loadUiType
 
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more

@@ -6,9 +6,9 @@ import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-import PyQt5.QtTest as qtest
+from qtpy import QtWidgets
+from qtpy import QtCore
+import qtpy.QtTest as qtest
 
 import vitables.start as vtstart
 

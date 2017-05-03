@@ -31,9 +31,9 @@ rendered unselected.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 class LeafDelegate(QtWidgets.QStyledItemDelegate):
     """

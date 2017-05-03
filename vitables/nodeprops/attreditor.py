@@ -32,8 +32,8 @@ __docformat__ = 'restructuredtext'
 import tables
 import numpy
 
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import vitables.utils
 

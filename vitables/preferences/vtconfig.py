@@ -93,9 +93,9 @@ __version__ = '2.1'
 import sys
 import logging
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 from vitables.preferences import cfgexception
 import vitables.utils

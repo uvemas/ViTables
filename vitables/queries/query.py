@@ -31,9 +31,9 @@ __docformat__ = 'restructuredtext'
 import tables
 import numpy
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import vitables.utils
 
@@ -66,7 +66,7 @@ class Query(QtCore.QObject):
     """
 
 
-    query_completed = QtCore.pyqtSignal(bool, str, name="queryCompleted")
+    query_completed = QtCore.Signal(bool, str, name="queryCompleted")
 
 
     def __init__(self, tmp_h5file, table_uid, table, qdescr):

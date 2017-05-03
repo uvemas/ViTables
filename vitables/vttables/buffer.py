@@ -33,8 +33,8 @@ __docformat__ = 'restructuredtext'
 import warnings
 import logging
 
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import numpy
 import tables

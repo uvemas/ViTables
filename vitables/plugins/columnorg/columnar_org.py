@@ -36,9 +36,9 @@ import os.path
 
 import tables
 
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from qtpy import QtGui
+from qtpy import QtCore
+from qtpy import QtWidgets
 
 import vitables
 from vitables.vttables.datasheet import DataSheet

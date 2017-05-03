@@ -48,7 +48,7 @@ setup(name='ViTables',
           'Programming Language :: Python',
           'Topic :: Scientific/Engineering'
       ],
-      requires=['PyQt5', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
+      requires=['qtpy (>=1.2.1)', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
                 'tables (>=3.0)'],
       entry_points={
           'gui_scripts': ['vitables = vitables.start:gui'],

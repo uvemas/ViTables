@@ -7,8 +7,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtWidgets
 
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8

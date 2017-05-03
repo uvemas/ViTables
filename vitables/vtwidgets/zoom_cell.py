@@ -25,9 +25,9 @@ Display recursively the content of a given cell of a view.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import vitables.utils
 

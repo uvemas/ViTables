@@ -30,10 +30,10 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-from PyQt5.uic import loadUiType
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
+from qtpy.uic import loadUiType
 
 import vitables.utils
 
@@ -95,7 +95,7 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
         self.valueLE.textChanged.emit(self.valueLE.text())
 
 
-    @QtCore.pyqtSlot("QString", name="on_valueLE_textChanged")
+    @QtCore.Slot("QString", name="on_valueLE_textChanged")
     def checkName(self, current):
         """
         Check the current name value.
@@ -112,7 +112,7 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
             self.edit_button.setEnabled(1)
 
 
-    @QtCore.pyqtSlot(name="on_buttonsBox_accepted")
+    @QtCore.Slot(name="on_buttonsBox_accepted")
     def saveName(self):
         """Slot for saving the entered name and closing the dialog.
         """
