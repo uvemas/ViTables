@@ -1,55 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>http://vitables.org/Development/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/Docs/faq.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/Docs/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/Docs/testimonials.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/Download/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/Presentation/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/archive.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/blog/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/categories/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/galleries/Screenshots/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/galleries/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
  <url>
   <loc>http://vitables.org/index.html</loc>
-  <lastmod>2015-04-03</lastmod>
+  <lastmod>2017-05-05T19:51:00Z</lastmod>
  </url>
 </urlset>

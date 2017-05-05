@@ -5,8 +5,10 @@ pre.code .c { color: #408080; font-style: italic } /* Comment */
 pre.code .err { border: 1px solid #FF0000 } /* Error */
 pre.code .k { color: #008000; font-weight: bold } /* Keyword */
 pre.code .o { color: #666666 } /* Operator */
+pre.code .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 pre.code .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 pre.code .cp { color: #BC7A00 } /* Comment.Preproc */
+pre.code .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 pre.code .c1 { color: #408080; font-style: italic } /* Comment.Single */
 pre.code .cs { color: #408080; font-style: italic } /* Comment.Special */
 pre.code .gd { color: #A00000 } /* Generic.Deleted */
@@ -46,8 +48,10 @@ pre.code .mf { color: #666666 } /* Literal.Number.Float */
 pre.code .mh { color: #666666 } /* Literal.Number.Hex */
 pre.code .mi { color: #666666 } /* Literal.Number.Integer */
 pre.code .mo { color: #666666 } /* Literal.Number.Oct */
+pre.code .sa { color: #BA2121 } /* Literal.String.Affix */
 pre.code .sb { color: #BA2121 } /* Literal.String.Backtick */
 pre.code .sc { color: #BA2121 } /* Literal.String.Char */
+pre.code .dl { color: #BA2121 } /* Literal.String.Delimiter */
 pre.code .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 pre.code .s2 { color: #BA2121 } /* Literal.String.Double */
 pre.code .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -58,8 +62,10 @@ pre.code .sr { color: #BB6688 } /* Literal.String.Regex */
 pre.code .s1 { color: #BA2121 } /* Literal.String.Single */
 pre.code .ss { color: #19177C } /* Literal.String.Symbol */
 pre.code .bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.code .fm { color: #0000FF } /* Name.Function.Magic */
 pre.code .vc { color: #19177C } /* Name.Variable.Class */
 pre.code .vg { color: #19177C } /* Name.Variable.Global */
 pre.code .vi { color: #19177C } /* Name.Variable.Instance */
+pre.code .vm { color: #19177C } /* Name.Variable.Magic */
 pre.code .il { color: #666666 } /* Literal.Number.Integer.Long */
 table.codetable { width: 100%;} td.linenos {text-align: right; width: 4em;}
