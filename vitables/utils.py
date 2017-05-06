@@ -15,7 +15,7 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
-from PyQt5.QtWidgets import QFileDialog
+from qtpy.QtWidgets import QFileDialog
 
 """
 This is the utilities module. It contains functions that perform
@@ -35,9 +35,9 @@ import functools
 
 import numpy
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import vitables.vtwidgets.renamedlg as renamedlg
 from vitables.vtsite import ICONDIR, DOCDIR

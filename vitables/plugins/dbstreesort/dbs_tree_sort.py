@@ -37,9 +37,9 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from qtpy import QtGui
+from qtpy import QtCore
+from qtpy import QtWidgets
 
 import vitables
 from vitables.plugins.dbstreesort.aboutpage import AboutPage

@@ -31,9 +31,9 @@ import logging
 
 import tables
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import vitables.utils
 import vitables.vtsplash
@@ -91,10 +91,10 @@ class VTApp(QtCore.QObject):
     # Convenience signals for the plugins. Usually new signals are added
     # when a new plugin is added to ViTables. They are the link between
     # the plugins and the core of the program
-    leaf_model_created = QtCore.pyqtSignal(QtWidgets.QMdiSubWindow,
+    leaf_model_created = QtCore.Signal(QtWidgets.QMdiSubWindow,
                                            name="leafModelCreated")
-    dbtree_model_created = QtCore.pyqtSignal()
-    pluginsLoaded = QtCore.pyqtSignal()
+    dbtree_model_created = QtCore.Signal()
+    pluginsLoaded = QtCore.Signal()
 
     def __init__(self, mode='', dblist='', h5files=None, keep_splash=True):
         """

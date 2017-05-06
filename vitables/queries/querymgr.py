@@ -33,9 +33,9 @@ __docformat__ = 'restructuredtext'
 
 import logging
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
 import vitables.utils
 import vitables.queries.querydlg as querydlg

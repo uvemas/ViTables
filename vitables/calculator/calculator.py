@@ -6,9 +6,9 @@ import os
 import re
 import logging
 
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from qtpy import QtGui
+from qtpy import QtCore
+from qtpy import QtWidgets
 
 import tables
 import numpy as np
@@ -156,7 +156,7 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
                 self._store_expressions()
                 self.accept()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_save_button_clicked(self):
         """Store expression for future use.
 
@@ -182,7 +182,7 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
                                             self.expression_edit.toPlainText(),
                                             self.result_edit.text())
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_remove_button_clicked(self):
         """Remove stored expression.
 

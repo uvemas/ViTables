@@ -30,11 +30,11 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
-from PyQt5.uic import loadUiType
+from qtpy.uic import loadUiType
 
 from vitables.vtsite import ICONDIR
 import vitables.utils
@@ -191,7 +191,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.plugins_item.appendRow(item)
 
 
-    @QtCore.pyqtSlot("QModelIndex", name="on_pageSelector_clicked")
+    @QtCore.Slot("QModelIndex", name="on_pageSelector_clicked")
     def changeSettingsPage(self, index):
         """Slot for changing the selected page in the Settings dialog.
 
@@ -207,7 +207,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.aboutPluginPage(pluginID)
 
 
-    @QtCore.pyqtSlot("QAbstractButton *", name="on_buttonsBox_clicked")
+    @QtCore.Slot("QAbstractButton *", name="on_buttonsBox_clicked")
     def executeButtonAction(self, button):
         """Slot that manages button box clicks in the Preferences dialog.
 
@@ -289,7 +289,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.accept()
 
 
-    @QtCore.pyqtSlot("bool", name="on_lastDirCB_toggled")
+    @QtCore.Slot("bool", name="on_lastDirCB_toggled")
     def setInitialWorkingDirectory(self, cb_on):
         """
         Configure startup behavior of the application.
@@ -315,7 +315,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.new_prefs['Startup/startupWorkingDir'] = 'home'
 
 
-    @QtCore.pyqtSlot("bool", name="on_restoreCB_toggled")
+    @QtCore.Slot("bool", name="on_restoreCB_toggled")
     def setRestoreSession(self, cb_on):
         """
         Configure startup behavior of the application.
@@ -335,7 +335,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.new_prefs['Startup/restoreLastSession'] = 0
 
 
-    @QtCore.pyqtSlot(name="on_fontPB_clicked")
+    @QtCore.Slot(name="on_fontPB_clicked")
     def setLoggerFont(self):
         """Slot for setting the logger font."""
 
@@ -349,7 +349,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
 
 
-    @QtCore.pyqtSlot(name="on_foregroundPB_clicked")
+    @QtCore.Slot(name="on_foregroundPB_clicked")
     def setLoggerTextColor(self):
         """Slot for setting the logger foreground color."""
 
@@ -363,7 +363,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.sampleTE.moveCursor(QtGui.QTextCursor.End)
 
 
-    @QtCore.pyqtSlot(name="on_backgroundPB_clicked")
+    @QtCore.Slot(name="on_backgroundPB_clicked")
     def setLoggerBackgroundColor(self):
         """Slot for setting the logger background color."""
 
@@ -377,7 +377,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.sampleTE.setStyleSheet(new_stylesheet)
 
 
-    @QtCore.pyqtSlot(name="on_workspacePB_clicked")
+    @QtCore.Slot(name="on_workspacePB_clicked")
     def setWorkspaceColor(self):
         """Slot for setting the workspace background color."""
 
@@ -391,7 +391,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.workspaceLabel.setStyleSheet(new_stylesheet)
 
 
-    @QtCore.pyqtSlot("QString", name="on_stylesCB_activated")
+    @QtCore.Slot("QString", name="on_stylesCB_activated")
     def setGlobalStyle(self, style_name):
         """
         Slot for setting the application style.

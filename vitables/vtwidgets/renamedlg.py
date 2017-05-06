@@ -47,11 +47,11 @@ __docformat__ = 'restructuredtext'
 import os.path
 import re
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 
-from PyQt5.uic import loadUiType
+from qtpy.uic import loadUiType
 
 import vitables.utils
 
@@ -136,7 +136,7 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
         self.valueLE.textChanged.emit(self.valueLE.text())
 
 
-    @QtCore.pyqtSlot('QString', name="on_valueLE_textChanged")
+    @QtCore.Slot('QString', name="on_valueLE_textChanged")
     def checkName(self, new_name):
         """
         Check the new name value.
@@ -184,7 +184,7 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
             self.overwrite_button.setEnabled(0)
 
 
-    @QtCore.pyqtSlot("QAbstractButton *", name="on_buttonsBox_clicked")
+    @QtCore.Slot("QAbstractButton *", name="on_buttonsBox_clicked")
     def executeAction(self, button):
         """Execute the action specified by the clicked button.
 

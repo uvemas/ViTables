@@ -36,10 +36,10 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
-from PyQt5.uic import loadUiType
+from qtpy import QtGui
+from qtpy import QtCore
+from qtpy import QtWidgets
+from qtpy.uic import loadUiType
 
 
 # This method of the PyQt4.uic module allows for dynamically loading user
