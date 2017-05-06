@@ -1,5 +1,5 @@
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2017 Vicent Mas. All rights reserved
 #       Author:  Vicent Mas - vmas@vitables.org
 #
 # This Makefile is intended to create the ViTables installer for Windows.
@@ -8,7 +8,7 @@
 VERSIONFILE=..\VERSION
 #VERSION=$(shell type ..\VERSION) (syntax not supported by nmake)
 
-VERSION=2.1
+VERSION=2.2.2
 
 PYTHONVERSION=26
 DOTPYTHONVERSION=2.6

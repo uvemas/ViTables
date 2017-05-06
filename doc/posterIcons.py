@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008, 2009 Vicent Mas. All rights reserved
+#       Copyright (C) 2008, 2017 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by

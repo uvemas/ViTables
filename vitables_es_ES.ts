@@ -2160,11 +2160,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="vitables/vtapp.py" line="160"/>
         <source>ViTables {0}
-Copyright (c) 2008-2013 Vicent Mas.
+Copyright (c) 2008-2017 Vicent Mas.
 All rights reserved.</source>
         <comment>Application startup message</comment>
         <translation>ViTables {0}
-Copyright (c) 2008-2013 Vicent Mas.
+Copyright (c) 2008-2017 Vicent Mas.
 Todos los derechos reservados.</translation>
     </message>
     <message>

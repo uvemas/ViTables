@@ -1,4 +1,4 @@
-#       Copyright (C) 2008-2013 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2017 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by

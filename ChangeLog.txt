@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 06, 2017 **
+Copyright notice and release version have been updated.
+
 ** November 06, 2014 **
 Project file (i.e vitables.pro) and translations have all been updated.
 

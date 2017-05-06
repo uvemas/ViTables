@@ -14,11 +14,11 @@
    height="220"
    id="svg2516"
    sodipodi:version="0.32"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.5 r10040"
    version="1.0"
    sodipodi:docname="vitables_logo.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/vmas/ViTables/hg_branches/vitables_tip/vitables/icons/vitables_logo.png"
+   inkscape:export-filename="C:\Users\vicente\Documents\GitHub\ViTables\vitables\icons\vitables_logo.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    enable-background="new">
@@ -71,12 +71,12 @@
      id="namedview2520"
      height="220px"
      width="500px"
-     inkscape:window-width="1270"
-     inkscape:window-height="956"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-width="1366"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      showgrid="false"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata2522">
     <rdf:RDF>
@@ -85,6 +85,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -250,6 +251,6 @@
          sodipodi:role="line"
          id="tspan2422"
          x="10.096598"
-         y="29.543539">© 2008-2013 by Vicent Mas</tspan></text>
+         y="29.543539">© 2008-2017 by Vicent Mas</tspan></text>
   </g>
 </svg>
