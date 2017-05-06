@@ -159,9 +159,9 @@ class LeafModel(QtCore.QAbstractTableModel):
             # the section numbers are used as horizontal labels
             if hasattr(self.data_source, 'description'):
                 return str(self.data_source.colnames[section])
-            return str(section + 1)
+            return str(section)
         # The section label for vertical header. This is a 64 bits integer
-        return str(self.rbuffer.start + section + 1)
+        return str(self.rbuffer.start + section)
 
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
