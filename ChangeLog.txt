@@ -1,6 +1,11 @@
 ViTables ChangeLog
 ==================
+** May 07, 2017 **
+Fixed a bug in the File -> New operation. New files could not be created.
+
 ** May 06, 2017 **
+The 'Thanks to' list has been updated.
+
 Copyright notice and release version have been updated.
 
 ** November 06, 2014 **

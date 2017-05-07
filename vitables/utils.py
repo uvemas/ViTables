@@ -302,8 +302,8 @@ def getFilepath(parent, caption, dfilter, filepath='', settings=None):
     try:
         if file_selector.exec_():  # OK clicked
             filepath = file_selector.selectedFiles()[0]
-            # Make sure filepath contains no backslashes
-            filepath = QtCore.QDir.fromNativeSeparators(filepath)
+            # Make sure filepath uses Unix-like separators
+            filepath = forwardPath(filepath)
             # Update the working directory
             working_dir = file_selector.directory().canonicalPath()
         else:  # Cancel clicked

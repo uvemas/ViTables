@@ -622,8 +622,8 @@ class VTApp(QtCore.QObject):
             self.updateFSHistory(working_dir)
 
         else:
-            # Make sure the path contains no backslashes
-            filepath = QtCore.QDir.fromNativeSeparators(filepath)
+            # Make sure filepath uses Unix-like separators
+            filepath = vitables.utils.forwardPath(filepath)
 
         # Open the database and select it in the tree view
         if self.gui.dbs_tree_model.openDBDoc(filepath, mode, position):

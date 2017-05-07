@@ -136,7 +136,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         :Parameter filepath: the full path of an open database.
         """
-        filepath = os.path.abspath(filepath)
         if filepath in self.__openDBs:
             return self.__openDBs[filepath]
         else:
@@ -215,7 +214,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         - `mode`: the opening mode of the database file. It can be 'r'ead-only
           'w'rite or 'a'ppend
         """
-        filepath = os.path.abspath(filepath)
         is_open = False
         if self.checkOpening(filepath):
             # Open the database and add it to the tracking system
@@ -320,7 +318,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                       'A logger info message'))
         (f_handler, filepath) = tempfile.mkstemp('.h5', 'FT_')
         os.close(f_handler)
-        self.tmp_filepath = filepath
+        self.tmp_filepath = vitables.utils.forwardPath(filepath)
         db_doc = self.createDBDoc(self.tmp_filepath, True)
         return db_doc
 
