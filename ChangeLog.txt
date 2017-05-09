@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** May 09, 2017 **
+Bug fixed: if we close the Logger in the current session it won't be opened in 
+future sessions. And if we float the Logger in the current session it will
+automatically be floated in future sessions.
+
 ** May 07, 2017 **
 Fixed a bug in the File -> New operation. New files could not be created.
 
