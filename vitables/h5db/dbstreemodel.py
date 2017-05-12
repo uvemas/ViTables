@@ -52,11 +52,16 @@ translate = QtWidgets.QApplication.translate
 
 
 def _get_node_tooltip(node):
-    """Takes one of vitable nodes and return tooltip text."""
-    attrset = node.node._v_attrs
+    """Takes one of vitables nodes and return tooltip text.
+
+    :Parameters node: a node from the tree model
+    """
+
     tooltip_lines = []
-    if hasattr(attrset, 'TITLE') and attrset.TITLE:
-        tooltip_lines.append(attrset.TITLE)
+    attrset = node.node._v_attrs
+    if not hasattr(node.node, 'target'):
+        if hasattr(attrset, 'TITLE') and bool(str(attrset.TITLE)):
+            tooltip_lines.append(attrset.TITLE)
     tooltip_lines.append('{0}: {1}'.format(node.node_kind, node.name))
     tooltip_lines.extend(
         ['{0}: {1}'.format(name, str(getattr(attrset, name)))
