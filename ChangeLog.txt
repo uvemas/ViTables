@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 13, 2017 **
+Bug fixed: displaying EnumCol columns is badly implemented.
+
 ** May 12, 2017 **
 Bug fixed: tooltips for link nodes are not shown. Instead a verbose error
 message is logged.
