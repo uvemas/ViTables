@@ -162,10 +162,10 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         if node.node_kind == 'table':
             col = info.columns_names[column]
             title = '{0}: {1}[{2}]'.format(node.name, col,
-                tmodel.rbuffer.start + row + 1)
+                tmodel.rbuffer.start + row)
         else:
             title = '{0}: ({1},{2})'.format(node.name,
-                tmodel.rbuffer.start + row + 1, column + 1)
+                tmodel.rbuffer.start + row, column)
 
         zoom_cell.ZoomCell(data, title, self.vtgui.workspace,
                           self.dbt_leaf)

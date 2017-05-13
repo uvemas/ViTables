@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 13, 2017 **
+Bug fixed: zoomed views have rows and columns starting from 1.
+
 Bug fixed: displaying EnumCol columns is badly implemented.
 
 ** May 12, 2017 **

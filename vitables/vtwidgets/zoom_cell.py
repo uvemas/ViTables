@@ -156,8 +156,14 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
         else:
             for section in range(0, ncols):
                 item = QtWidgets.QTableWidgetItem()
-                item.setText('{0}'.format(section + 1))
+                item.setText('{0}'.format(section))
                 self.grid.setHorizontalHeaderItem(section, item)
+
+        # Setup grid vertical header
+        for section in range(0,nrows):
+            item = QtWidgets.QTableWidgetItem()
+            item.setText('{0}'.format(section))
+            self.grid.setVerticalHeaderItem(section, item)
 
         # Fill the grid
         if self.field_names:
@@ -314,7 +320,7 @@ class ZoomCell(QtWidgets.QMdiSubWindow):
         # Get caption
         if self.field_names:
             caption = '{0}: {1}[{2}]'.format(self.title,
-                self.field_names[col], row + 1)
+                self.field_names[col], row)
         else:
-            caption = '{0}: ({1}, {2})'.format(self.title, row + 1, col + 1)
+            caption = '{0}: ({1}, {2})'.format(self.title, row, col)
         ZoomCell(cell, caption, self.workspace, self.dbt_leaf)
