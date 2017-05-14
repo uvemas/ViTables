@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** May 14, 2017 **
+Table queries slightly reworked: query ranges are now Python-like ranges i.e. 
+the meaning of the start, stop and step parameters is the same as for Python
+slices.
+
 ** May 13, 2017 **
 Bug fixed: zoomed views have rows and columns starting from 1.
 

@@ -143,6 +143,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         sorted_fields = [field for field in info['valid_fields']]
         sorted_fields.sort()
         self.columnsComboBox.insertItems(0, sorted_fields)
+        self.rstartLE.setText('0')
         self.rstopLE.setText('{0}'.format(info['nrows']))
 
         whatsthis_button = self.buttonBox.button(QtWidgets.QDialogButtonBox.Help)
@@ -330,21 +331,15 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
                 status_ok = False
                 self.logger.error(
                     translate('QueryDlg',
-                              """The stop value is greater than the number """
-                              """of rows. Please, choose another one.""",
+                              """The stop value cannot be greater than """
+                              """the number of rows.""",
                               'A logger info message'))
             elif start > stop:
                 status_ok = False
                 self.logger.error(
                     translate('QueryDlg',
-                              """The start value is greater than the """
-                              """stop value. Please, choose another one.""",
-                              'A logger info message'))
-            elif start < 1:
-                status_ok = False
-                self.logger.error(
-                    translate('QueryDlg',
-                              "The start value must be greater than 0.",
+                              """The start value cannot be greater than the """
+                              """stop value.""",
                               'A logger info message'))
 
         # Enable/disable the OK button
@@ -405,7 +400,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
 
         # Get the range and convert it into a Python range
         self.query_info['rows_range'] = (
-            numpy.array(self.rstartLE.text()).astype(numpy.int64) - 1,
+            numpy.array(self.rstartLE.text()).astype(numpy.int64),
             numpy.array(self.rstopLE.text()).astype(numpy.int64),
             numpy.array(self.rstep.text()).astype(numpy.int64))
 
