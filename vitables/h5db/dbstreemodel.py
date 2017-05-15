@@ -1093,17 +1093,17 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
     def mimeTypes(self):
         """Returns a list of MIME types that can be used to describe a
-        list of model indexes.
+        list of model indexes or a list of filepaths.
         """
         return ["application/x-dbstreemodeldatalist", "text/uri-list"]
 
 
     def mimeData(self, indexes):
-        """Returns an object that contains serialized items of data
+        """Returns a QMimeData object that contains serialized items of data
         corresponding to the list of indexes specified.
 
-        When a node is dragged the information required to drop it later
-        on is encoded by this method and returned as a QMimeData object.
+        When a node is dragged the information required to drop it later on is
+        encoded by this method and returned as a QMimeData object.
 
         :Parameter indexes: a list of indexes
         """
@@ -1126,6 +1126,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
                 self.initial_parent = self.parent(index)
 
+        # Store the MIME type of the object and the encoded description of that
+        # object in the QMimeData object
         mime_data.setData("application/x-dbstreemodeldatalist", encoded_data)
         return mime_data
 
@@ -1145,6 +1147,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Returns: True if item is dropped. Otherwise it returns False.
         """
 
+        # Examine the MIME type
         if not (data.hasFormat("application/x-dbstreemodeldatalist") or
                 data.hasFormat("text/uri-list")):
             return False
@@ -1155,17 +1158,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         if column > 0:
             return False
 
+        # If the dropped object is one or more files then open them
         if data.hasFormat("text/uri-list"):
-            # The encoded data is stored in a byte array with a trailing
-            # NULL byte
-            encoded_data = data.data("text/uri-list")
-            # Convert the binary array into a string with suitable format
-            uris_string = QtCore.QUrl.fromEncoded(encoded_data).toString()
-            # Split the string using the apropriate separators
-            uris_list = re.split('\r\n|\r|\n', uris_string)
+            uris_list = data.urls()
             # Transform every element of the sequence into a path and open it
-            for item in uris_list:
-                uri = QtCore.QUrl(item)
+            for uri in uris_list:
                 path = uri.path()
                 if sys.platform.startswith('win'):
                     path = path[1:]
@@ -1173,6 +1170,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                     self.vtapp.fileOpen(path)
             return True
 
+        # If the dropped object is a tree node then update the tree
         parent_node = self.nodeFromIndex(parent)
         encoded_data = data.data("application/x-dbstreemodeldatalist")
 

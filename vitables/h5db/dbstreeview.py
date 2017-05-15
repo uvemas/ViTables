@@ -259,17 +259,48 @@ class DBsTreeView(QtWidgets.QTreeView):
             self.activateNode(current)
 
 
-    def dropEvent(self, event):
+    def dragMoveEvent(self, event):
         """
-        Event handler for `QDropEvent` events.
+        Event handler for `QDragMoveEvent` events.
 
-        If an icon is dropped on a free area of the tree view then the
-        icon URL is converted to a path (which we assume to be an `HDF5`
-        file path) and ``ViTables`` tries to open it.
+        Dragging icons from the Desktop/Files Manager into the tree view is
+        supported.
 
         :Parameter event: the event being processed.
         """
 
+        # The dragged object (one or more files) has a MIME type (namely
+        # text/uri-list) and some associated data (the list of URLs of the
+        # dragged files). All that information can be accessed via the event
+        # MimeData() method.
+        # The widget should examine that information and accept the drop if
+        # appropriate.
+        mime_data = event.mimeData()
+        if mime_data.hasFormat('text/uri-list'):
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.acceptProposedAction()
+        else:
+            return QtWidgets.QTreeView.dragMoveEvent(self, event)
+
+
+    def dropEvent(self, event):
+        """
+        Event handler for `QDropEvent` events.
+
+        This event is sent when a drag and drop action is completed. In our case
+        if an icon is dropped on the tree view then the icon URL is converted to
+        a path (which we assume to be an `HDF5` file path) and ``ViTables``
+        tries to open it.
+
+        :Parameter event: the event being processed.
+        """
+
+        # The dropped object (one or more files) has a MIME type (namely
+        # text/uri-list) and some associated data (the list of URLs of the
+        # dropped files). All that information can be accessed via the event
+        # MimeData() method.
+        # The widget should examine that information and launch the required
+        # actions.
         mime_data = event.mimeData()
         if mime_data.hasFormat('text/uri-list'):
             if self.dbt_model.dropMimeData(
@@ -279,42 +310,6 @@ class DBsTreeView(QtWidgets.QTreeView):
                 self.setFocus(True)
         else:
             QtWidgets.QTreeView.dropEvent(self, event)
-
-
-    def dragEnterEvent(self, event):
-        """
-        Event handler for `QDragEnterEvent` events.
-
-        Dragging files from the Desktop onto the tree view is supported.
-
-        :Parameter event: the event being processed.
-        """
-
-        mime_data = event.mimeData()
-        if mime_data.hasFormat('text/uri-list'):
-            event.setDropAction(QtCore.Qt.CopyAction)
-            event.acceptProposedAction()
-        else:
-            QtWidgets.QTreeView.dragEnterEvent(self, event)
-
-
-    def dragMoveEvent(self, event):
-        """
-        Event handler for `QDragMoveEvent` events.
-
-        Dragging files from the Desktop onto the tree view is supported. If the
-        icon being dragged is placed over a tree view item then drop operations
-        are not allowed (dragging icon is a slashed circle).
-
-        :Parameter event: the event being processed.
-        """
-
-        mime_data = event.mimeData()
-        if mime_data.hasFormat('text/uri-list'):
-            event.setDropAction(QtCore.Qt.CopyAction)
-            event.acceptProposedAction()
-        else:
-            return QtWidgets.QTreeView.dragMoveEvent(self, event)
 
 
     def focusInEvent(self, event):
