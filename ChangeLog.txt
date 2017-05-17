@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 17, 2017 **
+Bug fixed: moving nodes to a different file raises a tables.ClosedNodeError.
+
 ** May 15, 2017 **
 Bug fixed: files cannot be opened by drag and drop into the tree view.
 

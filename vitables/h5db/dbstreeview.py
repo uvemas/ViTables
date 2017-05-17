@@ -55,15 +55,14 @@ class DBsTreeView(QtWidgets.QTreeView):
         """
 
         super(DBsTreeView, self).__init__(parent)
-        #self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-
-        self.vtapp = vtapp
-        self.vtgui = vtgui
 
         # The model
         self.setModel(model)
         self.dbt_model = model
         self.smodel = self.selectionModel()
+
+        self.vtapp = vtapp
+        self.vtgui = vtgui
 
         # The custom delegate used for editing items
         self.setItemDelegate(NodeItemDelegate(vtgui, self))
@@ -85,7 +84,14 @@ class DBsTreeView(QtWidgets.QTreeView):
         # Misc. setup
         self.setRootIsDecorated(True)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        # Whether selections are done in terms of single items, rows or columns
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        # Whether the user can select one or many items
+        # Changed from SingleSelection to ExtendedSelection in commit 403a4c3
+        # but I don't know why. I revert it to SingleSelection or a
+        # tables.ClosedNodeError is randomly raised when a group is moved to a
+        # different file
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.setWhatsThis(translate('DBsTreeView',
             """<qt>
             <h3>The Tree of databases</h3>
@@ -226,7 +232,7 @@ class DBsTreeView(QtWidgets.QTreeView):
     def selectNode(self, index):
         """Select the given index.
 
-        :Parameters `index`: the model index being selected
+        :Parameter `index`: the model index being selected
         """
 
         self.smodel.clearSelection()
@@ -347,6 +353,7 @@ class DBsTreeView(QtWidgets.QTreeView):
         pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             self.frame_style['foreground'])
         QtWidgets.QTreeView.focusOutEvent(self, event)
+
 
 if __name__ == '__main__':
     import sys
