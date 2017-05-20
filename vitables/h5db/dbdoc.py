@@ -70,6 +70,7 @@ class DBDoc(QtCore.QObject):
         super(DBDoc, self).__init__()
 
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         # The opening mode
         self.mode = mode
@@ -102,7 +103,7 @@ class DBDoc(QtCore.QObject):
                 self.mode = 'r'
                 self.logger.warning(
                     translate('DBDoc',
-                              """\nWarning: file access in read-write mode """
+                              """File access in read-write mode """
                               """is denied. It will be opened in read-only """
                               """mode.""", 'A logger error message'))
 
@@ -160,7 +161,7 @@ class DBDoc(QtCore.QObject):
         except tables.exceptions.NoSuchNodeError:
             self.logger.error(
                 translate('DBDoc',
-                          """\nError: cannot open node {0} in file {1} """,
+                          """Cannot open node {0} in file {1} """,
                           'Error message').format(where, self.filepath))
             vitables.utils.formatExceptionInfo()
             return None

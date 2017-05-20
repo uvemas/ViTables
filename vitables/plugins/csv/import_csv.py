@@ -414,16 +414,16 @@ def isValidFilepath(filepath):
     logger = logging.getLogger(__name__)
     valid = True
     if os.path.exists(filepath):
-        logger.warning(translate(
+        logger.error(translate(
             'ImportCSV',
-            'Import failed because destination file already exists.',
+            'CSV import failed because destination file already exists.',
             'A file creation error'))
         valid = False
 
     elif os.path.isdir(filepath):
-        logger.warning(translate(
+        logger.error(translate(
             'ImportCSV',
-            'Import failed because destination container is a directory.',
+            'CSV import failed because destination container is a directory.',
             'A file creation error'))
         valid = False
 
@@ -545,15 +545,17 @@ class ImportCSV(QtCore.QObject):
         :Parameter filepath: the `PyTables` file filepath
         """
         logger = logging.getLogger(__name__)
+        logger.setLevel(logging.INFO)
         dbdoc = None
         try:
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
-            dest_filepath = os.path.join(dirname, '{0}.h5'.format(root))
+            dest_filepath = vitables.utils.forwardPath(os.path.join(dirname,
+                                                        '{0}.h5'.format(root)))
             if isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
-            logger.warning(
+            logger.error(
                 translate('ImportCSV', 'Import failed because destination '
                           'file cannot be created.',
                           'A file creation error'))

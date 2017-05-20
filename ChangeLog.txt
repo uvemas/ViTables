@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 20, 2017 **
+Management of logged messages has been cleaned.
+
 ** May 17, 2017 **
 Bug fixed: moving nodes to a different file raises a tables.ClosedNodeError.
 

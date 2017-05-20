@@ -99,6 +99,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         super(DBsTreeModel, self).__init__(parent=None)
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
         # The dictionary of open databases
         self.__openDBs = {}
 

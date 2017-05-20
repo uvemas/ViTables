@@ -108,6 +108,7 @@ class VTApp(QtCore.QObject):
         super(VTApp, self).__init__()
 
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         # Make the main window easily accessible for external modules
         self.setObjectName('VTApp')

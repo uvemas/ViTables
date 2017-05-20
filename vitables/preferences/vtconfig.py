@@ -133,6 +133,7 @@ class Config(QtCore.QSettings):
         """
 
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         organization = QtWidgets.qApp.organizationName()
         product = QtWidgets.qApp.applicationName()

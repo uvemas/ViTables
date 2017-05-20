@@ -51,6 +51,7 @@ def getTableInfo(table):
     :Parameter table: the `tables.Table` instance being queried.
     """
     logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
 
     info = {}
     info['nrows'] = table.nrows
@@ -67,10 +68,10 @@ def getTableInfo(table):
     info['valid_fields'] = []
 
     if info['nrows'] <= 0:
-        logger.error(
+        logger.info(
             translate('QueriesManager',
                       "Table {0} is empty. Nothing to query.",
-                      'Warning message for users').format(info['name']))
+                      'Info message for users').format(info['name']))
         return None
 
     # Find out the valid (i.e. searchable) fields and condition variables.
@@ -105,12 +106,12 @@ def getTableInfo(table):
 
     # If table has not columns suitable to be filtered does nothing
     if not info['valid_fields']:
-        logger.error(
+        logger.info(
             translate('QueriesManager',
                       """Table {0} has no columns suitable to be """
                       """queried. All columns are nested, multidimensional """
                       """or have a Complex data type.""",
-                      'An error when trying to query a table').format(
+                      'Info when trying to query a table').format(
                           info['name']))
         return None
     elif len(info['valid_fields']) != len(info['col_names']):
@@ -154,6 +155,7 @@ class QueriesManager(QtCore.QObject):
         super(QueriesManager, self).__init__(parent)
 
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         # Description of the last query made
         self.last_query = [None, None, None]

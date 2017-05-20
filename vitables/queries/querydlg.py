@@ -89,6 +89,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         Initialise the dialog.
         """
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         #
         # Attributes used by slot updateOKState

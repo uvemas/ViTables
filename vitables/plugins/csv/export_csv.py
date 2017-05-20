@@ -82,6 +82,7 @@ class ExportToCSV(QtCore.QObject):
         super(ExportToCSV, self).__init__()
 
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
@@ -197,14 +198,14 @@ class ExportToCSV(QtCore.QObject):
 
         # Check the returned path
         if os.path.exists(filepath):
-            self.logger.warning(translate(
+            self.logger.error(translate(
                 'ExportToCSV',
                 'Export failed because destination file already exists.',
                 'A file creation error'))
             return
 
         if os.path.isdir(filepath):
-            self.logger.warning(translate(
+            self.logger.error(translate(
                 'ExportToCSV',
                 'Export failed because destination container is a directory.',
                 'A file creation error'))
@@ -225,26 +226,26 @@ class ExportToCSV(QtCore.QObject):
 
         # Empty datasets can't be saved as CSV files
         if leaf.nrows == 0:
-            self.logger.warning(translate(
+            self.logger.info(translate(
                 'ExportToCSV', 'Empty dataset. Nothing to export.'))
             return
 
         # Scalar arrays can't be saved as CSV files
         if leaf.shape == ():
-            self.logger.warning(translate(
+            self.logger.info(translate(
                 'ExportToCSV', 'Scalar array. Nothing to export.'))
             return
 
         # Datasets with more than 2 dimensions can't be saved as CSV files
         if len(leaf.shape) > 2:
-            self.logger.warning(translate(
+            self.logger.error(translate(
                 'ExportToCSV', 'The selected node has more than '
                 '2 dimensions. I can\'t export it to CSV format.'))
             return
 
         # Variable lenght arrays can't be saved as CSV files
         if isinstance(leaf, tables.VLArray):
-            self.logger.warning(translate(
+            self.logger.error(translate(
                 'ExportToCSV', 'The selected node is a VLArray. '
                 'I can\'t export it to CSV format.'))
             return
@@ -255,7 +256,7 @@ class ExportToCSV(QtCore.QObject):
             first_row = leaf[0]
             for item in first_row:
                 if item.shape != ():
-                    self.logger.warning(translate(
+                    self.logger.error(translate(
                         'ExportToCSV',
                         'Some fields aren\'t scalars. '
                         'I can\'t export the table to CSV format.'))

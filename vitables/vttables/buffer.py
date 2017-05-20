@@ -85,6 +85,7 @@ class Buffer(object):
         """
 
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         self.data_source = leaf
 

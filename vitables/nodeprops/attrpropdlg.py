@@ -85,6 +85,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         self.setupUi(self)
 
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         # Customise the dialog's pages
         self.fillSysAttrsPage(info)
