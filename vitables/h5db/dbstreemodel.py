@@ -288,7 +288,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             except (tables.NodeError, OSError):
                 self.logger.error(
                     translate('DBsTreeModel',
-                              """\nFile creation failed due to unknown"""
+                              """File creation failed due to unknown"""
                               """reasons! Please, have a look to the """
                               """last error displayed in the logger. If you """
                               """think it's a bug, please report it to """
@@ -988,10 +988,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             self.insertRows(0, new_children, index)
 
     def insertRows(self, position=0, count=1, parent=QtCore.QModelIndex()):
-        """Insert `count` rows before the given row.
+        """Insert `count` rows before the given `position`.
 
-        This method is called during nodes population and when files are
-        opened/created.
+        Inserted rows will be children of the item represented by the `parent`
+        model index. This method is called during nodes population and when
+        files are opened/created.
 
         Warning! This method is MONKEY PATCHED if the DBs Sorting plugin is
         enabled. If it is the case the working code will be in module

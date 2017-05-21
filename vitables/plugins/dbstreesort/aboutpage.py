@@ -99,7 +99,7 @@ class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
 
         # Fill the combo with values and choose the current sorting algorithm
         self.algorithms_combobox.insertItems(
-            0, ['alphabetical', 'human', 'creation time'])
+            0, ['alphabetical', 'human'])
         current_index = self.algorithms_combobox.findText(self.initial_sorting)
         self.algorithms_combobox.setCurrentIndex(current_index)
 

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 21, 2017 **
+dbs_tree_sort plugin has been improved.
+
 ** May 20, 2017 **
 Management of logged messages has been cleaned.
 

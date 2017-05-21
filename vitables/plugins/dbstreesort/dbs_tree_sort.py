@@ -25,13 +25,14 @@ Once the plugin is enabled it works on any file opened after the enabling.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '1.0'
+__version__ = '1.1'
 plugin_class = 'DBsTreeSort'
 plugin_name = 'Tree of DBs sorting'
 comment = 'Sorts the display of the databases tree'
 
 import os
 import re
+import logging
 try:
     import configparser
 except ImportError:
@@ -53,34 +54,40 @@ translate = QtWidgets.QApplication.translate
 
 def customiseDBsTreeModel():
     """Slot connected to the convenience dbtree_model_created signal.
-
-    :Parameter `mode`: the model representing the tree of databases.
     """
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
 
     # The absolute path of the INI file
     ini_filename = os.path.join(os.path.dirname(__file__),
                                 'sorting_algorithm.ini')
     config = configparser.ConfigParser()
-    default_sorting = 'default'
     try:
         config.read(ini_filename)
         initial_sorting = config.get('DBsTreeSorting', 'algorithm')
     except (IOError, configparser.ParsingError):
-        initial_sorting = default_sorting
+        logger.error(
+            translate('DBsTreeSort', 'The configuration file of the '
+                    'dbs_tree_sort plugin cannot be read.',
+                    'DBsTreeSort error message'))
+        return
 
     # The essence of the plugin is pretty simple, just monkeypatch
     # the insertRows() method of the model to get the desired result.
     # TODO how can the nodes be chronologically sorted?
-    if initial_sorting == 'creation time':
-        pass
     if initial_sorting == 'human':
         dbstreemodel.DBsTreeModel.insertRows = humanSort
     elif initial_sorting == 'alphabetical':
         dbstreemodel.DBsTreeModel.insertRows = alphabeticalSort
+    else:
+        logger.warning(
+            translate('DBsTreeSort', 'Unknown sorting algorithm: {}.',
+                    'DBsTreeSort error message').format(initial_sorting))
 
 
 def alphabeticalSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
-    """Insert `count` rows before the given row.
+    """Sort nodes alphabetically.
 
     This method is called during nodes population and when files are
     opened/created.
@@ -135,7 +142,7 @@ def alphanum_key(key):
 
 
 def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
-    """Insert `count` rows before the given row.
+    """Sort nodes using a human sort algorithm.
 
     This method is called during nodes population and when files are
     opened/created.
@@ -214,7 +221,10 @@ class DBsTreeSort(object):
                 'about_text': translate(
                     'DBsTreeSortingPage',
                     '<qt><p>Plugin that provides sorting capabilities to '
-                    'the tree of DBs.<p>At the moment only two sorting '
+                    'the tree of DBs.<p>For every open file, nodes (groups and'
+                    ' leaves) are sorted when the file is open. '
+                    'Nodes added at a later time are not sorted.<p>At the '
+                    'moment only two sorting '
                     'algorithms are supported: human (a.k.a. natural sorting) '
                     'and alphabetical.</qt>',
                     'Text of an About plugin message box')}
