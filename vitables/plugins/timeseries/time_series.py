@@ -21,7 +21,8 @@
 """Plugin that provides nice string formatting for time fields.
 
 It supports not only native `PyTables` time datatypes but also the time
-series contained in `PyTables` tables generated via ``scikits.timeseries``.
+series contained in `PyTables` tables generated via ``scikits.timeseries`` and
+``Pandas``.
 """
 
 __docformat__ = 'restructuredtext'

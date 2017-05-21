@@ -25,15 +25,14 @@ import os
 import datetime
 
 import pandas
-from pandas.io.data import DataReader
+import pandas_datareader.data as web
 
 startdate = datetime.date(2002, 1, 5)
 enddate = datetime.date(2003, 12, 1)
 
-# retrieve data from yahoo.
-# Retrieve Intel Corp. prices of stocks from Yahoo! Finance historical data pages
-# Data format is [(d, [open, high, low, close, adj close], volume), ...]
-intc = DataReader('INTC', 'yahoo', startdate, enddate)
+# Retrieve data from Google Finance
+# Data format is [(d, [open, high, low, close], volume), ...]
+google_f = web.DataReader('F', 'google', startdate, enddate)
 
 # Write to a PyTables file
 output_dir = '../timeseries'
@@ -52,6 +51,6 @@ store = pandas.HDFStore(filepath_hdf5)
 #              values_block0 contains [open, high, low, close, adj close],
 #              field values_block1 contains volume
 #              shape is (480,))
-store.append('intc', intc)
+store.append('google_f', google_f)
 store.close()
 

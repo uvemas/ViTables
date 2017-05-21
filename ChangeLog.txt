@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 21, 2017 **
+time_series plugin has been updated to support latest Pandas.
+
 dbs_tree_sort plugin has been improved.
 
 ** May 20, 2017 **
