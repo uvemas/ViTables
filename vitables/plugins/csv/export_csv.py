@@ -18,11 +18,17 @@
 """Plugin that provides export of `tables.Leaf` nodes into `CSV` files.
 
 When exporting tables, a header with the field names can be inserted.
+
+In general, tables/arrays with Ndimensional fields are not exported because they
+are not written by np.savetxt() in a way compliant with the CSV format in which
+each line of the file is a data record.
+
+Neither numpy scalar arrays are exported.
 """
 
 
 __docformat__ = 'restructuredtext'
-__version__ = '0.7'
+__version__ = '0.8'
 plugin_class = 'ExportToCSV'
 plugin_name = 'CSV exporter'
 comment = 'Export datasets to CSV files.'
@@ -66,9 +72,6 @@ def checkFilenameExtension(filepath):
 
 class ExportToCSV(QtCore.QObject):
     """Provides `CSV` export capabilities for arrays.
-
-    Some minor flaws: `tables.VLArray` nodes can't be exported. Neither can
-    ``numpy`` scalar arrays.
     """
 
     UID = 'vitables.plugin.export_csv'
@@ -98,6 +101,7 @@ class ExportToCSV(QtCore.QObject):
         self.vtgui.dataset_menu.aboutToShow.connect(self.updateDatasetMenu)
         self.vtgui.leaf_node_cm.aboutToShow.connect(self.updateDatasetMenu)
 
+
     def addEntry(self):
         """Add the `Export to CSV..`. entry to `Dataset` menu.
         """
@@ -123,6 +127,7 @@ class ExportToCSV(QtCore.QObject):
         # Add the action to the leaf context menu
         vitables.utils.addToLeafContextMenu(self.export_action)
 
+
     def updateDatasetMenu(self):
         """Update the `export` QAction when the Dataset menu is pulled down.
 
@@ -138,11 +143,12 @@ class ExportToCSV(QtCore.QObject):
 
         self.export_action.setEnabled(enabled)
 
+
     def getExportInfo(self, is_table):
         """Get info about the file where dataset will be stored.
 
-        The retrieved info is the filepath and whether or not a header
-        must be added.
+        The info is retrieved from the FileSelector dialog. The returned info
+        is the filepath and whether or not a header must be added.
 
         :Parameter is_table: True if the exported dataset is a tables.Table
           instance
@@ -165,6 +171,9 @@ class ExportToCSV(QtCore.QObject):
 
         # Customise the file selector dialog for exporting to CSV files
         if is_table:
+            # We can get the layout of Qt dialogs but not of native dialogs
+            file_selector.setOption(QtWidgets.QFileDialog.DontUseNativeDialog,
+                                    True)
             fs_layout = file_selector.layout()
             header_label = QtWidgets.QLabel('Add header:', file_selector)
             header_cb = QtWidgets.QCheckBox(file_selector)
@@ -213,6 +222,7 @@ class ExportToCSV(QtCore.QObject):
 
         return filepath, add_header
 
+
     def export(self):
         """Export a given dataset to a `CSV` file.
 
@@ -224,39 +234,40 @@ class ExportToCSV(QtCore.QObject):
         current = self.vtgui.dbs_tree_view.currentIndex()
         leaf = self.vtgui.dbs_tree_model.nodeFromIndex(current).node
 
-        # Empty datasets can't be saved as CSV files
+        # Empty datasets aren't saved as CSV files
         if leaf.nrows == 0:
             self.logger.info(translate(
                 'ExportToCSV', 'Empty dataset. Nothing to export.'))
             return
 
-        # Scalar arrays can't be saved as CSV files
+        # Scalar arrays aren't saved as CSV files
         if leaf.shape == ():
             self.logger.info(translate(
                 'ExportToCSV', 'Scalar array. Nothing to export.'))
             return
 
-        # Datasets with more than 2 dimensions can't be saved as CSV files
-        if len(leaf.shape) > 2:
-            self.logger.error(translate(
+        # Datasets with more than 3 dimensions aren't saved as CSV files
+        # (see module's docstring)
+        if len(leaf.shape) > 3:
+            self.logger.info(translate(
                 'ExportToCSV', 'The selected node has more than '
-                '2 dimensions. I can\'t export it to CSV format.'))
+                '3 dimensions. I can\'t export it to CSV format.'))
             return
 
-        # Variable lenght arrays can't be saved as CSV files
+        # Variable lenght arrays aren't saved as CSV files
         if isinstance(leaf, tables.VLArray):
-            self.logger.error(translate(
+            self.logger.info(translate(
                 'ExportToCSV', 'The selected node is a VLArray. '
                 'I can\'t export it to CSV format.'))
             return
 
-        # Tables with Ndimensional fields can't be saved as CSV files
+        # Tables with Ndimensional fields aren't saved as CSV files
         is_table = isinstance(leaf, tables.Table)
         if is_table:
             first_row = leaf[0]
             for item in first_row:
                 if item.shape != ():
-                    self.logger.error(translate(
+                    self.logger.info(translate(
                         'ExportToCSV',
                         'Some fields aren\'t scalars. '
                         'I can\'t export the table to CSV format.'))
@@ -271,33 +282,35 @@ class ExportToCSV(QtCore.QObject):
 
         try:
             QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
-            out_handler = open(filepath, 'w')
-            if add_header:
-                from functools import reduce
-                header = reduce(lambda x, y: '{0}, {1}'.format(x, y),
-                                leaf.colnames)
-                # Ensure consistency with numpy.savetxt i.e. use \n line breaks
-                out_handler.write(header + '\n')
-            chunk_size = 10000
-            nrows = leaf.nrows
-            if chunk_size > nrows:
-                chunk_size = nrows
-            nchunks = numpy.divide(nrows, chunk_size)
-            for i in numpy.arange(0, nchunks+1):
-                QtWidgets.qApp.processEvents()
-                cstart = chunk_size*i
-                if cstart >= nrows:
-                    break
-                cstop = cstart + chunk_size
-                if cstop > nrows:
-                    cstop = nrows
-                numpy.savetxt(out_handler, leaf.read(cstart, cstop),
-                              fmt='%s', delimiter=',')
+            with open(filepath, 'ab') as out_handler:
+                if add_header:
+                    from functools import reduce
+                    header = reduce(lambda x, y: '{0}, {1}'.format(x, y),
+                                    leaf.colnames)
+                    # To be consistent with numpy.savetxt use \n line breaks
+                    out_handler.write(bytearray(header + '\n', 'UTF-8'))
+                chunk_size = 10000
+                nrows = leaf.nrows
+                if chunk_size > nrows:
+                    chunk_size = nrows
+                # Behavior of np.divide in Python 2 and Python 3 is different so
+                # we must explicitly ensure we get an integer
+                nchunks = numpy.floor_divide(nrows, chunk_size)
+                for i in numpy.arange(0, nchunks+1):
+                    QtWidgets.qApp.processEvents()
+                    cstart = chunk_size*i
+                    if cstart >= nrows:
+                        break
+                    cstop = cstart + chunk_size
+                    if cstop > nrows:
+                        cstop = nrows
+                    numpy.savetxt(out_handler, leaf.read(cstart, cstop, 1),
+                                  fmt='%s', delimiter=',')
         except OSError:
             vitables.utils.formatExceptionInfo()
         finally:
-            out_handler.close()
             QtWidgets.qApp.restoreOverrideCursor()
+
 
     def helpAbout(self, parent):
         """Full description of the plugin.

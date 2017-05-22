@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 22, 2017 **
+export_csv plugin has been updated and debugged.
+
 ** May 21, 2017 **
 time_series plugin has been updated to support latest Pandas.
 
