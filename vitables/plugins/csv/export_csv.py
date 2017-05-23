@@ -46,28 +46,11 @@ from qtpy import QtWidgets
 
 import vitables.utils
 from vitables.plugins.aboutpage import AboutPage
+import vitables.plugins.csv.csvutils as csvutils
 
 translate = QtWidgets.QApplication.translate
 
 _PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
-
-
-def checkFilenameExtension(filepath):
-    """
-    Check the filename extension of the CSV file.
-
-    If the filename has no extension this method adds .csv
-    extension to it.
-
-    :Parameter filepath: the full path of the file
-
-    :Returns: the filepath with the proper extension
-    """
-
-    if not re.search(r'\.(.+)$', os.path.basename(filepath)):
-        ext = '.csv'
-        filepath = filepath + ext
-    return filepath
 
 
 class ExportToCSV(QtCore.QObject):
@@ -186,7 +169,7 @@ class ExportToCSV(QtCore.QObject):
                 filepath = file_selector.selectedFiles()[0]
                 # Make sure filepath contains no backslashes
                 filepath = QtCore.QDir.fromNativeSeparators(filepath)
-                filepath = checkFilenameExtension(filepath)
+                filepath = csvutils.checkFilenameExtension(filepath)
                 # Update the working directory
                 working_dir = file_selector.directory().canonicalPath()
             else:  # Cancel clicked

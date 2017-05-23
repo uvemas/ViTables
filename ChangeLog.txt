@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 23, 2017 **
+export_csv and import_csv plugins have been refactored and debugged.
+
 ** May 22, 2017 **
 export_csv plugin has been updated and debugged.
 

@@ -53,7 +53,7 @@ Other aspects to take into account:
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '1.0'
+__version__ = '1.1'
 plugin_class = 'ImportCSV'
 plugin_name = 'CSV importer'
 comment = 'Import CSV files into datasets.'
@@ -61,6 +61,7 @@ comment = 'Import CSV files into datasets.'
 import os
 import tempfile
 import logging
+import traceback
 
 import tables
 import numpy
@@ -71,6 +72,7 @@ from qtpy import QtWidgets
 
 import vitables.utils
 from vitables.plugins.aboutpage import AboutPage
+import vitables.plugins.csv.csvutils as csvutils
 
 translate = QtWidgets.QApplication.translate
 TYPE_ERROR = translate(
@@ -78,356 +80,6 @@ TYPE_ERROR = translate(
     'homogeneous dataset.', 'CSV file not imported error')
 
 _PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
-
-
-def getArray(buf):
-    """Fill an intermediate ``numpy`` array with data read from the `CSV` file.
-
-    The dtypes are determined by the contents of each column.
-    Multidimensional columns will have string datatype.
-
-    :Parameter buf: the data buffer
-    """
-
-    # The dtypes are determined by the contents of each column
-    # Multidimensional columns will have string datatype
-    temp_file = tempfile.TemporaryFile()
-    temp_file.writelines(buf)
-    temp_file.seek(0)
-    data = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
-    temp_file.close()
-    return data
-
-
-def tableInfo(input_handler):
-    """Return useful information about the `tables.Table` being created.
-
-    :Parameter input_handler: the file handler of the inspected file
-    """
-
-    # Inspect the CSV file reading its second line
-    # (reading the first line is not safe enough as it could be a header)
-    input_handler.seek(0)
-    first_line = getArray(input_handler.readline())
-    try:
-        data = getArray(input_handler.readline())
-    except IOError:
-        # The second line cannot be read. We assume there is only on line
-        data = first_line
-
-    # Estimate the number of rows of the file
-    filesize = os.path.getsize(input_handler.name)
-    record_size = data.size * data.itemsize
-    nrows = filesize/record_size
-
-    if data.dtype.fields is None:
-        # data is a homogeneous array
-        descr, has_header = \
-            homogeneousTableInfo(input_handler, first_line, data)
-    else:
-        # data is a heterogeneous dataset
-        descr, has_header = \
-            heterogeneousTableInfo(input_handler, first_line, data)
-
-    del data
-    return (nrows, descr, has_header)
-
-
-def heterogeneousTableInfo(input_handler, first_line, data):
-    """Return useful information about the `tables.Table` being created.
-
-    The `data` array is heterogenous, i.e. not all fields have the same
-    dtype.
-
-    :Parameters:
-
-    - `input_handler`: the file handler of the inspected `CSV` file
-    - `first_line`: a numpy array which contains the first line of the `CSV`
-      file
-    - `data`: a numpy array which contains the second line of the `CSV` file
-    """
-
-    has_header = False
-    if first_line.dtype.name.startswith('string'):
-        has_header = True
-
-    # Stuff used for finding out itemsizes of string fields
-    itemsizes = {}
-    for field in range(0, len(data.dtype)):
-        if data.dtype[field].name.startswith('string'):
-            itemsizes[field] = 0
-
-    # If a dtype is a string, find out its biggest itemsize
-    if itemsizes:
-        buf_size = 1024 * 1024
-        read_fh = input_handler.readlines
-        input_handler.seek(0)
-        if has_header:
-            # Skip the header
-            input_handler.readline()
-        buf = read_fh(buf_size)
-        while buf:
-            temp_file = tempfile.TemporaryFile()
-            temp_file.writelines(buf)
-            for field in itemsizes.keys():
-                temp_file.seek(0)
-                idata = numpy.genfromtxt(temp_file, delimiter=',',
-                                         usecols=(field,), dtype=None)
-                itemsizes[field] = max(itemsizes[field], idata.dtype.itemsize)
-                del idata
-            temp_file.close()
-            buf = read_fh(buf_size)
-
-    if has_header:
-        descr = {}
-        for i in range(0, first_line.size):
-            dtype = data.dtype.fields['f{0}'.format(i)][0]
-            descr[first_line[i]] = tables.Col.from_dtype(dtype, pos=i)
-        for i in itemsizes:
-            descr[first_line[i]] = tables.StringCol(itemsizes[i], pos=i)
-    else:
-        descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in
-            data.dtype.fields.items()])
-        for i in itemsizes:
-            descr['f{0}'.format(i)] = tables.StringCol(itemsizes[i])
-
-    return descr, has_header
-
-
-def homogeneousTableInfo(input_handler, first_line, data):
-    """Return useful information about the `tables.Table` being created.
-
-    The `data` array is homegenous, i.e. all fields have the same dtype.
-
-    :Parameters:
-
-    - `input_handler`: the file handler of the inspected `CSV` file
-    - `first_line`: a ``numpy`` array which contains the first line of the
-      `CSV` file
-    - `data`: a numpy array which contains the second line of the `CSV` file
-    """
-
-    has_header = False
-    # If dtype is a string,  ask to user if the table has a header or not.
-    # Then find out the biggest itemsize
-    if data.dtype.name.startswith('string'):
-        answer = askForHelp(first_line)
-        buf_size = 1024 * 1024
-        read_fh = input_handler.readlines
-        input_handler.seek(0)
-        if answer == 'Header':
-            # Skip the header
-            has_header = True
-            input_handler.readline()
-        itemsize = 0
-        buf = read_fh(buf_size)
-        if not buf:
-            # If the CSV file contains just one line
-            itemsize = first_line.dtype.itemsize
-        while buf:
-            temp_file = tempfile.TemporaryFile()
-            temp_file.writelines(buf)
-            temp_file.seek(0)
-            idata = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
-            itemsize = max(itemsize, idata.dtype.itemsize)
-            del idata
-            temp_file.close()
-            buf = read_fh(buf_size)
-    elif first_line.dtype.name.startswith('string'):
-        has_header = True
-
-    # Iterate over the data fields and make the table description
-    # If the CSV file contains just one field then first_line is a
-    # scalar array and cannot be iterated so we reshape it
-    if first_line.shape == ():
-        first_line = first_line.reshape(1,)
-    indices = list(range(0, first_line.shape[0]))
-
-    if has_header:
-        if data.dtype.name.startswith('string'):
-            descr = dict([(first_line[i], tables.StringCol(itemsize, pos=i))
-                          for i in indices])
-        else:
-            descr = dict([(first_line[i],
-                           tables.Col.from_dtype(data.dtype, pos=i))
-                          for i in indices])
-    else:
-        if data.dtype.name.startswith('string'):
-            descr = dict([('f{0}'.format(field), tables.StringCol(itemsize))
-                          for field in indices])
-        else:
-            descr = dict([('f{0}'.format(field),
-                           tables.Col.from_dtype(data.dtype))
-                          for field in indices])
-
-    return descr, has_header
-
-
-def askForHelp(first_line):
-    """Ask to user if the first row is a header.
-
-    :Parameter first_line: a numpy array which contains the first line of
-      the `CSV` file
-    """
-
-    title = translate('ImportCSV', 'Resolving first line role',
-                      'Message box title')
-    text = translate('ImportCSV', 'Does the first line of the file contain '
-                     'a table header or regular data?', 'Message box text')
-    itext = ''
-    try:
-        from functools import reduce
-        dtext = reduce(lambda x, y: '{0}, {1}'.format(x, y), first_line)
-    except TypeError:
-        # If first_line has only one field reduce raises a TypeError
-        dtext = first_line.tostring()
-    buttons = {
-        'Header':
-        (translate('ImportCSV', 'Header', 'Button text'),
-         QtWidgets.QMessageBox.YesRole),
-        'Data':
-        (translate('ImportCSV', 'Data', 'Button text'),
-         QtWidgets.QMessageBox.NoRole),
-        }
-    return vitables.utils.questionBox(title, text, itext, dtext, buttons)
-
-
-def earrayInfo(input_handler):
-    """Return useful information about the `tables.EArray` being created.
-
-    :Parameter input_handler: the file handler of the inspected file
-    """
-
-    # Inspect the CSV file reading its first line
-    # The dtypes are determined by the contents of each column
-    # Multidimensional columns will have string datatype
-    data = getArray(input_handler.readline())
-
-    # Estimate the number of rows of the file
-    filesize = os.path.getsize(input_handler.name)
-    record_size = data.size * data.itemsize
-    nrows = filesize/record_size
-
-    if data.dtype.name.startswith('string'):
-        # Find out the biggest itemsize
-        itemsize = 0
-        buf_size = 1024 * 1024
-        read_fh = input_handler.readlines
-        input_handler.seek(0)
-        buf = read_fh(buf_size)
-        while buf:
-            temp_file = tempfile.TemporaryFile()
-            temp_file.writelines(buf)
-            temp_file.seek(0)
-            idata = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
-            itemsize = max(itemsize, idata.dtype.itemsize)
-            temp_file.close()
-            del idata
-            buf = read_fh(buf_size)
-        atom = tables.StringAtom(itemsize)
-    else:
-        # With compound dtypes this will raise a ValueError
-        atom = tables.Atom.from_dtype(data.dtype)
-
-    # Get the data shape
-    if nrows < 2:
-        # Corner case: the file only has one row
-        array_shape = (0, )
-    elif data.shape == ():
-        # Corner case: the file has just one column
-        array_shape = (0, )
-    else:
-        # General case: the file is a MxN array
-        array_shape = (0, data.shape[0])
-
-    del data
-    input_handler.seek(0)
-    return nrows, atom, array_shape
-
-
-def carrayInfo(input_handler):
-    """Return useful information about the `tables.CArray` being created.
-
-    :Parameter input_handler: the file handler of the inspected file
-    """
-
-    # Inspect the CSV file reading its first line
-    # The dtypes are determined by the contents of each column
-    # Multidimensional columns will have string datatype
-    data = getArray(input_handler.readline())
-
-    # This counting algorithm is faster than looping over lines with
-    # fh.readline and incrementing a counter at every step
-    lines = 0
-    itemsize = 0
-    buf_size = 1024 * 1024
-    read_fh = input_handler.readlines
-    input_handler.seek(0)
-
-    if data.dtype.name.startswith('string'):
-        # Count lines and find out the biggest itemsize
-        buf = read_fh(buf_size)
-        while buf:
-            temp_file = tempfile.TemporaryFile()
-            temp_file.writelines(buf)
-            temp_file.seek(0)
-            idata = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
-            itemsize = max(itemsize, idata.dtype.itemsize)
-            temp_file.close()
-            del idata
-            lines += len(buf)
-            buf = read_fh(buf_size)
-    else:
-        # Count lines
-        buf = read_fh(buf_size)
-        while buf:
-            lines += len(buf)
-            buf = read_fh(buf_size)
-
-    if itemsize:
-        atom = tables.StringAtom(itemsize)
-    else:
-        atom = tables.Atom.from_dtype(data.dtype)
-
-    # Get the data shape
-    if lines == 1:
-        # Corner case: the file only has one row
-        array_shape = data.shape
-        lines = data.shape[0]
-    elif data.shape == ():
-        # Corner case: the file has just one column
-        array_shape = (lines, )
-    else:
-        # General case: the file is a MxN array
-        array_shape = (lines, data.shape[0])
-
-    del data
-    input_handler.seek(0)
-    return atom, array_shape
-
-
-def isValidFilepath(filepath):
-    """Check the filepath of the destination file.
-
-    :Parameter filepath: the filepath where the imported dataset will live
-    """
-    logger = logging.getLogger(__name__)
-    valid = True
-    if os.path.exists(filepath):
-        logger.error(translate(
-            'ImportCSV',
-            'CSV import failed because destination file already exists.',
-            'A file creation error'))
-        valid = False
-
-    elif os.path.isdir(filepath):
-        logger.error(translate(
-            'ImportCSV',
-            'CSV import failed because destination container is a directory.',
-            'A file creation error'))
-        valid = False
-
-    return valid
 
 
 class ImportCSV(QtCore.QObject):
@@ -446,6 +98,9 @@ class ImportCSV(QtCore.QObject):
         """
 
         super(ImportCSV, self).__init__()
+
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
@@ -544,18 +199,17 @@ class ImportCSV(QtCore.QObject):
 
         :Parameter filepath: the `PyTables` file filepath
         """
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
+
         dbdoc = None
         try:
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
             dest_filepath = vitables.utils.forwardPath(os.path.join(dirname,
                                                         '{0}.h5'.format(root)))
-            if isValidFilepath(dest_filepath):
+            if csvutils.isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
-            logger.error(
+            self.logger.error(
                 translate('ImportCSV', 'Import failed because destination '
                           'file cannot be created.',
                           'A file creation error'))
@@ -626,7 +280,10 @@ class ImportCSV(QtCore.QObject):
             QtWidgets.qApp.processEvents()
             QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             input_handler = open(filepath, 'r+')
-            (nrows, descr, has_header) = tableInfo(input_handler)
+            try:
+                (nrows, descr, has_header) = csvutils.tableInfo(input_handler)
+            except Exception as inst:
+                print(traceback.format_exc())
 
             # Create the dataset
             dbdoc = self.createDestFile(filepath)
@@ -649,7 +306,7 @@ class ImportCSV(QtCore.QObject):
             read_fh = input_handler.readlines
             buf = read_fh(buf_size)
             while buf:
-                idata = getArray(buf)
+                idata = csvutils.getArray(buf)
                 # Append data to the dataset
                 dataset.append(idata)
                 dataset.flush()
@@ -680,7 +337,7 @@ class ImportCSV(QtCore.QObject):
             QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
-            (nrows, atom, array_shape) = earrayInfo(input_handler)
+            (nrows, atom, array_shape) = csvutils.earrayInfo(input_handler)
 
             # Create the dataset
             dbdoc = self.createDestFile(filepath)
@@ -700,7 +357,7 @@ class ImportCSV(QtCore.QObject):
             read_fh = input_handler.readlines
             buf = read_fh(buf_size)
             while buf:
-                idata = getArray(buf)
+                idata = csvutils.getArray(buf)
                 # Append data to the dataset
                 dataset.append(idata)
                 dataset.flush()
@@ -709,7 +366,7 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            print(TYPE_ERROR)
+            self.logger.error(TYPE_ERROR)
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -733,7 +390,7 @@ class ImportCSV(QtCore.QObject):
             QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
-            (atom, array_shape) = carrayInfo(input_handler)
+            (atom, array_shape) = csvutils.carrayInfo(input_handler)
 
             # Create the dataset
             dbdoc = self.createDestFile(filepath)
@@ -754,7 +411,7 @@ class ImportCSV(QtCore.QObject):
             buf = read_fh(buf_size)
             start = 0
             while buf:
-                idata = getArray(buf)
+                idata = csvutils.getArray(buf)
                 stop = start + idata.shape[0]
                 # Append data to the dataset
                 dataset[start:stop] = idata
@@ -765,7 +422,7 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            print(TYPE_ERROR)
+            self.logger.error(TYPE_ERROR)
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -793,7 +450,7 @@ class ImportCSV(QtCore.QObject):
         except TypeError:
             data = None
             dbdoc = None
-            print(TYPE_ERROR)
+            self.logger.error(TYPE_ERROR)
         else:
             try:
                 # Create the array
@@ -807,7 +464,7 @@ class ImportCSV(QtCore.QObject):
                 dbdoc.h5file.flush()
                 self.updateTree(dbdoc.filepath)
             except TypeError:
-                print(TYPE_ERROR)
+                self.logger.error(TYPE_ERROR)
             except tables.NodeError:
                 vitables.utils.formatExceptionInfo()
         finally:
