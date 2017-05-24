@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 24, 2017 **
+Calls to str(object, 'UTF-8') have been removed.
+
 Bug fixed: when navigating large views with the mouse wheel an error is raised.
 
 Bug fixed: sometimes new views are frozen and cannot be resized with the mouse.

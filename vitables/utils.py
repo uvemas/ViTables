@@ -656,4 +656,4 @@ def getLicense():
     resource_path = 'LICENSE.html'
     license_text = pkg_resources.resource_string(resource_package, resource_path)  # @UndefinedVariable
 
-    return str(license_text, 'UTF-8')
+    return license_text.decode('UTF-8')

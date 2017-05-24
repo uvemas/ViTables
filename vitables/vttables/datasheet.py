@@ -78,7 +78,7 @@ class DataSheet(QtWidgets.QMdiSubWindow):
 
         # Customize the title bar
         if not isinstance(leaf.title, str):
-            title = str(leaf.title, 'utf_8')
+            title = str(leaf.title)
         else:
             title = leaf.title
         wtitle = "{0}\t{1}".format(self.dbt_leaf.name, title)
