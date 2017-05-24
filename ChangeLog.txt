@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 24, 2017 **
+The Users' Guide has been updated.
+
 Some .txt files have been updated.
 
 Calls to str(object, 'UTF-8') have been removed.

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008, 2017 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2017 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@
 #
 import sys
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qtpy import QtGui
+from qtpy import QtWidgets
 
-iconsDir = '/home/vmas/ViTables/hg_branches/vitables_tip/vitables/icons/'
+ICONSDIR = '../vitables/icons/'
 big_icons = [('file_rw', 'The root node (read-write)'),
     ('file_ro', 'The root node (read-only)'),
-    ('dbfilters', 'The root node of the Query Results file'),
+    ('dbfilters', 'The root node of the Query Results file  '),
     ('folder', 'A collapsed group '), 
     ('document-open-folder', 'An expanded group ')]
 small_icons = [('table', 'A table (heterogeneus dataset) '),
@@ -38,47 +38,47 @@ small_icons = [('table', 'A table (heterogeneus dataset) '),
     ('carray', 'A compressed array'),
     ('vlarray', 'A variable length array'),
     ('vlstring', 'An array of VLStrings'),
+    ('link_table', 'A soft link to a table (heterogeneus dataset) '),
+    ('link_array', 'A soft link to a regular array (homogeneus dataset) '),
+    ('link_earray', 'A soft link to an enlargeable array'),
+    ('link_carray', 'A soft link to a compressed array'),
+    ('link_vlarray', 'A soft link to a variable length array'),
     ('object', 'A serialized objects dataset'),
     ('image-missing', 'An unsupported dataset')]
 
-class Poster(QMainWindow) :
-    def __init__(self, *args) :
-        apply(QMainWindow.__init__, (self,) + args)
-        w = QWidget(self)
-        l = QGridLayout(w)
+class Poster(QtWidgets.QMainWindow) :
+    def __init__(self) :
+        super(QtWidgets.QMainWindow, self).__init__()
+        w = QtWidgets.QWidget(self)
+        l = QtWidgets.QGridLayout(w)
         self.setCentralWidget(w)
         self.makePoster()
-
-
-    def changePalette(self, widget):
-        palette = QPalette()
-        self.palette().setColor(widget.backgroundRole(), Qt.white)
-        widget.setPalette(palette)
 
 
     def makePoster(self):
         widget = self.centralWidget()
         layout = widget.layout()
         r = 0
-        iconsDict = {'big_icons': big_icons, 'small_icons': small_icons}
+        c = 0
+        iconsDict = {'22x22': big_icons, '16x16': small_icons}
         for key in iconsDict.keys():
             for (name, caption) in iconsDict[key] :
-                pixmap = QPixmap()
-                image_path = '%s/%s.png' % ("%s%s" % (iconsDir, key), name)
-                print image_path
+                pixmap = QtGui.QPixmap()
+                image_path = '{0}/{1}/{2}.png'.format(ICONSDIR, key, name)
                 pixmap.load(image_path)
-                imLabel = QLabel(widget)
+                imLabel = QtWidgets.QLabel(widget)
                 imLabel.setPixmap(pixmap)
-                self.changePalette(imLabel)
-                layout.addWidget(imLabel, r, 0, 1, 1)
-                textLabel = QLabel(caption,widget)
-                self.changePalette(textLabel)
-                layout.addWidget(textLabel, r, 1, 1, 1)
+                layout.addWidget(imLabel, r, c, 1, 1)
+                textLabel = QtWidgets.QLabel(caption,widget)
+                layout.addWidget(textLabel, r, c + 1, 1, 1)
                 r = r + 1
+                if r > 8:
+                    r = 0
+                    c = 2
 
 
 def main(args) :
-    app = QApplication(args)
+    app = QtWidgets.QApplication(args)
     poster = Poster()
     poster.show()
     app.exec_()

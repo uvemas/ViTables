@@ -121,7 +121,7 @@ html_theme = 'default'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -171,7 +171,7 @@ htmlhelp_basename = 'ViTablesUsersGuidedoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 # The paper size ('letter' or 'a4').
-latex_paper_size = 'a4'
+# latex_paper_size = 'a4'
 
 # The font size ('10pt', '11pt' or '12pt').
 #latex_font_size = '10pt'
@@ -183,7 +183,7 @@ latex_documents = [
    'Vicent Mas', 'manual'),
 ]
 
-latex_elements = {'babel': '\\usepackage[english]{babel}', 'classoptions': ', openany'}
+latex_elements = {'babel': '\\usepackage[english]{babel}', 'classoptions': ', openany', 'papersize': 'a4'}
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.

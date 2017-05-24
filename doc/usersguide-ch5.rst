@@ -1,48 +1,28 @@
-.. sectnum::
-  :start: 5
-
 .. _configuration-chapter:
 
 Configuring ViTables
-====================
+++++++++++++++++++++
 
-As mentioned earlier, many aspects of the *ViTables* behaviour can
-be customized by you through the
-:menuselection:`Settings --> Preferences`
-command.
+As mentioned earlier, many aspects of the `ViTables` behaviour can be customized by you through the :menuselection:`Settings --> Preferences` command.
 
 It shows a dialog offering you several customization
 possibilities. The dialog is made of three stacked pages,
-:guilabel:`General`, :guilabel:`Look & Feel` and
-:guilabel:`Plugins`.
+:guilabel:`General`, :guilabel:`Look & Feel` and :guilabel:`Plugins`.
 
-The :guilabel:`General` page allows to change the
-*ViTables* behavior at startup. You can set the
-initial working directory to be that one from which *ViTables* is starting or
-to be the last used
-working directory. And you can recover your last working session.
+The :guilabel:`General` page allows to change the `ViTables` behavior at startup. You can set the initial working directory to be that one from which `ViTables` is starting or to be the last used working directory. And you can recover your last working session.
 
 The :guilabel:`Look & Feel` page allows to change visual
-aspects of the application such as fonts, colors or even the general style,
-so you can adapt the global aspect of *ViTables*
-to what would be expected on your platform.
+aspects of the application such as fonts, colors or even the general style, so you can adapt the global aspect of `ViTables` to what would be expected on your platform.
 
-From the :guilabel:`Plugins` page the plugins can be managed. You
-can enable or disable the available plugins. Changes in this page will take effect
-the next time you start *ViTables*.
+From the :guilabel:`Plugins` page the plugins can be managed. You can enable or disable the available plugins. Changes in this page will take effect the next time you start `ViTables`.
 
 The :guilabel:`OK` button will apply the new settings and
-make them permanent by saving them in the Windows registry, in a
-configuration file (on Unix platforms) or in a plist file (on Mac OS X platforms). Even
-if settings are stored in a plain text file editing it by hand is not
-recommended. Some settings, like fonts or geometry settings [#f3]_, are stored in a way not really intended to be modified manually.
+make them permanent by saving them in the Windows registry, in a configuration file (on Unix platforms) or in a plist file (on Mac OS X platforms). Even if settings are stored in a plain text file editing it by hand is not recommended. Some settings, like fonts or geometry settings [#f3]_, are stored in a way not really intended to be modified manually.
 
 Anyway it can be worth how settings are stored so let's do it.
 The configuration file is divided into sections, labeled as
-[section_name]. Every section is made of subsections
-written as key/value pairs and representing the item that is being
-customized.
-Currently the following sections/subsections are available:
+[section_name]. Every section is made of subsections written as key/value pairs and representing the item that is being
+customized. Currently the following sections/subsections are available:
 
   [Geometry] HSplitter
     the size of the horizontal splitter
@@ -81,10 +61,10 @@ Currently the following sections/subsections are available:
     the list of files recently opened
 
   [Session] Files
-    the list of files and views that were open the last time *ViTables* was closed
+    the list of files and views that were open the last time `ViTables` was closed
 
   [Startup] lastWorkingDir
-    the last directory accessed from within *ViTables* via Open File dialog
+    the last directory accessed from within `ViTables` via Open File dialog
 
   [Startup] restoreLastSession
     the last working session is restored (if possible) which means that both files and leaves that were open in the last session will be reopen at application startup.
