@@ -464,7 +464,7 @@ class LeafView(QtWidgets.QTableView):
             # For example: 120/8 = 15 so if delta is 120 then the wheel
             # has been rotated by 15 degrees. It *seems* that every eight of
             # degree corresponds to a distance of 1 pixel.
-            delta = event.delta()
+            delta = event.angleDelta().y()
             self.wheel_step = \
                 numpy.rint(abs(delta)/height).astype(numpy.int64) - 1
             if delta < 0:
