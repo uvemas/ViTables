@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 24, 2017 **
+Bug fixed: sometimes new views are frozen and cannot be resized with the mouse.
+
 ** May 23, 2017 **
 export_csv and import_csv plugins have been refactored and debugged.
 

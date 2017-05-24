@@ -769,11 +769,17 @@ class VTApp(QtCore.QObject):
         if not leaf_buffer.isDataSourceReadable():
             return
 
-        # Create a view and announce it.
-        # Announcing is potentially helpful for plugins in charge of
-        # datasets customizations (for instance, additional formatting)
+        # Create a view
         subwindow = datasheet.DataSheet(index)
         subwindow.show()
+
+        # For unknown reasons sometimes views cannot be resized. This strange
+        # problem is fixed by hiding the view and immediately showing it again
+        subwindow.hide()
+        subwindow.show()
+
+        # Announcing the new view is potentially helpful for plugins in charge
+        # of datasets customizations (for instance, additional formatting)
         self.leaf_model_created.emit(subwindow)
 
 
