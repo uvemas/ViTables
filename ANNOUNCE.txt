@@ -1,10 +1,11 @@
-=======================
-Announcing ViTables 2.1
-=======================
+=========================
+Announcing ViTables 2.2.2
+=========================
 
-After a long period retired from development activities I'm happy to come back
-and present ViTables 2.1, the latest release of this viewer for PyTables/HDF5
-files.
+After another long period retired from development activities I'm happy to come
+back and present ViTables 2.2.2, the latest release of this viewer for
+PyTables/HDF5 files. Definitely this release wouldn't have been possible without
+the unvaluable help of a bunch of contributors so THANKS to all of them.
 
 As it happens with the entire PyTables family, the main strength of ViTables
 is its ability to manage really large datasets in a fast and comfortable
@@ -15,14 +16,10 @@ application, i.e., it runs flawlessly in Unix (and hence, GNU/Linux), Mac OS
 X and Windows. The fact that it runs on top of PyTables ensures its speed and
 memory efficiency.
 
-In this release you will find some bug fixes and usability enhancements. New 
-features include:
-
-- improved queries. They are faster and eat much less memory
-- a simple but flexible plugins framework
-- human friendly formatting of times and dates for PyTables native Time fields
-  and also for time series created via scikits.timeseries package
-- datasets can be imported/exported from/to files with CSV format
+This release doesn't contain lots of new functionalities. There are bug fixes,
+some usability enhancements and new plugins included but it is mainly a
+maintenance release that offers support for latest Python, PyTables and PyQt
+versions.
 
 Platforms
 ---------
@@ -35,9 +32,9 @@ How to get it
 -------------
 Visit:
 
-http://www.vitables.org/download
+http://vitables.org/Download
 
-and click the link 'downloads area' to find the available packages.
+and see what is available.
 
 Share your experience
 ---------------------

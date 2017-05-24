@@ -1,9 +1,8 @@
 System requirements
 -------------------
 
-ViTables 2.1 has been tested against Python 2.6 and 2.7 and the latest
-versions of PyTables (up to version 3.2) and PyQt4. You can try other
-versions at your own risk :).
+ViTables 2.2.2 has been tested against the latest versions of Python (2 and 3),
+PyTables and PyQt. You can try other versions at your own risk :).
 
 Installation on a conda environment
 -----------------------------------
@@ -40,13 +39,11 @@ Activate the environment whenever you want to run vitables
   vitables [whatever.h5]
 ```
 
-Installation on Windows platforms
----------------------------------
-Just double click the installer icon and follow the wizard instructions.
-
-If you prefer to launch ViTables from the command line then install it
-following the instructions given in the next section.
-
+Installation on Windows and Mac OS Xplatforms
+---------------------------------------------
+Currently there are no graphical installers available for these platforms. You
+have to install ViTables from the command line, using one of the methods
+described in the Linux section.
 
 Installation on Linux platforms
 -------------------------------
@@ -81,14 +78,4 @@ command
 to see all the available options. Complete information about them can be
 found in the Distutils documentation.
 
-Installation on MacOS X platforms
----------------------------------
-For getting a double-clickable application bundle do the following:
-
-- uncompress the tarball
-- change to the distribution directory
-- change to the macosxapp directory
-- execute the make.sh script
-
-If you prefer to launch ViTables from the command line then install it
-following the instructions given in the previous section.
+You can install the program using a wheel too.

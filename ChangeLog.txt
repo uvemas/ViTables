@@ -1,6 +1,8 @@
 ViTables ChangeLog
 ==================
 ** May 24, 2017 **
+Some .txt files have been updated.
+
 Calls to str(object, 'UTF-8') have been removed.
 
 Bug fixed: when navigating large views with the mouse wheel an error is raised.
