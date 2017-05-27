@@ -92,36 +92,40 @@ Installation
 Linux
 ^^^^^
 
-The `Distutils` module (part of the standard `Python` distribution) has been used to prepare installers for
-`ViTables`. It makes easy to get the application up and running.
+The Python setuptools are used to build and install `ViTables`. You can install
+the package from PyPI issuing the command::
 
-You can install the program using a wheel or from sources.
+  $ pip install vitables
 
-Provided that your system fulfills the requirements listed in
-the above sections, installing the package from sources is really easy. Just uncompress the package, change to the distribution directory and execute
+This should install the ViTables wheel. If you experience problems installing
+the binary package you can install from sources (provided your system fulfills
+the requirements listed in the above section). Just download the tarball from
+PyPI, uncompress it, change to the distribution directory and execute (as root)::
 
-::
+ $ python setup.py install
 
-    $ python setup.py install
+If you are doing this on a MacOS X platform, please make sure that the
+DYLD_LIBRARY_PATH environment variable has been setup properly.
 
-By default `ViTables` will be installed in the system-protected area where your system installs third party `Python` packages, so you will need superuser privileges. If you prefer
-to install the package in a different location (for instance, your home directory, so that you can complete the installation as a non-privileged user), you can do it using the --prefix tag:
+By default `ViTables` will be installed in the system-protected area where
+your system installs third party Python packages so you will need superuser
+privileges. If you prefer to install the package in a different location
+(for instance, your home directory) so that the installation can be done by
+non privileged users, you can do it using the --prefix (or --home) tag::
 
-::
+ $ python setup.py install --prefix=/home/myuser/mystuff
 
-    $ python setup.py install --prefix=/home/myuser/mystuff
+Please, remember that installing Python modules in non-standard locations
+makes it necessary to setup properly the PYTHONPATH environment variable so
+that the Python interpreter can find the new modules.
 
-Please remember that installing `Python` modules in non-standard locations makes it necessary to set the :envvar:`PYTHONPATH` environment variable properly so that the `Python` interpreter can find the installed modules.
+If you need further customizations, please have a look to the output of the
+command::
 
-If you need further customizations, please have a look at the
-output of the command
+ $python setup.py install --help
 
-::
-
-    $ python setup.py install --help
-
-to see the available options. Complete information about these
-options can be found in the `Distutils` documentation.
+to see all the available options. Complete information about them can be
+found in the Distutils documentation.
 
 Windows and Mac OS X
 ^^^^^^^^^^^^^^^^^^^^

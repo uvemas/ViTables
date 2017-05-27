@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 27, 2017 **
+Last minute changes prior to publishing.
+
 ** May 24, 2017 **
 Packaging related files have been updated.
 

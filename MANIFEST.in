@@ -1,2 +1,1 @@
-include *.pro *.ts *.txt *.yml VERSION
-recursive-include vitables *.ico *.ini *.png *.qm *.svg *.ui *.html *.css *.js
+include *.txt *.yml VERSION

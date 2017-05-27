@@ -1,9 +1,9 @@
 =========================
-Announcing ViTables 2.2.2
+Announcing ViTables 3.0.0
 =========================
 
 After another long period retired from development activities I'm happy to come
-back and present ViTables 2.2.2, the latest release of this viewer for
+back and present ViTables 3.0.0, the latest release of this viewer for
 PyTables/HDF5 files. Definitely this release wouldn't have been possible without
 the unvaluable help of a bunch of contributors so THANKS to all of them.
 
@@ -17,9 +17,9 @@ X and Windows. The fact that it runs on top of PyTables ensures its speed and
 memory efficiency.
 
 This release doesn't contain lots of new functionalities. There are bug fixes,
-some usability enhancements and new plugins included but it is mainly a
-maintenance release that offers support for latest Python, PyTables and PyQt
-versions.
+some usability enhancements and new plugins included. The big news is that it
+supports the latest Python, PyTables and PyQt versions so major version has
+moved from 2 to 3.
 
 Platforms
 ---------
@@ -30,7 +30,7 @@ Unices.
 
 How to get it
 -------------
-Visit:
+Install/download from PyPI_ or visit:
 
 http://vitables.org/Download
 
@@ -46,3 +46,6 @@ http://tech.groups.yahoo.com/group/vitables-users.
 Thank you!
 
 Enjoy Data with ViTables, the troll of the PyTables family!
+
+
+.. _PyPI: https://pypi.python.org

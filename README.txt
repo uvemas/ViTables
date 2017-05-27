@@ -10,12 +10,9 @@ libraries, so it should run on any platform that support these components
 and features are the same in all platforms. At the moment, ViTables has been
 heavily tested on Linux and Windows platforms.
 
-The User's Guide in PDF format can be found in the doc directory. Please read
-it. I've written it for you :-)
-
 For installation instructions see INSTALL.txt.
 
-Feel free to subscribe to the ViTables users group `[1]`_ and to report bugs and
+Feel free to subscribe to the ViTables users group [1]_ and to report bugs and
 send suggestions or features requests.
 
  .. _[1]: http://tech.groups.yahoo.com/group/vitables-users/

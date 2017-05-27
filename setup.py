@@ -33,14 +33,14 @@ setup(name='ViTables',
       long_description=read('README.txt'),
       author='Vicent Mas',
       author_email='vmas@vitables.org',
-      maintainer='Alexey Naydenov',
-      maintainer_email='alexey.naydenov@linux.com',
+      maintainer='Vicent Mas',
+      maintainer_email='vmas@vitables.org',
       url='http://vitables.org',
       license='GPLv3, see the LICENSE.txt file for detailed info',
       keywords='HDF5 PyTables',
       platforms='Unix, MacOSX, Windows',
       classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 5 - Stable',
           'Environment :: X11 Applications',
           'Environment :: MacOS X',
           'Environment :: Win32 (MS Windows)',
@@ -49,8 +49,8 @@ setup(name='ViTables',
           'Programming Language :: Python',
           'Topic :: Scientific/Engineering'
       ],
-      requires=['qtpy (>=1.2.1)', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
-                'tables (>=3.0)'],
+      install_requires=['qtpy (>=1.2.1)', 'PyQt5 (>=5.5.1)', 'numpy (>=1.4.1)',
+                'numexpr (>=2.0)', 'tables (>=3.0)'],
       entry_points={
           'gui_scripts': ['vitables = vitables.start:gui'],
           'vitables.plugins':
@@ -66,4 +66,17 @@ setup(name='ViTables',
             'vitables.plugins.timeseries.time_series:TSFormatter')]
       },
       packages=find_packages(),
+      # Include data files that belong to the vitables package
+      package_data={
+                'vitables': ['LICENSE.html',
+                    'htmldocs/*', 'htmldocs/*/*',
+                    'icons/*', 'icons/*/*',
+                    '*/*.ui', 'plugins/*/*.ui',
+                    'plugins/*/*.ini',
+                    'i18n/*.qm'
+                    ]
+      },
+      # In order to include files that do not belong to any package we have to
+      # add them to MANIFEST.in AND set the include_package_data keyword to True
+      #include_package_data=True,
       )

@@ -88,7 +88,7 @@ setting into the config file.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '2.2.2'
+__version__ = '3.0.0'
 
 import sys
 import logging
