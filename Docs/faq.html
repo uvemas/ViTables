@@ -16,7 +16,7 @@
 <meta property="og:url" content="http://vitables.org/Docs/faq.html">
 <meta property="og:description" content="ViTables FAQ">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2014-09-26T13:04:57+02:00">
+<meta property="article:published_time" content="2017-05-30T13:04:57+02:00">
 <meta property="article:tag" content="browser">
 <meta property="article:tag" content="GUI">
 <meta property="article:tag" content="HDF5">
@@ -79,23 +79,22 @@
 <div class="contents topic" id="frequently-asked-questions">
 <p class="topic-title first">Frequently Asked Questions</p>
 <ul class="simple">
-<li><a class="reference internal" href="faq.html#how-is-vitables-licensed" id="id4">How is ViTables licensed?</a></li>
-<li><a class="reference internal" href="faq.html#oops-i-ve-got-a-problem-how-can-i-get-support" id="id5">Oops! I've got a problem. How can I get support?</a></li>
-<li><a class="reference internal" href="faq.html#i-ve-found-a-bug-what-should-i-do" id="id6">I've found a bug. What should I do?</a></li>
-<li><a class="reference internal" href="faq.html#how-can-i-use-the-latest-revision-from-the-git-repository" id="id7">How can I use the latest revision from the git repository?</a></li>
-<li><a class="reference internal" href="faq.html#are-the-pyqt4-libraries-shipped-with-the-windows-installer" id="id8">Are the PyQt4 libraries shipped with the Windows installer?</a></li>
-<li><a class="reference internal" href="faq.html#i-ve-issues-installing-vitables-on-mac-os-x-what-have-i-to-do" id="id9">I've issues installing ViTables on Mac OS X. What have I to do?</a></li>
+<li><a class="reference internal" href="faq.html#how-is-vitables-licensed" id="id1">How is <em>ViTables</em> licensed?</a></li>
+<li><a class="reference internal" href="faq.html#oops-i-ve-got-a-problem-how-can-i-get-support" id="id2">Oops! I've got a problem. How can I get support?</a></li>
+<li><a class="reference internal" href="faq.html#i-ve-found-a-bug-what-should-i-do" id="id3">I've found a bug. What should I do?</a></li>
+<li><a class="reference internal" href="faq.html#how-can-i-use-the-latest-revision-from-the-git-repository" id="id4">How can I use the latest revision from the git repository?</a></li>
+<li><a class="reference internal" href="faq.html#are-there-graphical-installers-for-windows-and-mac-os-x-platforms" id="id5">Are there graphical installers for Windows and Mac OS X platforms?</a></li>
 </ul>
 </div>
 <div class="line-block">
 <div class="line"><br></div>
 </div>
 <div class="section" id="how-is-vitables-licensed">
-<h2><a class="toc-backref" href="faq.html#id4">How is ViTables licensed?</a></h2>
+<h2><a class="toc-backref" href="faq.html#id1">How is <em>ViTables</em> licensed?</a></h2>
 <p>It has a <a class="reference external" href="http://www.gnu.org/licenses/gpl.html">GPLv3</a> license.</p>
 </div>
 <div class="section" id="oops-i-ve-got-a-problem-how-can-i-get-support">
-<h2><a class="toc-backref" href="faq.html#id5">Oops! I've got a problem. How can I get support?</a></h2>
+<h2><a class="toc-backref" href="faq.html#id2">Oops! I've got a problem. How can I get support?</a></h2>
 <p>It's always worth to check the messages posted to the
 <a class="reference external" href="https://groups.yahoo.com/group/vitables-users">ViTables users' group</a> : searching the list is a great way
 to get your questions answered. You can search the list using its web interface or from the
@@ -104,79 +103,32 @@ question I strongly recommended you to subscribe to the users' group and ask for
 Probably some subscriber (<em>ViTables</em> developer or user) will be able to help you.</p>
 </div>
 <div class="section" id="i-ve-found-a-bug-what-should-i-do">
-<h2><a class="toc-backref" href="faq.html#id6">I've found a bug. What should I do?</a></h2>
-<p>You should report it, of course :-). Send your report to the
-<a class="reference external" href="https://groups.yahoo.com/group/vitables-users">ViTables users' group</a> or use the
+<h2><a class="toc-backref" href="faq.html#id3">I've found a bug. What should I do?</a></h2>
+<p>You should report it, of course :-). Please, send your report with the
 <a class="reference external" href="https://github.com/uvemas/ViTables/issues">bug tracker</a>.</p>
 </div>
 <div class="section" id="how-can-i-use-the-latest-revision-from-the-git-repository">
-<h2><a class="toc-backref" href="faq.html#id7">How can I use the latest revision from the git repository?</a></h2>
-<p>If you want to run the development version of ViTables, first of all
+<h2><a class="toc-backref" href="faq.html#id4">How can I use the latest revision from the git repository?</a></h2>
+<p>If you want to run the development version of <em>ViTables</em>, first of all
 you have to clone it from the git repository. For instance:</p>
 <pre class="literal-block">
 $ git clone http://github.com/uvemas/ViTables.git vitables_tip
 </pre>
-<p>will download the latest revision and put it in the
-<tt class="docutils literal">vitables_tip</tt> directory. You can use it as is or you can build the
-<em>ViTables</em> package from sources and install it.
-Although packaging is not difficult it can be tricky (specially on Windows platforms
-because you may need to install some additional software like the Sphinx documentation
-system, the NSIS installer, or the MSVC++ 2008 Express Edition). So packaging is not
+<p>will download the latest revision and put it in the <tt class="docutils literal">vitables_tip</tt> directory.
+You can use it as is or you can build the <em>ViTables</em> package from sources and
+install it. Although packaging is not difficult it can be tricky because you
+may need to install the Sphinx documentation system. So packaging is not
 recommended. Instead, from the top level directory do the following:</p>
 <pre class="literal-block">
 $ cp scripts/start.py run_vitables.py
 $ python run_vitables.py
 </pre>
-<p>and <em>ViTables</em> should start. Beware that the HTML User's
-Guide will not be available unless you build it before running <em>ViTables</em>. The Sphinx
-documentation system is required in order to build the documentation.</p>
+<p>and <em>ViTables</em> should start. Beware that the HTML User's Guide will not be
+available unless you build it before running <em>ViTables</em>.</p>
 </div>
-<div class="section" id="are-the-pyqt4-libraries-shipped-with-the-windows-installer">
-<h2><a class="toc-backref" href="faq.html#id8">Are the PyQt4 libraries shipped with the Windows installer?</a></h2>
-<p>Currently they are not. The installer contains the <em>ViTables</em>
-sources, examples and documentation (in both HTML and PDF formats).
-That's all.</p>
-<p><em>ViTables</em> is built on top of a big pyramid of software. Including all
-the required software in the installer would make its size really
-huge. IMHO this is unnecessary, the vast majority of people willing
-to install <em>ViTables</em>   are PyTables users, so they have most of software
-prerequisites already   installed. And not including the PyQt4
-libraries       doesn't penalise users with lots of extra       work as there is
-a nice Windows installer for them.</p>
-</div>
-<div class="section" id="i-ve-issues-installing-vitables-on-mac-os-x-what-have-i-to-do">
-<h2><a class="toc-backref" href="faq.html#id9">I've issues installing ViTables on Mac OS X. What have I to do?</a></h2>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The answer to this question is out of date. Please, if you have more updated information
-post it to the <a class="reference external" href="https://groups.yahoo.com/group/vitables-users">ViTables users' group</a></p>
-</div>
-<p>Unfortunately I cannot provide much assistance on this subject
-because I've not Mac OS X platforms available. A step by step guide
-for installing <em>ViTables</em> (and its prerequisites) on Mac OS X follows
-(the original source is <a class="reference external" href="http://docs.codehaus.org/display/GUMTREE/Installing+ViTables+on+Mac">here</a>)</p>
-<ul class="simple">
-<li>install the <a class="reference external" href="http://www.python.org/download/releases/2.5.4/">Python 2.5 universal installer</a>
-</li>
-<li>install the NumPy 1.2.1 universal installer from <cite>http://numpy.scipy.org/*</cite>
-</li>
-<li>install the HDF5 libraries from <cite>http://cdx.jpl.nasa.gov/documents/accessing-hdf-data-from-python-on-mac-os-x*</cite>
-</li>
-<li>install the <a class="reference external" href="ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.4.3.dmg/">Qt4.4 libraries</a>
-</li>
-<li>install the <a class="reference external" href="http://www.riverbankcomputing.co.uk/software/pyqt/download">PyQt4.4 libraries</a>
-</li>
-<li>install the <a class="reference external" href="http://www.pytables.org/docs/manual/index.html">PyTables 2.x</a>
-</li>
-<li>finally, install ViTables.</li>
-</ul>
-<p>In theory, you can install ViTables as a native application by running</p>
-<pre class="literal-block">
-$ ./macosxapp/make.sh
-</pre>
-<p>but I cannot grant it works.</p>
-<p>If the above doesn't help your best bet is to ask for help to the
-<a class="reference external" href="https://groups.yahoo.com/group/vitables-users">ViTables users' group</a></p>
+<div class="section" id="are-there-graphical-installers-for-windows-and-mac-os-x-platforms">
+<h2><a class="toc-backref" href="faq.html#id5">Are there graphical installers for Windows and Mac OS X platforms?</a></h2>
+<p>No, there aren't.</p>
 </div>
 </div>
     </div>
