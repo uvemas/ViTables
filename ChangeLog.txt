@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** May 31, 2017 **
+The Users' Guide has been updated.
+
 ** May 27, 2017 **
 Last minute changes prior to publishing.
 
