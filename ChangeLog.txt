@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** June 02, 2017 **
+Sphinx configuration file has been updated.
+
 ** May 31, 2017 **
 The Users' Guide has been updated.
 

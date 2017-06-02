@@ -203,7 +203,7 @@ latex_logo = 'images/title_page_plain.png'
 #latex_preamble = ''
 
 # Documents to append as an appendix to all manuals.
-latex_appendices = ['usersguide-app1', 'usersguide-app2']
+latex_appendices = []
 
 # If false, no module index is generated.
 latex_domain_indices = False
