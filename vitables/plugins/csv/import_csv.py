@@ -53,8 +53,7 @@ Other aspects to take into account:
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '1.1'
-plugin_class = 'ImportCSV'
+__version__ = '1.2'
 plugin_name = 'CSV importer'
 comment = 'Import CSV files into datasets.'
 
@@ -89,7 +88,7 @@ class ImportCSV(QtCore.QObject):
     They are imported as strings.
     """
 
-    UID = 'vitables.plugin.import_csv'
+    UID = __name__
     NAME = plugin_name
     COMMENT = comment
 

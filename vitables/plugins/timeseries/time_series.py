@@ -26,8 +26,7 @@ series contained in `PyTables` tables generated via ``scikits.timeseries`` and
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '2.0'
-plugin_class = 'TSFormatter'
+__version__ = '2.1'
 plugin_name = 'Time series formatter'
 comment = 'Display time series in a human friendly format'
 
@@ -181,7 +180,7 @@ class TSFormatter(object):
     contains a time series suitable to be formatted in a user friendly way.
     """
 
-    UID = 'vitables.plugin.time_series'
+    UID = __name__
     NAME = plugin_name
     COMMENT = comment
 

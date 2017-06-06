@@ -25,8 +25,7 @@ Once the plugin is enabled it works on any file opened after the enabling.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '1.1'
-plugin_class = 'DBsTreeSort'
+__version__ = '1.2'
 plugin_name = 'Tree of DBs sorting'
 comment = 'Sorts the display of the databases tree'
 
@@ -191,7 +190,7 @@ class DBsTreeSort(object):
     """Provides convenience methods and functions for sorting the tree of DBs.
     """
 
-    UID = 'vitables.plugin.dbs_tree_sort'
+    UID = __name__
     NAME = plugin_name
     COMMENT = comment
 

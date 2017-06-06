@@ -28,8 +28,7 @@ Neither numpy scalar arrays are exported.
 
 
 __docformat__ = 'restructuredtext'
-__version__ = '0.8'
-plugin_class = 'ExportToCSV'
+__version__ = '0.9'
 plugin_name = 'CSV exporter'
 comment = 'Export datasets to CSV files.'
 
@@ -57,7 +56,7 @@ class ExportToCSV(QtCore.QObject):
     """Provides `CSV` export capabilities for arrays.
     """
 
-    UID = 'vitables.plugin.export_csv'
+    UID = __name__
     NAME = plugin_name
     COMMENT = comment
 

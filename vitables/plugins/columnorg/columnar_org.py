@@ -26,8 +26,7 @@ that the plugin will be useful to some users.
 """
 
 __docformat__ = 'restructuredtext'
-__version__ = '1.0'
-plugin_class = 'ArrayColsOrganizer'
+__version__ = '1.1'
 plugin_name = 'Columnar organization of arrays'
 comment = ('Rearrange several arrays with the same number of rows and '
            'displays them in a unique widget')
@@ -60,7 +59,7 @@ class ArrayColsOrganizer(QtCore.QObject):
 
     """
 
-    UID = 'vitables.plugin.columnar_org'
+    UID = __name__
     NAME = plugin_name
     COMMENT = comment
 

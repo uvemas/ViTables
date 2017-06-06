@@ -5,7 +5,7 @@ Announcing ViTables 3.0.0
 After another long period retired from development activities I'm happy to come
 back and present ViTables 3.0.0, the latest release of this viewer for
 PyTables/HDF5 files. Definitely this release wouldn't have been possible without
-the unvaluable help of a bunch of contributors so THANKS to all of them.
+the invaluable help of a bunch of contributors so THANKS to all of them.
 
 As it happens with the entire PyTables family, the main strength of ViTables
 is its ability to manage really large datasets in a fast and comfortable
@@ -30,7 +30,7 @@ Unices.
 
 How to get it
 -------------
-Install/download from PyPI_ or visit:
+Please, visit:
 
 http://vitables.org/Download
 
@@ -46,6 +46,3 @@ http://tech.groups.yahoo.com/group/vitables-users.
 Thank you!
 
 Enjoy Data with ViTables, the troll of the PyTables family!
-
-
-.. _PyPI: https://pypi.python.org

@@ -16,6 +16,9 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 """The plugins loader module.
+
+For information about the pkg_resources module see
+http://setuptools.readthedocs.io/en/latest/pkg_resources.html
 """
 
 __docformat__ = 'restructuredtext'
@@ -34,6 +37,7 @@ PLUGIN_GROUP = 'vitables.plugins'
 
 def _add_plugin_translator(module_name, plugin_class, logger):
     """Try to load plugin translator."""
+
     app = QtWidgets.QApplication.instance()
     if hasattr(plugin_class, 'translator'):
         try:
@@ -45,6 +49,8 @@ def _add_plugin_translator(module_name, plugin_class, logger):
 
 
 def _load_entrypoint(entrypoint, logger):
+    """Try to load an entry point."""
+
     plugin_class = None
     try:
         plugin_class = entrypoint.load()
@@ -57,6 +63,8 @@ def _load_entrypoint(entrypoint, logger):
 
 
 def _create_instance(plugin_class, logger):
+    """Try to create an instance of the given plugin class."""
+
     instance = None
     try:
         instance = plugin_class()
@@ -80,6 +88,7 @@ class PluginsLoader(object):
         """
 
         self._logger = logging.getLogger(__name__)
+        self._logger.setLevel(logging.DEBUG)
         # list of UID of enabled plugins, stored in configuration
         self.enabled_plugins = enabled_plugins
         # dictionary that contains all available plugins
@@ -91,21 +100,16 @@ class PluginsLoader(object):
         self.enabled_plugins = list(self.loaded_plugins.keys())
 
     def loadAll(self):
-        """Find plugins in the system and crete instances of enabled ones."""
-        self._logger.debug('Enabled plugins: {0}'.format(
-            str(self.enabled_plugins)))
-        for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):  # @UndefinedVariable
+        """Find plugins in the system and create instances of enabled ones."""
+
+        for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
             plugin_class = _load_entrypoint(entrypoint, self._logger)
             if plugin_class is None:
                 continue
-            self._logger.debug('Found plugin: {0}'.format(
-                entrypoint.module_name))
             self.all_plugins[plugin_class.UID] = {
                 'UID': plugin_class.UID, 'name': plugin_class.NAME,
                 'comment': plugin_class.COMMENT}
             if plugin_class.UID in self.enabled_plugins:
-                self._logger.debug('Loading plugin: {0}'.format(
-                    entrypoint.name))
                 _add_plugin_translator(entrypoint.module_name,
                                        plugin_class, self._logger)
                 instance = _create_instance(plugin_class, self._logger)

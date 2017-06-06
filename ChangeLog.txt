@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** June 06, 2017 **
+The plugins system has been slightly refactored and simplified.
+
 ** June 02, 2017 **
 Sphinx configuration file has been updated.
 
