@@ -85,6 +85,9 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         # Setup the page selector widget
         self.setupSelector()
 
+        # Display the General Settings page
+        self.stackedPages.setCurrentIndex(0)
+
         # Style names can be retrieved with qt.QStyleFactory.keys()
         styles = QtWidgets.QStyleFactory.keys()
         self.stylesCB.insertItems(0, styles)

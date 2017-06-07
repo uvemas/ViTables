@@ -697,14 +697,6 @@ class VTApp(QtCore.QObject):
         Saves current configuration on disk, closes opened files and exits.
         """
 
-        # Because configuration is always restored from the previous session
-        # we have to be careful with the Logger and make sure that it is neither
-        # closed nor floated
-        if not self.gui.logger_dock.isVisible():
-            self.gui.logger_dock.setVisible(True)
-        if self.gui.logger_dock.isFloating():
-            self.gui.logger_dock.setFloating(False)
-
         # Close all browsers
         if self.doc_browser:
             self.doc_browser.exitBrowser()

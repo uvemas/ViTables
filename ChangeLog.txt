@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** June 07, 2017 **
+Fixed a minor bug in the Preferences dialog.
+
 ** June 06, 2017 **
 The plugins system has been slightly refactored and simplified.
 
