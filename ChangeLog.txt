@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** June 09, 2017 **
+Added icons for creating Desktop shortcuts on Unices.
+
 ** June 07, 2017 **
 Fixed a minor bug in the Preferences dialog.
 
