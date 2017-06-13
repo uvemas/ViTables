@@ -114,9 +114,6 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         super(LeafModel, self).__init__(parent)
 
-    def _collect_enum_indices(self):
-        """Initialize structures required to properly display enum columns."""
-
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
         with the specified orientation.
