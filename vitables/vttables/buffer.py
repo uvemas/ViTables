@@ -300,12 +300,12 @@ class Buffer(object):
         :Returns: the cell at position `(row, col)` of the document
         """
 
-        # We must shift the row value by self.start units in order to
+        # The row-coordinate must be shifted by model.start units in order to
         # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         try:
-            return self.chunk[int(row - self.start)]
+            return self.chunk[row]
         except IndexError:
             self.logger.error('IndexError! buffer start: {0} row, column: '
                               '{1}, {2}'.format(self.start, row, col))
@@ -325,14 +325,14 @@ class Buffer(object):
         :Returns: the cell at position `(row, col)` of the document
         """
 
-        # We must shift the row value by self.start units in order to
+        # The row-coordinate must be shifted by model.start units in order to
         # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         # TODO: this method should be improved as it requires to read the
         # whola array keeping the read data in memory
         try:
-            return self.data_source.read()[int(row - self.start)]
+            return self.data_source.read()[row]
         except IndexError:
             self.logger.error('IndexError! buffer start: {0} row, column: '
                               '{1}, {2}'.format(self.start, row, col))
@@ -352,8 +352,8 @@ class Buffer(object):
         :Returns: the cell at position `(row, col)` of the document
         """
 
-        # We must shift the row value by self.start units in order to get the
-        # right chunk element.
+        # The row-coordinate must be shifted by model.start units in order to
+        # get the right chunk element.
         # For arrays we have
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
@@ -361,7 +361,7 @@ class Buffer(object):
         # chunk = [nestedrecord0, nestedrecord1, ..., nestedrecordN]
         # and fields can be read from nestedrecordJ using indexing notation
         try:
-            return self.chunk[int(row - self.start)][col]
+            return self.chunk[row][col]
         except IndexError:
             self.logger.error('IndexError! buffer start: {0} row, column: '
                               '{1}, {2}'.format(self.start, row, col))

@@ -154,7 +154,7 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         row = index.row()
         column = index.column()
         tmodel = index.model()
-        data = tmodel.rbuffer.getCell(tmodel.rbuffer.start + row, column)
+        data = tmodel.rbuffer.getCell(row, column)
 
         # The title of the zoomed view
         node = self.dbt_leaf

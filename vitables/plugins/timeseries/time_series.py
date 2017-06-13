@@ -329,8 +329,7 @@ class TSLeafModel(object):
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
-            index.column())
+        cell = self.rbuffer.getCell(index.row(), index.column())
         if role == QtCore.Qt.DisplayRole:
             if index.column() in self.ts_cols:
                 return self.tsFormatter(cell)
@@ -356,8 +355,7 @@ class TSLeafModel(object):
         if not index.isValid() or \
             not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
-            index.column())
+        cell = self.rbuffer.getCell(index.row(), index.column())
         if role == QtCore.Qt.DisplayRole:
             return self.tsFormatter(cell)
         elif role == QtCore.Qt.TextAlignmentRole:
