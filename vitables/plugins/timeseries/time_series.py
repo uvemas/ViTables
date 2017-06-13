@@ -326,18 +326,19 @@ class TSLeafModel(object):
         - `role`: the role being returned
         """
 
-        if not index.isValid() or \
-            not (0 <= index.row() < self.numrows):
+        if not index.isValid() or not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(index.row(), index.column())
+        
         if role == QtCore.Qt.DisplayRole:
+            cell = self.rbuffer.getCell(index.row(), index.column())
             if index.column() in self.ts_cols:
                 return self.tsFormatter(cell)
             return self.formatContent(cell)
-        elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        else:
-            return None
+        
+        if role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        
+        return None
 
 
     def array_data(self, index, role=QtCore.Qt.DisplayRole):
@@ -352,16 +353,17 @@ class TSLeafModel(object):
         - `role`: the role being returned
         """
 
-        if not index.isValid() or \
-            not (0 <= index.row() < self.numrows):
+        if not index.isValid() or not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(index.row(), index.column())
+
         if role == QtCore.Qt.DisplayRole:
+            cell = self.rbuffer.getCell(index.row(), index.column())
             return self.tsFormatter(cell)
-        elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        else:
-            return None
+
+        if role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop
+
+        return None
 
 
     def timeFormatter(self):

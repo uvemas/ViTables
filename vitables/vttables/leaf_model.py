@@ -133,20 +133,22 @@ class LeafModel(QtCore.QAbstractTableModel):
         # The section alignment
         if role == QtCore.Qt.TextAlignmentRole:
             if orientation == QtCore.Qt.Horizontal:
-                return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-            return int(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+                return QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+            return QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter
+
         if role != QtCore.Qt.DisplayRole:
             return None
-        # The section label for horizontal header
+
+        ## Columns-labels
         if orientation == QtCore.Qt.Horizontal:
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
             if hasattr(self.data_source, 'description'):
                 return str(self.data_source.colnames[section])
             return str(section)
-        # The section label for vertical header. This is a 64 bits integer
-        return str(self.rbuffer.start + section)
 
+        ## Rows-labels
+        return str(self.rbuffer.start + section)
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
@@ -162,14 +164,15 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         if not index.isValid() or not (0 <= index.row() < self.numrows):
             return None
-        cell = self.rbuffer.getCell(index.row(), index.column())
-        if role == QtCore.Qt.DisplayRole:
-            return self.formatContent(cell)
-        elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        else:
-            return None
 
+        if role == QtCore.Qt.DisplayRole:
+            cell = self.rbuffer.getCell(index.row(), index.column())
+            return self.formatContent(cell)
+
+        if role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+
+        return None
 
     def columnCount(self, index=QtCore.QModelIndex()):
         """The number of columns of the given model index.
