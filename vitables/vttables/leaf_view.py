@@ -144,8 +144,7 @@ class LeafView(QtWidgets.QTableView):
         # rows and row equals to value
         interval_size = 1
         if self.max_value < self.leaf_numrows:
-            interval_size = numpy.rint(numpy.array(
-                self.leaf_numrows/self.max_value, dtype=numpy.int64))
+            interval_size = round(self.leaf_numrows / self.max_value)
         return interval_size
 
 
@@ -166,8 +165,7 @@ class LeafView(QtWidgets.QTableView):
         elif fv_label == 1 :
             self.tricky_vscrollbar.setValue(0)
         else :
-            value = numpy.rint(numpy.array(fv_label/self.interval_size,
-                dtype=numpy.float64))
+            value = round(fv_label / self.interval_size)
             self.tricky_vscrollbar.setValue(value)
 
 
@@ -372,7 +370,7 @@ class LeafView(QtWidgets.QTableView):
             value = self.max_value
             row = self.leaf_numrows - 1
         else :
-            row = numpy.array(self.interval_size*value, dtype=numpy.int64)
+            row = self.interval_size * value
 
         # top buffer fault condition
         if row < model.rbuffer.start:
@@ -465,8 +463,7 @@ class LeafView(QtWidgets.QTableView):
             # has been rotated by 15 degrees. It *seems* that every eight of
             # degree corresponds to a distance of 1 pixel.
             delta = event.angleDelta().y()
-            self.wheel_step = \
-                numpy.rint(abs(delta)/height).astype(numpy.int64) - 1
+            self.wheel_step = round(abs(delta) / height) - 1
             if delta < 0:
                 self.wheelDown(event)
             else:

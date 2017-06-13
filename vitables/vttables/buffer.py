@@ -92,18 +92,14 @@ class Buffer(object):
         # The maximum number of rows to be read from the data source
         self.chunk_size = 10000
 
-        # The length of the dimension that is going to be read. It
-        # is an int64.
+        # The length of the dimension that is going to be read.
         self.leaf_numrows = self.leafNumberOfRows()
         if self.leaf_numrows <= self.chunk_size:
             self.chunk_size = self.leaf_numrows
 
         # The numpy array where read data will be stored
         self.chunk = numpy.array([])
-
-        # The document row where the current chunk of data starts.
-        # It must be an int64 in order to address spaces bigger than 2**32
-        self.start = numpy.array(0, dtype=numpy.int64)
+        self.start = 0
 
         # The method used for reading data depends on the kind of node.
         # Setting the reader method at initialization time increases the
@@ -160,7 +156,7 @@ class Buffer(object):
         else:
             nrows = self.data_source.nrows
 
-        return numpy.array(nrows, dtype=numpy.int64)
+        return nrows
 
     def getReadParameters(self, start, buffer_size):
         """
@@ -169,14 +165,13 @@ class Buffer(object):
         :Parameters:
 
         - `start`: the document row that is the first row of the chunk.
-          It *must* be a 64 bits integer.
         - `buffer_size`: the buffer size, i.e. the number of rows to be read.
 
         :Returns:
             a tuple with tested values for the parameters of the read method
         """
 
-        first_row = numpy.array(0, dtype=numpy.int64)
+        first_row = 0
         last_row = self.leaf_numrows
 
         # When scrolling up we must keep start value >= first_row
@@ -203,7 +198,7 @@ class Buffer(object):
         """
 
         readable = True
-        start, stop = self.getReadParameters(numpy.array(0, dtype=numpy.int64),
+        start, stop = self.getReadParameters(0,
                                              self.chunk_size)
         try:
             self.data_source.read(start, stop)
@@ -240,7 +235,6 @@ class Buffer(object):
         :Parameters:
 
         - `start`: the document row that is the first row of the chunk.
-          It *must* be a 64 bits integer.
         - `buffer_size`: the buffer size, i.e. the number of rows to be read.
         """
 
@@ -273,7 +267,7 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
@@ -300,16 +294,14 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
         """
 
         # We must shift the row value by self.start units in order to
-        # get the right chunk element. Note that indices of chunk
-        # needn't to be int64 because they are indexing a fixed size,
-        # small chunk of data (see ctor docstring).
+        # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         try:
@@ -327,16 +319,14 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
         """
 
         # We must shift the row value by self.start units in order to
-        # get the right chunk element. Note that indices of chunk
-        # needn't to be int64 because they are indexing a fixed size,
-        # small chunk of data (see ctor docstring).
+        # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         # TODO: this method should be improved as it requires to read the
@@ -356,16 +346,14 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
         """
 
         # We must shift the row value by self.start units in order to get the
-        # right chunk element. Note that indices of chunk needn't to be
-        # int64 because they are indexing a fixed size, small chunk of
-        # data (see ctor docstring).
+        # right chunk element.
         # For arrays we have
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
