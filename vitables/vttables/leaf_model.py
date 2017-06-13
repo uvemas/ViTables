@@ -26,14 +26,16 @@ in a `tables.Leaf`.
 
 __docformat__ = 'restructuredtext'
 
-import collections
-
-import tables
-import numpy as np
+import vitables.utils
 
 from qtpy import QtCore
+import tables
 
-import vitables.utils
+from vitables.vttables import buffer
+
+
+#: The maximum number of rows to be read from the data source.
+CHUNK_SIZE = 10000
 
 
 class LeafModel(QtCore.QAbstractTableModel):
@@ -42,46 +44,50 @@ class LeafModel(QtCore.QAbstractTableModel):
 
     The data is read from data sources (i.e., `HDF5/PyTables` nodes) by
     the model.
+    The dataset number of rows is potentially huge but tables are read and
+    displayed in chunks.
 
-    :Parameters:
 
-        - `rbuffer`: a buffer used for optimizing read access to data
-        - `parent`: the parent of the model
+    :param parent:
+        The parent of the model, passed as is in the superclass.
+    :attribute leaf:
+        the underlying hdf5 data
+    :attribute rbuffer:
+        Code for chunking and inspecting the undelying data.
+    :attribute leaf_numrows:
+        the total number of rows in the underlying data
+    :attribute numrows:
+        The number of rows visible which equals the chunking-size.
+    :attribute numcols:
+        The total number of columnss visible, equal to those visible.
+    :attribute start:
+        The zero-based starting index of the chunk within the total rows.
+
     """
 
-    def __init__(self, rbuffer, parent=None):
+    def __init__(self, leaf, parent=None):
         """Create the model.
         """
 
         # The model data source (a PyTables/HDF5 leaf) and its access buffer
-        self.leaf = rbuffer.leaf
-        self.rbuffer = rbuffer
+        self.leaf = leaf
+        self.rbuffer = buffer.Buffer(leaf)
 
-        # The number of digits of the last row
-        self.last_row_width = len(str(self.rbuffer.leaf_numrows))
-
-        #
-        # The table dimensions
-        #
-
-        # The dataset number of rows is potentially huge but tables are
-        # kept small: just the data returned by a read operation of the
-        # buffer are displayed
-        self.numrows = self.rbuffer.leafNumberOfRows()
-        if self.numrows > self.rbuffer.chunk_size:
-            self.numrows = self.rbuffer.chunk_size
+        self.leaf_numrows = self.rbuffer.total_nrows()
+        self.numrows = min(self.leaf_numrows, CHUNK_SIZE)
+        self.start = 0
 
         # The dataset number of columns doesn't use to be large so, we don't
         # need set a maximum as we did with rows. The whole set of columns
         # are displayed
-        if isinstance(self.leaf, tables.Table):
+        if isinstance(leaf, tables.Table):
             # Leaf is a PyTables table
-            self.numcols = len(self.leaf.colnames)
-        elif isinstance(self.leaf, tables.EArray):
+            self.numcols = len(leaf.colnames)
+        elif isinstance(leaf, tables.EArray):
             self.numcols = 1
         else:
             # Leaf is some kind of PyTables array
-            shape = self.leaf.shape
+            shape = leaf.shape
             if len(shape) > 1:
                 # The leaf will be displayed as a bidimensional matrix
                 self.numcols = shape[1]
@@ -98,9 +104,9 @@ class LeafModel(QtCore.QAbstractTableModel):
         # Time series (if they are found) are formatted transparently
         # via the time_series.py plugin
 
-        if not isinstance(self.leaf, tables.Table):
+        if not isinstance(leaf, tables.Table):
             # Leaf is some kind of PyTables array
-            atom_type = self.leaf.atom.type
+            atom_type = leaf.atom.type
             if atom_type == 'object':
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
@@ -110,7 +116,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         self.selected_cell = {'index': QtCore.QModelIndex(), 'buffer_start': 0}
 
         # Populate the model with the first chunk of data
-        self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)
+        self.loadData(0, self.numrows)
 
         super(LeafModel, self).__init__(parent)
 
@@ -136,7 +142,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         if role != QtCore.Qt.DisplayRole:
             return None
 
-        ## Columns-labels
+        # Columns-labels
         if orientation == QtCore.Qt.Horizontal:
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
@@ -144,8 +150,8 @@ class LeafModel(QtCore.QAbstractTableModel):
                 return str(self.leaf.colnames[section])
             return str(section)
 
-        ## Rows-labels
-        return str(self.rbuffer.start + section)
+        # Rows-labels
+        return str(self.start + section)
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
@@ -174,43 +180,45 @@ class LeafModel(QtCore.QAbstractTableModel):
     def columnCount(self, index=QtCore.QModelIndex()):
         """The number of columns of the given model index.
 
-        When implementing a table based model this method has to be overriden
-        -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the
-        method  should return the number of columns exposed by the model.
+        Overridden to return 0 for valid indices because they have no children;
+        otherwise return the total number of *columns* exposed by the model.
 
-        :Parameter index: the model index being inspected.
+        :param index:
+            the model index being inspected.
         """
 
-        if not index.isValid():
-            return self.numcols
-        else:
-            return 0
-
+        return 0 if index.isValid() else self.numcols
 
     def rowCount(self, index=QtCore.QModelIndex()):
         """The number of columns for the children of the given index.
 
-        When implementing a table based model this method has to be overriden
-        -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the
-        method  should return the number of rows exposed by the model.
+        Overridden to return 0 for valid indices because they have no children;
+        otherwise return the total number of *rows* exposed by the model.
 
         :Parameter index: the model index being inspected.
         """
 
-        if not index.isValid():
-            return self.numrows
-        else:
-            return 0
+        return 0 if index.isValid() else self.numrows
 
+    def loadData(self, start, length):
+        """Load the model with fresh chunk from the underlying leaf.
 
-    def loadData(self, start, chunk_size):
-        """Load the model with fresh data from the buffer.
-
-        :Parameters:
-
-        - `start`: the row where the buffer starts
-        - `chunk_size`: the size of the buffer
+        :param start:
+            The first row (within the total nrows) of the chunk to read.
+        :param length:
+            The buffer size, i.e. the number of rows to be read.
         """
-        self.rbuffer.readBuffer(start, chunk_size)
+
+        # Enforce scrolling limits.
+        #
+        start = max(start, 0)
+        stop = min(start + length, self.leaf_numrows)
+        assert stop >= start, (self.numrows, start, stop, length)
+
+        # Ensure buffer filled when scrolled beyond bottom.
+        #
+        actual_start = stop - self.numrows
+        start = max(min(actual_start, start), 0)
+
+        self.rbuffer.readBuffer(start, stop)
+        self.start = start

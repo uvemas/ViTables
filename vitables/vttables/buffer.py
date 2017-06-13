@@ -30,16 +30,13 @@ are painted much faster too.
 
 __docformat__ = 'restructuredtext'
 
-import warnings
 import logging
-
-from qtpy import QtGui
-from qtpy import QtWidgets
+import vitables.utils
+import warnings
 
 import numpy
+from qtpy import QtWidgets
 import tables
-
-import vitables.utils
 
 
 translate = QtWidgets.QApplication.translate
@@ -89,17 +86,8 @@ class Buffer(object):
 
         self.leaf = leaf
 
-        # The maximum number of rows to be read from the data source
-        self.chunk_size = 10000
-
-        # The length of the dimension that is going to be read.
-        self.leaf_numrows = self.leafNumberOfRows()
-        if self.leaf_numrows <= self.chunk_size:
-            self.chunk_size = self.leaf_numrows
-
         # The numpy array where read data will be stored
         self.chunk = numpy.array([])
-        self.start = 0
 
         # The method used for reading data depends on the kind of node.
         # Setting the reader method at initialization time increases the
@@ -126,10 +114,11 @@ class Buffer(object):
     def __del__(self):
         """Release resources before destroying the buffer.
         """
+        # FIXME: PY3.5+ leaks resources (use finalizer instead).
         self.chunk = None
 
-    def leafNumberOfRows(self):
-        """The number of rows of the dataset being read.
+    def total_nrows(self):
+        """Estimates the number of rows of the dataset being read.
 
         We don't use the `Leaf.nrows` attribute because it is not always
         suitable for displaying the data in a 2D grid. Instead we use the
@@ -158,37 +147,6 @@ class Buffer(object):
 
         return nrows
 
-    def getReadParameters(self, start, buffer_size):
-        """
-        Returns acceptable parameters for the read method.
-
-        :Parameters:
-
-        - `start`: the document row that is the first row of the chunk.
-        - `buffer_size`: the buffer size, i.e. the number of rows to be read.
-
-        :Returns:
-            a tuple with tested values for the parameters of the read method
-        """
-
-        first_row = 0
-        last_row = self.leaf_numrows
-
-        # When scrolling up we must keep start value >= first_row
-        if start < first_row:
-            start = first_row
-
-        # When scrolling down we must keep stop value <= last_row
-        stop = start + buffer_size
-        if stop > last_row:
-            stop = last_row
-
-        # Ensure that the whole buffer will be filled
-        if stop - start < self.chunk_size:
-            start = stop - self.chunk_size
-
-        return start, stop
-
     def isDataSourceReadable(self):
         """Find out if the dataset can be read or not.
 
@@ -202,7 +160,7 @@ class Buffer(object):
             self.leaf.read(0, 1)
         except tables.HDF5ExtError:
             readable = False
-            ## TODO: Fix error msg to include exception.
+            # TODO: Fix error msg to include exception or merge with below.
             self.logger.error(
                 translate('Buffer',
                           """Problems reading records. The dataset """
@@ -218,7 +176,7 @@ class Buffer(object):
                           'A dataset read error').format(e.message))
         return readable
 
-    def readBuffer(self, start, buffer_size):
+    def readBuffer(self, start, stop):
         """
         Read a chunk from the data source.
 
@@ -233,11 +191,10 @@ class Buffer(object):
 
         :Parameters:
 
-        - `start`: the document row that is the first row of the chunk.
-        - `buffer_size`: the buffer size, i.e. the number of rows to be read.
+        :param start: the document row that is the first row of the chunk.
+        :param stop: the last row to read, inclusive.
         """
 
-        start, stop = self.getReadParameters(start, buffer_size)
         try:
             # data_source is a tables.Table or a tables.XArray
             # but data is a numpy array
@@ -246,7 +203,7 @@ class Buffer(object):
             # array returned by EArray.read() will have only 2 rows
             data = self.leaf.read(start, stop)
         except tables.HDF5ExtError:
-            ## TODO: Fix error msg to include exception.
+            # TODO: Fix error msg to include exception.
             self.logger.error(
                 translate('Buffer', """\nError: problems reading records. """
                           """The dataset maybe corrupted.""",
@@ -256,7 +213,6 @@ class Buffer(object):
         else:
             # Update the buffer contents and its start position
             self.chunk = data
-            self.start = start
 
     def scalarCell(self, row, col):
         """
@@ -276,8 +232,8 @@ class Buffer(object):
         try:
             return self.chunk[()]
         except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! row, column: {1}, {2}'
+                              .format(row, col))
 
     def vectorCell(self, row, col):
         """
@@ -307,8 +263,8 @@ class Buffer(object):
         try:
             return self.chunk[row]
         except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! row, column: {1}, {2}'
+                              .format(row, col))
 
     def EArrayCell(self, row, col):
         """
@@ -334,8 +290,8 @@ class Buffer(object):
         try:
             return self.leaf.read()[row]
         except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! row, column: {1}, {2}'
+                              .format(row, col))
 
     def arrayCell(self, row, col):
         """
@@ -363,5 +319,5 @@ class Buffer(object):
         try:
             return self.chunk[row][col]
         except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+            self.logger.error('IndexError! row, column: {1}, {2}'
+                              .format(row, col))

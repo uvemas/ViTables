@@ -326,18 +326,18 @@ class TSLeafModel(object):
         - `role`: the role being returned
         """
 
-        if not index.isValid() or not (0 <= index.row() < self.numrows):
+        if not index.isValid() or not (0 <= index.row() < self.nrows):
             return None
-        
+
         if role == QtCore.Qt.DisplayRole:
             cell = self.rbuffer.getCell(index.row(), index.column())
             if index.column() in self.ts_cols:
                 return self.tsFormatter(cell)
             return self.formatContent(cell)
-        
+
         if role == QtCore.Qt.TextAlignmentRole:
             return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
-        
+
         return None
 
 
@@ -353,7 +353,7 @@ class TSLeafModel(object):
         - `role`: the role being returned
         """
 
-        if not index.isValid() or not (0 <= index.row() < self.numrows):
+        if not index.isValid() or not (0 <= index.row() < self.nrows):
             return None
 
         if role == QtCore.Qt.DisplayRole:
