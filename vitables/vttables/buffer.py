@@ -198,12 +198,11 @@ class Buffer(object):
         """
 
         readable = True
-        start, stop = self.getReadParameters(0,
-                                             self.chunk_size)
         try:
-            self.data_source.read(start, stop)
+            self.data_source.read(0, 1)
         except tables.HDF5ExtError:
             readable = False
+            ## TODO: Fix error msg to include exception.
             self.logger.error(
                 translate('Buffer',
                           """Problems reading records. The dataset """
@@ -247,6 +246,7 @@ class Buffer(object):
             # array returned by EArray.read() will have only 2 rows
             data = self.data_source.read(start, stop)
         except tables.HDF5ExtError:
+            ## TODO: Fix error msg to include exception.
             self.logger.error(
                 translate('Buffer', """\nError: problems reading records. """
                           """The dataset maybe corrupted.""",
