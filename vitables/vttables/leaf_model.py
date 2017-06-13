@@ -54,7 +54,7 @@ class LeafModel(QtCore.QAbstractTableModel):
         """
 
         # The model data source (a PyTables/HDF5 leaf) and its access buffer
-        self.data_source = rbuffer.data_source
+        self.leaf = rbuffer.leaf
         self.rbuffer = rbuffer
 
         # The number of digits of the last row
@@ -74,14 +74,14 @@ class LeafModel(QtCore.QAbstractTableModel):
         # The dataset number of columns doesn't use to be large so, we don't
         # need set a maximum as we did with rows. The whole set of columns
         # are displayed
-        if isinstance(self.data_source, tables.Table):
+        if isinstance(self.leaf, tables.Table):
             # Leaf is a PyTables table
-            self.numcols = len(self.data_source.colnames)
-        elif isinstance(self.data_source, tables.EArray):
+            self.numcols = len(self.leaf.colnames)
+        elif isinstance(self.leaf, tables.EArray):
             self.numcols = 1
         else:
             # Leaf is some kind of PyTables array
-            shape = self.data_source.shape
+            shape = self.leaf.shape
             if len(shape) > 1:
                 # The leaf will be displayed as a bidimensional matrix
                 self.numcols = shape[1]
@@ -98,9 +98,9 @@ class LeafModel(QtCore.QAbstractTableModel):
         # Time series (if they are found) are formatted transparently
         # via the time_series.py plugin
 
-        if not isinstance(self.data_source, tables.Table):
+        if not isinstance(self.leaf, tables.Table):
             # Leaf is some kind of PyTables array
-            atom_type = self.data_source.atom.type
+            atom_type = self.leaf.atom.type
             if atom_type == 'object':
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
@@ -143,8 +143,8 @@ class LeafModel(QtCore.QAbstractTableModel):
         if orientation == QtCore.Qt.Horizontal:
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
-            if hasattr(self.data_source, 'description'):
-                return str(self.data_source.colnames[section])
+            if hasattr(self.leaf, 'description'):
+                return str(self.leaf.colnames[section])
             return str(section)
 
         ## Rows-labels

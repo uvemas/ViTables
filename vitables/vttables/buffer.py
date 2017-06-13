@@ -87,7 +87,7 @@ class Buffer(object):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-        self.data_source = leaf
+        self.leaf = leaf
 
         # The maximum number of rows to be read from the data source
         self.chunk_size = 10000
@@ -142,19 +142,19 @@ class Buffer(object):
         :Returns: the size of the first dimension of the document
         """
 
-        shape = self.data_source.shape
+        shape = self.leaf.shape
         if shape is None:
             # Node is not a Leaf or there was problems getting the shape
             nrows = 0
         elif shape == ():
             # Node is a rank 0 array (e.g. numpy.array(5))
             nrows = 1
-        elif isinstance(self.data_source, tables.EArray):
+        elif isinstance(self.leaf, tables.EArray):
             # Warning: the number of rows of an EArray, ea, can be different
             # from the number of rows of the numpy array ea.read()
-            nrows = self.data_source.shape[0]
+            nrows = self.leaf.shape[0]
         else:
-            nrows = self.data_source.nrows
+            nrows = self.leaf.nrows
 
         return nrows
 
@@ -199,7 +199,7 @@ class Buffer(object):
 
         readable = True
         try:
-            self.data_source.read(0, 1)
+            self.leaf.read(0, 1)
         except tables.HDF5ExtError:
             readable = False
             ## TODO: Fix error msg to include exception.
@@ -210,7 +210,7 @@ class Buffer(object):
                           """Check that it is installed in your system, """
                           """please.""",
                           'A dataset readability error').format(
-                              self.data_source.filters.complib))
+                              self.leaf.filters.complib))
         except ValueError as e:
             readable = False
             self.logger.error(
@@ -244,7 +244,7 @@ class Buffer(object):
             # Warning: in a EArray with shape (2,3,3) and extdim attribute
             # being 1, the read method will have 3 rows. However, the numpy
             # array returned by EArray.read() will have only 2 rows
-            data = self.data_source.read(start, stop)
+            data = self.leaf.read(start, stop)
         except tables.HDF5ExtError:
             ## TODO: Fix error msg to include exception.
             self.logger.error(
@@ -332,7 +332,7 @@ class Buffer(object):
         # TODO: this method should be improved as it requires to read the
         # whola array keeping the read data in memory
         try:
-            return self.data_source.read()[row]
+            return self.leaf.read()[row]
         except IndexError:
             self.logger.error('IndexError! buffer start: {0} row, column: '
                               '{1}, {2}'.format(self.start, row, col))
