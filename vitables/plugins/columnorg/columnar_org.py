@@ -146,7 +146,7 @@ class ArrayColsOrganizer(QtCore.QObject):
                 'folder': os.path.join(os.path.dirname(__file__)),
                 'author': 'Vicent Mas <vmas@vitables.org>',
                 'comment': translate('ArrayColsOrganizer',
-                    """
+                                     """
                     <qt><p>Plugin that provides an alternative view for
                     arrays with the same number of rows. <p>
                     The user has to open all the arrays she whishes to see in
@@ -158,7 +158,7 @@ class ArrayColsOrganizer(QtCore.QObject):
                     <p>Note that all ticked arrays must have the same
                     dimensions for the `Group` menu item to enable.</qt>
                     """,
-                    'Text of an About plugin message box')}
+                                     'Text of an About plugin message box')}
         about_page = AboutPage(desc, parent)
         return about_page
 
@@ -198,10 +198,10 @@ class MenuUpdater(QtCore.QObject):
             triggered=self.groupArrays,
             icon=object_group_icon,
             statusTip=translate('MenuUpdater',
-                """
+                                """
                 Use a unique widget to display Arrays as if
                 they where columns of a Table""",
-                "Status bar text for the Node -> Group Arrays action"))
+                                "Status bar text for the Node -> Group Arrays action"))
 
         object_ungroup_icon = QtGui.QIcon()
         pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
@@ -219,8 +219,8 @@ class MenuUpdater(QtCore.QObject):
             triggered=self.ungroupArrays,
             icon=object_ungroup_icon,
             statusTip=translate('MenuUpdater',
-                """Ungroup previously grouped arrays.""",
-                "Status bar text for the Node -> Ungroup Arrays action"))
+                                """Ungroup previously grouped arrays.""",
+                                "Status bar text for the Node -> Ungroup Arrays action"))
 
         # Add the actions to the Node menu
         vitables.utils.addToMenu(self.vtgui.node_menu, (self.group_action,
@@ -468,12 +468,12 @@ class GroupedArrays(QtWidgets.QMdiSubWindow):
 
         nd = len(datasheets)
         for i in range(nd):
-            datasheets[nd-1].widget().verticalScrollBar().valueChanged.connect(
+            datasheets[nd - 1].widget().verticalScrollBar().valueChanged.connect(
                 datasheets[i].widget().verticalScrollBar().setValue)
             if i < (nd - 1):
                 datasheets[i].widget().verticalScrollBar().hide()
                 datasheets[i].widget().setCornerWidget(None)
-                datasheets[i+1].widget().verticalHeader().hide()
+                datasheets[i + 1].widget().verticalHeader().hide()
 
     def closeEvent(self, event):
         """ Propagate the close event.

@@ -50,7 +50,6 @@ except ImportError:
     pd = None
 
 from qtpy import QtCore
-from qtpy import QtGui
 from qtpy import QtWidgets
 
 import vitables.utils
@@ -152,7 +151,7 @@ def tsFrequency(ts_kind, leaf):
     if ts_kind == 'scikits_ts':
         # The frequency of the time serie. Default is 6000 (daily)
         special_attrs = getattr(leaf._v_attrs, 'special_attrs',
-            {'freq': 6000})
+                                {'freq': 6000})
         ts_freq = special_attrs['freq']
     return ts_freq
 
@@ -225,7 +224,7 @@ class TSFormatter(object):
             'ts_cols': time_cols,
             'ts_freq': tsFrequency(ts_kind, leaf),
             'ts_format': datetimeFormat(),
-            }
+        }
         if isinstance(leaf, tables.Table):
             leaf_kind = 'table'
         else:
@@ -246,7 +245,6 @@ class TSFormatter(object):
         model.tsFormatter = ts_model.tsFormatter
         model.data = ts_model.data
 
-
     def helpAbout(self, parent):
         """Full description of the plugin.
 
@@ -260,17 +258,17 @@ class TSFormatter(object):
 
         # Plugin full description
         desc = {'version': __version__,
-            'module_name': os.path.join(os.path.basename(__file__)),
-            'folder': os.path.join(os.path.dirname(__file__)),
-            'author': 'Vicent Mas <vmas@vitables.org>',
-            'about_text': translate('TimeFormatterPage',
-            """<qt>
+                'module_name': os.path.join(os.path.basename(__file__)),
+                'folder': os.path.join(os.path.dirname(__file__)),
+                'author': 'Vicent Mas <vmas@vitables.org>',
+                'about_text': translate('TimeFormatterPage',
+                                        """<qt>
             <p>Plugin that provides nice string formatting for time fields.
             <p>It supports not only native PyTables time datatypes but
             also time series generated (and stored in PyTables tables) via
             Pandas and scikits.timeseries packages.
             </qt>""",
-            'Text of an About plugin message box')}
+                                        'Text of an About plugin message box')}
         self.about_page = AboutPage(desc, parent)
 
         # We need to install the event filter because the Preferences dialog
@@ -313,7 +311,6 @@ class TSLeafModel(object):
         else:
             self.data = self.array_data
 
-
     def table_data(self, index, role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
         referred to by the index.
@@ -340,7 +337,6 @@ class TSLeafModel(object):
 
         return None
 
-
     def array_data(self, index, role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
         referred to by the index.
@@ -361,10 +357,9 @@ class TSLeafModel(object):
             return self.tsFormatter(cell)
 
         if role == QtCore.Qt.TextAlignmentRole:
-            return QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop
+            return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
 
         return None
-
 
     def timeFormatter(self):
         """Return the function to be used for formatting time series.
@@ -379,7 +374,6 @@ class TSLeafModel(object):
         elif ts_kind == 'pytables_ts':
             time_formatter = self.formatPyTablesTS
         return time_formatter
-
 
     def formatPyTablesTS(self, content):
         """
@@ -396,7 +390,6 @@ class TSLeafModel(object):
         except ValueError:
             return content
 
-
     def formatPandasTS(self, content):
         """Format a given date in a user friendly way.
 
@@ -405,13 +398,12 @@ class TSLeafModel(object):
 
         :Parameter content: the content of the table cell being formatted
         """
-
+        # ImportError if pandas not installed!
         date = pd.Timestamp(int(content))
         try:
             return date.strftime(self.ts_format)
         except ValueError:
             return content
-
 
     def formatScikitsTS(self, content):
         """Format a given date in a user friendly way.

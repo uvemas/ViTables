@@ -288,8 +288,8 @@ class LeafView(QtWidgets.QTableView):
             # last row of the viewport.
             model.loadData(
                 buffer_start + page_step - table_rows, table_rows)
-            self.scrollTo(
-                model.index(buffer_start + page_step - model.start - 1, 0),
+            self.scrollTo(model.index(
+                buffer_start + page_step - model.start - 1, 0),
                 QtWidgets.QAbstractItemView.PositionAtBottom)
             self.updateView()
         else:
