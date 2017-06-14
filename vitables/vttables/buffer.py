@@ -48,6 +48,8 @@ tables.restrict_flavors(keep=['numpy'])
 warnings.filterwarnings('ignore', category=tables.FlavorWarning)
 warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
 
+log = logging.getLogger(__name__)
+
 
 class Buffer(object):
     """Buffer used to access the real data contained in `PyTables` datasets.
@@ -80,9 +82,6 @@ class Buffer(object):
         """
         Initializes the buffer.
         """
-
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
 
         self.leaf = leaf
 
@@ -161,7 +160,7 @@ class Buffer(object):
         except tables.HDF5ExtError:
             readable = False
             # TODO: Fix error msg to include exception or merge with below.
-            self.logger.error(
+            log.error(
                 translate('Buffer',
                           """Problems reading records. The dataset """
                           """seems to be compressed with the {0} library. """
@@ -171,7 +170,7 @@ class Buffer(object):
                               self.leaf.filters.complib))
         except ValueError as e:
             readable = False
-            self.logger.error(
+            log.error(
                 translate('Buffer', 'Data read error: {}',
                           'A dataset read error').format(e.message))
         return readable
@@ -204,7 +203,7 @@ class Buffer(object):
             data = self.leaf.read(start, stop)
         except tables.HDF5ExtError:
             # TODO: Fix error msg to include exception.
-            self.logger.error(
+            log.error(
                 translate('Buffer', """\nError: problems reading records. """
                           """The dataset maybe corrupted.""",
                           'A dataset readability error'))
@@ -228,12 +227,7 @@ class Buffer(object):
 
         :Returns: the cell at position `(row, col)` of the document
         """
-
-        try:
-            return self.chunk[()]
-        except IndexError:
-            self.logger.error('IndexError! row, column: {1}, {2}'
-                              .format(row, col))
+        return self.chunk[()]
 
     def vectorCell(self, row, col):
         """
@@ -260,11 +254,7 @@ class Buffer(object):
         # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
-        try:
-            return self.chunk[row]
-        except IndexError:
-            self.logger.error('IndexError! row, column: {1}, {2}'
-                              .format(row, col))
+        return self.chunk[row]
 
     def EArrayCell(self, row, col):
         """
@@ -287,11 +277,7 @@ class Buffer(object):
         # and columns can be read from a given row using indexing notation
         # TODO: this method should be improved as it requires to read the
         # whola array keeping the read data in memory
-        try:
-            return self.leaf.read()[row]
-        except IndexError:
-            self.logger.error('IndexError! row, column: {1}, {2}'
-                              .format(row, col))
+        return self.leaf.read()[row]
 
     def arrayCell(self, row, col):
         """
@@ -316,8 +302,4 @@ class Buffer(object):
         # For tables we have
         # chunk = [nestedrecord0, nestedrecord1, ..., nestedrecordN]
         # and fields can be read from nestedrecordJ using indexing notation
-        try:
-            return self.chunk[row][col]
-        except IndexError:
-            self.logger.error('IndexError! row, column: {1}, {2}'
-                              .format(row, col))
+        return self.chunk[row][col]

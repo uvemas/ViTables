@@ -26,16 +26,18 @@ in a `tables.Leaf`.
 
 __docformat__ = 'restructuredtext'
 
+import logging
 import vitables.utils
+from vitables.vttables import buffer
 
 from qtpy import QtCore
 import tables
 
-from vitables.vttables import buffer
-
 
 #: The maximum number of rows to be read from the data source.
 CHUNK_SIZE = 10000
+
+log = logging.getLogger(__name__)
 
 
 class LeafModel(QtCore.QAbstractTableModel):
@@ -212,15 +214,28 @@ class LeafModel(QtCore.QAbstractTableModel):
         - `index`: the index of a data item
         - `role`: the role being returned
         """
+        row, col = index.row(), index.column()
 
-        if not index.isValid() or not (0 <= index.row() < self.numrows):
+        if not index.isValid() or not (0 <= row < self.numrows):
             return None
 
         if role == QtCore.Qt.DisplayRole:
-            cell = self.rbuffer.getCell(index.row(), index.column())
+            cell = self.cell(row, col)
             return self.formatContent(cell)
 
         if role == QtCore.Qt.TextAlignmentRole:
             return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
 
         return None
+
+    def cell(self, row, col):
+        """
+        Returns the contents of a cell.
+
+        :return: none to disable zooming.
+        """
+        try:
+            return self.rbuffer.getCell(row, col)
+        except IndexError:
+            log.error('IndexError! buffer start: {0} row, column: '
+                      '{1}, {2}'.format(self.start, row, col))

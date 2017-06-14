@@ -231,7 +231,7 @@ class TSFormatter(object):
             leaf_kind = 'array'
         model_info = {
             'leaf_kind': leaf_kind,
-            'rbuffer': model.rbuffer,
+            'model': model,
             'numrows': model.rowCount(),
             'formatContent': model.formatContent,
         }
@@ -298,7 +298,7 @@ class TSLeafModel(object):
         self.ts_freq = ts_info['ts_freq']
         self.ts_format = ts_info['ts_format']
         # Attributes required by the data() method
-        self.rbuffer = model_info['rbuffer']
+        self.model = model_info['model']
         self.numrows = model_info['numrows']
         self.ts_cols = ts_info['ts_cols']
         self.formatContent = model_info['formatContent']
@@ -322,12 +322,13 @@ class TSLeafModel(object):
         - `index`: the index of a data item
         - `role`: the role being returned
         """
+        row, col = index.row(), index.column()
 
-        if not index.isValid() or not (0 <= index.row() < self.nrows):
+        if not index.isValid() or not (0 <= row < self.nrows):
             return None
 
         if role == QtCore.Qt.DisplayRole:
-            cell = self.rbuffer.getCell(index.row(), index.column())
+            cell = self.model.cell(row, col)
             if index.column() in self.ts_cols:
                 return self.tsFormatter(cell)
             return self.formatContent(cell)
@@ -348,12 +349,13 @@ class TSLeafModel(object):
         - `index`: the index of a data item
         - `role`: the role being returned
         """
+        row, col = index.row(), index.column()
 
-        if not index.isValid() or not (0 <= index.row() < self.nrows):
+        if not index.isValid() or not (0 <= row < self.nrows):
             return None
 
         if role == QtCore.Qt.DisplayRole:
-            cell = self.rbuffer.getCell(index.row(), index.column())
+            cell = self.model.cell(row, col)
             return self.tsFormatter(cell)
 
         if role == QtCore.Qt.TextAlignmentRole:
