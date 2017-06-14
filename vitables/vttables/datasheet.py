@@ -29,14 +29,12 @@ that leaf will be displayed in the workspace using this wrapper widget.
 __docformat__ = 'restructuredtext'
 
 from qtpy import QtCore
-from qtpy import QtGui
 from qtpy import QtWidgets
 
-import vitables.utils
-import vitables.nodeprops.nodeinfo as nodeinfo
-import vitables.vtwidgets.zoom_cell as zoom_cell
-import vitables.vttables.leaf_model as leaf_model
-import vitables.vttables.leaf_view as leaf_view
+from . import leaf_view, leaf_model, df_model
+from .. import utils as vtutils
+from ..nodeprops import nodeinfo
+from ..vtwidgets import zoom_cell
 
 
 class DataSheet(QtWidgets.QMdiSubWindow):
@@ -52,7 +50,7 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         """
 
         # The main application window
-        self.vtgui = vitables.utils.getVTApp().gui
+        self.vtgui = vtutils.getVTApp().gui
 
         # The data structure (LeafNode/LinkNode instance) whose dataset
         # is being displayed
@@ -67,7 +65,9 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         else:
             leaf = pt_node
 
-        self.leaf_model = leaf_model.LeafModel(leaf)
+        self.leaf_model = df_model.try_opening_as_dataframe(leaf)
+        if not self.leaf_model:
+            self.leaf_model = leaf_model.LeafModel(leaf)
         self.leaf_view = leaf_view.LeafView(self.leaf_model)
 
         super(DataSheet, self).__init__(self.vtgui.workspace,
