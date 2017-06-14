@@ -67,7 +67,7 @@ class LeafDelegate(QtWidgets.QStyledItemDelegate):
         # option.state is an ORed combination of flags
         if (option.state & QtWidgets.QStyle.State_Selected):
             model = index.model()
-            buffer_start = model.rbuffer.start
+            buffer_start = model.start
             cell = index.model().selected_cell
             if ((index == cell['index']) and \
                     (buffer_start != cell['buffer_start'])):

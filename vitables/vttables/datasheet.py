@@ -37,7 +37,7 @@ import vitables.nodeprops.nodeinfo as nodeinfo
 import vitables.vtwidgets.zoom_cell as zoom_cell
 import vitables.vttables.leaf_model as leaf_model
 import vitables.vttables.leaf_view as leaf_view
-import vitables.vttables.buffer as readBuffer
+
 
 class DataSheet(QtWidgets.QMdiSubWindow):
     """
@@ -67,8 +67,7 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         else:
             leaf = pt_node
 
-        rbuffer = readBuffer.Buffer(leaf)
-        self.leaf_model = leaf_model.LeafModel(rbuffer)
+        self.leaf_model = leaf_model.LeafModel(leaf)
         self.leaf_view = leaf_view.LeafView(self.leaf_model)
 
         super(DataSheet, self).__init__(self.vtgui.workspace,
@@ -95,7 +94,6 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         self.aboutToActivate.connect(self.syncTreeView)
         self.leaf_view.doubleClicked.connect(self.zoomCell)
 
-
     def closeEvent(self, event):
         """Close the window cleanly with the close button of the title bar.
 
@@ -113,7 +111,6 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
 
-
     def focusInEvent(self, event):
         """Specialised handler for focus events.
 
@@ -129,7 +126,6 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         self.syncTreeView()
         self.setFocus(True)
 
-
     def syncTreeView(self):
         """
         If the view is activated select its leaf in the tree of databases view.
@@ -144,7 +140,6 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         self.vtgui.dbs_tree_view.setCurrentIndex(
             QtCore.QModelIndex(self.pindex))
 
-
     def zoomCell(self, index):
         """Display the inner dimensions of a cell.
 
@@ -154,7 +149,9 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         row = index.row()
         column = index.column()
         tmodel = index.model()
-        data = tmodel.rbuffer.getCell(tmodel.rbuffer.start + row, column)
+        data = tmodel.cell(row, column)
+        if data is None:
+            return
 
         # The title of the zoomed view
         node = self.dbt_leaf
@@ -162,10 +159,10 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         if node.node_kind == 'table':
             col = info.columns_names[column]
             title = '{0}: {1}[{2}]'.format(node.name, col,
-                tmodel.rbuffer.start + row)
+                                           tmodel.start + row)
         else:
             title = '{0}: ({1},{2})'.format(node.name,
-                tmodel.rbuffer.start + row, column)
+                                            tmodel.start + row, column)
 
         zoom_cell.ZoomCell(data, title, self.vtgui.workspace,
-                          self.dbt_leaf)
+                           self.dbt_leaf)

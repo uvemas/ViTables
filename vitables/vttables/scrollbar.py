@@ -33,11 +33,12 @@ datasets with a larger number of rows than that provided by the view widget.
 
 __docformat__ = 'restructuredtext'
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy.QtCore import Qt
+from qtpy.QtCore import QEvent
+from qtpy.QtWidgets import QScrollBar
 
-class ScrollBar(QtWidgets.QScrollBar):
+
+class ScrollBar(QScrollBar):
     """
     A specialised scrollbar for views of huge datasets.
 
@@ -60,15 +61,19 @@ class ScrollBar(QtWidgets.QScrollBar):
         super(ScrollBar, self).__init__(parent)
         view.vscrollbar.setVisible(False)
         parent.layout().addWidget(self)
-        self.setOrientation(QtCore.Qt.Vertical)
+        self.setOrientation(Qt.Vertical)
         self.setObjectName('tricky_vscrollbar')
 
-
     def event(self, e):
-        """Filter wheel events and send them to the table viewport.
-        """
-
-        if (e.type() == QtCore.QEvent.Wheel):
+        """Filter wheel events and send them to the table viewport. """
+        if (e.type() == QEvent.Wheel):
             self.view.wheelEvent(e)
             return True
-        return QtWidgets.QScrollBar.event(self, e)
+        return QScrollBar.event(self, e)
+
+    def setMaxValue(self, max_value):
+        """Ensure range of scrollbar is a signed 32bit integer."""
+        max_value = min(2 ** 31 - 1, max_value)
+        self.setMaximum(max_value)
+
+        return max_value

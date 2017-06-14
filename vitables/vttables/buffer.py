@@ -30,16 +30,13 @@ are painted much faster too.
 
 __docformat__ = 'restructuredtext'
 
-import warnings
 import logging
-
-from qtpy import QtGui
-from qtpy import QtWidgets
+import vitables.utils
+import warnings
 
 import numpy
+from qtpy import QtWidgets
 import tables
-
-import vitables.utils
 
 
 translate = QtWidgets.QApplication.translate
@@ -50,6 +47,8 @@ translate = QtWidgets.QApplication.translate
 tables.restrict_flavors(keep=['numpy'])
 warnings.filterwarnings('ignore', category=tables.FlavorWarning)
 warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
+
+log = logging.getLogger(__name__)
 
 
 class Buffer(object):
@@ -84,26 +83,10 @@ class Buffer(object):
         Initializes the buffer.
         """
 
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-
-        self.data_source = leaf
-
-        # The maximum number of rows to be read from the data source
-        self.chunk_size = 10000
-
-        # The length of the dimension that is going to be read. It
-        # is an int64.
-        self.leaf_numrows = self.leafNumberOfRows()
-        if self.leaf_numrows <= self.chunk_size:
-            self.chunk_size = self.leaf_numrows
+        self.leaf = leaf
 
         # The numpy array where read data will be stored
         self.chunk = numpy.array([])
-
-        # The document row where the current chunk of data starts.
-        # It must be an int64 in order to address spaces bigger than 2**32
-        self.start = numpy.array(0, dtype=numpy.int64)
 
         # The method used for reading data depends on the kind of node.
         # Setting the reader method at initialization time increases the
@@ -130,10 +113,11 @@ class Buffer(object):
     def __del__(self):
         """Release resources before destroying the buffer.
         """
+        # FIXME: PY3.5+ leaks resources (use finalizer instead).
         self.chunk = None
 
-    def leafNumberOfRows(self):
-        """The number of rows of the dataset being read.
+    def total_nrows(self):
+        """Estimates the number of rows of the dataset being read.
 
         We don't use the `Leaf.nrows` attribute because it is not always
         suitable for displaying the data in a 2D grid. Instead we use the
@@ -146,53 +130,21 @@ class Buffer(object):
         :Returns: the size of the first dimension of the document
         """
 
-        shape = self.data_source.shape
+        shape = self.leaf.shape
         if shape is None:
             # Node is not a Leaf or there was problems getting the shape
             nrows = 0
         elif shape == ():
             # Node is a rank 0 array (e.g. numpy.array(5))
             nrows = 1
-        elif isinstance(self.data_source, tables.EArray):
+        elif isinstance(self.leaf, tables.EArray):
             # Warning: the number of rows of an EArray, ea, can be different
             # from the number of rows of the numpy array ea.read()
-            nrows = self.data_source.shape[0]
+            nrows = self.leaf.shape[0]
         else:
-            nrows = self.data_source.nrows
+            nrows = self.leaf.nrows
 
-        return numpy.array(nrows, dtype=numpy.int64)
-
-    def getReadParameters(self, start, buffer_size):
-        """
-        Returns acceptable parameters for the read method.
-
-        :Parameters:
-
-        - `start`: the document row that is the first row of the chunk.
-          It *must* be a 64 bits integer.
-        - `buffer_size`: the buffer size, i.e. the number of rows to be read.
-
-        :Returns:
-            a tuple with tested values for the parameters of the read method
-        """
-
-        first_row = numpy.array(0, dtype=numpy.int64)
-        last_row = self.leaf_numrows
-
-        # When scrolling up we must keep start value >= first_row
-        if start < first_row:
-            start = first_row
-
-        # When scrolling down we must keep stop value <= last_row
-        stop = start + buffer_size
-        if stop > last_row:
-            stop = last_row
-
-        # Ensure that the whole buffer will be filled
-        if stop - start < self.chunk_size:
-            start = stop - self.chunk_size
-
-        return start, stop
+        return nrows
 
     def isDataSourceReadable(self):
         """Find out if the dataset can be read or not.
@@ -203,28 +155,27 @@ class Buffer(object):
         """
 
         readable = True
-        start, stop = self.getReadParameters(numpy.array(0, dtype=numpy.int64),
-                                             self.chunk_size)
         try:
-            self.data_source.read(start, stop)
+            self.leaf.read(0, 1)
         except tables.HDF5ExtError:
             readable = False
-            self.logger.error(
+            # TODO: Fix error msg to include exception or merge with below.
+            log.error(
                 translate('Buffer',
                           """Problems reading records. The dataset """
                           """seems to be compressed with the {0} library. """
                           """Check that it is installed in your system, """
                           """please.""",
                           'A dataset readability error').format(
-                              self.data_source.filters.complib))
+                              self.leaf.filters.complib))
         except ValueError as e:
             readable = False
-            self.logger.error(
+            log.error(
                 translate('Buffer', 'Data read error: {}',
                           'A dataset read error').format(e.message))
         return readable
 
-    def readBuffer(self, start, buffer_size):
+    def readBuffer(self, start, stop):
         """
         Read a chunk from the data source.
 
@@ -239,21 +190,20 @@ class Buffer(object):
 
         :Parameters:
 
-        - `start`: the document row that is the first row of the chunk.
-          It *must* be a 64 bits integer.
-        - `buffer_size`: the buffer size, i.e. the number of rows to be read.
+        :param start: the document row that is the first row of the chunk.
+        :param stop: the last row to read, inclusive.
         """
 
-        start, stop = self.getReadParameters(start, buffer_size)
         try:
             # data_source is a tables.Table or a tables.XArray
             # but data is a numpy array
             # Warning: in a EArray with shape (2,3,3) and extdim attribute
             # being 1, the read method will have 3 rows. However, the numpy
             # array returned by EArray.read() will have only 2 rows
-            data = self.data_source.read(start, stop)
+            data = self.leaf.read(start, stop)
         except tables.HDF5ExtError:
-            self.logger.error(
+            # TODO: Fix error msg to include exception.
+            log.error(
                 translate('Buffer', """\nError: problems reading records. """
                           """The dataset maybe corrupted.""",
                           'A dataset readability error'))
@@ -262,7 +212,6 @@ class Buffer(object):
         else:
             # Update the buffer contents and its start position
             self.chunk = data
-            self.start = start
 
     def scalarCell(self, row, col):
         """
@@ -273,17 +222,12 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
         """
-
-        try:
-            return self.chunk[()]
-        except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+        return self.chunk[()]
 
     def vectorCell(self, row, col):
         """
@@ -300,23 +244,17 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
         """
 
-        # We must shift the row value by self.start units in order to
-        # get the right chunk element. Note that indices of chunk
-        # needn't to be int64 because they are indexing a fixed size,
-        # small chunk of data (see ctor docstring).
+        # The row-coordinate must be shifted by model.start units in order to
+        # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
-        try:
-            return self.chunk[int(row - self.start)]
-        except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+        return self.chunk[row]
 
     def EArrayCell(self, row, col):
         """
@@ -327,25 +265,19 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
         """
 
-        # We must shift the row value by self.start units in order to
-        # get the right chunk element. Note that indices of chunk
-        # needn't to be int64 because they are indexing a fixed size,
-        # small chunk of data (see ctor docstring).
+        # The row-coordinate must be shifted by model.start units in order to
+        # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         # TODO: this method should be improved as it requires to read the
         # whola array keeping the read data in memory
-        try:
-            return self.data_source.read()[int(row - self.start)]
-        except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+        return self.leaf.read()[row]
 
     def arrayCell(self, row, col):
         """
@@ -356,24 +288,18 @@ class Buffer(object):
 
         :Parameters:
 
-        - `row`: the row to which the cell belongs. It is a 64 bits integer
+        - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
         :Returns: the cell at position `(row, col)` of the document
         """
 
-        # We must shift the row value by self.start units in order to get the
-        # right chunk element. Note that indices of chunk needn't to be
-        # int64 because they are indexing a fixed size, small chunk of
-        # data (see ctor docstring).
+        # The row-coordinate must be shifted by model.start units in order to
+        # get the right chunk element.
         # For arrays we have
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         # For tables we have
         # chunk = [nestedrecord0, nestedrecord1, ..., nestedrecordN]
         # and fields can be read from nestedrecordJ using indexing notation
-        try:
-            return self.chunk[int(row - self.start)][col]
-        except IndexError:
-            self.logger.error('IndexError! buffer start: {0} row, column: '
-                              '{1}, {2}'.format(self.start, row, col))
+        return self.chunk[row][col]

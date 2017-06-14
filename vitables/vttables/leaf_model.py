@@ -26,14 +26,18 @@ in a `tables.Leaf`.
 
 __docformat__ = 'restructuredtext'
 
-import collections
-
-import tables
-import numpy as np
+import logging
+import vitables.utils
+from vitables.vttables import buffer
 
 from qtpy import QtCore
+import tables
 
-import vitables.utils
+
+#: The maximum number of rows to be read from the data source.
+CHUNK_SIZE = 10000
+
+log = logging.getLogger(__name__)
 
 
 class LeafModel(QtCore.QAbstractTableModel):
@@ -42,46 +46,50 @@ class LeafModel(QtCore.QAbstractTableModel):
 
     The data is read from data sources (i.e., `HDF5/PyTables` nodes) by
     the model.
+    The dataset number of rows is potentially huge but tables are read and
+    displayed in chunks.
 
-    :Parameters:
 
-        - `rbuffer`: a buffer used for optimizing read access to data
-        - `parent`: the parent of the model
+    :param parent:
+        The parent of the model, passed as is in the superclass.
+    :attribute leaf:
+        the underlying hdf5 data
+    :attribute rbuffer:
+        Code for chunking and inspecting the undelying data.
+    :attribute leaf_numrows:
+        the total number of rows in the underlying data
+    :attribute numrows:
+        The number of rows visible which equals the chunking-size.
+    :attribute numcols:
+        The total number of columnss visible, equal to those visible.
+    :attribute start:
+        The zero-based starting index of the chunk within the total rows.
+
     """
 
-    def __init__(self, rbuffer, parent=None):
+    def __init__(self, leaf, parent=None):
         """Create the model.
         """
 
         # The model data source (a PyTables/HDF5 leaf) and its access buffer
-        self.data_source = rbuffer.data_source
-        self.rbuffer = rbuffer
+        self.leaf = leaf
+        self.rbuffer = buffer.Buffer(leaf)
 
-        # The number of digits of the last row
-        self.last_row_width = len(str(self.rbuffer.leaf_numrows))
-
-        #
-        # The table dimensions
-        #
-
-        # The dataset number of rows is potentially huge but tables are
-        # kept small: just the data returned by a read operation of the
-        # buffer are displayed
-        self.numrows = self.rbuffer.leafNumberOfRows()
-        if self.numrows > self.rbuffer.chunk_size:
-            self.numrows = self.rbuffer.chunk_size
+        self.leaf_numrows = self.rbuffer.total_nrows()
+        self.numrows = min(self.leaf_numrows, CHUNK_SIZE)
+        self.start = 0
 
         # The dataset number of columns doesn't use to be large so, we don't
         # need set a maximum as we did with rows. The whole set of columns
         # are displayed
-        if isinstance(self.data_source, tables.Table):
+        if isinstance(leaf, tables.Table):
             # Leaf is a PyTables table
-            self.numcols = len(self.data_source.colnames)
-        elif isinstance(self.data_source, tables.EArray):
+            self.numcols = len(leaf.colnames)
+        elif isinstance(leaf, tables.EArray):
             self.numcols = 1
         else:
             # Leaf is some kind of PyTables array
-            shape = self.data_source.shape
+            shape = leaf.shape
             if len(shape) > 1:
                 # The leaf will be displayed as a bidimensional matrix
                 self.numcols = shape[1]
@@ -98,9 +106,9 @@ class LeafModel(QtCore.QAbstractTableModel):
         # Time series (if they are found) are formatted transparently
         # via the time_series.py plugin
 
-        if not isinstance(self.data_source, tables.Table):
+        if not isinstance(leaf, tables.Table):
             # Leaf is some kind of PyTables array
-            atom_type = self.data_source.atom.type
+            atom_type = leaf.atom.type
             if atom_type == 'object':
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
@@ -110,12 +118,57 @@ class LeafModel(QtCore.QAbstractTableModel):
         self.selected_cell = {'index': QtCore.QModelIndex(), 'buffer_start': 0}
 
         # Populate the model with the first chunk of data
-        self.loadData(self.rbuffer.start, self.rbuffer.chunk_size)
+        self.loadData(0, self.numrows)
 
         super(LeafModel, self).__init__(parent)
 
-    def _collect_enum_indices(self):
-        """Initialize structures required to properly display enum columns."""
+    def columnCount(self, index=QtCore.QModelIndex()):
+        """The number of columns of the given model index.
+
+        Overridden to return 0 for valid indices because they have no children;
+        otherwise return the total number of *columns* exposed by the model.
+
+        :param index:
+            the model index being inspected.
+        """
+
+        return 0 if index.isValid() else self.numcols
+
+    def rowCount(self, index=QtCore.QModelIndex()):
+        """The number of columns for the children of the given index.
+
+        Overridden to return 0 for valid indices because they have no children;
+        otherwise return the total number of *rows* exposed by the model.
+
+        :Parameter index: the model index being inspected.
+        """
+
+        return 0 if index.isValid() else self.numrows
+
+    def loadData(self, start, length):
+        """Load the model with fresh data from the buffer.
+
+        :param start:
+            the document row that is the first row of the chunk.
+        :param length:
+            the buffer size, i.e. the number of rows to be read.
+
+        :return:
+            a tuple with tested values for the parameters of the read method
+        """
+
+        # Enforce scrolling limits.
+        #
+        start = max(start, 0)
+        stop = min(start + length, self.leaf_numrows)
+
+        # Ensure buffer filled when scrolled beyond bottom.
+        #
+        actual_start = stop - self.numrows
+        start = max(min(actual_start, start), 0)
+
+        self.rbuffer.readBuffer(start, stop)
+        self.start = start
 
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
@@ -133,20 +186,22 @@ class LeafModel(QtCore.QAbstractTableModel):
         # The section alignment
         if role == QtCore.Qt.TextAlignmentRole:
             if orientation == QtCore.Qt.Horizontal:
-                return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-            return int(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+                return QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+            return QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter
+
         if role != QtCore.Qt.DisplayRole:
             return None
-        # The section label for horizontal header
+
+        # Columns-labels
         if orientation == QtCore.Qt.Horizontal:
             # For tables horizontal labels are column names, for arrays
             # the section numbers are used as horizontal labels
-            if hasattr(self.data_source, 'description'):
-                return str(self.data_source.colnames[section])
+            if hasattr(self.leaf, 'description'):
+                return str(self.leaf.colnames[section])
             return str(section)
-        # The section label for vertical header. This is a 64 bits integer
-        return str(self.rbuffer.start + section)
 
+        # Rows-labels
+        return str(self.start + section)
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
@@ -159,59 +214,28 @@ class LeafModel(QtCore.QAbstractTableModel):
         - `index`: the index of a data item
         - `role`: the role being returned
         """
+        row, col = index.row(), index.column()
 
-        if not index.isValid() or not (0 <= index.row() < self.numrows):
+        if not index.isValid() or not (0 <= row < self.numrows):
             return None
-        cell = self.rbuffer.getCell(self.rbuffer.start + index.row(),
-                                    index.column())
+
         if role == QtCore.Qt.DisplayRole:
+            cell = self.cell(row, col)
             return self.formatContent(cell)
-        elif role == QtCore.Qt.TextAlignmentRole:
-            return int(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        else:
-            return None
 
+        if role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
 
-    def columnCount(self, index=QtCore.QModelIndex()):
-        """The number of columns of the given model index.
+        return None
 
-        When implementing a table based model this method has to be overriden
-        -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the
-        method  should return the number of columns exposed by the model.
-
-        :Parameter index: the model index being inspected.
+    def cell(self, row, col):
         """
+        Returns the contents of a cell.
 
-        if not index.isValid():
-            return self.numcols
-        else:
-            return 0
-
-
-    def rowCount(self, index=QtCore.QModelIndex()):
-        """The number of columns for the children of the given index.
-
-        When implementing a table based model this method has to be overriden
-        -because it is an abstract method- and should return 0 for valid
-        indices (because they have no children). If the index is not valid the
-        method  should return the number of rows exposed by the model.
-
-        :Parameter index: the model index being inspected.
+        :return: none to disable zooming.
         """
-
-        if not index.isValid():
-            return self.numrows
-        else:
-            return 0
-
-
-    def loadData(self, start, chunk_size):
-        """Load the model with fresh data from the buffer.
-
-        :Parameters:
-
-        - `start`: the row where the buffer starts
-        - `chunk_size`: the size of the buffer
-        """
-        self.rbuffer.readBuffer(start, chunk_size)
+        try:
+            return self.rbuffer.getCell(row, col)
+        except IndexError:
+            log.error('IndexError! buffer start: {0} row, column: '
+                      '{1}, {2}'.format(self.start, row, col))
