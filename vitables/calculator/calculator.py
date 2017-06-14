@@ -2,22 +2,24 @@
 
 # pylint: disable=W0212
 
+import logging
 import os
 import re
-import logging
-
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy import QtWidgets
-
-import tables
-import numpy as np
-
-import vitables.utils as vtu
-import vitables.calculator.evaluator as vtce
 from vitables.calculator.calculator_dlg import Ui_CalculatorDialog
 
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
+import tables
+
+import numpy as np
+import vitables.calculator.evaluator as vtce
+import vitables.utils as vtu
+
+
 translate = QtCore.QCoreApplication.translate
+
+log = logging.getLogger(__name__)
 
 
 def run():
@@ -41,6 +43,7 @@ def run():
             return
     dialog = CalculatorDialog()
     dialog.exec_()
+
 
 # Marker used as prefix to distinguish identifiers from functions.
 IDENTIFIER_MARKER = '$'
@@ -137,7 +140,6 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
     def __init__(self, parent=None):
         super(CalculatorDialog, self).__init__(parent)
         self.setupUi(self)
-        self._logger = logging.getLogger(__name__)
         self._name_expression_dict = {}
         self._settings = QtCore.QSettings()
         self._settings.beginGroup('Calculator')
@@ -198,7 +200,7 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
                           'to be removed.'))
             return
         removed_item = self.saved_list.takeItem(
-                self.saved_list.currentRow())
+            self.saved_list.currentRow())
         del self._name_expression_dict[removed_item.text()]
 
     def on_saved_list_itemSelectionChanged(self):
@@ -375,7 +377,7 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
         try:
             result = vtce.evaluate(statements, expression, eval_globals)
         except Exception as e:
-            self._logger.error(str(e))
+            log.error(str(e))
             QtWidgets.QMessageBox.critical(
                 self, translate('Calculator', 'Evaluation error'),
                 translate('Calculator', 'An exception was raised during '
@@ -391,7 +393,7 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
                 result_group, result_name, obj=result,
                 title='Expression: ' + self.expression_edit.toPlainText())
         except Exception as e:
-            self._logger.error(str(e))
+            log.error(str(e))
             QtWidgets.QMessageBox.critical(
                 self, translate('Calculator', 'Result save error'),
                 translate('Calculator', 'An exception was raised while '

@@ -34,8 +34,10 @@ translate = QtWidgets.QApplication.translate
 
 PLUGIN_GROUP = 'vitables.plugins'
 
+log = logging.getLogger(__name__)
 
-def _add_plugin_translator(module_name, plugin_class, logger):
+
+def _add_plugin_translator(module_name, plugin_class):
     """Try to load plugin translator."""
 
     app = QtWidgets.QApplication.instance()
@@ -43,35 +45,35 @@ def _add_plugin_translator(module_name, plugin_class, logger):
         try:
             app.installTranslator(plugin_class.translator)
         except Exception as e:
-            logger.error('Failed to install {0} plugin '
-                         'translator'.format(module_name))
-            logger.error(e)
+            log.error('Failed to install {0} plugin '
+                      'translator'.format(module_name))
+            log.error(e)
 
 
-def _load_entrypoint(entrypoint, logger):
+def _load_entrypoint(entrypoint):
     """Try to load an entry point."""
 
     plugin_class = None
     try:
         plugin_class = entrypoint.load()
     except Exception as e:
-        logger.error('Failed to load plugin: {0}'.format(
+        log.error('Failed to load plugin: {0}'.format(
             entrypoint.module_name))
-        logger.error(e)
-        logger.info(traceback.format_exc())
+        log.error(e)
+        log.info(traceback.format_exc())
     return plugin_class
 
 
-def _create_instance(plugin_class, logger):
+def _create_instance(plugin_class):
     """Try to create an instance of the given plugin class."""
 
     instance = None
     try:
         instance = plugin_class()
     except Exception as e:
-        logger.error('Failed to create plugin instance')
-        logger.error(e)
-        logger.info(traceback.format_exc())
+        log.error('Failed to create plugin instance')
+        log.error(e)
+        log.info(traceback.format_exc())
     return instance
 
 
@@ -87,8 +89,6 @@ class PluginsLoader(object):
         """Assign default values to members.
         """
 
-        self._logger = logging.getLogger(__name__)
-        self._logger.setLevel(logging.DEBUG)
         # list of UID of enabled plugins, stored in configuration
         self.enabled_plugins = enabled_plugins
         # dictionary that contains all available plugins
@@ -103,7 +103,7 @@ class PluginsLoader(object):
         """Find plugins in the system and create instances of enabled ones."""
 
         for entrypoint in pkg_resources.iter_entry_points(PLUGIN_GROUP):
-            plugin_class = _load_entrypoint(entrypoint, self._logger)
+            plugin_class = _load_entrypoint(entrypoint)
             if plugin_class is None:
                 continue
             self.all_plugins[plugin_class.UID] = {
@@ -111,8 +111,8 @@ class PluginsLoader(object):
                 'comment': plugin_class.COMMENT}
             if plugin_class.UID in self.enabled_plugins:
                 _add_plugin_translator(entrypoint.module_name,
-                                       plugin_class, self._logger)
-                instance = _create_instance(plugin_class, self._logger)
+                                       plugin_class)
+                instance = _create_instance(plugin_class)
                 if instance is not None:
                     self.loaded_plugins[plugin_class.UID] = instance
         self._disable_not_loaded()

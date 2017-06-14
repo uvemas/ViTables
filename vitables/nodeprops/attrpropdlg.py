@@ -29,27 +29,27 @@ mode. Otherwise all shown information is read-only.
 
 __docformat__ = 'restructuredtext'
 
-import os.path
 import logging
-
-import tables
+import os.path
+from vitables.nodeprops import attreditor
+import vitables.utils
 
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
-
 from qtpy.uic import loadUiType
+import tables
 
-import vitables.utils
-from vitables.nodeprops import attreditor
 
 translate = QtWidgets.QApplication.translate
 # This method of the PyQt4.uic module allows for dynamically loading user
 # interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
 # info.
 Ui_AttrPropDialog = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'attr_prop_dlg.ui'))[0]
+    loadUiType(os.path.join(os.path.dirname(__file__), 'attr_prop_dlg.ui'))[0]
 
+
+log = logging.getLogger(__name__)
 
 
 class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
@@ -84,9 +84,6 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         super(AttrPropDlg, self).__init__(vtapp.gui)
         self.setupUi(self)
 
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-
         # Customise the dialog's pages
         self.fillSysAttrsPage(info)
         self.fillUserAttrsPage(info)
@@ -95,7 +92,6 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         # Variables used for checking the table of user attributes
         self.mode = info.mode
         self.asi = info.asi
-
 
     def fillSysAttrsPage(self, info):
         """Fill the page of system attributes.
@@ -113,11 +109,11 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
-            'First column header of the table'),
+                      'First column header of the table'),
             translate('AttrPropDlg', 'Value',
-            'Second column header of the table'),
+                      'Second column header of the table'),
             translate('AttrPropDlg', 'Datatype',
-            'Third column header of the table')])
+                      'Third column header of the table')])
         self.sysTable.setModel(self.sysattr_model)
 
         # Fill the table
@@ -170,7 +166,6 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
                 value_item.setBackground(base_brush)
             self.sysattr_model.appendRow([name_item, value_item, dtype_item])
 
-
     def fillUserAttrsPage(self, info):
         """Fill the page of user attributes.
 
@@ -185,22 +180,22 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
 
         # Table of user attributes
         self.userTable.horizontalHeader().\
-                        setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+            setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
-            'First column header of the table'),
+                      'First column header of the table'),
             translate('AttrPropDlg', 'Value',
-            'Second column header of the table'),
+                      'Second column header of the table'),
             translate('AttrPropDlg', 'Datatype',
-            'Third column header of the table')])
+                      'Third column header of the table')])
         self.userTable.setModel(self.userattr_model)
 
         # Fill the table
         # The Data Type cell is a combobox with static content
         dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16',
-            'uint32', 'uint64', 'float32', 'float64', 'complex64',
-            'complex128', 'bool', 'bytes', 'string', 'python']
+                       'uint32', 'uint64', 'float32', 'float64', 'complex64',
+                       'complex128', 'bool', 'bytes', 'string', 'python']
 
         # Brushes used for read-only and writable cells
         bg_brush = self.userTable.palette().brush(QtGui.QPalette.Window)
@@ -238,7 +233,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             # ViTables doesn't support editing ND-array attributes so
             # they are displayed in non editable cells
             if (hasattr(value, 'shape') and value.shape != ())or\
-            (info.mode == 'read-only'):
+                    (info.mode == 'read-only'):
                 editable = False
                 brush = bg_brush
             else:
@@ -249,7 +244,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             value_item.setEditable(editable)
             value_item.setBackground(brush)
             self.user_attrs_before.append((name_item.text(),
-                value_item.text(), dtypes_combo.currentText()))
+                                           value_item.text(), dtypes_combo.currentText()))
         self.user_attrs_before = sorted(self.user_attrs_before[:])
 
         # The group of buttons Add, Delete, What's This
@@ -263,8 +258,8 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
 
-        self.helpButton.clicked.connect(QtWidgets.QWhatsThis.enterWhatsThisMode)
-
+        self.helpButton.clicked.connect(
+            QtWidgets.QWhatsThis.enterWhatsThisMode)
 
     @QtCore.Slot("QModelIndex", name="on_sysTable_clicked")
     @QtCore.Slot("QModelIndex", name="on_userTable_clicked")
@@ -284,15 +279,14 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             self.userAttrCellLE.clear()
             self.userAttrCellLE.setText(model_item.text())
 
-
     @QtCore.Slot(name="on_addButton_clicked")
     def addAttribute(self):
         """Add a new attribute to the user's attributes table."""
 
         # The Data Type cell is a combobox with static content
         dtypes_list = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16',
-            'uint32', 'uint64', 'float32', 'float64', 'complex64',
-            'complex128', 'bool', 'bytes', 'string', 'python']
+                       'uint32', 'uint64', 'float32', 'float64', 'complex64',
+                       'complex128', 'bool', 'bytes', 'string', 'python']
 
         name_item = QtGui.QStandardItem()
         value_item = QtGui.QStandardItem()
@@ -309,7 +303,6 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         # without double clicking the cell.
         self.userTable.edit(name_item.index())
 
-
     @QtCore.Slot(name="on_delButton_clicked")
     def delAttribute(self):
         """
@@ -324,7 +317,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         # If there is not a selected attribute then return
         current_index = self.userTable.currentIndex()
         if not current_index.isValid():
-            self.logger.error(
+            log.error(
                 translate('AttrPropDlg',
                           'Please, select the attribute to be deleted.',
                           'A usage text'))
@@ -339,27 +332,26 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
 
         # Delete the marked attribute
         title = translate('AttrPropDlg', 'User attribute deletion',
-            'Caption of the attr deletion dialog')
+                          'Caption of the attr deletion dialog')
         text = translate('AttrPropDlg',
-            "\n\nYou are about to delete the attribute:\n{0}\n\n",
-            'Ask for confirmation').format(name)
+                         "\n\nYou are about to delete the attribute:\n{0}\n\n",
+                         'Ask for confirmation').format(name)
         itext = ''
         dtext = ''
         buttons = {
             'Delete':
                 (translate('AttrPropDlg', 'Delete', 'Button text'),
-                QtWidgets.QMessageBox.YesRole),
+                 QtWidgets.QMessageBox.YesRole),
             'Cancel':
                 (translate('AttrPropDlg', 'Cancel', 'Button text'),
-                QtWidgets.QMessageBox.NoRole),
-            }
+                 QtWidgets.QMessageBox.NoRole),
+        }
 
         # Ask for confirmation
         answer = vitables.utils.questionBox(title, text, itext, dtext, buttons)
         if answer == 'Delete':
             # Updates the user attributes table
             self.userattr_model.removeRow(current_row)
-
 
     def asiChanged(self):
         """Find out if the user has edited some attribute.
@@ -388,12 +380,11 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             dtype_combo = self.userTable.indexWidget(dtype_item.index())
             dtype_after = dtype_combo.currentText()
             self.user_attrs_after.append((name_after, value_after,
-                dtype_after))
-        if sorted(self.user_attrs_before) != sorted(self.user_attrs_after) :
+                                          dtype_after))
+        if sorted(self.user_attrs_before) != sorted(self.user_attrs_after):
             return True
 
         return False
-
 
     @QtCore.Slot(name="on_buttonsBox_accepted")
     def accept(self):
@@ -412,7 +403,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
 
         # Check the editable attributes
         aeditor = attreditor.AttrEditor(self.asi, self.title_after,
-            self.userTable)
+                                        self.userTable)
         attrs_are_ok, error = aeditor.checkAttributes()
         # If the attributes pass correctness checks then update the
         # attributes and close the dialog

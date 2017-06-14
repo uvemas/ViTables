@@ -29,34 +29,33 @@ __version__ = '1.2'
 plugin_name = 'Tree of DBs sorting'
 comment = 'Sorts the display of the databases tree'
 
+import logging
 import os
 import re
-import logging
+import vitables
+from vitables.h5db import dbstreemodel
+from vitables.h5db import groupnode
+from vitables.h5db import leafnode
+from vitables.h5db import linknode
+from vitables.plugins.dbstreesort.aboutpage import AboutPage
+
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
 try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
 
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy import QtWidgets
-
-import vitables
-from vitables.plugins.dbstreesort.aboutpage import AboutPage
-from vitables.h5db import groupnode
-from vitables.h5db import leafnode
-from vitables.h5db import linknode
-from vitables.h5db import dbstreemodel
 
 translate = QtWidgets.QApplication.translate
+
+log = logging.getLogger(__name__)
 
 
 def customiseDBsTreeModel():
     """Slot connected to the convenience dbtree_model_created signal.
     """
-
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
 
     # The absolute path of the INI file
     ini_filename = os.path.join(os.path.dirname(__file__),
@@ -66,10 +65,10 @@ def customiseDBsTreeModel():
         config.read(ini_filename)
         initial_sorting = config.get('DBsTreeSorting', 'algorithm')
     except (IOError, configparser.ParsingError):
-        logger.error(
+        log.error(
             translate('DBsTreeSort', 'The configuration file of the '
-                    'dbs_tree_sort plugin cannot be read.',
-                    'DBsTreeSort error message'))
+                      'dbs_tree_sort plugin cannot be read.',
+                      'DBsTreeSort error message'))
         return
 
     # The essence of the plugin is pretty simple, just monkeypatch
@@ -80,9 +79,9 @@ def customiseDBsTreeModel():
     elif initial_sorting == 'alphabetical':
         dbstreemodel.DBsTreeModel.insertRows = alphabeticalSort
     else:
-        logger.warning(
+        log.warning(
             translate('DBsTreeSort', 'Unknown sorting algorithm: {}.',
-                    'DBsTreeSort error message').format(initial_sorting))
+                      'DBsTreeSort error message').format(initial_sorting))
 
 
 def alphabeticalSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
@@ -135,7 +134,7 @@ def alphanum_key(key):
     """ Turn a string into a list of string and number chunks.
         "z23a" -> ["z", 23, "a"]
     """
-    convert = lambda text: int(text) if text.isdigit() else text
+    def convert(text): return int(text) if text.isdigit() else text
 
     return [convert(c) for c in re.split(r'(\d+)', key)]
 

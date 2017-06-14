@@ -24,23 +24,24 @@
 
 __docformat__ = 'restructuredtext'
 
-import os
-import tempfile
 import logging
-import traceback
+import os
 import re
-
-import tables
-import numpy
-
-from qtpy import QtWidgets
-
+import tempfile
+import traceback
 import vitables.utils
+
+import numpy
+from qtpy import QtWidgets
+import tables
+
 
 translate = QtWidgets.QApplication.translate
 TYPE_ERROR = translate(
     'ImportCSV', 'Please, make sure that you are importing a '
     'homogeneous dataset.', 'CSV file not imported error')
+
+log = logging.getLogger(__name__)
 
 
 def getArray(buf):
@@ -48,10 +49,10 @@ def getArray(buf):
 
     The lines read from the CSV file are stored in a temporary file which is
     passed to numpy.genfromtxt() in order to create a numpy array.
-    
+
     The dtypes of the numpy array are determined by the contents of each column.
     Multidimensional columns will have string datatype.
-    
+
     Warning: the temporary file is written in binary mode so lines are stored
     as bytearrays (encoded as UTF-8). It means that strings in the numpy array
     will also be bytes with UTF-8 encoding and not Python 3 strings.
@@ -87,7 +88,7 @@ def tableInfo(input_handler):
     filesize = os.path.getsize(input_handler.name)
     # Record size = number of elements * element size
     record_size = second_line.size * second_line.itemsize
-    nrows = filesize/record_size
+    nrows = filesize / record_size
 
     if second_line.dtype.fields is None:
         # second_line is a homogeneous array
@@ -121,12 +122,12 @@ def heterogeneousTableInfo(input_handler, first_line, second_line):
     fl_dtype = first_line.dtype
     if (fl_dtype.fields is None) and (fl_dtype.char in('S', 'U')):
         has_header = True
-    
+
     # Stuff used for finding out itemsizes of string fields
     itemsizes = {}
     for field in range(0, len(second_line.dtype)):
         if second_line.dtype[field].name.startswith('str') or \
-            second_line.dtype[field].name.startswith('bytes'):
+                second_line.dtype[field].name.startswith('bytes'):
             itemsizes[field] = 0
 
     # If a dtype is a string, find out its biggest itemsize
@@ -155,13 +156,13 @@ def heterogeneousTableInfo(input_handler, first_line, second_line):
         for i in range(0, first_line.size):
             dtype = second_line.dtype.fields['f{0}'.format(i)][0]
             descr[first_line[i].decode('UTF-8')] = tables.Col.from_dtype(dtype,
-                                                                          pos=i)
+                                                                         pos=i)
         for i in itemsizes:
-            descr[first_line[i].decode('UTF-8')] = tables.StringCol(itemsizes[i]
-                                                                    , pos=i)
+            descr[first_line[i].decode(
+                'UTF-8')] = tables.StringCol(itemsizes[i], pos=i)
     else:
         descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in
-            second_line.dtype.fields.items()])
+                      second_line.dtype.fields.items()])
         for i in itemsizes:
             descr['f{0}'.format(i)] = tables.StringCol(itemsizes[i])
 
@@ -265,7 +266,7 @@ def askForHelp(first_line):
         'Data':
         (translate('ImportCSV', 'Data', 'Button text'),
          QtWidgets.QMessageBox.NoRole),
-        }
+    }
     return vitables.utils.questionBox(title, text, itext, dtext, buttons)
 
 
@@ -283,10 +284,10 @@ def earrayInfo(input_handler):
     # Estimate the number of rows of the file
     filesize = os.path.getsize(input_handler.name)
     record_size = first_line.size * first_line.itemsize
-    nrows = filesize/record_size
+    nrows = filesize / record_size
 
     if first_line.dtype.name.startswith('str') or \
-        first_line.dtype.name.startswith('bytes'):
+            first_line.dtype.name.startswith('bytes'):
         # Find out the biggest itemsize
         itemsize = 0
         buf_size = 1024 * 1024
@@ -338,7 +339,7 @@ def carrayInfo(input_handler):
     input_handler.seek(0)
 
     if first_line.dtype.name.startswith('str') or \
-        first_line.dtype.name.startswith('bytes'):
+            first_line.dtype.name.startswith('bytes'):
         # Count lines and find out the biggest itemsize
         buf = input_handler.readlines(buf_size)
         while buf:
@@ -381,18 +382,16 @@ def isValidFilepath(filepath):
 
     :Parameter filepath: the filepath where the imported dataset will live
     """
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
     valid = True
     if os.path.exists(filepath):
-        logger.error(translate(
+        log.error(translate(
             'ImportCSV',
             'CSV import failed because destination file already exists.',
             'A file creation error'))
         valid = False
 
     elif os.path.isdir(filepath):
-        logger.error(translate(
+        log.error(translate(
             'ImportCSV',
             'CSV import failed because destination container is a directory.',
             'A file creation error'))
@@ -417,4 +416,3 @@ def checkFilenameExtension(filepath):
         ext = '.csv'
         filepath = filepath + ext
     return filepath
-

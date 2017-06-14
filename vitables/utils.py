@@ -46,6 +46,7 @@ from vitables.vtsite import ICONDIR, DOCDIR
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
 DEFAULT_ENCODING = locale.getdefaultlocale()[1]
+log = logging.getLogger(__name__)
 
 
 def getVTApp():
@@ -277,7 +278,7 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
     # comes at the price of an annoying KDE warning in your console. See the
     # thread "A dire warning message" (July, 2011) in the pyQt4 mailing list
     # for details.
-    #file_selector.setOption(QtWidgets.QFileDialog.DontUseNativeDialog)
+    # file_selector.setOption(QtWidgets.QFileDialog.DontUseNativeDialog)
     return file_selector
 
 
@@ -335,6 +336,7 @@ def checkFileExtension(filepath):
 # Icons related functions
 #
 
+
 def createIcons(large_icons, small_icons, icons_dict):
     """
     Create icons for different components of the GUI.
@@ -361,7 +363,7 @@ def createIcons(large_icons, small_icons, icons_dict):
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         if name in small_icons:
             pixmap = QtGui.QPixmap(
-                os.path.join(ICONDIR,'16x16', '{0}.png').format(name))
+                os.path.join(ICONDIR, '16x16', '{0}.png').format(name))
             icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
         icons_dict[name] = icon
 
@@ -381,7 +383,7 @@ def getIcons():
             # Icons for toolbars
             'document-close', 'document-new', 'document-open',
             'document-save-as', 'application-exit', 'folder-new',
-            'edit-copy', 'edit-cut', 'edit-delete','edit-paste',
+            'edit-copy', 'edit-cut', 'edit-delete', 'edit-paste',
             'help-contents',
             'view-filter', 'delete_filters',
             # Icons for tree pane items
@@ -392,7 +394,7 @@ def getIcons():
             # Icons for menu items
             'document-close', 'document-new', 'document-open',
             'document-save-as', 'document-open-recent', 'application-exit',
-            'edit-cut', 'edit-copy','edit-delete','edit-paste',
+            'edit-cut', 'edit-copy', 'edit-delete', 'edit-paste',
             'edit-rename',
             'folder-new',
             'view-filter', 'delete_filters',
@@ -401,7 +403,7 @@ def getIcons():
             # Icons for tree pane items
             'image-missing', 'object', 'vlstring',
             'array', 'link_array', 'carray', 'link_carray',
-            'earray', 'link_earray', 'vlarray','link_vlarray',
+            'earray', 'link_earray', 'vlarray', 'link_vlarray',
             'table', 'link_table',
             # Icons for node views
             'zoom-in',
@@ -418,19 +420,19 @@ def getHBIcons():
 
     if not HB_ICONS_DICT:
         large_icons = frozenset([
-        # Icons for toolbar
-        'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
-        'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out',
-        'edit-clear-history'])
+            # Icons for toolbar
+            'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
+            'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out',
+            'edit-clear-history'])
 
         small_icons = frozenset([
-        # Icons for menu items
-        'document-open', 'application-exit',
-        'zoom-in', 'zoom-out',
-        'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
-        'bookmarks', 'bookmark_add',
-        # Icons for buttons
-        'dialog-ok', 'dialog-cancel', 'list-remove'])
+            # Icons for menu items
+            'document-open', 'application-exit',
+            'zoom-in', 'zoom-out',
+            'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
+            'bookmarks', 'bookmark_add',
+            # Icons for buttons
+            'dialog-ok', 'dialog-cancel', 'list-remove'])
 
         createIcons(large_icons, small_icons, HB_ICONS_DICT)
 
@@ -517,8 +519,7 @@ def formatStringContent(content):
             fcontent = content.decode(encoding=DEFAULT_ENCODING)
             return fcontent
         except UnicodeDecodeError:
-            logger = logging.getLogger(__name__)
-            logger.error('UnicodeDecodeError exception')
+            log.error('UnicodeDecodeError exception')
     return content
 
 
@@ -531,8 +532,7 @@ def formatExceptionInfo(limit=1):
 
     :Parameter limit: the number of stack trace entries to be printed
     """
-    logger = logging.getLogger(__name__)
-    logger.error('{0}'.format(traceback.format_exc(limit)))
+    log.error('{0}'.format(traceback.format_exc(limit)))
 
 #
 # Path related functions
@@ -654,6 +654,7 @@ def getLicense():
 
     resource_package = __name__
     resource_path = 'LICENSE.html'
-    license_text = pkg_resources.resource_string(resource_package, resource_path)  # @UndefinedVariable
+    license_text = pkg_resources.resource_string(
+        resource_package, resource_path)  # @UndefinedVariable
 
     return license_text.decode('UTF-8')

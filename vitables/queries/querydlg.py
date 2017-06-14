@@ -28,18 +28,16 @@ results` in the databases tree).
 
 __docformat__ = 'restructuredtext'
 
-import os.path
 import logging
+import os.path
+import vitables.utils
 
 import numpy
-
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
-
 from qtpy.uic import loadUiType
 
-import vitables.utils
 
 translate = QtWidgets.QApplication.translate
 
@@ -48,6 +46,8 @@ translate = QtWidgets.QApplication.translate
 # info.
 Ui_QueryDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__), 'query_dlg.ui'))[0]
+
+log = logging.getLogger(__name__)
 
 
 class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
@@ -88,9 +88,6 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         """
         Initialise the dialog.
         """
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-
         #
         # Attributes used by slot updateOKState
         #
@@ -147,7 +144,8 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         self.rstartLE.setText('0')
         self.rstopLE.setText('{0}'.format(info['nrows']))
 
-        whatsthis_button = self.buttonBox.button(QtWidgets.QDialogButtonBox.Help)
+        whatsthis_button = self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.Help)
         whatsthis_button.setText("&What's this")
 
         #
@@ -283,7 +281,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
             status_ok = False
         elif ft_name in self.used_names:
             status_ok = False
-            self.logger.error(
+            log.error(
                 translate('QueryDlg',
                           """The chosen name is already in use. Please,"""
                           """ choose another one.""",
@@ -294,20 +292,20 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         if self.indicesColumnLE.isEnabled():
             if indices_colname == '':
                 status_ok = False
-                self.logger.error(
+                log.error(
                     translate('QueryDlg',
                               "Enter a name for the column of indices, please",
                               'A logger info message'))
             elif indices_colname.count('/'):
                 status_ok = False
-                self.logger.error(
+                log.error(
                     translate('QueryDlg',
                               """The chosen name for the column of indices"""
                               """is not valid. It contains '/' characters""",
                               'A logger info message'))
             elif indices_colname in self.col_names:
                 status_ok = False
-                self.logger.error(
+                log.error(
                     translate('QueryDlg',
                               """The chosen name for the column of indices"""
                               """ is already in use. """
@@ -330,14 +328,14 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
             stop = numpy.array(stop_str).astype(numpy.int64)
             if stop > self.num_rows:
                 status_ok = False
-                self.logger.error(
+                log.error(
                     translate('QueryDlg',
                               """The stop value cannot be greater than """
                               """the number of rows.""",
                               'A logger info message'))
             elif start > stop:
                 status_ok = False
-                self.logger.error(
+                log.error(
                     translate('QueryDlg',
                               """The start value cannot be greater than the """
                               """stop value.""",
@@ -361,19 +359,19 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
             self.source_table.will_query_use_indexing(condition, self.condvars)
         except SyntaxError as error:
             syntax_ok = False
-            self.logger.error(error.__doc__)
+            log.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except NameError as error:
             syntax_ok = False
-            self.logger.error(error.__doc__)
+            log.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except ValueError as error:
             syntax_ok = False
-            self.logger.error(error.__doc__)
+            log.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except TypeError as error:
             syntax_ok = False
-            self.logger.error(error.__doc__)
+            log.error(error.__doc__)
             vitables.utils.formatExceptionInfo()
         except:
             syntax_ok = False

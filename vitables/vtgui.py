@@ -26,18 +26,18 @@ toolbars, statusbars and `QActions` bound to both menus and toolbars.
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import logging
+from vitables.calculator import calculator
+import vitables.utils
 
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 
-import vitables.utils
-import vitables.logger as logger
-from vitables.calculator import calculator
 import vitables.h5db.dbstreemodel as dbstreemodel
 import vitables.h5db.dbstreeview as dbstreeview
+import vitables.logger as logger
+
 
 translate = QtWidgets.QApplication.translate
 
@@ -84,7 +84,7 @@ class VTGUI(QtWidgets.QMainWindow):
         :Parameter tree_view: The databases tree view
         """
 
-        self.dbs_tree_model =  dbstreemodel.DBsTreeModel(self, vtapp)
+        self.dbs_tree_model = dbstreemodel.DBsTreeModel(self, vtapp)
         self.dbs_tree_view = dbstreeview.DBsTreeView(vtapp, self,
                                                      self.dbs_tree_model,
                                                      self)
@@ -113,7 +113,6 @@ class VTGUI(QtWidgets.QMainWindow):
         stream_handler.setFormatter(logging.Formatter(_GUI_LOG_FORMAT))
         vitables_logger.addHandler(stream_handler)
 
-
     def addComponents(self):
         """Add widgets to the main window.
 
@@ -128,7 +127,8 @@ class VTGUI(QtWidgets.QMainWindow):
         central_layout = QtWidgets.QVBoxLayout(central_widget)
         # Divide the top region of the window into 2 regions and put there
         # the workspace. The tree of databases will be added later on
-        self.hsplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, central_widget)
+        self.hsplitter = QtWidgets.QSplitter(
+            QtCore.Qt.Horizontal, central_widget)
         central_layout.addWidget(self.hsplitter)
         self.setCentralWidget(central_widget)
         self.hsplitter.addWidget(self.dbs_tree_view)
@@ -720,10 +720,10 @@ class VTGUI(QtWidgets.QMainWindow):
 
         # The set of actions that can be enabled or disabled
         actions = frozenset(['fileClose', 'fileCloseAll', 'fileSaveAs',
-                            'nodeOpen', 'nodeClose', 'nodeProperties',
-                            'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy',
-                            'nodePaste', 'nodeDelete',
-                            'queryNew', 'queryDeleteAll'])
+                             'nodeOpen', 'nodeClose', 'nodeProperties',
+                             'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy',
+                             'nodePaste', 'nodeDelete',
+                             'queryNew', 'queryDeleteAll'])
         enabled = set([])
 
         model_rows = self.dbs_tree_model.rowCount(QtCore.QModelIndex())
@@ -764,14 +764,14 @@ class VTGUI(QtWidgets.QMainWindow):
                     enabled = enabled.union(['nodeNew', 'nodePaste'])
                 elif kind == 'group':
                     enabled = enabled.union(['nodeNew', 'nodeRename',
-                                            'nodeCut', 'nodePaste',
-                                            'nodeDelete'])
+                                             'nodeCut', 'nodePaste',
+                                             'nodeDelete'])
                 elif kind == 'table':
                     enabled = enabled.union(['nodeRename', 'nodeCut',
-                                            'nodeDelete'])
+                                             'nodeDelete'])
                 else:
                     enabled = enabled.union(['nodeRename', 'nodeCut',
-                                            'nodeDelete'])
+                                             'nodeDelete'])
 
             if kind not in ('group', 'root group'):
                 if node.has_view:
@@ -795,7 +795,7 @@ class VTGUI(QtWidgets.QMainWindow):
             index += 1
             (mode, filepath) = item.split('#@#')
             action = QtWidgets.QAction('{0:>2} {1}.'.format(index, filepath),
-                                   self, triggered=self.vtapp.openRecentFile)
+                                       self, triggered=self.vtapp.openRecentFile)
             action.setData(item)
             if mode == 'r':
                 action.setIcon(iconset['file_ro'])

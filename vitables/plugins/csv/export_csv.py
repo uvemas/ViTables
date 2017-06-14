@@ -51,6 +51,8 @@ translate = QtWidgets.QApplication.translate
 
 _PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
 
+log = logging.getLogger(__name__)
+
 
 class ExportToCSV(QtCore.QObject):
     """Provides `CSV` export capabilities for arrays.
@@ -66,9 +68,6 @@ class ExportToCSV(QtCore.QObject):
 
         super(ExportToCSV, self).__init__()
 
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
         if self.vtapp is None:
@@ -82,7 +81,6 @@ class ExportToCSV(QtCore.QObject):
         # Connect signals to slots
         self.vtgui.dataset_menu.aboutToShow.connect(self.updateDatasetMenu)
         self.vtgui.leaf_node_cm.aboutToShow.connect(self.updateDatasetMenu)
-
 
     def addEntry(self):
         """Add the `Export to CSV..`. entry to `Dataset` menu.
@@ -109,7 +107,6 @@ class ExportToCSV(QtCore.QObject):
         # Add the action to the leaf context menu
         vitables.utils.addToLeafContextMenu(self.export_action)
 
-
     def updateDatasetMenu(self):
         """Update the `export` QAction when the Dataset menu is pulled down.
 
@@ -124,7 +121,6 @@ class ExportToCSV(QtCore.QObject):
                 enabled = False
 
         self.export_action.setEnabled(enabled)
-
 
     def getExportInfo(self, is_table):
         """Get info about the file where dataset will be stored.
@@ -189,21 +185,20 @@ class ExportToCSV(QtCore.QObject):
 
         # Check the returned path
         if os.path.exists(filepath):
-            self.logger.error(translate(
+            log.error(translate(
                 'ExportToCSV',
                 'Export failed because destination file already exists.',
                 'A file creation error'))
             return
 
         if os.path.isdir(filepath):
-            self.logger.error(translate(
+            log.error(translate(
                 'ExportToCSV',
                 'Export failed because destination container is a directory.',
                 'A file creation error'))
             return
 
         return filepath, add_header
-
 
     def export(self):
         """Export a given dataset to a `CSV` file.
@@ -218,27 +213,27 @@ class ExportToCSV(QtCore.QObject):
 
         # Empty datasets aren't saved as CSV files
         if leaf.nrows == 0:
-            self.logger.info(translate(
+            log.info(translate(
                 'ExportToCSV', 'Empty dataset. Nothing to export.'))
             return
 
         # Scalar arrays aren't saved as CSV files
         if leaf.shape == ():
-            self.logger.info(translate(
+            log.info(translate(
                 'ExportToCSV', 'Scalar array. Nothing to export.'))
             return
 
         # Datasets with more than 3 dimensions aren't saved as CSV files
         # (see module's docstring)
         if len(leaf.shape) > 3:
-            self.logger.info(translate(
+            log.info(translate(
                 'ExportToCSV', 'The selected node has more than '
                 '3 dimensions. I can\'t export it to CSV format.'))
             return
 
         # Variable lenght arrays aren't saved as CSV files
         if isinstance(leaf, tables.VLArray):
-            self.logger.info(translate(
+            log.info(translate(
                 'ExportToCSV', 'The selected node is a VLArray. '
                 'I can\'t export it to CSV format.'))
             return
@@ -249,7 +244,7 @@ class ExportToCSV(QtCore.QObject):
             first_row = leaf[0]
             for item in first_row:
                 if item.shape != ():
-                    self.logger.info(translate(
+                    log.info(translate(
                         'ExportToCSV',
                         'Some fields aren\'t scalars. '
                         'I can\'t export the table to CSV format.'))
@@ -278,9 +273,9 @@ class ExportToCSV(QtCore.QObject):
                 # Behavior of np.divide in Python 2 and Python 3 is different so
                 # we must explicitly ensure we get an integer
                 nchunks = numpy.floor_divide(nrows, chunk_size)
-                for i in numpy.arange(0, nchunks+1):
+                for i in numpy.arange(0, nchunks + 1):
                     QtWidgets.qApp.processEvents()
-                    cstart = chunk_size*i
+                    cstart = chunk_size * i
                     if cstart >= nrows:
                         break
                     cstop = cstart + chunk_size
@@ -292,7 +287,6 @@ class ExportToCSV(QtCore.QObject):
             vitables.utils.formatExceptionInfo()
         finally:
             QtWidgets.qApp.restoreOverrideCursor()
-
 
     def helpAbout(self, parent):
         """Full description of the plugin.
