@@ -159,6 +159,7 @@ class ExportToCSV(QtCore.QObject):
             fs_layout = file_selector.layout()
             header_label = QtWidgets.QLabel('Add header:', file_selector)
             header_cb = QtWidgets.QCheckBox(file_selector)
+            header_cb.setChecked(True)
             fs_layout.addWidget(header_label, 4, 0)
             fs_layout.addWidget(header_cb, 4, 1)
 
