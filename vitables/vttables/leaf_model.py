@@ -120,6 +120,54 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         super(LeafModel, self).__init__(parent)
 
+    def columnCount(self, index=QtCore.QModelIndex()):
+        """The number of columns of the given model index.
+
+        Overridden to return 0 for valid indices because they have no children;
+        otherwise return the total number of *columns* exposed by the model.
+
+        :param index:
+            the model index being inspected.
+        """
+
+        return 0 if index.isValid() else self.numcols
+
+    def rowCount(self, index=QtCore.QModelIndex()):
+        """The number of columns for the children of the given index.
+
+        Overridden to return 0 for valid indices because they have no children;
+        otherwise return the total number of *rows* exposed by the model.
+
+        :Parameter index: the model index being inspected.
+        """
+
+        return 0 if index.isValid() else self.numrows
+
+    def loadData(self, start, length):
+        """Load the model with fresh data from the buffer.
+
+        :param start:
+            the document row that is the first row of the chunk.
+        :param length:
+            the buffer size, i.e. the number of rows to be read.
+
+        :return:
+            a tuple with tested values for the parameters of the read method
+        """
+
+        # Enforce scrolling limits.
+        #
+        start = max(start, 0)
+        stop = min(start + length, self.leaf_numrows)
+
+        # Ensure buffer filled when scrolled beyond bottom.
+        #
+        actual_start = stop - self.numrows
+        start = max(min(actual_start, start), 0)
+
+        self.rbuffer.readBuffer(start, stop)
+        self.start = start
+
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
         with the specified orientation.
@@ -176,49 +224,3 @@ class LeafModel(QtCore.QAbstractTableModel):
             return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
 
         return None
-
-    def columnCount(self, index=QtCore.QModelIndex()):
-        """The number of columns of the given model index.
-
-        Overridden to return 0 for valid indices because they have no children;
-        otherwise return the total number of *columns* exposed by the model.
-
-        :param index:
-            the model index being inspected.
-        """
-
-        return 0 if index.isValid() else self.numcols
-
-    def rowCount(self, index=QtCore.QModelIndex()):
-        """The number of columns for the children of the given index.
-
-        Overridden to return 0 for valid indices because they have no children;
-        otherwise return the total number of *rows* exposed by the model.
-
-        :Parameter index: the model index being inspected.
-        """
-
-        return 0 if index.isValid() else self.numrows
-
-    def loadData(self, start, length):
-        """Load the model with fresh chunk from the underlying leaf.
-
-        :param start:
-            The first row (within the total nrows) of the chunk to read.
-        :param length:
-            The buffer size, i.e. the number of rows to be read.
-        """
-
-        # Enforce scrolling limits.
-        #
-        start = max(start, 0)
-        stop = min(start + length, self.leaf_numrows)
-        assert stop >= start, (self.numrows, start, stop, length)
-
-        # Ensure buffer filled when scrolled beyond bottom.
-        #
-        actual_start = stop - self.numrows
-        start = max(min(actual_start, start), 0)
-
-        self.rbuffer.readBuffer(start, stop)
-        self.start = start
