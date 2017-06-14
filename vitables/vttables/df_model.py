@@ -286,3 +286,14 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
     def cell(self, row, col):
         return None  # Disable zoom.
+
+    def to_csv(self, filepath, add_header):
+        import io
+
+        with io.open(filepath, 'wt', encoding='utf-8') as fd:
+            chunks = iter(self._hstore.select(self._pgroup, iterator=True))
+            df = next(chunks)
+            df.to_csv(fd, header=add_header)
+
+            for df in chunks:
+                df.to_csv(fd, header=False)
