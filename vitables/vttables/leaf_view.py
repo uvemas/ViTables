@@ -38,8 +38,11 @@ from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 
-import vitables.vttables.scrollbar as scrollbar
 import vitables.vttables.leaf_delegate as leaf_delegate
+import vitables.vttables.scrollbar as scrollbar
+
+
+_aiv = QtWidgets.QAbstractItemView
 
 
 class LeafView(QtWidgets.QTableView):
@@ -63,11 +66,11 @@ class LeafView(QtWidgets.QTableView):
         self.tmodel = tmodel  # This is a MUST
         self.leaf_numrows = leaf_numrows = self.tmodel.leaf_numrows
         self.selection_model = self.selectionModel()
-        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        self.setSelectionMode(_aiv.SingleSelection)
+        self.setSelectionBehavior(_aiv.SelectItems)
 
         # Setup the actual vertical scrollbar
-        self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerItem)
+        self.setVerticalScrollMode(_aiv.ScrollPerItem)
         self.vscrollbar = self.verticalScrollBar()
 
         self.setModel(tmodel)
@@ -196,7 +199,7 @@ class LeafView(QtWidgets.QTableView):
             4: self.subPageStep,
             7: self.dragSlider
         }
-        if not slider_action in actions.keys():
+        if slider_action not in actions.keys():
             return
         # Navigate the data dealing with buffer faults
         actions[slider_action]()
@@ -248,7 +251,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             self.scrollTo(
                 model.index(new_start - model.start, 0),
-                QtWidgets.QAbstractItemView.PositionAtTop)
+                _aiv.PositionAtTop)
         else:
             self.vscrollbar.triggerAction(1)
 
@@ -270,7 +273,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             self.scrollTo(
                 model.index(new_start - model.start, 0),
-                QtWidgets.QAbstractItemView.PositionAtTop)
+                _aiv.PositionAtTop)
         else:
             self.vscrollbar.triggerAction(3)
 
@@ -288,9 +291,9 @@ class LeafView(QtWidgets.QTableView):
             # last row of the viewport.
             model.loadData(
                 buffer_start + page_step - table_rows, table_rows)
-            self.scrollTo(model.index(
-                buffer_start + page_step - model.start - 1, 0),
-                QtWidgets.QAbstractItemView.PositionAtBottom)
+            self.scrollTo(
+                model.index(buffer_start + page_step - model.start - 1, 0),
+                _aiv.PositionAtBottom)
             self.updateView()
         else:
             self.vscrollbar.triggerAction(2)
@@ -314,7 +317,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(
                 model.index(
                     buffer_start + first_vp_row - model.start, 0),
-                QtWidgets.QAbstractItemView.PositionAtBottom)
+                _aiv.PositionAtBottom)
         else:
             self.vscrollbar.triggerAction(4)
 
@@ -365,7 +368,7 @@ class LeafView(QtWidgets.QTableView):
         else:
             self.scrollTo(
                 model.index(row - model.start, 0),
-                QtWidgets.QAbstractItemView.PositionAtTop)
+                _aiv.PositionAtTop)
 
     def topBF(self, value, row):
         """Going out of buffer when browsing upwards.
@@ -382,13 +385,13 @@ class LeafView(QtWidgets.QTableView):
         if value == self.tricky_vscrollbar.minimum():
             start = 0
             position = 0
-            hint = QtWidgets.QAbstractItemView.PositionAtTop
+            hint = _aiv.PositionAtTop
             self.vscrollbar.triggerAction(
                 QtWidgets.QAbstractSlider.SliderToMinimum)
         else:
             start = row - table_rows
             position = table_rows - 1
-            hint = QtWidgets.QAbstractItemView.PositionAtBottom
+            hint = _aiv.PositionAtBottom
 
         self.tmodel.loadData(start, table_rows)
         self.updateView()
@@ -410,13 +413,13 @@ class LeafView(QtWidgets.QTableView):
             row = self.leaf_numrows - 1
             start = self.leaf_numrows - table_rows
             position = table_rows - 1
-            hint = QtWidgets.QAbstractItemView.PositionAtBottom
+            hint = _aiv.PositionAtBottom
             self.vscrollbar.triggerAction(
                 QtWidgets.QAbstractSlider.SliderToMinimum)
         else:
             start = row
             position = 0
-            hint = QtWidgets.QAbstractItemView.PositionAtTop
+            hint = _aiv.PositionAtTop
 
         self.tmodel.loadData(start, table_rows)
         self.updateView()
@@ -465,7 +468,7 @@ class LeafView(QtWidgets.QTableView):
             model.loadData(new_start, table_rows)
             self.updateView()
             self.scrollTo(model.index(new_start - model.start, 0),
-                          QtWidgets.QAbstractItemView.PositionAtTop)
+                          _aiv.PositionAtTop)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
 
@@ -489,7 +492,7 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(
                 model.index(
                     new_start + table_rows - model.start - 1, 0),
-                QtWidgets.QAbstractItemView.PositionAtBottom)
+                _aiv.PositionAtBottom)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
 
@@ -616,7 +619,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                          QtWidgets.QAbstractItemView.PositionAtTop)
+                          _aiv.PositionAtTop)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
@@ -647,7 +650,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                          QtWidgets.QAbstractItemView.PositionAtTop)
+                          _aiv.PositionAtTop)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
@@ -679,7 +682,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                          QtWidgets.QAbstractItemView.PositionAtBottom)
+                          _aiv.PositionAtBottom)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
@@ -711,7 +714,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                          QtWidgets.QAbstractItemView.PositionAtBottom)
+                          _aiv.PositionAtBottom)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
