@@ -111,6 +111,9 @@ class LeafView(QtWidgets.QTableView):
             self.tricky_vscrollbar.actionTriggered.connect(
                 self.navigateWithMouse)
 
+        ## Instead of invoking updateView().
+        self.setSpan(0, 0, *tmodel.get_corner_span())
+
     def mapSlider2Leaf(self):
         """Setup the interval size.
 
@@ -158,13 +161,15 @@ class LeafView(QtWidgets.QTableView):
     def updateView(self):
         """Update the view contents after a buffer fault.
         """
+        tmodel = self.tmodel
 
         self.vheader.headerDataChanged(
-            QtCore.Qt.Vertical, 0, self.tmodel.numrows - 1)
-        top_left = self.tmodel.index(0, 0)
-        bottom_right = self.tmodel.index(self.tmodel.numrows - 1,
-                                         self.tmodel.numcols - 1)
+            QtCore.Qt.Vertical, 0, tmodel.numrows - 1)
+        top_left = tmodel.index(0, 0)
+        bottom_right = tmodel.index(tmodel.numrows - 1,
+                                    tmodel.numcols - 1)
         self.dataChanged(top_left, bottom_right)
+        self.setSpan(0, 0, *tmodel.get_corner_span())
 
     def navigateWithMouse(self, slider_action):
         """Navigate the view with the mouse.

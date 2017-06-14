@@ -170,6 +170,10 @@ class LeafModel(QtCore.QAbstractTableModel):
         self.rbuffer.readBuffer(start, stop)
         self.start = start
 
+    def get_corner_span(self):
+        """Must return ``(row_span, col_span)`` tuple for the top-left cell."""
+        return 1, 1
+
     def headerData(self, section, orientation, role):
         """Returns the data for the given role and section in the header
         with the specified orientation.
