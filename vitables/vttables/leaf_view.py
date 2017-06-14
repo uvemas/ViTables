@@ -43,6 +43,7 @@ from qtpy import QtWidgets
 import vitables.vttables.scrollbar as scrollbar
 import vitables.vttables.leaf_delegate as leaf_delegate
 
+
 class LeafView(QtWidgets.QTableView):
     """
     A view for real data contained in leaves.
@@ -79,8 +80,8 @@ class LeafView(QtWidgets.QTableView):
             self.rbuffer_fault = False
             self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
             self.tricky_vscrollbar = scrollbar.ScrollBar(self)
-            self.max_value = self.tvsMaxValue()
-            self.tricky_vscrollbar.setMaximum(self.max_value)
+            self.max_value = self.tricky_vscrollbar.setMaxValue(
+                self.leaf_numrows)
             self.tricky_vscrollbar.setMinimum(0)
             self.interval_size = self.mapSlider2Leaf()
 
@@ -109,20 +110,6 @@ class LeafView(QtWidgets.QTableView):
             self.tricky_vscrollbar.actionTriggered.connect(
                 self.navigateWithMouse)
 
-
-    def tvsMaxValue(self):
-        """Calulate the maximum range value of the tricky vertical scrollbar.
-        """
-
-        # The scrollbar range must be a signed 32 bits integer so its
-        # largest range is [0, 2**31 - 1]
-        top_value = 2**31 - 1
-        if self.leaf_numrows <= top_value:
-            top_value = self.leaf_numrows
-        return top_value
-
-
-
     def mapSlider2Leaf(self):
         """Setup the interval size.
 
@@ -147,7 +134,6 @@ class LeafView(QtWidgets.QTableView):
             interval_size = round(self.leaf_numrows / self.max_value)
         return interval_size
 
-
     def syncView(self):
         """Update the tricky scrollbar value after a data navigation.
 
@@ -160,14 +146,13 @@ class LeafView(QtWidgets.QTableView):
         fv_label = self.vheader.logicalIndexAt(0) + offset
         lv_label = self.vheader.logicalIndexAt(
             self.vheader.viewport().height() - 1) + offset
-        if lv_label == self.leaf_numrows :
+        if lv_label == self.leaf_numrows:
             self.tricky_vscrollbar.setValue(self.max_value)
-        elif fv_label == 1 :
+        elif fv_label == 1:
             self.tricky_vscrollbar.setValue(0)
-        else :
+        else:
             value = round(fv_label / self.interval_size)
             self.tricky_vscrollbar.setValue(value)
-
 
     def updateView(self):
         """Update the view contents after a buffer fault.
@@ -177,9 +162,8 @@ class LeafView(QtWidgets.QTableView):
             QtCore.Qt.Vertical, 0, self.tmodel.numrows - 1)
         top_left = self.tmodel.index(0, 0)
         bottom_right = self.tmodel.index(self.tmodel.numrows - 1,
-                                            self.tmodel.numcols - 1)
+                                         self.tmodel.numcols - 1)
         self.dataChanged(top_left, bottom_right)
-
 
     def navigateWithMouse(self, slider_action):
         """Navigate the view with the mouse.
@@ -213,7 +197,7 @@ class LeafView(QtWidgets.QTableView):
             3: self.addPageStep,
             4: self.subPageStep,
             7: self.dragSlider
-            }
+        }
         if not slider_action in actions.keys():
             return
         # Navigate the data dealing with buffer faults
@@ -223,7 +207,6 @@ class LeafView(QtWidgets.QTableView):
         # with the displayed data using the first visible cell as
         # reference
         self.syncView()
-
 
     def mouseNavInfo(self, direction):
         """Gives information about model, vertical header and viewport.
@@ -249,7 +232,6 @@ class LeafView(QtWidgets.QTableView):
 
         return (model, vh, table_rows, buffer_start, row, page_step)
 
-
     def addSingleStep(self):
         """Setup data for moving towards the last section line by line.
         """
@@ -260,7 +242,7 @@ class LeafView(QtWidgets.QTableView):
         # row of the dataset we still can go downwards so we have to
         # read the next contiguous buffer
         if (last_vp_row + 1 == table_rows) and \
-            (buffer_start + table_rows < self.leaf_numrows):
+                (buffer_start + table_rows < self.leaf_numrows):
             # Buffer fault. The new buffer starts just after the current
             # first row of the viewport.
             new_start = buffer_start + last_vp_row - page_step + 1
@@ -272,7 +254,6 @@ class LeafView(QtWidgets.QTableView):
         else:
             self.vscrollbar.triggerAction(1)
 
-
     def addPageStep(self):
         """Setup data for moving towards the last section page by page.
         """
@@ -283,7 +264,7 @@ class LeafView(QtWidgets.QTableView):
         # row of the dataset we still can go downwards so we have to
         # read the next contiguous buffer
         if (last_vp_row + page_step + 1 > table_rows) and \
-            (buffer_start + table_rows < self.leaf_numrows):
+                (buffer_start + table_rows < self.leaf_numrows):
             # Buffer fault. The new buffer starts at the current last
             # row of the viewport.
             new_start = buffer_start + last_vp_row
@@ -294,7 +275,6 @@ class LeafView(QtWidgets.QTableView):
                 QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             self.vscrollbar.triggerAction(3)
-
 
     def subSingleStep(self):
         """Setup data for moving towards the first section line by line.
@@ -313,11 +293,10 @@ class LeafView(QtWidgets.QTableView):
             self.scrollTo(
                 model.index(
                     buffer_start + page_step - model.rbuffer.start - 1, 0),
-            QtWidgets.QAbstractItemView.PositionAtBottom)
+                QtWidgets.QAbstractItemView.PositionAtBottom)
             self.updateView()
         else:
             self.vscrollbar.triggerAction(2)
-
 
     def subPageStep(self):
         """Setup data for moving towards the first section page by page.
@@ -332,8 +311,8 @@ class LeafView(QtWidgets.QTableView):
             # Buffer fault. The new buffer ends just at the current
             # first row of the viewport.
             model.loadData(
-                           buffer_start + first_vp_row - table_rows + 1,
-                           table_rows)
+                buffer_start + first_vp_row - table_rows + 1,
+                table_rows)
             self.updateView()
             self.scrollTo(
                 model.index(
@@ -341,7 +320,6 @@ class LeafView(QtWidgets.QTableView):
                 QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             self.vscrollbar.triggerAction(4)
-
 
     def dragSlider(self):
         """Move the slider by dragging it.
@@ -369,7 +347,7 @@ class LeafView(QtWidgets.QTableView):
         elif value >= self.max_value:
             value = self.max_value
             row = self.leaf_numrows - 1
-        else :
+        else:
             row = self.interval_size * value
 
         # top buffer fault condition
@@ -387,11 +365,10 @@ class LeafView(QtWidgets.QTableView):
             self.vscrollbar.triggerAction(
                 QtWidgets.QAbstractSlider.SliderToMaximum)
         # we are somewhere in the middle of the dataset
-        else :
+        else:
             self.scrollTo(
                 model.index(row - model.rbuffer.start, 0),
                 QtWidgets.QAbstractItemView.PositionAtTop)
-
 
     def topBF(self, value, row):
         """Going out of buffer when browsing upwards.
@@ -419,7 +396,6 @@ class LeafView(QtWidgets.QTableView):
         self.tmodel.loadData(start, table_rows)
         self.updateView()
         self.scrollTo(self.tmodel.index(position, 0), hint)
-
 
     def bottomBF(self, value, row):
         """Going out of buffer when browsing downwards.
@@ -449,7 +425,6 @@ class LeafView(QtWidgets.QTableView):
         self.updateView()
         self.scrollTo(self.tmodel.index(position, 0), hint)
 
-
     def wheelEvent(self, event):
         """Specialized handler for the wheel events received by the *viewport*.
 
@@ -474,7 +449,6 @@ class LeafView(QtWidgets.QTableView):
         else:
             QtWidgets.QTableView.wheelEvent(self, event)
 
-
     def wheelDown(self, event):
         """Setup data for wheeling with the mouse towards the last section.
         """
@@ -494,11 +468,10 @@ class LeafView(QtWidgets.QTableView):
             model.loadData(new_start, table_rows)
             self.updateView()
             self.scrollTo(
-                          model.index(new_start - model.rbuffer.start, 0),
-                          QtWidgets.QAbstractItemView.PositionAtTop)
+                model.index(new_start - model.rbuffer.start, 0),
+                QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
-
 
     def wheelUp(self, event):
         """Setup data for wheeling with the mouse towards the first section.
@@ -523,7 +496,6 @@ class LeafView(QtWidgets.QTableView):
                 QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             QtCore.QCoreApplication.sendEvent(self.vscrollbar, event)
-
 
     def keyPressEvent(self, event):
         """Handle basic cursor movement for key events.
@@ -556,7 +528,6 @@ class LeafView(QtWidgets.QTableView):
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
-
     def homeKeyPressEvent(self):
         """Specialised handler for the `Home` key press event.
 
@@ -567,7 +538,7 @@ class LeafView(QtWidgets.QTableView):
         table_rows = model.numrows
         index = model.index(0, 0)
         # Update buffer if needed
-        if model.rbuffer.start > 0 :
+        if model.rbuffer.start > 0:
             model.loadData(0, table_rows)
             self.updateView()
         self.setCurrentIndex(index)
@@ -576,7 +547,6 @@ class LeafView(QtWidgets.QTableView):
         # Eventually synchronize the position of the visible scrollbar
         # the displayed data
         self.tricky_vscrollbar.setValue(0)
-
 
     def endKeyPressEvent(self):
         """Specialised handler for the `End` key press event.
@@ -591,7 +561,7 @@ class LeafView(QtWidgets.QTableView):
         last_row = model.rbuffer.start + table_rows
         if last_row < self.leaf_numrows:
             self.tmodel.loadData(self.leaf_numrows - table_rows,
-                                    table_rows)
+                                 table_rows)
             self.updateView()
         self.setCurrentIndex(index)
         self.scrollToBottom()
@@ -599,7 +569,6 @@ class LeafView(QtWidgets.QTableView):
         # Eventually synchronize the position of the visible scrollbar
         # the displayed data
         self.tricky_vscrollbar.setValue(self.max_value)
-
 
     def keyboardNavInfo(self):
         """Gives information about model, and current cell.
@@ -627,8 +596,7 @@ class LeafView(QtWidgets.QTableView):
         dataset_row = buffer_start + buffer_row
 
         return (model, table_rows, buffer_start, page_step, current_index,
-            buffer_row, buffer_column, dataset_row)
-
+                buffer_row, buffer_column, dataset_row)
 
     def upKeyPressEvent(self, event):
         """Specialised handler for the cursor up key press event.
@@ -652,7 +620,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtWidgets.QAbstractItemView.PositionAtTop)
+                          QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
@@ -660,7 +628,6 @@ class LeafView(QtWidgets.QTableView):
         # with the displayed data using the first visible cell as
         # reference
         self.syncView()
-
 
     def pageUpKeyPressEvent(self, event):
         """Specialised handler for the `PageUp` key press event.
@@ -684,7 +651,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtWidgets.QAbstractItemView.PositionAtTop)
+                          QtWidgets.QAbstractItemView.PositionAtTop)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
@@ -692,7 +659,6 @@ class LeafView(QtWidgets.QTableView):
         # with the displayed data using the first visible cell as
         # reference
         self.syncView()
-
 
     def downKeyPressEvent(self, event):
         """Specialised handler for the cursor down key press event.
@@ -717,7 +683,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtWidgets.QAbstractItemView.PositionAtBottom)
+                          QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
@@ -725,7 +691,6 @@ class LeafView(QtWidgets.QTableView):
         # with the displayed data using the first visible cell as
         # reference
         self.syncView()
-
 
     def pageDownKeyPressEvent(self, event):
         """Specialised handler for the `PageDown` key press event.
@@ -750,7 +715,7 @@ class LeafView(QtWidgets.QTableView):
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
-                QtWidgets.QAbstractItemView.PositionAtBottom)
+                          QtWidgets.QAbstractItemView.PositionAtBottom)
         else:
             QtWidgets.QTableView.keyPressEvent(self, event)
 
@@ -787,7 +752,6 @@ class LeafView(QtWidgets.QTableView):
         if self.tmodel.numrows < self.leaf_numrows:
             self.valid_current_buffer = self.tmodel.rbuffer.start
 
-
     # This method has been renamed from loadDatasetCurrentCell to
     # validCurrentCellBuffer. The method has been debugged too
     def validCurrentCellBuffer(self):
@@ -797,11 +761,10 @@ class LeafView(QtWidgets.QTableView):
         table_rows = self.tmodel.numrows
         valid_current = self.currentIndex().row() + self.valid_current_buffer
         if not (self.tmodel.rbuffer.start <=
-            valid_current <=
-            self.tmodel.rbuffer.start + table_rows - 1):
+                valid_current <=
+                self.tmodel.rbuffer.start + table_rows - 1):
             self.tmodel.loadData(self.valid_current_buffer, table_rows)
             self.updateView()
-
 
     def selectionChanged(self, selected, deselected):
         """Track the dataset selected cells.
