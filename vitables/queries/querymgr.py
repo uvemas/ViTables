@@ -32,17 +32,19 @@ is executed on a given table.
 __docformat__ = 'restructuredtext'
 
 import logging
+import vitables.utils
 
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 
-import vitables.utils
-import vitables.queries.querydlg as querydlg
 import vitables.queries.query as query
+import vitables.queries.querydlg as querydlg
 
 
 translate = QtWidgets.QApplication.translate
+
+log = logging.getLogger(__name__)
 
 
 def getTableInfo(table):
@@ -50,9 +52,6 @@ def getTableInfo(table):
 
     :Parameter table: the `tables.Table` instance being queried.
     """
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-
     info = {}
     info['nrows'] = table.nrows
     info['src_filepath'] = table._v_file.filename
@@ -68,7 +67,7 @@ def getTableInfo(table):
     info['valid_fields'] = []
 
     if info['nrows'] <= 0:
-        logger.info(
+        log.info(
             translate('QueriesManager',
                       "Table {0} is empty. Nothing to query.",
                       'Info message for users').format(info['name']))
@@ -106,7 +105,7 @@ def getTableInfo(table):
 
     # If table has not columns suitable to be filtered does nothing
     if not info['valid_fields']:
-        logger.info(
+        log.info(
             translate('QueriesManager',
                       """Table {0} has no columns suitable to be """
                       """queried. All columns are nested, multidimensional """
@@ -115,8 +114,8 @@ def getTableInfo(table):
                           info['name']))
         return None
     elif len(info['valid_fields']) != len(info['col_names']):
-    # Log a message if non selectable fields exist
-        logger.warning(
+        # Log a message if non selectable fields exist
+        log.warning(
             translate('QueriesManager',
                       """Some table columns contain multidimensional, """
                       """nested or Complex data. They cannot be queried so """
@@ -153,9 +152,6 @@ class QueriesManager(QtCore.QObject):
         """
 
         super(QueriesManager, self).__init__(parent)
-
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
 
         # Description of the last query made
         self.last_query = [None, None, None]
@@ -304,10 +300,10 @@ class QueriesManager(QtCore.QObject):
 
         QtWidgets.qApp.restoreOverrideCursor()
         if not completed:
-            self.logger.error(translate('QueriesManager',
-                                        'Query on table {0} failed!',
-                                        'Warning log message about a failed '
-                                        'query').format(table_uid))
+            log.error(translate('QueriesManager',
+                                'Query on table {0} failed!',
+                                'Warning log message about a failed '
+                                'query').format(table_uid))
             return
 
         # Update temporary database view i.e. call lazyAddChildren

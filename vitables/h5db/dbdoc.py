@@ -29,18 +29,19 @@ contains methods for editing nodes (but not data stored in nodes).
 
 __docformat__ = 'restructuredtext'
 
+import logging
 import os
 import uuid
-import logging
-
-import tables
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
-
 import vitables.utils
 
+from qtpy import QtCore
+from qtpy import QtWidgets
+import tables
+
+
 translate = QtWidgets.QApplication.translate
+
+log = logging.getLogger(__name__)
 
 
 class DBDoc(QtCore.QObject):
@@ -68,9 +69,6 @@ class DBDoc(QtCore.QObject):
         """
 
         super(DBDoc, self).__init__()
-
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
 
         # The opening mode
         self.mode = mode
@@ -101,7 +99,7 @@ class DBDoc(QtCore.QObject):
         if self.mode != 'r' and os.path.isfile(self.filepath):
             if not os.access(self.filepath, os.W_OK):
                 self.mode = 'r'
-                self.logger.warning(
+                log.warning(
                     translate('DBDoc',
                               """File access in read-write mode """
                               """is denied. It will be opened in read-only """
@@ -110,11 +108,11 @@ class DBDoc(QtCore.QObject):
         try:
             h5file = tables.open_file(self.filepath, self.mode)
         except IOError as inst:
-            self.logger.error(translate('DBDoc', "{0}",
-                                        'A logger error message').format(inst))
+            log.error(translate('DBDoc', "{0}",
+                                'A logger error message').format(inst))
         except:
             vitables.utils.formatExceptionInfo()
-            self.logger.error(
+            log.error(
                 translate('DBDoc',
                           "Please, if you think it is a bug, report it to "
                           "developers.", 'A logger error message'))
@@ -159,7 +157,7 @@ class DBDoc(QtCore.QObject):
             node = self.h5file.get_node(where)
             return node
         except tables.exceptions.NoSuchNodeError:
-            self.logger.error(
+            log.error(
                 translate('DBDoc',
                           """Cannot open node {0} in file {1} """,
                           'Error message').format(where, self.filepath))
@@ -193,7 +191,7 @@ class DBDoc(QtCore.QObject):
         try:
             self.h5file.copy_file(dst_filepath, overwrite=True)
         except tables.exceptions.HDF5ExtError:
-            self.logger.error(
+            log.error(
                 translate('DBDoc',
                           """Unable to save the file {0} as """
                           """{1}. Beware that only closed files can be """

@@ -57,21 +57,21 @@ __version__ = '1.2'
 plugin_name = 'CSV importer'
 comment = 'Import CSV files into datasets.'
 
+import logging
 import os
 import tempfile
-import logging
 import traceback
+from vitables.plugins.aboutpage import AboutPage
+import vitables.utils
 
-import tables
 import numpy
-
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
+import tables
 
-import vitables.utils
-from vitables.plugins.aboutpage import AboutPage
 import vitables.plugins.csv.csvutils as csvutils
+
 
 translate = QtWidgets.QApplication.translate
 TYPE_ERROR = translate(
@@ -79,6 +79,8 @@ TYPE_ERROR = translate(
     'homogeneous dataset.', 'CSV file not imported error')
 
 _PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
+
+log = logging.getLogger(__name__)
 
 
 class ImportCSV(QtCore.QObject):
@@ -97,9 +99,6 @@ class ImportCSV(QtCore.QObject):
         """
 
         super(ImportCSV, self).__init__()
-
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
 
         # Get a reference to the application instance
         self.vtapp = vitables.utils.getVTApp()
@@ -204,11 +203,11 @@ class ImportCSV(QtCore.QObject):
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
             dest_filepath = vitables.utils.forwardPath(os.path.join(dirname,
-                                                        '{0}.h5'.format(root)))
+                                                                    '{0}.h5'.format(root)))
             if csvutils.isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
-            self.logger.error(
+            log.error(
                 translate('ImportCSV', 'Import failed because destination '
                           'file cannot be created.',
                           'A file creation error'))
@@ -235,7 +234,7 @@ class ImportCSV(QtCore.QObject):
                       'history': self.vtapp.file_selector_history,
                       'label': translate('ImportCSV', 'Import',
                                          'Accept button text for QFileDialog')}
-            )
+        )
 
         if not filepath:
             # The user has canceled the dialog
@@ -301,7 +300,7 @@ class ImportCSV(QtCore.QObject):
                 # Skip the header line
                 input_handler.readline()
             chunk_size = 10000
-            buf_size = chunk_size*dataset.rowsize
+            buf_size = chunk_size * dataset.rowsize
             read_fh = input_handler.readlines
             buf = read_fh(buf_size)
             while buf:
@@ -352,7 +351,7 @@ class ImportCSV(QtCore.QObject):
             # Fill the dataset in a memory effcient way
             input_handler.seek(0)
             chunk_size = 10000
-            buf_size = chunk_size*dataset.rowsize
+            buf_size = chunk_size * dataset.rowsize
             read_fh = input_handler.readlines
             buf = read_fh(buf_size)
             while buf:
@@ -365,7 +364,7 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            self.logger.error(TYPE_ERROR)
+            log.error(TYPE_ERROR)
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -405,7 +404,7 @@ class ImportCSV(QtCore.QObject):
             # Fill the dataset in a memory effcient way
             input_handler.seek(0)
             chunk_size = 10000
-            buf_size = chunk_size*dataset.rowsize
+            buf_size = chunk_size * dataset.rowsize
             read_fh = input_handler.readlines
             buf = read_fh(buf_size)
             start = 0
@@ -421,7 +420,7 @@ class ImportCSV(QtCore.QObject):
             dbdoc.h5file.flush()
             self.updateTree(dbdoc.filepath)
         except ValueError:
-            self.logger.error(TYPE_ERROR)
+            log.error(TYPE_ERROR)
         except:
             vitables.utils.formatExceptionInfo()
         finally:
@@ -449,7 +448,7 @@ class ImportCSV(QtCore.QObject):
         except TypeError:
             data = None
             dbdoc = None
-            self.logger.error(TYPE_ERROR)
+            log.error(TYPE_ERROR)
         else:
             try:
                 # Create the array
@@ -463,7 +462,7 @@ class ImportCSV(QtCore.QObject):
                 dbdoc.h5file.flush()
                 self.updateTree(dbdoc.filepath)
             except TypeError:
-                self.logger.error(TYPE_ERROR)
+                log.error(TYPE_ERROR)
             except tables.NodeError:
                 vitables.utils.formatExceptionInfo()
         finally:

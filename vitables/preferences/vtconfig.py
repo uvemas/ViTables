@@ -90,22 +90,27 @@ setting into the config file.
 __docformat__ = 'restructuredtext'
 __version__ = '3.0.0'
 
-import sys
 import logging
+import sys
+from vitables.preferences import cfgexception
+import vitables.utils
 
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 
-from vitables.preferences import cfgexception
-import vitables.utils
 import vitables.vttables.datasheet as datasheet
 
+
 translate = QtWidgets.QApplication.translate
+
 
 def getVersion():
     """The application version."""
     return __version__
+
+
+log = logging.getLogger(__name__)
 
 
 class Config(QtCore.QSettings):
@@ -131,9 +136,6 @@ class Config(QtCore.QSettings):
         In all platforms QSettings format is NativeFormat and scope
         is UserScope.
         """
-
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
 
         organization = QtWidgets.qApp.organizationName()
         product = QtWidgets.qApp.applicationName()
@@ -164,7 +166,6 @@ class Config(QtCore.QSettings):
                     self.default_style = item
                     break
 
-
     def loggerPaper(self):
         """
         Returns the logger background color.
@@ -177,7 +178,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def loggerText(self):
         """
@@ -192,7 +192,6 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
     def loggerFont(self):
         """
         Returns the logger font.
@@ -206,7 +205,6 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
     def workspaceBackground(self):
         """
         Returns the workspace background color.
@@ -219,7 +217,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def readStyle(self):
         """Returns the current application style."""
@@ -240,7 +237,6 @@ class Config(QtCore.QSettings):
         else:
             return setting_value
 
-
     def windowPosition(self):
         """
         Returns the main window geometry setting.
@@ -253,7 +249,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def windowLayout(self):
         """
@@ -270,7 +265,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def hsplitterPosition(self):
         """
@@ -307,8 +301,7 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
-    #TODO: remove this setting
+    # TODO: remove this setting
     def startupWorkingDir(self):
         """
         Returns the `Startup working directory` setting.
@@ -321,7 +314,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def lastWorkingDir(self):
         """
@@ -336,7 +328,6 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
     def recentFiles(self):
         """
         Returns the list of most recently opened files setting.
@@ -349,7 +340,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def sessionFiles(self):
         """
@@ -364,7 +354,6 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
     def helpHistory(self):
         """
         Returns the navigation history of the docs browser.
@@ -377,7 +366,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def helpBookmarks(self):
         """
@@ -392,7 +380,6 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-
     def enabledPlugins(self):
         """Returns the list of enabled plugins.
         """
@@ -404,7 +391,6 @@ class Config(QtCore.QSettings):
             return setting_value
         else:
             return default_value
-
 
     def writeValue(self, key, value):
         """
@@ -422,7 +408,7 @@ class Config(QtCore.QSettings):
                 raise cfgexception.ConfigFileIOException(
                     '{0}={1}'.format(key, value))
         except cfgexception.ConfigFileIOException as inst:
-            self.logger.error(inst.error_message)
+            log.error(inst.error_message)
 
     def readConfiguration(self):
         """
@@ -457,7 +443,6 @@ class Config(QtCore.QSettings):
         config['Plugins/Enabled'] = self.enabledPlugins()
         return config
 
-
     def saveConfiguration(self):
         """
         Store current application settings on disk.
@@ -482,10 +467,10 @@ class Config(QtCore.QSettings):
         self.writeValue('Look/currentStyle', self.current_style)
         # Startup working directory
         self.writeValue('Startup/startupWorkingDir',
-            self.startup_working_directory)
+                        self.startup_working_directory)
         # Startup restore last session
         self.writeValue('Startup/restoreLastSession',
-            self.restore_last_session)
+                        self.restore_last_session)
         # Startup last working directory
         self.writeValue('Startup/lastWorkingDir', self.last_working_directory)
         # Window geometry
@@ -508,7 +493,6 @@ class Config(QtCore.QSettings):
                         self.vtapp.plugins_mgr.enabled_plugins)
         self.sync()
 
-
     def getSessionFilesNodes(self):
         """
         The list of files and nodes currently open.
@@ -521,8 +505,8 @@ class Config(QtCore.QSettings):
 
         # Get the list of views
         workspace = self.vtapp.gui.workspace
-        node_views = [window for window in workspace.subWindowList() \
-                        if isinstance(window, datasheet.DataSheet)]
+        node_views = [window for window in workspace.subWindowList()
+                      if isinstance(window, datasheet.DataSheet)]
 
         # Get the list of open files (temporary database is not included)
         dbt_model = self.vtapp.gui.dbs_tree_model
@@ -544,7 +528,6 @@ class Config(QtCore.QSettings):
 
         # Format the list in a handy way to store it on disk
         return session_files_nodes
-
 
     def loadConfiguration(self, config):
         """
@@ -599,7 +582,6 @@ class Config(QtCore.QSettings):
             self.hb_bookmarks = config[key]
         except KeyError:
             pass
-
 
     def userSettings(self, config):
         """Load settings that can be setup via Settings dialog.
