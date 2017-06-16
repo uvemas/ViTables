@@ -155,6 +155,7 @@ class ExportToCSV(QtCore.QObject):
             fs_layout = file_selector.layout()
             header_label = QtWidgets.QLabel('Add header:', file_selector)
             header_cb = QtWidgets.QCheckBox(file_selector)
+            header_cb.setChecked(True)
             fs_layout.addWidget(header_label, 4, 0)
             fs_layout.addWidget(header_cb, 4, 1)
 
@@ -200,6 +201,25 @@ class ExportToCSV(QtCore.QObject):
 
         return filepath, add_header
 
+
+
+    def _try_exporting_dataframe(self, leaf):
+        ## FIXME: Hack to export to csv.
+        #
+        from ...vttables import df_model
+
+        leaf_model = df_model.try_opening_as_dataframe(leaf)
+        if not leaf_model:
+            return
+
+        export_info = self.getExportInfo(is_table=True)
+        if export_info is None:
+            return
+
+        leaf_model.to_csv(*export_info)
+        return True
+
+
     def export(self):
         """Export a given dataset to a `CSV` file.
 
@@ -241,6 +261,9 @@ class ExportToCSV(QtCore.QObject):
         # Tables with Ndimensional fields aren't saved as CSV files
         is_table = isinstance(leaf, tables.Table)
         if is_table:
+            if self._try_exporting_dataframe(leaf):
+                return
+
             first_row = leaf[0]
             for item in first_row:
                 if item.shape != ():
