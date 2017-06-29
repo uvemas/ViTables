@@ -2,7 +2,7 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions and so on.">
+<meta name="description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions, Anaconda and so on.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FAQ | ViTables</title>
 <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="ViTables">
 <meta property="og:title" content="FAQ">
 <meta property="og:url" content="http://vitables.org/Docs/faq.html">
-<meta property="og:description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions and so on.">
+<meta property="og:description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions, Anaconda and so on.">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2017-05-30T13:04:57+02:00">
 <meta property="article:tag" content="ViTables FAQ">
@@ -79,6 +79,7 @@
 <li><a class="reference internal" href="faq.html#how-can-i-use-the-latest-revision-from-the-git-repository" id="id4">How can I use the latest revision from the git repository?</a></li>
 <li><a class="reference internal" href="faq.html#are-there-graphical-installers-for-windows-and-mac-os-x-platforms" id="id5">Are there graphical installers for Windows and Mac OS X platforms?</a></li>
 <li><a class="reference internal" href="faq.html#but-can-i-launch-vitables-from-my-desktop" id="id6">But can I launch <em>ViTables</em> from my Desktop?</a></li>
+<li><a class="reference internal" href="faq.html#can-i-use-vitables-with-anaconda3" id="id7">Can I use <em>ViTables</em> with Anaconda3?</a></li>
 </ul>
 </div>
 <div class="section" id="how-is-vitables-licensed">
@@ -135,6 +136,45 @@ standard way for creating Desktop shortcuts on Linux. That's all.</p>
 <p>If you have problems with the shortcut creation there are lots of tutorials in the Internet, like
 <a class="reference external" href="http://www.thewindowsclub.com/create-desktop-shortcut-windows-10">this for Windows</a> or
 <a class="reference external" href="https://help.ubuntu.com/community/UnityLaunchersAndDesktopFiles">this for Ubuntu Linux</a>.</p>
+</div>
+<div class="section" id="can-i-use-vitables-with-anaconda3">
+<h2><a class="toc-backref" href="faq.html#id7">Can I use <em>ViTables</em> with Anaconda3?</a></h2>
+<p>Yes, you can. Three different installation ways are available. The most convenient is, of course, install the
+<em>ViTables</em> package from conda-channel (I assume you are on a Windows machine here):</p>
+<pre class="literal-block">
+(Anaconda3) &gt; conda install -c conda-forge vitables=3.0.0
+</pre>
+<p>Afterwards a <em>ViTables</em> executable should exist in the <cite>Scripts</cite> directory and can be launched by issuing the command:</p>
+<pre class="literal-block">
+(Anaconda3) &gt; some-path\Anaconda3\Scripts\vitables
+</pre>
+<p>If this fails, you can install <em>ViTables</em> from sources. Download and untar the tarball (or clone the <cite>GitHub</cite> repo) and
+go to the root directory. From there you can create an environment for <em>ViTables</em> with the <cite>environment.yml</cite> file:</p>
+<pre class="literal-block">
+(Anaconda3) &gt; conda env create -n vitables -f environment.yml
+(Anaconda3) &gt; some-path\Anaconda3\Scripts\activate vitables
+(vitables) &gt;
+</pre>
+<p>After installation you can execute the program easily:</p>
+<pre class="literal-block">
+(vitables) &gt; vitables
+</pre>
+<p>Finally you can do a typical installation from sources:</p>
+<pre class="literal-block">
+(Anaconda3) &gt; python setup.py install
+(Anaconda3) &gt; some-path\Anaconda3\Scripts\vitables
+</pre>
+<p>Caveat emptor: as you know <em>ViTables</em> depends on <cite>PyQt5</cite>. Unfortunately the <cite>pip</cite> installed <cite>PyQt5</cite> package and the analogous
+package provided by <cite>Anaconda3</cite> are in conflict with each other (you can read more about this
+<a class="reference external" href="https://github.com/ContinuumIO/anaconda-issues/issues/1554">here</a>). In order to avoid problems I recommend you to follow
+these advices:</p>
+<ul class="simple">
+<li>if you have installed the package from the conda-forge channel, remove the <cite>PyQt5</cite> dependency from
+<cite>Anaconda3\pkgs\vitables-3.0.0-0\Lib\site-packages\ViTables-3.0.0.egg-info\requires.txt</cite>
+</li>
+<li>if you are going to install from sources, <em>before you proceed</em>, remove the <cite>PyQt5</cite> dependency from the <cite>install_requires</cite> line in the
+<cite>setup.py</cite> file.</li>
+</ul>
 </div>
 </div>
     </div>
