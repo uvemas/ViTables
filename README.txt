@@ -15,4 +15,5 @@ For installation instructions see INSTALL.txt.
 Feel free to subscribe to the ViTables users group [1]_ and to report bugs and
 send suggestions or features requests.
 
- .. _[1]: http://tech.groups.yahoo.com/group/vitables-users/
+ .. _[1]: https://groups.google.com/forum/#!forum/vitables-users
+ 

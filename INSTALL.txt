@@ -48,25 +48,28 @@ described in the Linux section.
 Installation on Linux platforms
 -------------------------------
 
-The Python setuptools are used to build and install ViTables. You can install
-the package from PyPI issuing the command::
+The Python setuptools are used to build and install ViTables.
 
-  $ pip install vitables
+The easiest way to install it is to download the binary package from the download area
+(see vitables.org/Downloads for details), go to the directory where you have
+downloaded the file and issue the command::
+
+  $ pip install ViTables-3.0.0-py3-none-any.whl
 
 This should install the ViTables wheel. If you experience problems installing
-the binary package you can install from sources (provided your system fulfills
+the binary package then you can install from sources (provided your system fulfills
 the requirements listed in the above section). Just download the tarball from
-PyPI, uncompress it, change to the distribution directory and execute (as root)
+the download area, uncompress it, change to the distribution directory and execute
 
  $ python setup.py install
 
 If you are doing this on a MacOS X platform, please make sure that the
 DYLD_LIBRARY_PATH environment variable has been setup properly.
 
-By default ViTables will be installed in the system-protected area where
-your system installs third party Python packages so you will need superuser
-privileges. If you prefer to install the package in a different location
-(for instance, your home directory) so that the installation can be done by
+If you are installing with a system Python then you will need superuser privileges
+because ViTables will be installed in the system-protected area where
+your system installs third party Python packages. If you prefer to install the package
+in a different location (for instance, your home directory) so that the installation can be done by
 non privileged users, you can do it using the --prefix (or --home) tag
 
  $ python setup.py install --prefix=/home/myuser/mystuff
@@ -80,5 +83,4 @@ command
 
  $python setup.py install --help
 
-to see all the available options. Complete information about them can be
-found in the Distutils documentation.
+to see all the available options.
