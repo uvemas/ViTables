@@ -24,8 +24,6 @@ This module provides de `ViTables` GUI: main window, menus, context menus,
 toolbars, statusbars and `QActions` bound to both menus and toolbars.
 """
 
-__docformat__ = 'restructuredtext'
-
 import logging
 from vitables.calculator import calculator
 import vitables.utils
@@ -38,6 +36,7 @@ import vitables.h5db.dbstreemodel as dbstreemodel
 import vitables.h5db.dbstreeview as dbstreeview
 import vitables.logger as logger
 
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
 
@@ -527,7 +526,7 @@ class VTGUI(QtWidgets.QMainWindow):
         """
         Set up the main window menus.
 
-        Popus are made of actions, items and separators.
+        Popups are made of actions, items and separators.
         The `Window` menu is a special case due to its dynamic nature. Its
         contents depend on the number of existing views.
         In order to track changes and keep updated the menu, it is reloaded
@@ -538,6 +537,7 @@ class VTGUI(QtWidgets.QMainWindow):
         self.file_menu = self.menuBar().addMenu(translate(
             'VTGUI', "&File", 'The File menu entry'))
         self.file_menu.setObjectName('file_menu')
+        # The Open Recent submenu
         self.open_recent_submenu = QtWidgets.QMenu(
             translate('VTGUI', 'Open R&ecent Files',
                       'File -> Open Recent Files'))
@@ -545,6 +545,7 @@ class VTGUI(QtWidgets.QMainWindow):
         self.open_recent_submenu.setSeparatorsCollapsible(False)
         self.open_recent_submenu.setIcon(
             self.icons_dictionary['document-open-recent'])
+
         file_actions = ['fileNew', 'fileOpen', 'fileOpenRO',
                         self.open_recent_submenu, None, 'fileClose',
                         'fileCloseAll', None, 'fileSaveAs', None, 'fileExit']
@@ -620,8 +621,8 @@ class VTGUI(QtWidgets.QMainWindow):
 
         self.view_cm = QtWidgets.QMenu()
         actions = ['fileNew', 'fileOpen', 'fileOpenRO',
-                   self.open_recent_submenu, None, 'fileClose', 'fileCloseAll',
-                   None, 'fileSaveAs', None, 'fileExit']
+                   self.open_recent_submenu, None, 'fileClose',
+                   'fileCloseAll', None, 'fileSaveAs', None, 'fileExit']
         vitables.utils.addActions(self.view_cm, actions, self.gui_actions)
 
         self.root_node_cm = QtWidgets.QMenu()

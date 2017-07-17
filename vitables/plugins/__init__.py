@@ -16,4 +16,4 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__all__ = ['csv', 'columnorg', 'dbstreesort', 'timeseries']
+__all__ = ['columnorg', 'dbstreesort', 'timeseries']

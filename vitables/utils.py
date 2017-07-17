@@ -15,14 +15,11 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #       Author:  Vicent Mas - vmas@vitables.org
-from qtpy.QtWidgets import QFileDialog
 
 """
 This is the utilities module. It contains functions that perform
 tasks that are required at several parts of the application.
 """
-
-__docformat__ = 'restructuredtext'
 
 import sys
 import os
@@ -38,10 +35,12 @@ import numpy
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
+from qtpy.QtWidgets import QFileDialog
 
 import vitables.vtwidgets.renamedlg as renamedlg
-from vitables.vtsite import ICONDIR, DOCDIR
+from vitables.vtsite import ICONDIR
 
+__docformat__ = 'restructuredtext'
 
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
@@ -181,7 +180,7 @@ def insertInMenu(menu, entries, uid):
     for item in menu.actions():
         if item.objectName() == uid:
             for a in entries:
-                menu.insertEntry(item, a)
+                qa = menu.insertEntry(item, a)
 
 
 def addToMenu(menu, entries):
@@ -393,7 +392,8 @@ def getIcons():
         small_icons = frozenset([
             # Icons for menu items
             'document-close', 'document-new', 'document-open',
-            'document-save-as', 'document-open-recent', 'application-exit',
+            'document-save-as', 'document-open-recent',
+            'document-export', 'document-import', 'application-exit',
             'edit-cut', 'edit-copy', 'edit-delete', 'edit-paste',
             'edit-rename',
             'folder-new',
@@ -637,7 +637,7 @@ def getFinalName(nodename, sibling, pattern, info):
             nodename = dialog.action['new_name']
             overwrite = dialog.action['overwrite']
             del dialog
-            if overwrite == True:
+            if overwrite is True:
                 break
             # Update the bad nodename condition
             nodename_in_sibling = nodename in sibling

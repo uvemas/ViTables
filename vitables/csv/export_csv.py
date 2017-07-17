@@ -27,29 +27,21 @@ Neither numpy scalar arrays are exported.
 """
 
 
-__docformat__ = 'restructuredtext'
-__version__ = '0.9'
-plugin_name = 'CSV exporter'
-comment = 'Export datasets to CSV files.'
-
-import os
-import re
-
-import tables
-import numpy
 import logging
+import os
 
+import numpy
+import tables
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 
+import vitables.csv.csvutils as csvutils
 import vitables.utils
-from vitables.plugins.aboutpage import AboutPage
-import vitables.plugins.csv.csvutils as csvutils
+
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
-
-_PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
 
 log = logging.getLogger(__name__)
 
@@ -57,10 +49,6 @@ log = logging.getLogger(__name__)
 class ExportToCSV(QtCore.QObject):
     """Provides `CSV` export capabilities for arrays.
     """
-
-    UID = __name__
-    NAME = plugin_name
-    COMMENT = comment
 
     def __init__(self):
         """The class constructor.
@@ -76,6 +64,7 @@ class ExportToCSV(QtCore.QObject):
         self.vtgui = vitables.utils.getGui()
 
         # Add an entry under the Dataset menu
+        self.icons_dictionary = vitables.utils.getIcons()
         self.addEntry()
 
         # Connect signals to slots
@@ -86,26 +75,22 @@ class ExportToCSV(QtCore.QObject):
         """Add the `Export to CSV..`. entry to `Dataset` menu.
         """
 
-        export_icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
-                                            'icons/document-export.png'))
-        export_icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
-
-        self.export_action = QtWidgets.QAction(
+        self.export_csv_action = QtWidgets.QAction(
             translate('ExportToCSV', "E&xport to CSV...",
                       "Save dataset as CSV"),
             self,
             shortcut=QtGui.QKeySequence.UnknownKey, triggered=self.export,
-            icon=export_icon, statusTip=translate(
+            icon=vitables.utils.getIcons()['document-export'],
+            statusTip=translate(
                 'ExportToCSV',
                 "Save the dataset as a plain text with CSV format",
                 "Status bar text for the Dataset -> Export to CSV... action"))
 
         # Add the action to the Dataset menu
-        vitables.utils.addToMenu(self.vtgui.dataset_menu, self.export_action)
+        vitables.utils.addToMenu(self.vtgui.dataset_menu, self.export_csv_action)
 
         # Add the action to the leaf context menu
-        vitables.utils.addToLeafContextMenu(self.export_action)
+        vitables.utils.addToLeafContextMenu(self.export_csv_action)
 
     def updateDatasetMenu(self):
         """Update the `export` QAction when the Dataset menu is pulled down.
@@ -120,7 +105,7 @@ class ExportToCSV(QtCore.QObject):
             if leaf.node_kind in ('group', 'root group'):
                 enabled = False
 
-        self.export_action.setEnabled(enabled)
+        self.export_csv_action.setEnabled(enabled)
 
     def getExportInfo(self, is_table):
         """Get info about the file where dataset will be stored.
@@ -201,24 +186,21 @@ class ExportToCSV(QtCore.QObject):
 
         return filepath, add_header
 
-
-
-    def _try_exporting_dataframe(self, leaf):
-        ## FIXME: Hack to export to csv.
-        #
-        from ...vttables import df_model
-
-        leaf_model = df_model.try_opening_as_dataframe(leaf)
-        if not leaf_model:
-            return
-
-        export_info = self.getExportInfo(is_table=True)
-        if export_info is None:
-            return
-
-        leaf_model.to_csv(*export_info)
-        return True
-
+    # def _try_exporting_dataframe(self, leaf):
+    #     ## FIXME: Hack to export to csv.
+    #     #
+    #     from ...vttables import df_model
+    #
+    #     leaf_model = df_model.try_opening_as_dataframe(leaf)
+    #     if not leaf_model:
+    #         return
+    #
+    #     export_info = self.getExportInfo(is_table=True)
+    #     if export_info is None:
+    #         return
+    #
+    #     leaf_model.to_csv(*export_info)
+    #     return True
 
     def export(self):
         """Export a given dataset to a `CSV` file.
@@ -310,29 +292,3 @@ class ExportToCSV(QtCore.QObject):
             vitables.utils.formatExceptionInfo()
         finally:
             QtWidgets.qApp.restoreOverrideCursor()
-
-    def helpAbout(self, parent):
-        """Full description of the plugin.
-
-        This is a convenience method which works as expected by
-        :meth:preferences.preferences.Preferences.aboutPluginPage i.e.
-        build a page which contains the full description of the plugin
-        and, optionally, allows for its configuration.
-
-        :Parameter about_page: the container widget for the page
-        """
-
-        # Plugin full description
-        desc = {'version': __version__,
-                'module_name': os.path.join(os.path.basename(__file__)),
-                'folder': os.path.join(os.path.dirname(__file__)),
-                'author': 'Vicent Mas <vmas@vitables.org>',
-                'comment': translate(
-                    'ExportToCSV',
-                    '<qt><p>Plugin that provides export to CSV files '
-                    'capabilities.<p>Any kind of PyTables dataset can be '
-                    'exported. When exporting tables, a header with the '
-                    'field names can be inserted at top of the CSV file.</qt>',
-                    'Text of an About plugin message box')}
-        about_page = AboutPage(desc, parent)
-        return about_page

@@ -49,17 +49,18 @@ setup(name='ViTables',
           'Programming Language :: Python',
           'Topic :: Scientific/Engineering'
       ],
-      install_requires=['qtpy (>=1.2.1)', 'PyQt5 (>=5.5.1)', 'numpy (>=1.4.1)',
-                'numexpr (>=2.0)', 'tables (>=3.0)'],
+      install_requires=[
+          'qtpy (>=1.2.1)',
+          'PyQt5 (>=5.5.1)',
+          'numpy (>=1.4.1)',
+          'numexpr (>=2.0)',
+          'tables (>=3.0)'
+      ],
       entry_points={
           'gui_scripts': ['vitables = vitables.start:gui'],
           'vitables.plugins':
           [('columnar_org = '
             'vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer'),
-           ('import_csv = '
-            'vitables.plugins.csv.import_csv:ImportCSV'),
-           ('export_csv = '
-            'vitables.plugins.csv.export_csv:ExportToCSV'),
            ('dbs_tree_sort = '
             'vitables.plugins.dbstreesort.dbs_tree_sort:DBsTreeSort'),
            ('time_series = '

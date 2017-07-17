@@ -22,8 +22,6 @@ controls the managers for specific tasks and contains the logic for reacting
 to user's input i.e. the slots connected to every menu entry are defined here.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os
 import time
 import sys
@@ -43,9 +41,6 @@ from vitables.preferences import vtconfig
 import vitables.preferences.pluginsloader as pluginsloader
 from vitables.preferences import preferences
 
-import vitables.h5db.dbstreemodel as dbstreemodel
-import vitables.h5db.dbstreeview as dbstreeview
-
 import vitables.queries.querymgr as qmgr
 
 import vitables.vtwidgets.nodenamedlg as nodenamedlg
@@ -56,7 +51,12 @@ from vitables.docbrowser import helpbrowser
 import vitables.vttables.buffer as rbuffer
 import vitables.vttables.datasheet as datasheet
 
+import vitables.csv.import_csv as importcsv
+import vitables.csv.export_csv as exportcsv
+
 import vitables.vtgui as vtgui
+
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
 log = logging.getLogger(__name__)
@@ -119,9 +119,6 @@ class VTApp(QtCore.QObject):
         splash.show()
         t_i = time.time()
 
-        # Instantiate a configurator object for the application
-        self.config = vtconfig.Config()
-
         # Create the GUI. This is done in 3 steps:
         # - create the main window
         # - create the model/view for the tree of databases
@@ -134,11 +131,13 @@ class VTApp(QtCore.QObject):
         splash.drawMessage(translate('VTApp', 'Configuration setup...',
                                      'A splash screen message'))
 
-        # Reset the configuration object. I don't know why this is necessary
-        # but it is
-        del self.config
+        # Instantiate a configurator object for the application
         self.config = vtconfig.Config()
         self.config.loadConfiguration(self.config.readConfiguration())
+
+        # Add import/export CSV capabilities
+        self.csv_importer = importcsv.ImportCSV()
+        self.csv_exporter = exportcsv.ExportToCSV()
 
         # Load plugins.
         # Some plugins modify existing menus so plugins must be loaded after
@@ -319,7 +318,7 @@ class VTApp(QtCore.QObject):
                         continue
                     [mode, filepath] = line
                     filepath = vitables.utils.forwardPath(filepath)
-                    if not mode in ['r', 'a']:
+                    if mode not in ['r', 'a']:
                         log.error(bad_line.format('mode', line,
                                                   dblist))
                         continue
@@ -512,7 +511,7 @@ class VTApp(QtCore.QObject):
                     trier_filepath == self.gui.dbs_tree_model.tmp_filepath
                 filename_in_sibling = trier_filename in sibling
                 del dialog
-                if (overwrite == True) and (not is_initial_filepath) and \
+                if (overwrite is True) and (not is_initial_filepath) and \
                         (not is_tmp_filepath):
                     break
             else:
@@ -968,7 +967,7 @@ class VTApp(QtCore.QObject):
             # node has no restrictions). It is not when
             # - source and target are the same node
             # - target is the source's parent
-            if (cni['filepath'] == parent.filepath):
+            if cni['filepath'] == parent.filepath:
                 if (cni['nodepath'] == parent.nodepath) or \
                         (parent.nodepath == os.path.dirname(cni['nodepath'])):
                     return
@@ -979,7 +978,7 @@ class VTApp(QtCore.QObject):
             try:
                 getattr(link, 'extfile')
             except AttributeError:
-                if (parent.filepath != cni['filepath']):
+                if parent.filepath != cni['filepath']:
                     return
 
         #

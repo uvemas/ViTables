@@ -16,10 +16,10 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 #
-# Plugin initial draft author: Jorge Ibanez jorge.ibannez@uam.es
+# Initial draft author: Jorge Ibanez jorge.ibannez@uam.es
 #
 
-"""Plugin that provides import `CSV` files into `PyTables` arrays and tables.
+"""Module that provides import `CSV` files into `PyTables` arrays and tables.
 
 The pipeline for importing a `CSV` file is::
 
@@ -52,33 +52,25 @@ Other aspects to take into account:
     dtype. This is a limitation of `numpy.genfromtxt`.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '1.2'
-plugin_name = 'CSV importer'
-comment = 'Import CSV files into datasets.'
-
 import logging
 import os
-import tempfile
 import traceback
-from vitables.plugins.aboutpage import AboutPage
-import vitables.utils
 
 import numpy
+import tables
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
-import tables
 
-import vitables.plugins.csv.csvutils as csvutils
+import vitables.csv.csvutils as csvutils
+import vitables.utils
 
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
 TYPE_ERROR = translate(
     'ImportCSV', 'Please, make sure that you are importing a '
     'homogeneous dataset.', 'CSV file not imported error')
-
-_PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
 
 log = logging.getLogger(__name__)
 
@@ -89,10 +81,6 @@ class ImportCSV(QtCore.QObject):
     Some minor flaws: multidimensional fields are not well supported.
     They are imported as strings.
     """
-
-    UID = __name__
-    NAME = plugin_name
-    COMMENT = comment
 
     def __init__(self):
         """The class constructor.
@@ -110,26 +98,24 @@ class ImportCSV(QtCore.QObject):
         self.dbt_view = self.vtgui.dbs_tree_view
 
         # Add an entry under the File menu
+        self.icons_dictionary = vitables.utils.getIcons()
         self.addEntry()
 
     def addEntry(self):
         """Add the `Import CSV...` entry to the `File` menu.
         """
 
-        icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
-                                            'icons/document-import.png'))
-        icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
-
-        self.import_submenu = QtWidgets.QMenu(
+        self.import_csv_submenu = QtWidgets.QMenu(
             translate('ImportCSV', 'I&mport from CSV...',
                       'File -> Import CSV'))
-        self.import_submenu.setSeparatorsCollapsible(False)
-        self.import_submenu.setIcon(icon)
+        self.import_csv_submenu.setSeparatorsCollapsible(False)
+        self.import_csv_submenu.setIcon(
+            self.icons_dictionary['document-import'])
+        self.import_csv_submenu.setObjectName('import_csv_submenu')
 
         # Create the actions
         actions = {}
-        actions['import_table'] = QtWidgets.QAction(
+        actions['import_csv_table'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &Table...",
                       "Import table from CSV file"),
             self,
@@ -139,8 +125,9 @@ class ImportCSV(QtCore.QObject):
                 'ImportCSV',
                 "Import Table from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import Table"))
+        actions['import_csv_table'].setObjectName('import_csv_table')
 
-        actions['import_array'] = QtWidgets.QAction(
+        actions['import_csv_array'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &Array...",
                       "Import array from CSV file"),
             self,
@@ -150,8 +137,9 @@ class ImportCSV(QtCore.QObject):
                 'ImportCSV',
                 "Import Array from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import Array"))
+        actions['import_csv_array'].setObjectName('import_csv_array')
 
-        actions['import_carray'] = QtWidgets.QAction(
+        actions['import_csv_carray'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &CArray...",
                       "Import carray from CSV file"),
             self,
@@ -161,8 +149,9 @@ class ImportCSV(QtCore.QObject):
                 'ImportCSV',
                 "Import CArray from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import CArray"))
+        actions['import_csv_carray'].setObjectName('import_csv_carray')
 
-        actions['import_earray'] = QtWidgets.QAction(
+        actions['import_csv_earray'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &EArray...",
                       "Import earray from CSV file"),
             self,
@@ -172,24 +161,26 @@ class ImportCSV(QtCore.QObject):
                 'ImportCSV',
                 "Import EArray from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import EArray"))
+        actions['import_csv_earray'].setObjectName('import_csv_earray')
 
-        actions['separator'] = QtWidgets.QAction(self)
-        actions['separator'].setSeparator(True)
+        actions['import_csv_separator'] = QtWidgets.QAction(self)
+        actions['import_csv_separator'].setSeparator(True)
+        actions['import_csv_separator'].setObjectName('import_csv_separator')
 
         # Add actions to the Import submenu
-        keys = ('import_table', 'import_array', 'import_carray',
-                'import_earray')
-        vitables.utils.addActions(self.import_submenu, keys, actions)
+        keys = ('import_csv_table', 'import_csv_array', 'import_csv_carray',
+                'import_csv_earray')
+        vitables.utils.addActions(self.import_csv_submenu, keys, actions)
 
         # Add submenu to file menu before the Close File action
         vitables.utils.insertInMenu(
-            self.vtgui.file_menu, self.import_submenu, 'fileClose')
-        sep = actions['separator']
+            self.vtgui.file_menu, self.import_csv_submenu, 'fileClose')
+        sep = actions['import_csv_separator']
         vitables.utils.insertInMenu(self.vtgui.file_menu, sep, 'fileClose')
 
         # Add submenu to file context menu before the Close File action
         vitables.utils.insertInMenu(self.vtgui.view_cm,
-                                    self.import_submenu, 'fileClose')
+                                    self.import_csv_submenu, 'fileClose')
         vitables.utils.insertInMenu(self.vtgui.view_cm, sep, 'fileClose')
 
     def createDestFile(self, filepath):
@@ -468,34 +459,3 @@ class ImportCSV(QtCore.QObject):
         finally:
             del data
             QtWidgets.qApp.restoreOverrideCursor()
-
-    def helpAbout(self, parent):
-        """Full description of the plugin.
-
-        This is a convenience method which works as expected by
-        :meth:preferences.preferences.Preferences.aboutPluginPage i.e.
-        build a page which contains the full description of the plugin
-        and, optionally, allows for its configuration.
-
-        :Parameter about_page: the container widget for the page
-        """
-
-        # Plugin full description
-        desc = {'version': __version__,
-                'module_name': os.path.join(os.path.basename(__file__)),
-                'folder': os.path.join(os.path.dirname(__file__)),
-                'author': 'Vicent Mas <vmas@vitables.org>',
-                'comment': translate(
-                    'ImportCSV',
-                    '<qt><p>Plugin that provides import CSV files '
-                    'capabilities.<p>CSV files can be imported into any of '
-                    'the following PyTables containers: Array, EArray, CArray '
-                    'and Table.<p>When a file is imported into a Table '
-                    'automatic header detection is provided. <p>Beware that '
-                    'importing large files is a potentially slow process '
-                    'because the whole file has to be read from disk, '
-                    'transformed and write back to disk again so there is '
-                    'a lot of disk IO.</qt>',
-                    'Text of an About plugin message box')}
-        about_page = AboutPage(desc, parent)
-        return about_page
