@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** July 17, 2017 **
+Import/export CSV capabilities have been integrated in the ViTables core.
+
 ** June 09, 2017 **
 Added icons for creating Desktop shortcuts on Unices.
 
