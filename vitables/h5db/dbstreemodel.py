@@ -101,6 +101,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         self.root = rootgroupnode.RootGroupNode(self)
 
         super(DBsTreeModel, self).__init__(parent=None)
+        self.setObjectName("dbs_tree_model")
 
         # The dictionary of open databases
         self.__openDBs = {}

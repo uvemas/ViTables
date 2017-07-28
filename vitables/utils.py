@@ -133,27 +133,6 @@ def long_action(message=None):
     return _long_action
 
 
-def addToMenuBar(menu, enable_function=None):
-    """Add menu to the menu bar into one before last position.
-
-    Basically insert a menu before Help menu. Actions can be enabled
-    or disabled by enable_function which is connected to aboutToShow
-    signal of the submenu.
-
-    :parameter menu: QMenu object
-    :parameter enable_function: is connected to aboutToShow for menu
-
-    :return: None
-
-    """
-
-    menu_bar = getGui().menuBar()
-    last_action = menu_bar.actions()[-1]
-    menu_bar.insertMenu(last_action, menu)
-    if enable_function is not None:
-        menu.aboutToShow.connect(enable_function)
-
-
 def insertInMenu(menu, entries, uid):
     """Insert entries to the given menu before the action named uid.
 
