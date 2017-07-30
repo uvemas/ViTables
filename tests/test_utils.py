@@ -2,7 +2,6 @@
 
 import pytest
 
-from qtpy import QtTest
 from qtpy import QtGui
 from qtpy import QtWidgets
 
@@ -11,29 +10,26 @@ import vitables.utils as utils
 
 @pytest.mark.usefixtures('launcher')
 class TestUtils(object):
-    def test_getvtapp(self):
+    def test_getVTApp(self):
         vtapp = utils.getVTApp()
         assert vtapp.objectName() == 'VTApp'
 
-    def test_getgui(self):
+    def test_getGui(self):
         gui = utils.getGui()
         assert gui.objectName() == 'VTGUI'
 
-    def test_getmodel(self):
+    def test_getModel(self):
         model = utils.getModel()
         assert model.objectName() == 'dbs_tree_model'
 
-    def test_getview(self):
+    def test_getView(self):
         view = utils.getView()
         assert view.objectName() == 'dbs_tree_view'
 
-    def test_getselectedindexes(self):
+    def test_getSelectedIndexes(self):
         pass
 
-    def test_getselectednodes(self):
-        pass
-
-    def test_longaction(self):
+    def test_getSelectedNodes(self):
         pass
 
     @pytest.fixture()
@@ -54,7 +50,7 @@ class TestUtils(object):
             'new_menu': new_menu,
         }
 
-    def test_insertinmenu(self, actions):
+    def test_insertInMenu(self, actions):
         uid = 'helpUsersGuide'
 
         # Insert a new action atop of the menu
@@ -71,7 +67,7 @@ class TestUtils(object):
                 actions['new_menu'].objectName())
         actions['help_menu'].removeAction(hm_actions[0])
 
-    def test_addtomenu(self, actions):
+    def test_addToMenu(self, actions):
         # Append a new action
         utils.addToMenu(actions['help_menu'], actions['new_action'])
         hm_actions = actions['help_menu'].actions()
@@ -86,7 +82,7 @@ class TestUtils(object):
                 actions['new_menu'].objectName())
         actions['help_menu'].removeAction(hm_actions[-1])
 
-    def test_addactions(self, actions):
+    def test_addActions(self, actions):
         utils.addActions(actions['help_menu'], [None], {})
         hm_actions = actions['help_menu'].actions()
         assert hm_actions[-1].isSeparator()
@@ -103,17 +99,11 @@ class TestUtils(object):
         assert hm_actions[-1].objectName() == 'testaction'
         actions['help_menu'].removeAction(hm_actions[-1])
 
-    def test_getfileselector(self):
-        pass
-
-    def test_getfilepath(self):
-        pass
-
-    def test_getfileextension(self):
+    def test_checkFileExtension(self):
         assert utils.checkFileExtension('test') == 'test.h5'
         assert utils.checkFileExtension('test.ext') == 'test.ext'
 
-    def test_createicons(self):
+    def test_createIcons(self):
         large_icons = frozenset(['document-close'])
         small_icons = frozenset(['document-close'])
         icons_dict = {}
@@ -122,6 +112,6 @@ class TestUtils(object):
                                              'vitables_wm']
         assert isinstance(icons_dict['document-close'], QtGui.QIcon)
 
-    def test_forwardpath(self):
+    def test_forwardPath(self):
         filepath = 'C:\\Users\\my_name\\Desktop\\'
         assert utils.forwardPath(filepath) == 'C:/Users/my_name/Desktop/'
