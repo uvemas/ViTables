@@ -189,6 +189,31 @@ def addToMenu(menu, entries):
         menu.addEntry(a)
 
 
+def addActions(target, actions, actions_dict):
+    """Add a list of QActions to a menu or a toolbar.
+
+    This is a helper function which make easier to add QActions to a
+    menu or a toolbar. Separators and submenus are also handled by this
+    method.
+
+    :Parameters:
+
+    - `target`: the menu or toolbar where actions will be added
+    - `actions`: a sequence of keywords/None/QMenu used to get actions
+                 from a mapping
+    - `actions_dict`: a mapping of actions
+
+    """
+
+    for action in actions:
+        if action is None:
+            target.addSeparator()
+        elif isinstance(action, QtWidgets.QMenu):
+            target.addMenu(action)
+        else:
+            target.addAction(actions_dict[action])
+
+
 def addToLeafContextMenu(actions, enable_function=None):
     """Add entries at the end of the leaf context menu.
 
@@ -400,46 +425,22 @@ def getHBIcons():
     if not HB_ICONS_DICT:
         large_icons = frozenset([
             # Icons for toolbar
-            'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
-            'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out',
+            'go-first-view', 'go-previous-view', 'go-next-view',
+            'view-refresh', 'bookmarks', 'bookmark_add', 'zoom-in', 'zoom-out',
             'edit-clear-history'])
 
         small_icons = frozenset([
             # Icons for menu items
             'document-open', 'application-exit',
             'zoom-in', 'zoom-out',
-            'go-first-view', 'go-previous-view', 'go-next-view', 'view-refresh',
-            'bookmarks', 'bookmark_add',
+            'go-first-view', 'go-previous-view', 'go-next-view',
+            'view-refresh',  'bookmarks', 'bookmark_add',
             # Icons for buttons
             'dialog-ok', 'dialog-cancel', 'list-remove'])
 
         createIcons(large_icons, small_icons, HB_ICONS_DICT)
 
     return HB_ICONS_DICT
-
-
-def addActions(target, actions, actions_dict):
-    """Add a list of QActions to a menu or a toolbar.
-
-    This is a helper function which make easier to add QActions to a
-    menu or a toolbar. Separators and submenus are also handled by this
-    method.
-
-    :Parameters:
-
-    - `target`: the menu or toolbar where actions will be added
-    - `actions`: a sequence of keywords used to get actions from a mapping
-    - `actions_dict`: a mapping of actions
-
-    """
-
-    for action in actions:
-        if action is None:
-            target.addSeparator()
-        elif isinstance(action, QtWidgets.QMenu):
-            target.addMenu(action)
-        else:
-            target.addAction(actions_dict[action])
 
 
 def formatArrayContent(content):
@@ -634,6 +635,6 @@ def getLicense():
     resource_package = __name__
     resource_path = 'LICENSE.html'
     license_text = pkg_resources.resource_string(
-        resource_package, resource_path)  # @UndefinedVariable
+        resource_package, resource_path)
 
     return license_text.decode('UTF-8')
