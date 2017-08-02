@@ -98,13 +98,14 @@ class VTGUI(QtWidgets.QMainWindow):
     def setup_logger_window(self):
         # Put the logging console in the bottom region of the window
         self.logger_dock = QtWidgets.QDockWidget('Log')
-        self.logger_dock.setObjectName('LoggerDockWindow')
+        self.logger_dock.setObjectName('LoggerDockWidget')
         self.logger_dock.setFeatures(
             QtWidgets.QDockWidget.DockWidgetClosable
             | QtWidgets.QDockWidget.DockWidgetMovable
             | QtWidgets.QDockWidget.DockWidgetFloatable)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logger_dock)
         self.logger = logger.Logger()
+        self.logger.setObjectName('LoggerWidget')
         self.logger_dock.setWidget(self.logger)
         # add self.logger as handler of main logger object
         vitables_logger = logging.getLogger('vitables')
@@ -128,6 +129,7 @@ class VTGUI(QtWidgets.QMainWindow):
         # the workspace. The tree of databases will be added later on
         self.hsplitter = QtWidgets.QSplitter(
             QtCore.Qt.Horizontal, central_widget)
+        self.hsplitter.setObjectName('hsplitter')
         central_layout.addWidget(self.hsplitter)
         self.setCentralWidget(central_widget)
         self.hsplitter.addWidget(self.dbs_tree_view)
@@ -468,7 +470,7 @@ class VTGUI(QtWidgets.QMainWindow):
         # Warning! Do NOT use 'File toolbar' as a object name or it will
         # show an strange behaviour (a Qt bug I think): it will always
         # be added to the left and will expand the whole top area
-        self.file_toolbar.setObjectName('File')
+        self.file_toolbar.setObjectName('File toolbar')
         actions = ['fileNew', 'fileOpen', 'fileClose', 'fileSaveAs']
         vitables.utils.addActions(self.file_toolbar, actions, self.gui_actions)
 
@@ -502,6 +504,7 @@ class VTGUI(QtWidgets.QMainWindow):
         actions = ['helpUsersGuide']
         vitables.utils.addActions(self.help_toolbar, actions, self.gui_actions)
         whatis = QtWidgets.QWhatsThis.createAction(self.help_toolbar)
+        whatis.setObjectName('whatis')
         whatis.setStatusTip(translate(
             'VTGUI', 'Whats this? help for a widget',
             'Status bar text for the Help -> Whats This action'))

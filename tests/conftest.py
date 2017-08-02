@@ -16,6 +16,7 @@ class Launcher(object):
     def __init__(self):
         self.app = QtWidgets.QApplication(sys.argv)
         self.vtapp_object = vitables.vtapp.VTApp(keep_splash=False)
+        self.gui = self.vtapp_object.gui
 
 
 @pytest.fixture(scope='module')
