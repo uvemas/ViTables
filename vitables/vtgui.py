@@ -516,6 +516,7 @@ class VTGUI(QtWidgets.QMainWindow):
 
         status_bar = self.statusBar()
         self.sb_node_info = QtWidgets.QLabel(status_bar)
+        self.sb_node_info.setObjectName('status bar widget')
         self.sb_node_info.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
                                         QtWidgets.QSizePolicy.Minimum)
         status_bar.addPermanentWidget(self.sb_node_info)
@@ -581,7 +582,7 @@ class VTGUI(QtWidgets.QMainWindow):
         # Create the Settings menu and add actions/submenus/separators to it
         settings_menu = self.menuBar().addMenu(
             translate('VTGUI', "&Settings", 'The Settings menu entry'))
-        settings_menu.setObjectName('settings-menu')
+        settings_menu.setObjectName('settings_menu')
         self.toolbars_submenu = self.createPopupMenu()
         self.toolbars_submenu.menuAction().setText(
             translate('VTGUI', 'ToolBars', 'Tools -> ToolBars action'))

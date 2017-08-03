@@ -79,9 +79,37 @@ class TestVTGui(object):
         expected_actions = ['helpUsersGuide', 'whatis']
         assert sorted(tb_actions) == sorted(expected_actions)
 
-    def test_menus(self):
-        pass
+    def test_statusBarWidget(self, launcher):
+        sbw = launcher.gui.statusBar().findChild(QtWidgets.QLabel,
+                                                 'status bar widget')
+        assert sbw
+        sbw_sp = sbw.sizePolicy()
+        hsp, vsp = sbw_sp.horizontalPolicy(), sbw_sp.verticalPolicy()
+        assert hsp == QtWidgets.QSizePolicy.MinimumExpanding
+        assert vsp == QtWidgets.QSizePolicy.Minimum
 
-    def test_statusbar(self):
-        pass
+    @pytest.fixture()
+    def menuBar(self, launcher):
+        return launcher.gui.menuBar()
+
+    def test_menus(self, menuBar):
+        assert len(menuBar.actions()) == 6
+
+    def test_fileMenu(self, menuBar):
+        assert menuBar.findChild(QtWidgets.QMenu, 'file_menu')
+
+    def test_nodeMenu(self, menuBar):
+        assert menuBar.findChild(QtWidgets.QMenu, 'node_menu')
+
+    def test_datasetMenu(self, menuBar):
+        assert menuBar.findChild(QtWidgets.QMenu, 'dataset_menu')
+
+    def test_settingsMenu(self, menuBar):
+        assert menuBar.findChild(QtWidgets.QMenu, 'settings_menu')
+
+    def test_windowMenu(self, menuBar):
+        assert menuBar.findChild(QtWidgets.QMenu, 'window_menu')
+
+    def test_helpMenu(self, menuBar):
+        assert menuBar.findChild(QtWidgets.QMenu, 'help_menu')
 
