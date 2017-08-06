@@ -504,7 +504,7 @@ class VTGUI(QtWidgets.QMainWindow):
         actions = ['helpUsersGuide']
         vitables.utils.addActions(self.help_toolbar, actions, self.gui_actions)
         whatis = QtWidgets.QWhatsThis.createAction(self.help_toolbar)
-        whatis.setObjectName('whatis')
+        whatis.setObjectName('whatis_help_toolbar')
         whatis.setStatusTip(translate(
             'VTGUI', 'Whats this? help for a widget',
             'Status bar text for the Help -> Whats This action'))
@@ -575,7 +575,7 @@ class VTGUI(QtWidgets.QMainWindow):
         self.dataset_menu = self.menuBar().addMenu(
             translate('VTGUI', "&Dataset", 'The Dataset menu entry'))
         self.dataset_menu.setObjectName('dataset_menu')
-        dataset_actions = ['queryNew', 'calculate', None]
+        dataset_actions = ['queryNew', 'calculate']
         vitables.utils.addActions(self.dataset_menu, dataset_actions,
                                   self.gui_actions)
 
@@ -584,6 +584,7 @@ class VTGUI(QtWidgets.QMainWindow):
             translate('VTGUI', "&Settings", 'The Settings menu entry'))
         settings_menu.setObjectName('settings_menu')
         self.toolbars_submenu = self.createPopupMenu()
+        self.toolbars_submenu.setObjectName('settings_toolbars_submenu')
         self.toolbars_submenu.menuAction().setText(
             translate('VTGUI', 'ToolBars', 'Tools -> ToolBars action'))
         settings_actions = ['settingsPreferences', None,
@@ -612,6 +613,7 @@ class VTGUI(QtWidgets.QMainWindow):
                         'helpVersions', None]
         vitables.utils.addActions(help_menu, help_actions, self.gui_actions)
         whatis = QtWidgets.QWhatsThis.createAction(help_menu)
+        whatis.setObjectName('whatis_help_menu')
         whatis.setStatusTip(
             translate('VTGUI', 'Context help',
                       'Status bar text for the Help -> Whats This action'))

@@ -85,6 +85,7 @@ class ExportToCSV(QtCore.QObject):
                 'ExportToCSV',
                 "Save the dataset as a plain text with CSV format",
                 "Status bar text for the Dataset -> Export to CSV... action"))
+        self.export_csv_action.setObjectName('export_csv')
 
         # Add the action to the Dataset menu
         vitables.utils.addToMenu(self.vtgui.dataset_menu, self.export_csv_action)

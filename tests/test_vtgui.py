@@ -76,7 +76,7 @@ class TestVTGui(object):
     def test_helpToolBar(self, launcher):
         help_tb = launcher.gui.help_toolbar
         tb_actions = [a.objectName() for a in help_tb.actions()]
-        expected_actions = ['helpUsersGuide', 'whatis']
+        expected_actions = ['helpUsersGuide', 'whatis_help_toolbar']
         assert sorted(tb_actions) == sorted(expected_actions)
 
     def test_statusBarWidget(self, launcher):
@@ -96,20 +96,91 @@ class TestVTGui(object):
         assert len(menuBar.actions()) == 6
 
     def test_fileMenu(self, menuBar):
-        assert menuBar.findChild(QtWidgets.QMenu, 'file_menu')
+        menu = menuBar.findChild(QtWidgets.QMenu, 'file_menu')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['fileNew', 'fileOpen', 'fileOpenRO', 'fileClose',
+                            'fileCloseAll', 'fileSaveAs', 'fileExit']
+        assert sorted(actions) == sorted(expected_actions)
+
+        menus = [a.menu().objectName() for a in menu_actions if a.menu()]
+        assert sorted(menus) == ['import_csv_submenu', 'open_recent_submenu']
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 4
 
     def test_nodeMenu(self, menuBar):
-        assert menuBar.findChild(QtWidgets.QMenu, 'node_menu')
+        menu = menuBar.findChild(QtWidgets.QMenu, 'node_menu')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['nodeOpen', 'nodeClose', 'nodeProperties',
+                            'nodeNew', 'nodeRename', 'nodeCut', 'nodeCopy',
+                            'nodePaste', 'nodeDelete']
+        assert sorted(actions) == sorted(expected_actions)
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 1
 
     def test_datasetMenu(self, menuBar):
-        assert menuBar.findChild(QtWidgets.QMenu, 'dataset_menu')
+        menu = menuBar.findChild(QtWidgets.QMenu, 'dataset_menu')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['queryNew', 'calculate', 'export_csv']
+        assert sorted(actions) == sorted(expected_actions)
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 1
 
     def test_settingsMenu(self, menuBar):
-        assert menuBar.findChild(QtWidgets.QMenu, 'settings_menu')
+        menu = menuBar.findChild(QtWidgets.QMenu, 'settings_menu')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['settingsPreferences']
+        assert sorted(actions) == sorted(expected_actions)
+
+        menus = [a.menu().objectName() for a in menu_actions if a.menu()]
+        assert sorted(menus) == ['settings_toolbars_submenu']
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 1
 
     def test_windowMenu(self, menuBar):
-        assert menuBar.findChild(QtWidgets.QMenu, 'window_menu')
+        menu = menuBar.findChild(QtWidgets.QMenu, 'window_menu')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['windowCascade', 'windowTile',
+                           'windowRestoreAll', 'windowMinimizeAll',
+                           'windowClose', 'windowCloseAll', 'mdiTabbed']
+        assert sorted(actions) == sorted(expected_actions)
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 2
 
     def test_helpMenu(self, menuBar):
-        assert menuBar.findChild(QtWidgets.QMenu, 'help_menu')
+        menu = menuBar.findChild(QtWidgets.QMenu, 'help_menu')
+        menu_actions = menu.actions()
+        assert menu
 
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['helpUsersGuide', 'helpAbout', 'helpAboutQt',
+                        'helpVersions', 'whatis_help_menu']
+        assert sorted(actions) == sorted(expected_actions)
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 2
