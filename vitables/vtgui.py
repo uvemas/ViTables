@@ -583,6 +583,8 @@ class VTGUI(QtWidgets.QMainWindow):
         settings_menu = self.menuBar().addMenu(
             translate('VTGUI', "&Settings", 'The Settings menu entry'))
         settings_menu.setObjectName('settings_menu')
+        # Returns a popup menu containing checkable entries for the toolbars
+        # and dock widgets present in the main window
         self.toolbars_submenu = self.createPopupMenu()
         self.toolbars_submenu.setObjectName('settings_toolbars_submenu')
         self.toolbars_submenu.menuAction().setText(
@@ -625,30 +627,35 @@ class VTGUI(QtWidgets.QMainWindow):
         #
         #########################################################
 
-        self.view_cm = QtWidgets.QMenu()
+        self.view_cm = QtWidgets.QMenu(self)
+        self.view_cm.setObjectName('view_cm')
         actions = ['fileNew', 'fileOpen', 'fileOpenRO',
                    self.open_recent_submenu, None, 'fileClose',
                    'fileCloseAll', None, 'fileSaveAs', None, 'fileExit']
         vitables.utils.addActions(self.view_cm, actions, self.gui_actions)
 
-        self.root_node_cm = QtWidgets.QMenu()
+        self.root_node_cm = QtWidgets.QMenu(self)
+        self.root_node_cm.setObjectName('root_node_cm')
         actions = ['fileClose', 'fileSaveAs', None, 'nodeProperties', None,
                    'nodeNew', 'nodeCopy', 'nodePaste', None, 'queryDeleteAll']
         vitables.utils.addActions(self.root_node_cm, actions, self.gui_actions)
 
-        self.group_node_cm = QtWidgets.QMenu()
+        self.group_node_cm = QtWidgets.QMenu(self)
+        self.group_node_cm.setObjectName('group_node_cm')
         actions = ['nodeProperties', None, 'nodeNew', 'nodeRename', 'nodeCut',
                    'nodeCopy', 'nodePaste', 'nodeDelete']
         vitables.utils.addActions(self.group_node_cm, actions,
                                   self.gui_actions)
 
-        self.leaf_node_cm = QtWidgets.QMenu()
+        self.leaf_node_cm = QtWidgets.QMenu(self)
+        self.leaf_node_cm.setObjectName('leaf_node_cm')
         actions = ['nodeOpen', 'nodeClose', None, 'nodeProperties', None,
                    'nodeRename', 'nodeCut', 'nodeCopy', 'nodePaste',
                    'nodeDelete', None, 'queryNew']
         vitables.utils.addActions(self.leaf_node_cm, actions, self.gui_actions)
 
-        self.mdi_cm = QtWidgets.QMenu()
+        self.mdi_cm = QtWidgets.QMenu(self)
+        self.mdi_cm.setObjectName('mdi_cm')
         actions = [self.window_menu]
         vitables.utils.addActions(self.mdi_cm, actions, self.gui_actions)
 
@@ -669,10 +676,6 @@ class VTGUI(QtWidgets.QMainWindow):
 
         # Quit
         event.accept()
-        # Explicit deletion is required here as a workaround of a PyQt4
-        # v4.8.2 bug. See <QMainWindow.createPopupMenu bug?> thread in
-        # the PyQt4 mailing list for details
-        del self.toolbars_submenu
         QtWidgets.qApp.quit()
 
     def makeCopy(self):

@@ -48,33 +48,35 @@ class TestVTGui(object):
              'calculate']
         assert sorted(gui_actions) == sorted(expected_actions)
 
-    def test_toolbars(self, launcher):
-        assert launcher.gui.findChild(QtWidgets.QToolBar, 'File toolbar')
-        assert launcher.gui.findChild(QtWidgets.QToolBar, 'Node toolbar')
-        assert launcher.gui.findChild(QtWidgets.QToolBar, 'Query toolbar')
-        assert launcher.gui.findChild(QtWidgets.QToolBar, 'Help toolbar')
-
     def test_fileToolBar(self, launcher):
-        file_tb = launcher.gui.file_toolbar
+        file_tb = launcher.gui.findChild(QtWidgets.QToolBar, 'File toolbar')
+        assert file_tb
+
         tb_actions = [a.objectName() for a in file_tb.actions()]
         expected_actions = ['fileNew', 'fileOpen', 'fileClose', 'fileSaveAs']
         assert sorted(tb_actions) == sorted(expected_actions)
 
     def test_nodeToolBar(self, launcher):
-        node_tb = launcher.gui.node_toolbar
+        node_tb = launcher.gui.findChild(QtWidgets.QToolBar, 'Node toolbar')
+        assert node_tb
+
         tb_actions = [a.objectName() for a in node_tb.actions()]
         expected_actions = ['nodeNew', 'nodeCut', 'nodeCopy', 'nodePaste',
                             'nodeDelete']
         assert sorted(tb_actions) == sorted(expected_actions)
 
     def test_queryToolBar(self, launcher):
-        query_tb = launcher.gui.query_toolbar
+        query_tb = launcher.gui.findChild(QtWidgets.QToolBar, 'Query toolbar')
+        assert query_tb
+
         tb_actions = [a.objectName() for a in query_tb.actions()]
         expected_actions = ['queryNew', 'queryDeleteAll']
         assert sorted(tb_actions) == sorted(expected_actions)
 
     def test_helpToolBar(self, launcher):
-        help_tb = launcher.gui.help_toolbar
+        help_tb = launcher.gui.findChild(QtWidgets.QToolBar, 'Help toolbar')
+        assert help_tb
+
         tb_actions = [a.objectName() for a in help_tb.actions()]
         expected_actions = ['helpUsersGuide', 'whatis_help_toolbar']
         assert sorted(tb_actions) == sorted(expected_actions)
@@ -184,3 +186,72 @@ class TestVTGui(object):
 
         separators = [a for a in menu_actions if a.isSeparator()]
         assert len(separators) == 2
+
+    def test_viewCM(self, launcher):
+        menu = launcher.gui.findChild(QtWidgets.QMenu, 'view_cm')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['fileNew', 'fileOpen', 'fileOpenRO', 'fileClose',
+                            'fileCloseAll', 'fileSaveAs', 'fileExit']
+        assert sorted(actions) == sorted(expected_actions)
+
+        menus = [a.menu().objectName() for a in menu_actions if a.menu()]
+        assert sorted(menus) == ['import_csv_submenu', 'open_recent_submenu']
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 4
+
+    def test_rootNodeCM(self, launcher):
+        menu = launcher.gui.findChild(QtWidgets.QMenu, 'root_node_cm')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['fileClose', 'fileSaveAs', 'nodeProperties',
+                            'nodeNew', 'nodeCopy', 'nodePaste',
+                            'queryDeleteAll']
+        assert sorted(actions) == sorted(expected_actions)
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 3
+
+    def test_groupNodeCM(self, launcher):
+        menu = launcher.gui.findChild(QtWidgets.QMenu, 'group_node_cm')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['nodeProperties', 'nodeNew', 'nodeRename',
+                            'nodeCut', 'nodeCopy', 'nodePaste', 'nodeDelete']
+        assert sorted(actions) == sorted(expected_actions)
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 1
+
+    def test_leafNodeCM(self, launcher):
+        menu = launcher.gui.findChild(QtWidgets.QMenu, 'leaf_node_cm')
+        menu_actions = menu.actions()
+        assert menu
+
+        actions = [a.objectName() for a in menu_actions
+                   if not (a.isSeparator() or a.menu())]
+        expected_actions = ['nodeOpen', 'nodeClose',  'nodeProperties',
+                            'nodeRename', 'nodeCut', 'nodeCopy', 'nodePaste',
+                            'nodeDelete', 'queryNew', 'export_csv']
+        assert sorted(actions) == sorted(expected_actions)
+
+        separators = [a for a in menu_actions if a.isSeparator()]
+        assert len(separators) == 4
+
+    def test_mdiCM(self, launcher):
+        menu = launcher.gui.findChild(QtWidgets.QMenu, 'mdi_cm')
+        menu_actions = menu.actions()
+        assert menu
+
+        menus = [a.menu().objectName() for a in menu_actions if a.menu()]
+        assert sorted(menus) == ['window_menu']
