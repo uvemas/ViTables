@@ -31,13 +31,13 @@ commands in the Logger.
     :Parameter parent: the parent widget of the Logger
 """
 
-__docformat__ = 'restructuredtext'
-
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 
 import vitables.utils
+
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
 
@@ -63,29 +63,29 @@ class Logger(QtWidgets.QTextEdit):
         self.setReadOnly(1)
         self.setMinimumHeight(50)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setWhatsThis(translate('Logger',
-            """<qt>
-            <h3>The Logger</h3>
-            This is the screen region where info about the currently
-            selected item is displayed. It also logs the result of all
-            operations requested by the user.
-            <p>Also execution errors and exceptions are logged in the
-            console.
-            </qt>""",
-            'WhatsThis help for the logger'))
+        self.setWhatsThis(
+            translate(
+                'Logger',
+                """<qt>
+                <h3>The Logger</h3>
+                This screen region is a read-only console that logs the result
+                of operations requested by the user.
+                <p>Also execution errors and exceptions are logged in this
+                console.</qt>""",
+                'WhatsThis help for the logger'))
 
         self.setStyleSheet("background-color: #ffffff")
 
         # The frame especification
         self.frame_style = {'shape': self.frameShape(),
-            'shadow': self.frameShadow(),
-            'lwidth': self.lineWidth(),
-            'foreground': self.palette().color(QtGui.QPalette.Active,
-                QtGui.QPalette.WindowText)}
+                            'shadow': self.frameShadow(),
+                            'lwidth': self.lineWidth()}
+
+        # The context menu
+        self.context_menu = self.setupContextMenu()
 
         # Connect signals to slots
-        self.customContextMenuRequested.connect(self.createCustomContextMenu)
-
+        self.customContextMenuRequested.connect(self.popupCustomContextMenu)
 
     def write(self, text):
         """
@@ -93,10 +93,10 @@ class Logger(QtWidgets.QTextEdit):
 
         The caught messages are displayed in the `Logger` using this method.
 
-        The implementation is done via QTextEdit.append method because
-        this method adds the text at the end of the console so, even if
-        the user clicks somewhere in the console or there is selected
-        text, the printed text will not mess the console.
+        The implementation is done via QTextEdit.append() method because it
+        adds a new paragraph at the end of the console content so even if
+        the user clicks somewhere in the console or there is selected text, the
+        new text will not mess the console.
 
         :Parameter text: the text being written
         """
@@ -109,14 +109,8 @@ class Logger(QtWidgets.QTextEdit):
         elif text.startswith('\nWarning: '):
             self.setTextColor(QtGui.QColor(243, 137, 8))
         self.append(text)
-        # Warning! Append() doesn't change the cursor position
-        # Because we want to reset the current color **at the end** of
-        # the console in order to give the proper color to new messages
-        # we must update the cursor position **before** the current
-        # color is reset
-        self.moveCursor(QtGui.QTextCursor.EndOfLine)
+        # Reset the text color
         self.setTextColor(current_color)
-
 
     def flush(self):
         """
@@ -124,32 +118,32 @@ class Logger(QtWidgets.QTextEdit):
         """
         pass
 
+    def setupContextMenu(self):
+        """Create a customised context menu."""
 
-    def createCustomContextMenu(self, pos):
-        """
-        Popup the context logger menu.
-
-        :Parameter pos: the local position at which the menu will popup
-        """
-
-        vtapp = vitables.utils.getVTApp()
         # Make the menu
         edit_menu = QtWidgets.QMenu(self)
+        edit_menu.setObjectName('logger_context_menu')
+
         # QtGui.Qpalette.Window constant is 10
         edit_menu.setStyleSheet("background-color: {0}".format(10))
 
         self.copy_action = QtWidgets.QAction(
             translate('Logger', "&Copy", 'Logger menu entry'), self,
-            shortcut=QtGui.QKeySequence.Copy, triggered=vtapp.gui.makeCopy,
+            shortcut=QtGui.QKeySequence.Copy, triggered=self.parent().makeCopy,
             statusTip=translate('Logger', 'Copy selected text to clipboard',
-                'Status bar text for the logger context menu -> Copy action'))
+                                'Status bar text for the logger context menu ->'
+                                ' Copy action'))
+        self.copy_action.setObjectName('logger_copy_action')
         edit_menu.addAction(self.copy_action)
 
         self.clear_action = QtWidgets.QAction(
             translate('Logger', "Cl&ear All", 'Logger menu entry'), self,
             triggered=self.clear,
             statusTip=translate('Logger', 'Empty the Logger',
-                'Status bar text for the logger context menu -> Clear action'))
+                                'Status bar text for the logger context menu ->'
+                                ' Clear action'))
+        self.clear_action.setObjectName('logger_clear_action')
         edit_menu.addAction(self.clear_action)
         edit_menu.addSeparator()
 
@@ -157,14 +151,23 @@ class Logger(QtWidgets.QTextEdit):
             translate('Logger', "Select &All", 'Logger menu entry'), self,
             triggered=self.selectAll,
             statusTip=translate('Logger', 'Select the whole Logger contents',
-                'Status bar text for the logger context menu -> Select All'))
+                                'Status bar text for the logger context menu ->'
+                                ' Select All'))
+        self.select_action.setObjectName('logger_select_action')
         edit_menu.addAction(self.select_action)
 
-        edit_menu.aboutToShow.connect(self.updateEditMenu)
-        edit_menu.popup(self.mapToGlobal(pos))
+        edit_menu.aboutToShow.connect(self.updateContextMenu)
+        return edit_menu
 
+    def popupCustomContextMenu(self, pos):
+        """
+        Popup the context logger menu.
 
-    def updateEditMenu(self):
+        :Parameter pos: the local position at which the menu will popup
+        """
+        self.context_menu.popup(self.mapToGlobal(pos))
+
+    def updateContextMenu(self):
         """Update items availability when the menu is about to be shown."""
 
         # Copy is enabled when there is some selected text
@@ -176,7 +179,6 @@ class Logger(QtWidgets.QTextEdit):
         self.clear_action.setEnabled(has_content)
         self.select_action.setEnabled(has_content)
 
-
     def focusInEvent(self, event):
         """Specialised handler for focus events.
 
@@ -187,12 +189,9 @@ class Logger(QtWidgets.QTextEdit):
         """
 
         self.setLineWidth(2)
-        self.setFrameStyle(QtWidgets.QFrame.Panel|QtWidgets.QFrame.Plain)
-        pal = self.palette()
-        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
-            QtCore.Qt.darkBlue)
+        self.setFrameShape(QtWidgets.QFrame.Panel)
+        self.setFrameShadow(QtWidgets.QFrame.Plain)
         QtWidgets.QTextEdit.focusInEvent(self, event)
-
 
     def focusOutEvent(self, event):
         """Specialised handler for focus events.
@@ -206,7 +205,4 @@ class Logger(QtWidgets.QTextEdit):
         self.setLineWidth(self.frame_style['lwidth'])
         self.setFrameShape(self.frame_style['shape'])
         self.setFrameShadow(self.frame_style['shadow'])
-        pal = self.palette()
-        pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
-            self.frame_style['foreground'])
         QtWidgets.QTextEdit.focusOutEvent(self, event)

@@ -104,7 +104,7 @@ class VTGUI(QtWidgets.QMainWindow):
             | QtWidgets.QDockWidget.DockWidgetMovable
             | QtWidgets.QDockWidget.DockWidgetFloatable)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.logger_dock)
-        self.logger = logger.Logger()
+        self.logger = logger.Logger(self)
         self.logger.setObjectName('LoggerWidget')
         self.logger_dock.setWidget(self.logger)
         # add self.logger as handler of main logger object
@@ -406,7 +406,9 @@ class VTGUI(QtWidgets.QMainWindow):
             translate('VTGUI', 'Toggle MDI/Tabs', 'MDI -> Tabbed'), self,
             triggered=self.changeMDIViewMode,
             statusTip=translate(
-                'VTGUI', 'Toggle workspace view mode between Tabs <--> Multi Document Interface',
+                'VTGUI',
+                'Toggle workspace view mode between Tabs <--> Multi Document '
+                'Interface',
                 'Status bar text for the MDI -> Tabbed action'))
         actions['mdiTabbed'].setObjectName('mdiTabbed')
 
@@ -681,7 +683,7 @@ class VTGUI(QtWidgets.QMainWindow):
     def makeCopy(self):
         """Copy text/leaf depending on which widget has focus.
 
-        This methos disambiguates the ``Ctrl+C`` shortcut. If the console has
+        This method disambiguates the ``Ctrl+C`` shortcut. If the console has
         focus then ``Ctrl+C`` will copy the console selected text. If the
         databases tree view has focus then the selected node (if any) will be
         copied.
@@ -805,7 +807,8 @@ class VTGUI(QtWidgets.QMainWindow):
             index += 1
             (mode, filepath) = item.split('#@#')
             action = QtWidgets.QAction('{0:>2} {1}.'.format(index, filepath),
-                                       self, triggered=self.vtapp.openRecentFile)
+                                       self,
+                                       triggered=self.vtapp.openRecentFile)
             action.setData(item)
             if mode == 'r':
                 action.setIcon(iconset['file_ro'])
