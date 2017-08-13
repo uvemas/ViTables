@@ -36,9 +36,9 @@ Misc variables:
 * PLUGINSDIR
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
+
+__docformat__ = 'restructuredtext'
 
 INSTALLDIR = os.path.dirname(__file__)
 ICONDIR = os.path.join(INSTALLDIR, "icons")

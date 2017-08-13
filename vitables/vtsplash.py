@@ -24,11 +24,15 @@ Here is defined the VTSplash class. It displays the splash screen during the
 ``ViTables`` startup and shows the advance of the startup sequence.
 """
 
-__docformat__ = 'restructuredtext'
-
 import time
 
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtCore
+from qtpy import QtGui
+from qtpy import QtWidgets
+
+
+__docformat__ = 'restructuredtext'
+
 
 class VTSplash(QtWidgets.QSplashScreen):
     """
@@ -48,7 +52,6 @@ class VTSplash(QtWidgets.QSplashScreen):
         super(VTSplash, self).__init__(png)
         self.msg = ''
 
-
     def drawContents(self, painter):
         """Draw the contents of the splash screen using the given painter.
 
@@ -63,7 +66,6 @@ class VTSplash(QtWidgets.QSplashScreen):
         font.setBold(True)
         painter.setFont(font)
         painter.drawText(10, 215, self.msg)
-
 
     def drawMessage(self, msg):
         """

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 13, 2017 **
+Fixed a few PEP8 issues.
+
 ** July 17, 2017 **
 Import/export CSV capabilities have been integrated in the ViTables core.
 
