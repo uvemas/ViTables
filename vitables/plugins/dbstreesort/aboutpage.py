@@ -27,8 +27,6 @@ The widget is displayed when the plugin is selected in the Preferences
 dialog selector pane.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
 try:
     import configparser
@@ -39,12 +37,15 @@ from qtpy import QtGui
 from qtpy import QtWidgets
 from qtpy.uic import loadUiType
 
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+__docformat__ = 'restructuredtext'
+
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_DBsTreeSortPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),
                             'dbs_tree_sort_page.ui'))[0]
+
 
 class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
     """
@@ -109,7 +110,6 @@ class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
         self.dlg_box_buttons.button(QtWidgets.QDialogButtonBox.Ok).clicked.\
             connect(self.saveAlgorithmChange)
 
-
     def cancelAlgorithmChange(self):
         """Restore the initial sorting algorithm in the combobox.
 
@@ -120,8 +120,7 @@ class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
         self.config['DBsTreeSorting']['algorithm'] = self.initial_sorting
         with open(self.ini_filename, 'w') as ini_file:
             self.config.write(ini_file)
-        #self.preferences_dlg.reject()
-
+        # self.preferences_dlg.reject()
 
     def saveAlgorithmChange(self):
         """Save the combobox current algorithm.
@@ -131,4 +130,4 @@ class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
             self.algorithms_combobox.currentText()
         with open(self.ini_filename, 'w') as ini_file:
             self.config.write(ini_file)
-        #self.parent().parent().accept()
+        # self.parent().parent().accept()

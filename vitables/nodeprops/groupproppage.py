@@ -24,8 +24,6 @@ A form with tables.Group information collected by the
 :mod:`vitables.nodeprops.nodeinfo` module.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
 
 from qtpy import QtGui
@@ -35,9 +33,11 @@ from qtpy.uic import loadUiType
 
 import vitables.utils
 
+__docformat__ = 'restructuredtext'
+
 translate = QtWidgets.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_GroupPropPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),'group_prop_page.ui'))[0]

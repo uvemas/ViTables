@@ -42,8 +42,6 @@ This dialog allows the user to solve the problem. Available options are:
 
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
 import re
 
@@ -55,12 +53,15 @@ from qtpy.uic import loadUiType
 
 import vitables.utils
 
+__docformat__ = 'restructuredtext'
+
 translate = QtWidgets.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_RenameNodeDialog = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'rename_dlg.ui'))[0]
+    loadUiType(os.path.join(os.path.dirname(__file__), 'rename_dlg.ui'))[0]
+
 
 class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
     """
@@ -135,7 +136,6 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
         # Make sure that buttons are in the proper activation state
         self.valueLE.textChanged.emit(self.valueLE.text())
 
-
     @QtCore.Slot('QString', name="on_valueLE_textChanged")
     def checkName(self, new_name):
         """
@@ -168,8 +168,8 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
         # If the new name and the current nodename are the same then the
         # group 1 of the pattern is matched
         result = self.cpattern.search(new_name)
-        if (result == None) or \
-                ((result != None) and (result.lastindex == 1)) or \
+        if (result is None) or \
+                ((result is not None) and (result.lastindex == 1)) or \
                 (not new_name):
             self.rename_button.setEnabled(0)
             self.overwrite_button.setEnabled(0)
@@ -183,7 +183,6 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
             self.rename_button.setEnabled(1)
             self.overwrite_button.setEnabled(0)
 
-
     @QtCore.Slot("QAbstractButton *", name="on_buttonsBox_clicked")
     def executeAction(self, button):
         """Execute the action specified by the clicked button.
@@ -196,7 +195,6 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
         elif button == self.overwrite_button:
             self.overwriteNode()
 
-
     def overwriteNode(self):
         """
         Set the new name and exit.
@@ -208,7 +206,6 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
         self.action['overwrite'] = True
         self.action['new_name'] = self.troubled_name
         self.accept()
-
 
     def rename_node(self):
         """

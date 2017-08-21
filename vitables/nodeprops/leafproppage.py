@@ -24,8 +24,6 @@ A form with tables.Leaf information collected by the
 :mod:`vitables.nodeprops.nodeinfo` module.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
 
 from qtpy import QtGui
@@ -35,13 +33,14 @@ from qtpy.uic import loadUiType
 
 import vitables.utils
 
+__docformat__ = 'restructuredtext'
+
 translate = QtWidgets.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_LeafPropPage = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'leaf_prop_page.ui'))[0]
-
+    loadUiType(os.path.join(os.path.dirname(__file__), 'leaf_prop_page.ui'))[0]
 
 
 class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
@@ -79,7 +78,6 @@ class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
         # Customise the dialog's pages
         self.fillGeneralPage(info)
 
-
     def fillGeneralPage(self, info):
         """Make the General page of the Properties dialog.
 
@@ -106,18 +104,19 @@ class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
         if info.node_type == 'table':
             table = self.recordsTable
             # The Table's fields description
-            table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+            table.horizontalHeader().setSectionResizeMode(
+                QtWidgets.QHeaderView.Stretch)
             # QtGui.QPalette.Window constant is 10
             bg_name = table.palette().brush(10).color().name()
             table.setStyleSheet("background-color: {0}".format(bg_name))
             self.fields_model = QtGui.QStandardItemModel()
-            self.fields_model.setHorizontalHeaderLabels([
-                translate('LeafPropPage', 'Field name',
-                'First column header of the table'),
-                translate('LeafPropPage', 'Type',
-                'Second column header of the table'),
-                translate('LeafPropPage', 'Shape',
-                'Third column header of the table')])
+            self.fields_model.setHorizontalHeaderLabels(
+                [translate('LeafPropPage', 'Field name',
+                           'First column header of the table'),
+                 translate('LeafPropPage', 'Type',
+                           'Second column header of the table'),
+                 translate('LeafPropPage', 'Shape',
+                           'Third column header of the table')])
             table.setModel(self.fields_model)
 
             # Fill the table. Nested fields will appear as (colname, nested, -)
@@ -142,7 +141,6 @@ class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
                                         str(info.columns_shapes[pathname]))
                 self.fields_model.appendRow([pathname_item, type_item,
                                             shape_item])
-
 
     def arrayPage(self):
         """Remove widgets regarding root groups.

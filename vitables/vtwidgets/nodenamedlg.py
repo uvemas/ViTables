@@ -26,8 +26,6 @@ The dialog is raised when a new group node is created and when an existing node
 is being renamed.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
 
 from qtpy import QtCore
@@ -37,11 +35,14 @@ from qtpy.uic import loadUiType
 
 import vitables.utils
 
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+__docformat__ = 'restructuredtext'
+
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_InputNodenameDialog = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'nodename_dlg.ui'))[0]
+    loadUiType(os.path.join(os.path.dirname(__file__), 'nodename_dlg.ui'))[0]
+
 
 class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
     """
@@ -79,8 +80,8 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
         self.generalInfo.setText(info)
 
         # The Create/Rename button
-        self.edit_button = self.buttonsBox.addButton(action,
-            QtWidgets.QDialogButtonBox.AcceptRole)
+        self.edit_button = self.buttonsBox.addButton(
+            action, QtWidgets.QDialogButtonBox.AcceptRole)
 
         # Setup a validator for checking the entered node name
         validator = QtGui.QRegExpValidator(self)
@@ -93,7 +94,6 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
             
         # Make sure that buttons are in the proper activation state
         self.valueLE.textChanged.emit(self.valueLE.text())
-
 
     @QtCore.Slot("QString", name="on_valueLE_textChanged")
     def checkName(self, current):
@@ -110,7 +110,6 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
             self.edit_button.setEnabled(0)
         else:
             self.edit_button.setEnabled(1)
-
 
     @QtCore.Slot(name="on_buttonsBox_accepted")
     def saveName(self):
