@@ -87,9 +87,6 @@ setting into the config file.
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '3.0.0'
-
 import logging
 import sys
 from vitables.preferences import cfgexception
@@ -101,6 +98,9 @@ from qtpy import QtWidgets
 
 import vitables.vttables.datasheet as datasheet
 
+
+__docformat__ = 'restructuredtext'
+__version__ = '3.0.0'
 
 translate = QtWidgets.QApplication.translate
 
@@ -141,12 +141,20 @@ class Config(QtCore.QSettings):
         product = QtWidgets.qApp.applicationName()
         version = QtWidgets.qApp.applicationVersion()
         if sys.platform.startswith('win'):
-            path = 'HKEY_CURRENT_USER\\Software\\{0}\\{1}'
-            rpath = path.format(product, version)
-            super(Config, self).__init__(rpath, QtCore.QSettings.NativeFormat)
+            # organizationName() -> product
+            # applicationName() -> version
+            super(Config, self).__init__(product, version)
+            self.reg_path = 'HKEY_CURRENT_USER\\Software\\{0}\\{1}'.format(
+                product, version)
+            self.setPath(QtCore.QSettings.NativeFormat,
+                         QtCore.QSettings.UserScope, self.reg_path)
         elif sys.platform.startswith('darwin'):
+            # organizationName() -> product
+            # applicationName() -> version
             super(Config, self).__init__(product, version)
         else:
+            # organizationName() -> organization
+            # applicationName() -> product-version
             arg1 = organization
             arg2 = '-'.join((product, version))
             super(Config, self).__init__(arg1, arg2)
@@ -239,7 +247,12 @@ class Config(QtCore.QSettings):
 
     def windowPosition(self):
         """
-        Returns the main window geometry setting.
+        Returns the main window geometry settings.
+
+        Basically the main window geometry is made of the x and y coordinates
+        of the top left corner, width and height. A QByteArray with all this
+        information can be created via QMainWindow.saveGeometry() and stored
+        in a setting with QSetting.setValue()
         """
 
         key = 'Geometry/Position'
@@ -279,12 +292,15 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-    def startupLastSession(self):
+    def restoreLastSession(self):
         """
         Returns the `Restore last session` setting.
+
+        This is a user preference that can be setup in the Preferences dialog,
+        with the 'Restore last session' checkbox.
         """
 
-        key = 'Startup/restoreLastSession'
+        key = 'Session/restoreLastSession'
         default_value = False
         # Warning!
         # If the application settings have not yet been saved
@@ -301,16 +317,26 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-    # TODO: remove this setting
     def startupWorkingDir(self):
         """
         Returns the `Startup working directory` setting.
+
+        The startup working directory is the directory to be accessed the very
+        first time a file opening happens in a working session. The setting can
+        have two values:
+        - last -> go to the last directory accessed in the previous ViTables
+            session
+        - current -> go to the current working directory if ViTables started
+            from a terminal and go to the home directory otherwise
+
+        This is a user preference that can be setup in the Preferences dialog,
+        with the 'Start in last working directory' checkbox.
         """
 
-        key = 'Startup/startupWorkingDir'
+        key = 'Session/startupWorkingDir'
         default_value = 'home'
         setting_value = self.value(key)
-        if isinstance(setting_value, str):
+        if setting_value in ['last', 'current']:
             return setting_value
         else:
             return default_value
@@ -320,10 +346,11 @@ class Config(QtCore.QSettings):
         Returns the `Last working directory` setting.
         """
 
-        key = 'Startup/lastWorkingDir'
+        key = 'Session/lastWorkingDir'
         default_value = vitables.utils.getHomeDir()
         setting_value = self.value(key)
         if isinstance(setting_value, str):
+            # TODO: check if the value is an existing file
             return setting_value
         else:
             return default_value
@@ -429,9 +456,9 @@ class Config(QtCore.QSettings):
         config['Logger/Text'] = self.loggerText()
         config['Logger/Font'] = self.loggerFont()
         config['Workspace/Background'] = self.workspaceBackground()
-        config['Startup/restoreLastSession'] = self.startupLastSession()
-        config['Startup/startupWorkingDir'] = self.startupWorkingDir()
-        config['Startup/lastWorkingDir'] = self.lastWorkingDir()
+        config['Session/restoreLastSession'] = self.restoreLastSession()
+        config['Session/startupWorkingDir'] = self.startupWorkingDir()
+        config['Session/lastWorkingDir'] = self.lastWorkingDir()
         config['Geometry/Position'] = self.windowPosition()
         config['Geometry/Layout'] = self.windowLayout()
         config['Geometry/HSplitter'] = self.hsplitterPosition()
@@ -442,6 +469,112 @@ class Config(QtCore.QSettings):
         config['Look/currentStyle'] = self.readStyle()
         config['Plugins/Enabled'] = self.enabledPlugins()
         return config
+
+    def applyConfiguration(self, config):
+        """
+        Configure the application with the given settings.
+
+        We call `user settings` to those settings that can be setup via
+        Settings dialog and `internal settings` to the rest of settings.
+
+        At startup all settings will be loaded. At any time later the
+        `users settings` can be explicitly changed via Settings dialog.
+
+        :Parameter config: a dictionary with the settings to be (re)loaded
+        """
+
+        # Load the user settings
+        self.applyUserPreferences(config)
+
+        # Load the internal settings (if any)
+        gui = self.vtapp.gui
+        try:
+            key = 'Geometry/Position'
+            value = config[key]
+            if isinstance(value, QtCore.QByteArray):
+                # Default position is provided by the underlying window manager
+                gui.restoreGeometry(value)
+
+            key = 'Geometry/Layout'
+            value = config[key]
+            if isinstance(value, QtCore.QByteArray):
+                # Default layout is provided by the underlying Qt installation
+                gui.restoreState(value)
+
+            key = 'Geometry/HSplitter'
+            value = config[key]
+            if isinstance(value, QtCore.QByteArray):
+                # Default geometry provided by the underlying Qt installation
+                gui.hsplitter.restoreState(value)
+
+            key = 'Session/lastWorkingDir'
+            self.last_working_directory = config[key]
+
+            key = 'Recent/Files'
+            self.recent_files = config[key]
+
+            key = 'Session/Files'
+            self.session_files_nodes = config[key]
+
+            key = 'HelpBrowser/History'
+            self.hb_history = config[key]
+
+            key = 'HelpBrowser/Bookmarks'
+            self.hb_bookmarks = config[key]
+        except KeyError:
+            pass
+
+    def applyUserPreferences(self, config):
+        """Apply settings that can be setup via Settings dialog.
+
+        :Parameter config: a dictionary with the settings to be (re)loaded
+        """
+
+        # Usually after calling the Settings dialog only some user
+        # settings will need to be reloaded. So for every user setting
+        # we have to check if it needs to be reloaded or not
+        key = 'Session/restoreLastSession'
+        if key in config:
+            self.restore_last_session = config[key]
+
+        key = 'Session/startupWorkingDir'
+        if key in config:
+            self.initial_working_directory = config[key]
+
+        key = 'Logger/Paper'
+        logger = self.vtapp.gui.logger
+        if key in config:
+            value = config[key]
+            paper = value.name()
+            stylesheet = logger.styleSheet()
+            old_paper = stylesheet[-7:]
+            new_stylesheet = stylesheet.replace(old_paper, paper)
+            logger.setStyleSheet(new_stylesheet)
+
+        key = 'Logger/Text'
+        if key in config:
+            logger.moveCursor(QtGui.QTextCursor.End)
+            logger.setTextColor(config[key])
+
+        key = 'Logger/Font'
+        if key in config:
+            logger.setFont(config[key])
+
+        key = 'Workspace/Background'
+        workspace = self.vtapp.gui.workspace
+        if key in config:
+            workspace.setBackground(config[key])
+            workspace.viewport().update()
+
+        key = 'Look/currentStyle'
+        if key in config:
+            self.current_style = config[key]
+            # Default style is provided by the underlying window manager
+            QtWidgets.qApp.setStyle(self.current_style)
+
+        key = 'Plugins/Enabled'
+        if key in config:
+            self.enabled_plugins = config[key]
 
     def saveConfiguration(self):
         """
@@ -466,13 +599,13 @@ class Config(QtCore.QSettings):
         # Style
         self.writeValue('Look/currentStyle', self.current_style)
         # Startup working directory
-        self.writeValue('Startup/startupWorkingDir',
-                        self.startup_working_directory)
+        self.writeValue('Session/startupWorkingDir',
+                        self.initial_working_directory)
         # Startup restore last session
-        self.writeValue('Startup/restoreLastSession',
+        self.writeValue('Session/restoreLastSession',
                         self.restore_last_session)
         # Startup last working directory
-        self.writeValue('Startup/lastWorkingDir', self.last_working_directory)
+        self.writeValue('Session/lastWorkingDir', self.last_working_directory)
         # Window geometry
         self.writeValue('Geometry/Position', vtgui.saveGeometry())
         # Window layout
@@ -528,109 +661,3 @@ class Config(QtCore.QSettings):
 
         # Format the list in a handy way to store it on disk
         return session_files_nodes
-
-    def loadConfiguration(self, config):
-        """
-        Configure the application with the given settings.
-
-        We call `user settings` to those settings that can be setup via
-        Settings dialog and `internal settings` to the rest of settings.
-
-        At startup all settings will be loaded. At any time later the
-        `users settings` can be explicitly changed via Settings dialog.
-
-        :Parameter config: a dictionary with the settings to be (re)loaded
-        """
-
-        # Load the user settings
-        self.userSettings(config)
-
-        # Load the internal settings (if any)
-        gui = self.vtapp.gui
-        try:
-            key = 'Geometry/Position'
-            value = config[key]
-            if isinstance(value, QtCore.QByteArray):
-                # Default position is provided by the underlying window manager
-                gui.restoreGeometry(value)
-
-            key = 'Geometry/Layout'
-            value = config[key]
-            if isinstance(value, QtCore.QByteArray):
-                # Default layout is provided by the underlying Qt installation
-                gui.restoreState(value)
-
-            key = 'Geometry/HSplitter'
-            value = config[key]
-            if isinstance(value, QtCore.QByteArray):
-                # Default geometry provided by the underlying Qt installation
-                gui.hsplitter.restoreState(value)
-
-            key = 'Startup/lastWorkingDir'
-            self.last_working_directory = config[key]
-
-            key = 'Recent/Files'
-            self.recent_files = config[key]
-
-            key = 'Session/Files'
-            self.session_files_nodes = config[key]
-
-            key = 'HelpBrowser/History'
-            self.hb_history = config[key]
-
-            key = 'HelpBrowser/Bookmarks'
-            self.hb_bookmarks = config[key]
-        except KeyError:
-            pass
-
-    def userSettings(self, config):
-        """Load settings that can be setup via Settings dialog.
-
-        :Parameter config: a dictionary with the settings to be (re)loaded
-        """
-
-        # Usually after calling the Settings dialog only some user
-        # settings will need to be reloaded. So for every user setting
-        # we have to check if it needs to be reloaded or not
-        key = 'Startup/restoreLastSession'
-        if key in config:
-            self.restore_last_session = config[key]
-
-        key = 'Startup/startupWorkingDir'
-        if key in config:
-            self.startup_working_directory = config[key]
-
-        key = 'Logger/Paper'
-        logger = self.vtapp.gui.logger
-        if key in config:
-            value = config[key]
-            paper = value.name()
-            stylesheet = logger.styleSheet()
-            old_paper = stylesheet[-7:]
-            new_stylesheet = stylesheet.replace(old_paper, paper)
-            logger.setStyleSheet(new_stylesheet)
-
-        key = 'Logger/Text'
-        if key in config:
-            logger.moveCursor(QtGui.QTextCursor.End)
-            logger.setTextColor(config[key])
-
-        key = 'Logger/Font'
-        if key in config:
-            logger.setFont(config[key])
-
-        key = 'Workspace/Background'
-        workspace = self.vtapp.gui.workspace
-        if key in config:
-            workspace.setBackground(config[key])
-            workspace.viewport().update()
-
-        key = 'Look/currentStyle'
-        if key in config:
-            self.current_style = config[key]
-            # Default style is provided by the underlying window manager
-            QtWidgets.qApp.setStyle(self.current_style)
-
-        key = 'Plugins/Enabled'
-        if key in config:
-            self.enabled_plugins = config[key]

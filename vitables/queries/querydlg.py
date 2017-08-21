@@ -26,8 +26,6 @@ filtered table, which will live in the temporary database (labeled as `Query
 results` in the databases tree).
 """
 
-__docformat__ = 'restructuredtext'
-
 import logging
 import os.path
 import vitables.utils
@@ -39,10 +37,12 @@ from qtpy import QtWidgets
 from qtpy.uic import loadUiType
 
 
+__docformat__ = 'restructuredtext'
+
 translate = QtWidgets.QApplication.translate
 
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_QueryDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__), 'query_dlg.ui'))[0]

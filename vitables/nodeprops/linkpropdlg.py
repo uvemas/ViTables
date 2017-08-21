@@ -24,8 +24,6 @@ This module displays in a dialog the link information collected by the
 :mod:`vitables.nodeprops.nodeinfo` module.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
 
 from qtpy import QtGui
@@ -35,13 +33,14 @@ from qtpy.uic import loadUiType
 
 import vitables.utils
 
+__docformat__ = 'restructuredtext'
+
 translate = QtWidgets.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_LinkPropDialog = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'link_prop_dlg.ui'))[0]
-
+    loadUiType(os.path.join(os.path.dirname(__file__), 'link_prop_dlg.ui'))[0]
 
 
 class LinkPropDlg(QtWidgets.QDialog, Ui_LinkPropDialog):
@@ -68,7 +67,7 @@ class LinkPropDlg(QtWidgets.QDialog, Ui_LinkPropDialog):
         self.setupUi(self)
 
         self.setWindowTitle(translate('LinkPropDlg', 'Link properties',
-            'Dlg caption'))
+                                      'Dlg caption'))
 
         # Customise the dialog's pages
         self.fillPage(info)
@@ -76,7 +75,6 @@ class LinkPropDlg(QtWidgets.QDialog, Ui_LinkPropDialog):
 
         # Show the dialog
         self.show()
-
 
     def fillPage(self, info):
         """Fill the dialog with info regarding the given link.

@@ -26,8 +26,6 @@ The dialog has 3 pages managed via QtGui.QStackedWidget: General settings
 page, Look&Feel settings page and Plugins settings page.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os
 
 from qtpy import QtCore
@@ -40,12 +38,14 @@ from vitables.vtsite import ICONDIR
 import vitables.utils
 
 
+__docformat__ = 'restructuredtext'
+
 translate = QtWidgets.QApplication.translate
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_SettingsDialog = \
-    loadUiType(os.path.join(os.path.dirname(__file__),'settings_dlg.ui'))[0]
+    loadUiType(os.path.join(os.path.dirname(__file__), 'settings_dlg.ui'))[0]
 
 
 class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
@@ -102,9 +102,9 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.initial_prefs['Workspace/Background'] = \
             self.vtgui.workspace.background()
         self.initial_prefs['Look/currentStyle'] = self.config.current_style
-        self.initial_prefs['Startup/startupWorkingDir'] = \
-            self.config.startup_working_directory
-        self.initial_prefs['Startup/restoreLastSession'] = \
+        self.initial_prefs['Session/startupWorkingDir'] = \
+            self.config.initial_working_directory
+        self.initial_prefs['Session/restoreLastSession'] = \
             self.config.restore_last_session
 
         # The dictionary used to update the preferences
@@ -116,7 +116,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         # Connect SIGNALS to SLOTS
         self.buttonsBox.helpRequested.connect(
             QtWidgets.QWhatsThis.enterWhatsThisMode)
-
 
     def setupPluginsPage(self):
         """Populate the tree of plugins.
@@ -145,7 +144,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.plugins_model.setItem(row, 1, citem)
             row = row + 1
 
-
     def setupSelector(self):
         """Setup the page selector widget of the Preferences dialog.
         """
@@ -158,26 +156,26 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         alignment = QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
         flags = QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
         general_item = QtGui.QStandardItem()
-        general_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
-            'preferences-other.png')))
+        general_item.setIcon(QtGui.QIcon(os.path.join(
+            iconsdir, 'preferences-other.png')))
         general_item.setText(translate('Preferences', "  General  ",
-            "Text for page selector icon"))
+                                       "Text for page selector icon"))
         general_item.setTextAlignment(alignment)
         general_item.setFlags(flags)
 
         style_item = QtGui.QStandardItem()
-        style_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
-            'preferences-desktop-theme.png')))
+        style_item.setIcon(QtGui.QIcon(os.path.join(
+            iconsdir, 'preferences-desktop-theme.png')))
         style_item.setText(translate('Preferences', "Look & Feel",
-            "Text for page selector icon"))
+                                     "Text for page selector icon"))
         style_item.setTextAlignment(alignment)
         style_item.setFlags(flags)
 
         self.plugins_item = QtGui.QStandardItem()
-        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(iconsdir,
-            'preferences-plugin.png')))
+        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(
+            iconsdir, 'preferences-plugin.png')))
         self.plugins_item.setText(translate('Preferences', "  Plugins  ",
-            "Text for page selector icon"))
+                                            "Text for page selector icon"))
         self.plugins_item.setTextAlignment(alignment)
         self.plugins_item.setFlags(flags)
 
@@ -192,7 +190,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             item = QtGui.QStandardItem(name)
             item.setData(UID)
             self.plugins_item.appendRow(item)
-
 
     @QtCore.Slot("QModelIndex", name="on_pageSelector_clicked")
     def changeSettingsPage(self, index):
@@ -209,7 +206,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             pluginID = self.selector_model.itemFromIndex(index).data()
             self.aboutPluginPage(pluginID)
 
-
     @QtCore.Slot("QAbstractButton *", name="on_buttonsBox_clicked")
     def executeButtonAction(self, button):
         """Slot that manages button box clicks in the Preferences dialog.
@@ -224,11 +220,11 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.resetPreferences()
         elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Help):
             pass
-        elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Cancel):
+        elif button == self.buttonsBox.button(
+                QtWidgets.QDialogButtonBox.Cancel):
             self.reject()
         else:
             self.applySettings()
-
 
     def resetPreferences(self):
         """
@@ -236,24 +232,24 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         """
 
         # Startup page
-        if self.initial_prefs['Startup/startupWorkingDir'] == 'last':
+        if self.initial_prefs['Session/startupWorkingDir'] == 'last':
             self.lastDirCB.setChecked(True)
         else:
             self.lastDirCB.setChecked(False)
 
         self.restoreCB.setChecked(
-            self.initial_prefs['Startup/restoreLastSession'])
+            self.initial_prefs['Session/restoreLastSession'])
 
         # Style page
         self.sampleTE.selectAll()
         self.sampleTE.setCurrentFont(self.initial_prefs['Logger/Font'])
         self.sampleTE.setTextColor(self.initial_prefs['Logger/Text'])
         self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
-        self.sampleTE.setStyleSheet("background-color: {0}".
-            format(self.initial_prefs['Logger/Paper'].name()))
+        self.sampleTE.setStyleSheet("background-color: {0}".format(
+            self.initial_prefs['Logger/Paper'].name()))
 
-        self.workspaceLabel.setStyleSheet('background-color: {0}'.
-            format(self.initial_prefs['Workspace/Background'].color().name()))
+        self.workspaceLabel.setStyleSheet('background-color: {0}'.format(
+            self.initial_prefs['Workspace/Background'].color().name()))
 
         index = self.stylesCB.findText(self.initial_prefs['Look/currentStyle'])
         self.stylesCB.setCurrentIndex(index)
@@ -273,7 +269,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             else:
                 item.setCheckState(0)
 
-
     def applySettings(self):
         """
         Apply the current preferences to the application and close the dialog.
@@ -290,7 +285,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.new_prefs[key] = value
 
         self.accept()
-
 
     @QtCore.Slot("bool", name="on_lastDirCB_toggled")
     def setInitialWorkingDirectory(self, cb_on):
@@ -313,10 +307,9 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         """
 
         if cb_on:
-            self.new_prefs['Startup/startupWorkingDir'] = 'last'
+            self.new_prefs['Session/startupWorkingDir'] = 'last'
         else:
-            self.new_prefs['Startup/startupWorkingDir'] = 'home'
-
+            self.new_prefs['Session/startupWorkingDir'] = 'home'
 
     @QtCore.Slot("bool", name="on_restoreCB_toggled")
     def setRestoreSession(self, cb_on):
@@ -333,10 +326,9 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         """
 
         if cb_on:
-            self.new_prefs['Startup/restoreLastSession'] = 1
+            self.new_prefs['Session/restoreLastSession'] = True
         else:
-            self.new_prefs['Startup/restoreLastSession'] = 0
-
+            self.new_prefs['Session/restoreLastSession'] = False
 
     @QtCore.Slot(name="on_fontPB_clicked")
     def setLoggerFont(self):
@@ -351,7 +343,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.sampleTE.setCurrentFont(new_font)
             self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
 
-
     @QtCore.Slot(name="on_foregroundPB_clicked")
     def setLoggerTextColor(self):
         """Slot for setting the logger foreground color."""
@@ -364,7 +355,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.sampleTE.selectAll()
             self.sampleTE.setTextColor(color)
             self.sampleTE.moveCursor(QtGui.QTextCursor.End)
-
 
     @QtCore.Slot(name="on_backgroundPB_clicked")
     def setLoggerBackgroundColor(self):
@@ -379,7 +369,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             new_stylesheet = stylesheet.replace(background, color.name())
             self.sampleTE.setStyleSheet(new_stylesheet)
 
-
     @QtCore.Slot(name="on_workspacePB_clicked")
     def setWorkspaceColor(self):
         """Slot for setting the workspace background color."""
@@ -393,7 +382,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             new_stylesheet = stylesheet.replace(background, color.name())
             self.workspaceLabel.setStyleSheet(new_stylesheet)
 
-
     @QtCore.Slot("QString", name="on_stylesCB_activated")
     def setGlobalStyle(self, style_name):
         """
@@ -402,7 +390,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         :Parameter style_name: the style to be applied
         """
         self.new_prefs['Look/currentStyle'] = style_name
-
 
     def updatePluginsManager(self):
         """Update the plugins manager before closing the dialog.
@@ -418,7 +405,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
                 self.enabled_plugins.append(item.data())
 
         self.pg_loader.enabled_plugins = self.enabled_plugins[:]
-
 
     def aboutPluginPage(self, pluginID):
         """A page with info about the plugin clicked in the selector widget.

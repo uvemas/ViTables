@@ -27,8 +27,6 @@ The widget is displayed when the plugin is selected in the Preferences
 dialog selector tree.
 """
 
-__docformat__ = 'restructuredtext'
-
 import os.path
 import datetime
 try:
@@ -42,12 +40,14 @@ from qtpy import QtWidgets
 from qtpy.uic import loadUiType
 
 
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+__docformat__ = 'restructuredtext'
+
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_TimeFormatterPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),
-    'timeformatter_page.ui'))[0]
+                            'timeformatter_page.ui'))[0]
 
 
 class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
@@ -85,7 +85,8 @@ class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
         self.desc_te.setText(desc['about_text'])
 
         # Configuration section of the page
-        self.save_button = self.buttons_box.button(QtWidgets.QDialogButtonBox.Save)
+        self.save_button = self.buttons_box.button(
+            QtWidgets.QDialogButtonBox.Save)
         self.save_button.setText('Save format')
 
         # The absolute path of the INI file
@@ -106,7 +107,6 @@ class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
 
         self.save_button.clicked.connect(self.saveFormat)
 
-
     def eventFilter(self, w, e):
         """Event filter for the dialog.
         """
@@ -117,7 +117,6 @@ class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
                     self.applyFormat()
                     return True
         return QtWidgets.QWidget.eventFilter(self, w, e)
-
 
     def applyFormat(self):
         """
@@ -132,7 +131,6 @@ class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
         today = datetime.datetime.today().strftime(self.tformat_editor.text())
         self.today_label.clear()
         self.today_label.setText(today)
-
 
     def saveFormat(self):
         """Slot for saving the entered time format.

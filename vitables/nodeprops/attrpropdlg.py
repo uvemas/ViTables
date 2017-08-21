@@ -27,8 +27,6 @@ Users' attributes can be edited if the database has been opened in read-write
 mode. Otherwise all shown information is read-only.
 """
 
-__docformat__ = 'restructuredtext'
-
 import logging
 import os.path
 from vitables.nodeprops import attreditor
@@ -41,9 +39,11 @@ from qtpy.uic import loadUiType
 import tables
 
 
+__docformat__ = 'restructuredtext'
+
 translate = QtWidgets.QApplication.translate
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_AttrPropDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__), 'attr_prop_dlg.ui'))[0]
@@ -243,8 +243,8 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             name_item.setBackground(brush)
             value_item.setEditable(editable)
             value_item.setBackground(brush)
-            self.user_attrs_before.append((name_item.text(),
-                                           value_item.text(), dtypes_combo.currentText()))
+            self.user_attrs_before.append((name_item.text(), value_item.text(),
+                                           dtypes_combo.currentText()))
         self.user_attrs_before = sorted(self.user_attrs_before[:])
 
         # The group of buttons Add, Delete, What's This
@@ -407,7 +407,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
         attrs_are_ok, error = aeditor.checkAttributes()
         # If the attributes pass correctness checks then update the
         # attributes and close the dialog
-        if attrs_are_ok == True:
+        if attrs_are_ok is True:
             aeditor.setAttributes()
             del aeditor
             QtWidgets.QDialog.accept(self)
