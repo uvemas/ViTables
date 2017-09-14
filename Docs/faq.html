@@ -17,7 +17,7 @@
     <meta property="og:url" content="http://vitables.org/index.html">
     <meta property="og:description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions, Anaconda and so on.">
     <meta property="og:type" content="article">
-    <meta property="article:published_time" content="2017-08-27">
+    <meta property="article:published_time" content="2017-09-14">
     <meta property="article:tag" content="ViTables FAQ">
 </head>
 
@@ -92,8 +92,10 @@ Probably some subscriber (<em>ViTables</em> developer or user) will be able to h
 <p>If you want to run the development version of <em>ViTables</em>, first of all
 you have to clone it from the git repository. For instance</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    $ git clone http://github.com/uvemas/ViTables.git vitables_tip
-</code></pre>
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block">
+    $ git clone http://github.com/uvemas/ViTables.git vitables_tip
+  </div>
 </div>
 
 <p>will download the latest revision and put it in the <code class="highlighter-rouge">vitables_tip</code> directory.
@@ -102,9 +104,11 @@ install it. Although packaging is not difficult it can be tricky because you
 may need to install the Sphinx documentation system. So packaging is not
 recommended. Instead, from the top level directory do the following</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    $ cp scripts/start.py run_vitables.py
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block">
+    $ cp scripts/start.py run_vitables.py<br />
     $ python run_vitables.py
-</code></pre>
+  </div>
 </div>
 
 <p>and <em>ViTables</em> should start. Beware that the HTML User’s Guide will not be
@@ -120,7 +124,7 @@ available unless you build it before running <em>ViTables</em>.</p>
 Make sure that it points to the <em>vitables</em> executable. The only tricky thing is to give a nice icon to the
 shortcut.</p>
 
-<p>On Windows the icon file is <code class="highlighter-rouge">icons\\vitables.ico</code> and can be located in the installation folder.</p>
+<p>On Windows the icon file is <code class="highlighter-rouge">icons\vitables.ico</code> and can be located in the installation folder.</p>
 
 <p>On Linux it is a bit more difficult because the icons are not included in the package (tarball or wheel). So you
 have to download them from the repository. In particular you need the <code class="highlighter-rouge">unixapp</code> folder. There you will find
@@ -133,39 +137,25 @@ standard way for creating Desktop shortcuts on Linux. That’s all.</p>
 
 <h2 id="can-i-use-vitables-with-anaconda3">Can I use <em>ViTables</em> with Anaconda3?</h2>
 
-<p>Yes, you can. Three different installation ways are available. The most convenient is, of course, install the
-<em>ViTables</em> package from conda-channel (I assume you are on a Windows machine here)</p>
+<p>Yes, you can. Basically two installation ways are available. The most convenient is, of course, install the
+<em>ViTables</em> package from conda-channel (I assume you are on a Windows machine here and the <code class="highlighter-rouge">Scripts</code> folder is in your <code class="highlighter-rouge">PATH</code>).
+You can install and run with</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>(Anaconda3) &gt; conda install -c conda-forge vitables=3.0.0
-</code></pre>
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block">
+    (Anaconda3) &gt; conda install -c conda-forge vitables=3.0.0<br />
+    (Anaconda3) &gt; vitables
+  </div>
 </div>
 
-<p>Afterwards a <em>ViTables</em> executable should exist in the <code class="highlighter-rouge">Scripts</code> directory and can be launched by issuing the command::</p>
+<p>If this fails, you can install <em>ViTables</em> from sources. Download and untar the tarball (or clone the <code class="highlighter-rouge">GitHub</code> repo),
+go to the root directory and proceed as you do in a typical installation from sources</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>(Anaconda3) &gt; some-path\Anaconda3\Scripts\vitables
-</code></pre>
-</div>
-
-<p>If this fails, you can install <em>ViTables</em> from sources. Download and untar the tarball (or clone the <code class="highlighter-rouge">GitHub</code> repo) and
-go to the root directory. From there you can create an environment for <em>ViTables</em> with the <code class="highlighter-rouge">environment.yml</code> file</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>(Anaconda3) &gt; conda env create -n vitables -f environment.yml
-(Anaconda3) &gt; some-path\Anaconda3\Scripts\activate vitables
-(vitables) &gt;
-</code></pre>
-</div>
-
-<p>After installation you can execute the program easily</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>(vitables) &gt; vitables
-</code></pre>
-</div>
-
-<p>Finally you can do a typical installation from sources</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>(Anaconda3) &gt; python setup.py install
-(Anaconda3) &gt; some-path\Anaconda3\Scripts\vitables
-</code></pre>
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block">
+    (Anaconda3) &gt; python setup.py install<br />
+    (Anaconda3) &gt; vitables
+  </div>
 </div>
 
 <p>Caveat emptor: as you know <em>ViTables</em> depends on <code class="highlighter-rouge">PyQt5</code>. Unfortunately the <code class="highlighter-rouge">pip</code> installed <code class="highlighter-rouge">PyQt5</code> package and the analogous
@@ -175,10 +165,11 @@ these advices:</p>
 
 <ul>
   <li>if you have installed the package from the conda-forge channel, remove the <code class="highlighter-rouge">PyQt5</code> dependency from
-<code class="highlighter-rouge">Anaconda3\\pkgs\\vitables-3.0.0-0\\Lib\\site-packages\\ViTables-3.0.0.egg-info\\requires.txt</code></li>
+<code class="highlighter-rouge">Anaconda3\pkgs\vitables-3.0.0-0\Lib\site-packages\ViTables-3.0.0.egg-info\requires.txt</code></li>
   <li>if you are going to install from sources, <em>before you proceed</em>, remove the <code class="highlighter-rouge">PyQt5</code> dependency from the <code class="highlighter-rouge">install_requires</code> line in the
 <code class="highlighter-rouge">setup.py</code> file.</li>
 </ul>
+
 
         <hr>
                 <footer id="footer">
