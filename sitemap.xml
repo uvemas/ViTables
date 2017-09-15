@@ -1,52 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset
-    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-    xmlns:xhtml="http://www.w3.org/1999/xhtml"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-                        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
- <url>
-  <loc>http://vitables.org/Development/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+<url>
+  <loc>http://vitables.org/</loc>
+  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://vitables.org/Development/</loc>
+  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://vitables.org/Download/</loc>
+  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://vitables.org/Docs/</loc>
+  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://vitables.org/Screenshots/</loc>
+  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
   <loc>http://vitables.org/Docs/faq.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/Docs/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
+  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
   <loc>http://vitables.org/Docs/testimonials.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/Download/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/archive.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/blog/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/categories/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/galleries/Screenshots/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/galleries/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
- <url>
-  <loc>http://vitables.org/index.html</loc>
-  <lastmod>2017-07-01T06:52:00Z</lastmod>
- </url>
+  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
 </urlset>
