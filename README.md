@@ -1,15 +1,4 @@
-ViTables
-========
+# ViTables_website
+Sources for creating the ViTables website
 
-ViTables, a GUI for PyTables.
-
-This branch of the repository contains the website of the project.
-The project website (instead of its repository) can be reached at:
-
-* [its GitHub URL][1]
-* [its redirected URL][2]
-
-[1]: http://uvemas.github.io/ViTables
-[2]: http://vitables.org
-
-
+This repository contains the sources (HTML and CSS) and assets (images, JavaScript) required to create the ViTables website using the Jekyll static websites generator

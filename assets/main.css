@@ -2831,7 +2831,7 @@ tbody.collapse.show {
 
 .navbar-toggler {
   align-self: flex-start;
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem 0.25rem;
   font-size: 1.25rem;
   line-height: 1;
   background: transparent;
@@ -6653,3 +6653,10 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   border-bottom-width: 4px;
   border-bottom-style: solid;
   border-bottom-color: #02709e; }
+
+@media (max-width: 575px) {
+  .container {
+    margin-left: 0;
+    margin-right: 0; } }
+.navbar-toggler {
+  border: none; }
