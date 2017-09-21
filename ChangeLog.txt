@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 21, 2017 **
+Added basic support for filenodes.
+
 ** August 13, 2017 **
 Fixed a few PEP8 issues.
 

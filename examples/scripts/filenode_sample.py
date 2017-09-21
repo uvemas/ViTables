@@ -27,18 +27,20 @@
 from tables.nodes import filenode
 import tables
 
-h5file = tables.open_file('fnode.h5', 'w')
-
+h5file = tables.open_file('../misc/fnode.h5', 'w')
 fnode = filenode.new_node(h5file, where='/', name='fnode_test')
-print >> fnode, "This is a test text line."
-print >> fnode, "And this is another one."
-print >> fnode
-fnode.write("Of course, file methods can also be used.")
+
+counter = 0
+while counter < 100000:
+    l = "This is a line inserted programmatically at position {}\n".format(counter)
+    fnode.write(l.encode("utf-8"))
+    counter += 1
+
 fnode.close()
 
 node = h5file.root.fnode_test
 fnode = filenode.open_node(node, 'a+')
-print >> fnode, "This is a new line."
+fnode.write(bytearray("This is the last line.\n", "utf-8"))
 
 fnode.attrs.content_type = 'text/plain; charset=us-ascii'
 

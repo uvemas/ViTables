@@ -26,15 +26,53 @@ When a leaf node is opened in the tree of databases view the data stored in
 that leaf will be displayed in the workspace using this wrapper widget.
 """
 
-__docformat__ = 'restructuredtext'
-
 from qtpy import QtCore
 from qtpy import QtWidgets
+
+import tables
+from tables.nodes import filenode
 
 from . import leaf_view, leaf_model, df_model
 from .. import utils as vtutils
 from ..nodeprops import nodeinfo
 from ..vtwidgets import zoom_cell
+
+
+__docformat__ = 'restructuredtext'
+
+
+def _filenodeToVLArray(file_node, dbdoc):
+    """Convert a filenode into a VLArray.
+
+    Every line of the filenode will go to a row in the VLArray.
+
+    The vlarray is created because accessing an Array from ViTables is much
+    easier than accessing a filenode. A filenode is accessed like a regular
+    file, which is not appropriated for ViTables. linecache module is not an
+    option because it keeps the whole file in memory.
+
+    CAVEAT: filling the VLArray is slow -> displaying the filenode for the
+    very first time is slow.
+
+    The array is stored in a hidden location in the file which will be deleted
+    when the file is closed.
+    """
+
+    # Create the hidden group where the table will be stored. It will be
+    # deleted when the file is closed. Afterward create the VLArray and fill it
+    if dbdoc.filenode_hidden_group is None:
+        try:
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            dbdoc.createHiddenGroup(filenode=True)
+            hidden_leaf = dbdoc.h5file.create_vlarray(dbdoc.filenode_hidden_group, 'filenode_as_VLArray',
+                                                      atom=tables.VLStringAtom())
+            with file_node as f:
+                for line in f:
+                    hidden_leaf.append(line)
+        finally:
+            QtWidgets.qApp.restoreOverrideCursor()
+
+    return dbdoc.get_node(dbdoc.filenode_hidden_group + '/filenode_as_VLArray')
 
 
 class DataSheet(QtWidgets.QMdiSubWindow):
@@ -64,6 +102,21 @@ class DataSheet(QtWidgets.QMdiSubWindow):
             leaf = pt_node()
         else:
             leaf = pt_node
+
+        # If tables.Node is a filenode some extra work is required in order to
+        # display it as text and not as a bunch of integers
+        file = leaf._v_file
+        nodepath = self.dbt_leaf.nodepath
+        leaf_is_filenode = False
+        try:
+            if file.get_node_attr(nodepath, 'NODE_TYPE') == filenode.NodeType:
+                leaf_is_filenode = True
+                file_node = filenode.open_node(leaf, 'r')
+                filepath = self.dbt_leaf.filepath
+                dbdoc = dbt_model.getDBDoc(filepath)
+                leaf = _filenodeToVLArray(file_node, dbdoc)
+        except AttributeError:
+            pass
 
         self.leaf_model = df_model.try_opening_as_dataframe(leaf)
         if not self.leaf_model:

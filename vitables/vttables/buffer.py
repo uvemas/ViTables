@@ -28,8 +28,6 @@ consequence, views (widgets showing a tabular representation of the dataset)
 are painted much faster too.
 """
 
-__docformat__ = 'restructuredtext'
-
 import logging
 import vitables.utils
 import warnings
@@ -38,6 +36,8 @@ import numpy
 from qtpy import QtWidgets
 import tables
 
+
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
 # Restrict the available flavors to 'numpy' so that reading a leaf
@@ -103,7 +103,7 @@ class Buffer(object):
         elif shape == ():
             # Array element will be read like a[()]
             self.getCell = self.scalarCell
-        elif (len(shape) == 1):
+        elif len(shape) == 1:
             # Array elements will be read like a[row]
             self.getCell = self.vectorCell
         elif len(shape) > 1:
@@ -127,7 +127,7 @@ class Buffer(object):
         The returned number of rows may differ from that returned by the
         `nrows` attribute in scalar arrays and `EArrays`.
 
-        :Returns: the size of the first dimension of the document
+        :Returns: the size of the first dimension of the dataset
         """
 
         shape = self.leaf.shape
@@ -157,17 +157,16 @@ class Buffer(object):
         readable = True
         try:
             self.leaf.read(0, 1)
-        except tables.HDF5ExtError:
+        except tables.HDF5ExtError as e:
             readable = False
-            # TODO: Fix error msg to include exception or merge with below.
             log.error(
                 translate('Buffer',
                           """Problems reading records. The dataset """
                           """seems to be compressed with the {0} library. """
                           """Check that it is installed in your system, """
-                          """please.""",
+                          """please.\n{1}""",
                           'A dataset readability error').format(
-                              self.leaf.filters.complib))
+                              self.leaf.filters.complib, e.message))
         except ValueError as e:
             readable = False
             log.error(
@@ -201,12 +200,11 @@ class Buffer(object):
             # being 1, the read method will have 3 rows. However, the numpy
             # array returned by EArray.read() will have only 2 rows
             data = self.leaf.read(start, stop)
-        except tables.HDF5ExtError:
-            # TODO: Fix error msg to include exception.
+        except tables.HDF5ExtError as e:
             log.error(
                 translate('Buffer', """\nError: problems reading records. """
-                          """The dataset maybe corrupted.""",
-                          'A dataset readability error'))
+                          """The dataset maybe corrupted.\n{}""",
+                          'A dataset readability error').format(e.message))
         except:
             vitables.utils.formatExceptionInfo()
         else:

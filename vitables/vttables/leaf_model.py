@@ -24,8 +24,6 @@ This module implements a model (in the `MVC` sense) for the real data stored
 in a `tables.Leaf`.
 """
 
-__docformat__ = 'restructuredtext'
-
 import logging
 import vitables.utils
 from vitables.vttables import buffer
@@ -33,6 +31,8 @@ from vitables.vttables import buffer
 from qtpy import QtCore
 import tables
 
+
+__docformat__ = 'restructuredtext'
 
 #: The maximum number of rows to be read from the data source.
 CHUNK_SIZE = 10000

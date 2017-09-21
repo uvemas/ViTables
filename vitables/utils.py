@@ -408,7 +408,7 @@ def getIcons():
             'image-missing', 'object', 'vlstring',
             'array', 'link_array', 'carray', 'link_carray',
             'earray', 'link_earray', 'vlarray', 'link_vlarray',
-            'table', 'link_table',
+            'table', 'link_table', 'filenode',
             # Icons for node views
             'zoom-in',
             # Icons for buttons

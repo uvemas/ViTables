@@ -24,14 +24,17 @@ This module defines a data structure to be used for the model of the databases
 tree. The data structure is equivalent to a leaf node in a `PyTables` file.
 """
 
-__docformat__ = 'restructuredtext'
-
 import tables
+from tables.nodes import filenode
 
 import vitables.utils
 from vitables.h5db import tnode_editor
 from vitables.nodeprops import nodeinfo
 from vitables.nodeprops import leafpropdlg
+
+
+__docformat__ = 'restructuredtext'
+
 
 class LeafNode(object):
     """
@@ -96,7 +99,13 @@ class LeafNode(object):
         elif isinstance(self.node, tables.UnImplemented):
             self.node_kind = 'image-missing'
             self.icon = icons['image-missing']
-
+        try:
+            file = self.node._v_file
+            if file.get_node_attr(self.nodepath, 'NODE_TYPE') == filenode.NodeType:
+                self.node_kind = 'earray (filenode)'
+                self.icon = icons['filenode']
+        except AttributeError:
+            pass
 
     def row(self):
         """The position of this node in the parent's list of children.
@@ -107,12 +116,10 @@ class LeafNode(object):
 
         return 0
 
-
     def editor(self):
         """Return an instance of `TNodeEditor`.
         """
         return tnode_editor.TNodeEditor(self.dbt_model.getDBDoc(self.filepath))
-
 
     def properties(self):
         """The Properties dialog for this node.
