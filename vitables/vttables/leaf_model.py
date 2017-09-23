@@ -25,12 +25,14 @@ in a `tables.Leaf`.
 """
 
 import logging
-import vitables.utils
-from vitables.vttables import buffer
 
-from qtpy import QtCore
 import tables
 
+from qtpy import QtCore
+
+import vitables.utils
+from vitables.vttables import buffer
+from vitables.vttables import filenodebuffer
 
 __docformat__ = 'restructuredtext'
 
@@ -73,7 +75,13 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         # The model data source (a PyTables/HDF5 leaf) and its access buffer
         self.leaf = leaf
-        self.rbuffer = buffer.Buffer(leaf)
+        self.is_filenode = False
+        vtapp = vitables.utils.getApp()
+        if leaf in vtapp.filenodes_map:
+            self.is_filenode = True
+            self.rbuffer = filenodebuffer.FilenodeBuffer(leaf)
+        else:
+            self.rbuffer = buffer.Buffer(leaf)
 
         self.leaf_numrows = self.rbuffer.total_nrows()
         self.numrows = min(self.leaf_numrows, CHUNK_SIZE)
@@ -106,12 +114,16 @@ class LeafModel(QtCore.QAbstractTableModel):
         # Time series (if they are found) are formatted transparently
         # via the time_series.py plugin
 
-        if not isinstance(leaf, tables.Table):
+        if self.is_filenode:
+            self.formatContent = vitables.utils.formatStringContent
+        elif not isinstance(leaf, tables.Table):
             # Leaf is some kind of PyTables array
             atom_type = leaf.atom.type
             if atom_type == 'object':
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
+                self.formatContent = vitables.utils.formatStringContent
+            else:
                 self.formatContent = vitables.utils.formatStringContent
 
         # Track selected cell

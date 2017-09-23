@@ -34,6 +34,7 @@ from qtpy import QtGui
 from qtpy import QtWidgets
 
 import vitables.utils
+import vitables.filenodeutils as fnutils
 import vitables.vtsplash
 from vitables.vtsite import ICONDIR
 
@@ -48,7 +49,6 @@ import vitables.vtwidgets.renamedlg as renamedlg
 
 from vitables.docbrowser import helpbrowser
 
-import vitables.vttables.buffer as rbuffer
 import vitables.vttables.datasheet as datasheet
 
 import vitables.csv.import_csv as importcsv
@@ -62,7 +62,7 @@ translate = QtWidgets.QApplication.translate
 log = logging.getLogger(__name__)
 
 
-def makePage(content):
+def _makePage(content):
     """Create a page for the About ViTables dialog.
 
     :Parameter content: the text displayed on the page
@@ -202,6 +202,9 @@ class VTApp(QtCore.QObject):
         splash.finish(self.gui)
         del splash
 
+        # Filenodes mappig
+        self.filenodes_map = {}
+
         # Ensure that QActions have a consistent state
         self.gui.updateActions()
 
@@ -265,7 +268,7 @@ class VTApp(QtCore.QObject):
                 self.gui.dbs_tree_view.expanded.emit(index)
                 groups.pop(0)
                 # Expand the rest of groups of the nodepath
-                while groups != []:
+                while groups:
                     parent_group = group
                     parent_index = index
                     group = parent_group.findChild(groups[0])
@@ -727,6 +730,7 @@ class VTApp(QtCore.QObject):
             return pt_node()
         return pt_node
 
+    @vitables.utils.long_action("Opening node...")
     def nodeOpen(self, current=False):
         """
         Open a leaf node for viewing.
@@ -758,12 +762,15 @@ class VTApp(QtCore.QObject):
                           'Text of the Unimplemented node dialog'))
             return
 
-        # The buffer tied to this node in order to optimize the read access
-        leaf_buffer = rbuffer.Buffer(leaf)
-
         # Leaves that cannot be read are not opened
-        if not leaf_buffer.isDataSourceReadable():
+        if not vitables.utils.isDataSourceReadable(leaf):
             return
+
+        # Track filenodes
+        if fnutils.isFilenode(leaf) and (leaf not in self.filenodes_map):
+            temp_filenode = fnutils.filenodeToFile(leaf)
+            self.filenodes_map[leaf] = (temp_filenode,
+                                        fnutils.filenodeTotalRows(leaf))
 
         # Create a view
         subwindow = datasheet.DataSheet(index)
@@ -947,8 +954,7 @@ class VTApp(QtCore.QObject):
             leaf = dbs_tree_node.node
             # tables.Leaf instances must be readable in order to be copied
             if not hasattr(leaf, 'target'):
-                leaf_buffer = rbuffer.Buffer(leaf)
-                if not leaf_buffer.isDataSourceReadable():
+                if not vitables.utils.isDataSourceReadable(leaf):
                     QtWidgets.QMessageBox.information(
                         self,
                         translate('VTApp', 'About unreadable datasets',
@@ -1126,7 +1132,7 @@ class VTApp(QtCore.QObject):
         """Close the window currently active in the workspace."""
 
         self.gui.workspace.activeSubWindow().close()
-        if self.gui.workspace.subWindowList() == []:
+        if not self.gui.workspace.subWindowList():
             self.gui.dbs_tree_view.setFocus(True)
 
     def windowCloseAll(self):
@@ -1212,7 +1218,7 @@ class VTApp(QtCore.QObject):
                           'Title of the third tab of the About dialog')]
 
         for index in range(0, 3):
-            widget = makePage(content[index])
+            widget = _makePage(content[index])
             tab_widget.addTab(widget, tabs[index])
 
         # Show the dialog

@@ -22,20 +22,20 @@
 """
 This module implements a buffer used to access the real data contained in
 `PyTables` datasets.
-
 By using this buffer we speed up the access to the stored data. As a
 consequence, views (widgets showing a tabular representation of the dataset)
 are painted much faster too.
 """
 
 import logging
-import vitables.utils
 import warnings
 
 import numpy
-from qtpy import QtWidgets
 import tables
 
+from qtpy import QtWidgets
+
+from .. import utils as vtutils
 
 __docformat__ = 'restructuredtext'
 
@@ -61,7 +61,6 @@ class Buffer(object):
     source).
 
     Leaves are displayed in MxN table widgets:
-
     - scalar arrays are displayed in a 1x1 table.
     - 1D arrays are displayed in a Mx1 table.
     - KD arrays are displayed in a MxN table.
@@ -75,7 +74,6 @@ class Buffer(object):
     :Parameter leaf:
         the data source (`tables.Leaf` instance) from which data are
         going to be read.
-
     """
 
     def __init__(self, leaf):
@@ -84,14 +82,12 @@ class Buffer(object):
         """
 
         self.leaf = leaf
-
-        # The numpy array where read data will be stored
+        # The structure where read data will be stored.
         self.chunk = numpy.array([])
 
         # The method used for reading data depends on the kind of node.
         # Setting the reader method at initialization time increases the
         # speed of reading several orders of magnitude
-        shape = leaf.shape
         if isinstance(leaf, tables.Table):
             # Dataset elements will be read like a[row][column]
             self.getCell = self.arrayCell
@@ -100,13 +96,13 @@ class Buffer(object):
         elif isinstance(leaf, tables.VLArray):
             # Array elements will be read like a[row]
             self.getCell = self.vectorCell
-        elif shape == ():
+        elif leaf.shape == ():
             # Array element will be read like a[()]
             self.getCell = self.scalarCell
-        elif len(shape) == 1:
+        elif len(leaf.shape) == 1:
             # Array elements will be read like a[row]
             self.getCell = self.vectorCell
-        elif len(shape) > 1:
+        elif len(leaf.shape) > 1:
             # Dataset elements will be read like a[row][column]
             self.getCell = self.arrayCell
 
@@ -146,34 +142,6 @@ class Buffer(object):
 
         return nrows
 
-    def isDataSourceReadable(self):
-        """Find out if the dataset can be read or not.
-
-        This is not a complex test. It simply try to read a small chunk
-        of data at the beginning of the dataset. If it cannot then the
-        dataset is considered unreadable.
-        """
-
-        readable = True
-        try:
-            self.leaf.read(0, 1)
-        except tables.HDF5ExtError as e:
-            readable = False
-            log.error(
-                translate('Buffer',
-                          """Problems reading records. The dataset """
-                          """seems to be compressed with the {0} library. """
-                          """Check that it is installed in your system, """
-                          """please.\n{1}""",
-                          'A dataset readability error').format(
-                              self.leaf.filters.complib, e.message))
-        except ValueError as e:
-            readable = False
-            log.error(
-                translate('Buffer', 'Data read error: {}',
-                          'A dataset read error').format(e.message))
-        return readable
-
     def readBuffer(self, start, stop):
         """
         Read a chunk from the data source.
@@ -188,7 +156,6 @@ class Buffer(object):
         restricted_flavors above)
 
         :Parameters:
-
         :param start: the document row that is the first row of the chunk.
         :param stop: the last row to read, inclusive.
         """
@@ -206,7 +173,7 @@ class Buffer(object):
                           """The dataset maybe corrupted.\n{}""",
                           'A dataset readability error').format(e.message))
         except:
-            vitables.utils.formatExceptionInfo()
+            vtutils.formatExceptionInfo()
         else:
             # Update the buffer contents and its start position
             self.chunk = data
@@ -219,7 +186,6 @@ class Buffer(object):
         buffer) so they should be checked by the caller methods.
 
         :Parameters:
-
         - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
@@ -241,7 +207,6 @@ class Buffer(object):
         buffer) so they should be checked by the caller methods.
 
         :Parameters:
-
         - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
@@ -262,7 +227,6 @@ class Buffer(object):
         buffer) so they should be checked by the caller methods.
 
         :Parameters:
-
         - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 
@@ -274,7 +238,7 @@ class Buffer(object):
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         # TODO: this method should be improved as it requires to read the
-        # whola array keeping the read data in memory
+        # whole array keeping the read data in memory
         return self.leaf.read()[row]
 
     def arrayCell(self, row, col):
@@ -285,7 +249,6 @@ class Buffer(object):
         buffer) so they should be checked by the caller methods.
 
         :Parameters:
-
         - `row`: the row to which the cell belongs.
         - `col`: the column to wich the cell belongs
 

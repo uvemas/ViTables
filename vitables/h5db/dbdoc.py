@@ -36,7 +36,6 @@ from qtpy import QtCore
 from qtpy import QtWidgets
 import tables
 
-
 __docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
@@ -83,9 +82,8 @@ class DBDoc(QtCore.QObject):
         self.h5file = self.openH5File()
 
         # Hidden groups are used as an intermediate storage
-        # in cut operations and filenode conversions
+        # in cut operations
         self.hidden_group = None
-        self.filenode_hidden_group = None
 
         if is_tmp_dbdoc:
             self.h5file.create_group('/', '_p_query_results',
@@ -201,17 +199,13 @@ class DBDoc(QtCore.QObject):
                                                            dst_filepath))
             vitables.utils.formatExceptionInfo()
 
-    def createHiddenGroup(self, filenode=None):
+    def createHiddenGroup(self):
         """
-        Create a hidden group for storing cut nodes and filenodes.
+        Create a hidden group for storing cut nodes.
         """
 
         group_name = '_p_' + str(uuid.uuid4())
-        if filenode is None:
-            self.hidden_group = '/' + group_name
-            self.h5file.create_group('/', group_name, 'Hide cut nodes')
-        else:
-            self.filenode_hidden_group = '/' + group_name
-            self.h5file.create_group('/', group_name, 'Hide filenodes rewritten as Table objects')
+        self.hidden_group = '/' + group_name
+        self.h5file.create_group('/', group_name, 'Hide cut nodes')
         self.h5file.flush()
 

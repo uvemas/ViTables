@@ -267,9 +267,6 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 if db_doc.hidden_group is not None:
                     db_doc.h5file.remove_node(db_doc.hidden_group,
                                               recursive=True)
-                if db_doc.filenode_hidden_group is not None:
-                    db_doc.h5file.remove_node(db_doc.filenode_hidden_group,
-                                              recursive=True)
                 db_doc.closeH5File()
                 # Update the dictionary of open files
                 self.removeMappedDB(filepath)

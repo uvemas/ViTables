@@ -31,6 +31,7 @@ import collections
 import functools
 
 import numpy
+import tables
 
 from qtpy import QtCore
 from qtpy import QtGui
@@ -638,3 +639,27 @@ def getLicense():
         resource_package, resource_path)
 
     return license_text.decode('UTF-8')
+
+
+def isDataSourceReadable(leaf):
+    """Find out if the PyTables leaf can be read or not.
+    This is not a complex test. It simply try to read a small chunk
+    of data at the beginning of the dataset. If it cannot then the
+    dataset is considered unreadable.
+    """
+
+    readable = True
+    try:
+        leaf.read(0, 1)
+    except tables.HDF5ExtError as e:
+        readable = False
+        log.error(
+            """Problems reading records. The dataset seems to be """
+            """compressed with the {0} library. Check that it is """
+            """installed in your system, please.\n{1}""".format(
+                leaf.filters.complib, e.message))
+    except ValueError as e:
+        readable = False
+        log.error('Data read error: {}'.format(e.message))
+    finally:
+        return readable

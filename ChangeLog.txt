@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** September 23, 2017 **
+Support for filenodes has been improved.
+
 ** September 21, 2017 **
 Added basic support for filenodes.
 
