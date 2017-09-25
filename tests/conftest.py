@@ -7,6 +7,8 @@ import sys
 
 import pytest
 
+import tables
+
 from qtpy import QtWidgets
 
 import vitables.vtapp
@@ -27,3 +29,7 @@ class Launcher(object):
 @pytest.fixture(scope='module')
 def launcher():
     return Launcher()
+
+@pytest.fixture(scope='module')
+def h5file():
+    return tables.open_file('testfile.h5', 'r')
