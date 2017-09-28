@@ -54,6 +54,8 @@ class LinkNode(object):
         self.dbt_model = model
         self.parent = parent
         self.node = parent.node._f_get_child(name)
+        if isinstance(self.node(), tables.link.Link):
+            self.node = self.node()
 
         self.has_view = False
 
