@@ -123,8 +123,8 @@ class LeafModel(QtCore.QAbstractTableModel):
                 self.formatContent = vitables.utils.formatObjectContent
             elif atom_type in ('vlstring', 'vlunicode'):
                 self.formatContent = vitables.utils.formatStringContent
-            else:
-                self.formatContent = vitables.utils.formatStringContent
+        else:
+            self.formatContent = vitables.utils.formatStringContent
 
         # Track selected cell
         self.selected_cell = {'index': QtCore.QModelIndex(), 'buffer_start': 0}
