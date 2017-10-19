@@ -237,9 +237,7 @@ class Buffer(object):
         # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
-        # TODO: this method should be improved as it requires to read the
-        # whole array keeping the read data in memory
-        return self.leaf.read()[row]
+        return self.chunk[row]
 
     def arrayCell(self, row, col):
         """
