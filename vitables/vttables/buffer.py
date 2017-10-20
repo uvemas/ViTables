@@ -133,10 +133,6 @@ class Buffer(object):
         elif shape == ():
             # Node is a rank 0 array (e.g. numpy.array(5))
             nrows = 1
-        elif isinstance(self.leaf, tables.EArray):
-            # Warning: the number of rows of an EArray, ea, can be different
-            # from the number of rows of the numpy array ea.read()
-            nrows = self.leaf.shape[0]
         else:
             nrows = self.leaf.nrows
 
@@ -237,9 +233,11 @@ class Buffer(object):
         # get the right chunk element.
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
-        # TODO: this method should be improved as it requires to read the
-        # whole array keeping the read data in memory
-        return self.leaf.read()[row]
+        # Get data for cell
+        cell_data = numpy.take(self.chunk, [row], axis=self.leaf.maindim)
+        # Remove extra dimension
+        cell_data = numpy.squeeze(cell_data, axis=self.leaf.maindim)
+        return cell_data
 
     def arrayCell(self, row, col):
         """
