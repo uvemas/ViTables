@@ -6664,3 +6664,6 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 .card-faq {
   border-left: 4px solid #02709e;
   font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+iframe {
+  border: 0; }
