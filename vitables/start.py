@@ -27,10 +27,6 @@ import os.path
 import logging
 import traceback
 
-import sip
-sip.setapi('QString', 2)
-sip.setapi('QVariant', 2)
-
 from qtpy import QtGui
 import qtpy.QtCore as qtcore
 from qtpy import QtWidgets

@@ -40,7 +40,7 @@ setup(name='ViTables',
       keywords='HDF5 PyTables',
       platforms='Unix, MacOSX, Windows',
       classifiers=[
-          'Development Status :: 5 - Stable',
+          'Development Status :: 5 - Production/Stable',
           'Environment :: X11 Applications',
           'Environment :: MacOS X',
           'Environment :: Win32 (MS Windows)',
