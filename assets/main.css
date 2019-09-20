@@ -3187,6 +3187,8 @@ a.text-dark:hover, a.text-dark:focus { color: #121416 !important; }
 
 .navbar-toggler { border: none; }
 
+.card-block { margin: 10px; }
+
 .card-faq { border-left: 4px solid #02709e; font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
 iframe { border: 0; }
