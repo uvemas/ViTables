@@ -1,44 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
-<url>
-  <loc>http://vitables.org/</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-</url>
-<url>
-  <loc>http://vitables.org/Development/</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-</url>
-<url>
-  <loc>http://vitables.org/Download/</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-</url>
-<url>
-  <loc>http://vitables.org/Docs/</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-</url>
-<url>
-  <loc>http://vitables.org/Screenshots/</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-</url>
-<url>
-  <loc>http://vitables.org/Docs/faq.html</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-</url>
-<url>
-  <loc>http://vitables.org/Docs/testimonials.html</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-</url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url> <loc>https://vitables.org/404.html</loc> </url>
+<url> <loc>https://vitables.org/index.html</loc> </url>
+<url> <loc>https://vitables.org/Development/index.html</loc> </url>
+<url> <loc>https://vitables.org/Docs/faq/index.html</loc> </url>
+<url> <loc>https://vitables.org/Docs/index.html</loc> </url>
+<url> <loc>https://vitables.org/Docs/testimonials/index.html</loc> </url>
+<url> <loc>https://vitables.org/Download/index.html</loc> </url>
+<url> <loc>https://vitables.org/Screenshots/index.html</loc> </url>
 </urlset>

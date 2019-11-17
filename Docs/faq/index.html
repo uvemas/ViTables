@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions, Anaconda and so on.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FAQ | ViTables</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
+    <link href="/assets/main.css" rel="stylesheet" type="text/css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+    <link rel="canonical" href="https://vitables.org/index.html">
+    <meta name="theme-color" content="#5670d4">
+    <meta name="generator" content="Metalsmith (metalsmith.io)">
+    <meta name="author" content="Vicent Mas">
+    <meta property="og:site_name" content="ViTables">
+    <meta property="og:title" content="FAQ">
+    <meta property="og:url" content="https://vitables.org/index.html">
+    <meta property="og:description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions, Anaconda and so on.">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="Thu Sep 14 2017 02:00:00 GMT+0200 (Central European Summer Time)">
+    <meta property="article:tag" content="ViTables FAQ">
+</head>
+
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+    <!-- Menubar -->
+    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
+            </div>
+            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
+                <div class="navbar-nav">
+                  
+                  
+                  
+                    <a class="nav-link" href="/">Home</a>
+                  
+                  
+                    <a class="nav-link" href="/Development">Development</a>
+                  
+                  
+                    <a class="nav-link" href="/Download">Download</a>
+                  
+                  <div class="dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/Docs">What to Read</a>
+                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
+                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
+                    </div>
+                  </div>
+                  
+                    <a class="nav-link" href="/Screenshots">Screenshots</a>
+                  
+                </div>
+            </div>
+        </div>
+    </nav><!-- End of Menubar -->
+    <div class="container" id="content" role="main" style="padding-top:20px">
+        <h1>FAQ</h1>
+<ul>
+<li><a href="#license">How is <em>ViTables</em> licensed?</a></li>
+<li><a href="#support">Oops! I've got a problem. How can I get support?</a></li>
+<li><a href="#bug-feature">I've found a bug or I want to request a new feature. What should I do?</a></li>
+<li><a href="#latest">How can I use the latest revision from the git repository?</a></li>
+<li><a href="#installers">Are there graphical installers for Windows and Mac OS X platforms?</a></li>
+<li><a href="#desktop">But can I launch <em>ViTables</em> from my Desktop?</a></li>
+<li><a href="#anaconda3">Can I use <em>ViTables</em> with Anaconda3?</a></li>
+</ul>
+<p><a name="license"><a/></p>
+<h2>How is <em>ViTables</em> licensed?</h2>
+<p>It has a <a href="http://www.gnu.org/licenses/gpl.html">GPLv3</a> license.</p>
+<p><a name="support"></a></p>
+<h2>Oops! I've got a problem. How can I get support?</h2>
+<p>It's always worth to check the messages posted to the
+<a href="https://groups.google.com/forum/#!forum/vitables-users">ViTables users' group</a>: searching the list is a great way
+to get your questions answered. You can search the list using its web interface or from the
+<a href="http://dir.gmane.org/gmane.comp.python.pytables.vitables.user">Gmane interface</a>. If you don't find an answer to your
+question I strongly recommended you to subscribe to the users' group and ask for help there.
+Probably some subscriber (<em>ViTables</em> developer or user) will be able to help you.</p>
+<p><a name="bug-feature"></a></p>
+<h2>I've found a bug or I want to request a new feature. What should I do?</h2>
+<p>You should report it, of course :-). Please, send your report with the
+<a href="https://github.com/uvemas/ViTables/issues">bug tracker</a>.</p>
+<p><a name="latest"></a></p>
+<h2>How can I use the latest revision from the git repository?</h2>
+<p>If you want to run the development version of <em>ViTables</em>, first of all
+you have to clone it from the git repository. For instance</p>
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block card-faq">
+    $ git clone http://github.com/uvemas/ViTables.git vitables_tip
+  </div>
+</div>
+<p>will download the latest revision and put it in the <code>vitables_tip</code> directory.
+You can use it as is or you can build the <em>ViTables</em> package from sources and
+install it. Although packaging is not difficult it can be tricky because you
+may need to install the Sphinx documentation system. So packaging is not
+recommended. Instead, from the top level directory do the following</p>
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block card-faq">
+    $ cp scripts/start.py run_vitables.py<br>
+    $ python run_vitables.py
+  </div>
+</div>
+<p>and <em>ViTables</em> should start. Beware that the HTML User's Guide will not be
+available unless you build it before running <em>ViTables</em>.</p>
+<p><a name="installers"></a></p>
+<h2>Are there graphical installers for Windows and Mac OS X platforms?</h2>
+<p>No, there aren't.</p>
+<p><a name="desktop"></a></p>
+<h2>But can I launch <em>ViTables</em> from my Desktop?</h2>
+<p>Of course, you can. After installation, just create a Desktop shortcut as you usually do on your platform.
+Make sure that it points to the <em>vitables</em> executable. The only tricky thing is to give a nice icon to the
+shortcut.</p>
+<p>On Windows the icon file is <code>icons\vitables.ico</code> and can be located in the installation folder.</p>
+<p>On Linux it is a bit more difficult because the icons are not included in the package (tarball or wheel). So you
+have to download them from the repository. In particular you need the <code>unixapp</code> folder. There you will find
+the required <code>.desktop</code> file and icons (<code>.png</code> files) of several sizes. With all that stuff just follow the
+standard way for creating Desktop shortcuts on Linux. That's all.</p>
+<p>If you have problems with the shortcut creation there are lots of tutorials in the Internet, like
+<a href="http://www.thewindowsclub.com/create-desktop-shortcut-windows-10">this for Windows</a> or
+<a href="https://help.ubuntu.com/community/UnityLaunchersAndDesktopFiles">this for Ubuntu Linux</a>.</p>
+<p><a name="anaconda3"></a></p>
+<h2>Can I use <em>ViTables</em> with Anaconda3?</h2>
+<p>Yes, you can. Basically two installation ways are available. The most convenient is, of course, install the
+<em>ViTables</em> package from conda-channel (I assume you are on a Windows machine here and the <code>Scripts</code> folder is in your <code>PATH</code>).
+You can install and run with</p>
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block card-faq">
+    (Anaconda3) > conda install -c conda-forge vitables=3.0.0<br>
+    (Anaconda3) > vitables
+  </div>
+</div>
+<p>If this fails, you can install <em>ViTables</em> from sources. Download and untar the tarball (or clone the <code>GitHub</code> repo),
+go to the root directory and proceed as you do in a typical installation from sources</p>
+<div class="card card-info" style="margin-bottom: 1em;">
+  <div class="card-block card-faq">
+    (Anaconda3) > python setup.py install<br>
+    (Anaconda3) > vitables
+  </div>
+</div>
+<p>Caveat emptor: as you know <em>ViTables</em> depends on <code>PyQt5</code>. Unfortunately the <code>pip</code> installed <code>PyQt5</code> package and the analogous
+package provided by <code>Anaconda3</code> are in conflict with each other (you can read more about this
+<a href="https://github.com/ContinuumIO/anaconda-issues/issues/1554">here</a>). In order to avoid problems I recommend you to follow
+these advices:</p>
+<ul>
+<li>if you have installed the package from the conda-forge channel, remove the <code>PyQt5</code> dependency from
+<code>Anaconda3\pkgs\vitables-3.0.0-0\Lib\site-packages\ViTables-3.0.0.egg-info\requires.txt</code></li>
+<li>if you are going to install from sources, <em>before you proceed</em>, remove the <code>PyQt5</code> dependency from the <code>install_requires</code> line in the
+<code>setup.py</code> file.</li>
+</ul>
+
+        
+        <hr>
+                <footer id="footer">
+            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
+            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
+        </footer>
+
+
+    </div>
+    <script src="/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>
