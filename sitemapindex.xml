@@ -6,11 +6,7 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
-  <loc>http://vitables.org/feed.xml</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://vitables.org/sitemap.xml</loc>
-  <lastmod>2017-09-14T20:40:26+00:00</lastmod>
+  <loc>https://vitables.org/sitemap.xml</loc>
+  <lastmod>2019-11-17T14:03:33+00:00</lastmod>
  </sitemap>
 </sitemapindex>

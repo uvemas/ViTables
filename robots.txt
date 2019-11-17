@@ -1,4 +1,4 @@
-Sitemap: http://vitables.org/sitemapindex.xml
+Sitemap: https://vitables.org/sitemapindex.xml
 
 User-Agent: *
 Host: vitables.org
