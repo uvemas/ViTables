@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[ViTables]]></title><description><![CDATA[ViTables]]></description><link>https://vitables.org</link><generator>metalsmith-feed</generator><lastBuildDate>Sun, 17 Nov 2019 14:03:33 GMT</lastBuildDate><atom:link href="https://vitables.org/feed.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[not-found]]></title><description><![CDATA[<!DOCTYPE html>
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[ViTables]]></title><description><![CDATA[ViTables]]></description><link>https://vitables.org</link><generator>metalsmith-feed</generator><lastBuildDate>Sat, 23 Nov 2019 08:07:25 GMT</lastBuildDate><atom:link href="https://vitables.org/feed.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[not-found]]></title><description><![CDATA[<!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
     <meta charset="utf-8">
@@ -7,7 +7,7 @@
     <title>not-found | ViTables</title>
     <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
     <link href="/assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     <link rel="canonical" href="https://vitables.org/index.html">
     <meta name="theme-color" content="#5670d4">
     <meta name="generator" content="Metalsmith (metalsmith.io)">
@@ -107,7 +107,7 @@
     <title>Overview | ViTables</title>
     <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
     <link href="/assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     <link rel="canonical" href="https://vitables.org/index.html">
     <meta name="theme-color" content="#5670d4">
     <meta name="generator" content="Metalsmith (metalsmith.io)">
@@ -117,7 +117,7 @@
     <meta property="og:url" content="https://vitables.org/index.html">
     <meta property="og:description" content="ViTables 3.0 is a GUI for browsing files in PyTables/HDF5 format. Enjoy with it navigating smoothly tables with hundreds of millions of rows.">
     <meta property="og:type" content="article">
-    <meta property="article:published_time" content="Sun Aug 27 2017 02:00:00 GMT+0200 (Central European Summer Time)">
+    <meta property="article:published_time" content="Thu Nov 23 2017 01:00:00 GMT+0100 (Central European Standard Time)">
     <meta property="article:tag" content="ViTables hdf5 viewer gui windows anaconda python">
 </head>
 
@@ -189,7 +189,7 @@ starting point.</p>
     
 </body>
 </html>
-]]></description><link>https://vitables.org/index.html</link><guid isPermaLink="true">https://vitables.org/index.html</guid><pubDate>Sun, 27 Aug 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Development]]></title><description><![CDATA[<!DOCTYPE html>
+]]></description><link>https://vitables.org/index.html</link><guid isPermaLink="true">https://vitables.org/index.html</guid><pubDate>Thu, 23 Nov 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Development]]></title><description><![CDATA[<!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
     <meta charset="utf-8">
@@ -198,7 +198,7 @@ starting point.</p>
     <title>Development | ViTables</title>
     <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
     <link href="/assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     <link rel="canonical" href="https://vitables.org/index.html">
     <meta name="theme-color" content="#5670d4">
     <meta name="generator" content="Metalsmith (metalsmith.io)">
@@ -208,7 +208,7 @@ starting point.</p>
     <meta property="og:url" content="https://vitables.org/index.html">
     <meta property="og:description" content="Information about ViTables project development: GitHub repository, bugs tracker, statistics and ViTables Users group.">
     <meta property="og:type" content="article">
-    <meta property="article:published_time" content="Sun Aug 27 2017 02:00:00 GMT+0200 (Central European Summer Time)">
+    <meta property="article:published_time" content="Thu Nov 23 2017 01:00:00 GMT+0100 (Central European Standard Time)">
     <meta property="article:tag" content="ViTables github project development repository bugs">
 </head>
 
@@ -294,431 +294,7 @@ starting point.</p>
     
 </body>
 </html>
-]]></description><link>https://vitables.org/Development/index.html</link><guid isPermaLink="true">https://vitables.org/Development/index.html</guid><pubDate>Sun, 27 Aug 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[What to Read]]></title><description><![CDATA[<!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="Here you can find the available documentation about ViTables: FAQ, Users&#39; Guide (in PDF format) and testimonials.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>What to Read | ViTables</title>
-    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
-    <link href="/assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
-    <link rel="canonical" href="https://vitables.org/index.html">
-    <meta name="theme-color" content="#5670d4">
-    <meta name="generator" content="Metalsmith (metalsmith.io)">
-    <meta name="author" content="Vicent Mas">
-    <meta property="og:site_name" content="ViTables">
-    <meta property="og:title" content="What to Read">
-    <meta property="og:url" content="https://vitables.org/index.html">
-    <meta property="og:description" content="Here you can find the available documentation about ViTables: FAQ, Users&#39; Guide (in PDF format) and testimonials.">
-    <meta property="og:type" content="article">
-    <meta property="article:published_time" content="Sun Aug 27 2017 02:00:00 GMT+0200 (Central European Summer Time)">
-    <meta property="article:tag" content="ViTables FAQ PDF">
-</head>
-
-<body>
-    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
-
-    <!-- Menubar -->
-    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
-            </div>
-            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
-                <div class="navbar-nav">
-                  
-                  
-                  
-                    <a class="nav-link" href="/">Home</a>
-                  
-                  
-                    <a class="nav-link" href="/Development">Development</a>
-                  
-                  
-                    <a class="nav-link" href="/Download">Download</a>
-                  
-                  <div class="dropdown">
-                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" href="/Docs">What to Read</a>
-                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
-                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
-                    </div>
-                  </div>
-                  
-                    <a class="nav-link" href="/Screenshots">Screenshots</a>
-                  
-                </div>
-            </div>
-        </div>
-    </nav><!-- End of Menubar -->
-    <div class="container" id="content" role="main" style="padding-top:20px">
-        <h1>What to read</h1>
-<p><em>ViTables</em> documentation is available from the following sources:</p>
-<ul>
-<li>
-<p>The <a href="/Docs/faq">FAQ</a> is a strongly recommended reading for all users.</p>
-</li>
-<li>
-<p>See the <a href="/Docs/testimonials">Testimonials</a> to find out what people say about <em>ViTables</em>.</p>
-</li>
-<li>
-<p>Finally you can get the ViTables Users Guide in PDF format from <a href="https://sourceforge.net/projects/vitables/files/ViTables-3.0.0/">here</a>.</p>
-</li>
-</ul>
-
-        
-        <hr>
-                <footer id="footer">
-            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
-            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
-        </footer>
-
-
-    </div>
-    <script src="/assets/jquery/jquery.min.js"></script>
-    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
-    
-</body>
-</html>
-]]></description><link>https://vitables.org/Docs/index.html</link><guid isPermaLink="true">https://vitables.org/Docs/index.html</guid><pubDate>Sun, 27 Aug 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Testimonials]]></title><description><![CDATA[<!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="Find out what people is saying about ViTables.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Testimonials | ViTables</title>
-    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
-    <link href="/assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
-    <link rel="canonical" href="https://vitables.org/index.html">
-    <meta name="theme-color" content="#5670d4">
-    <meta name="generator" content="Metalsmith (metalsmith.io)">
-    <meta name="author" content="Vicent Mas">
-    <meta property="og:site_name" content="ViTables">
-    <meta property="og:title" content="Testimonials">
-    <meta property="og:url" content="https://vitables.org/index.html">
-    <meta property="og:description" content="Find out what people is saying about ViTables.">
-    <meta property="og:type" content="article">
-    <meta property="article:published_time" content="Sun Aug 27 2017 02:00:00 GMT+0200 (Central European Summer Time)">
-    <meta property="article:tag" content="ViTables testimonials">
-</head>
-
-<body>
-    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
-
-    <!-- Menubar -->
-    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
-            </div>
-            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
-                <div class="navbar-nav">
-                  
-                  
-                  
-                    <a class="nav-link" href="/">Home</a>
-                  
-                  
-                    <a class="nav-link" href="/Development">Development</a>
-                  
-                  
-                    <a class="nav-link" href="/Download">Download</a>
-                  
-                  <div class="dropdown">
-                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" href="/Docs">What to Read</a>
-                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
-                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
-                    </div>
-                  </div>
-                  
-                    <a class="nav-link" href="/Screenshots">Screenshots</a>
-                  
-                </div>
-            </div>
-        </div>
-    </nav><!-- End of Menubar -->
-    <div class="container" id="content" role="main" style="padding-top:20px">
-        <p>This is a new section where I will collect the (good) things that users say about <em>ViTables</em>.
-If you want contribute a user quote just let me know and I'll add it.</p>
-<div class="card mb-3">
-  <div class="card-block">
-    <blockquote class="card-blockquote">
-      <p>ViTables has proved itself as an excellent solution for my research
-      using high-density electrical neuroimaging. The efficiency with which
-      it lets me graphically access HDF5 datasets, even extremely large ones,
-      is simply unparalleled. Highly recommended!
-      </p>
-      <footer class="blockquote-footer">
-        <cite>Gabriel J.L. Beckers<br>
-        Group Neurobiology of Behaviour, Max Planck Institute for Ornithology</cite>
-      </footer>
-    </blockquote>
-  </div>
-</div>
-<div class="card mb-3">
-  <div class="card-block">
-    <blockquote class="card-blockquote">
-      <p>Recently, I discovered the PyTables library which offers a convenient
-      way to store my numerical data -- mostly present in form of time series
-      -- in a HDF5 file. Through this storage format, I can preserve the properties
-      of the time series (associated dates and masks) while storing the data on
-      disk for later processing. ViTables offers an excellent way to inspect such
-      data sets visually and moreover to query and explore the data sets. The
-      developer is very responsive to questions and feature requests that improve
-      user experience. I can recommend it to anyone working with scientifc data sets.
-      </p>
-      <footer class="blockquote-footer">
-        <cite>Tim Michelsen</cite>
-      </footer>
-    </blockquote>
-  </div>
-</div>
-
-        
-        <hr>
-                <footer id="footer">
-            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
-            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
-        </footer>
-
-
-    </div>
-    <script src="/assets/jquery/jquery.min.js"></script>
-    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
-    
-</body>
-</html>
-]]></description><link>https://vitables.org/Docs/testimonials/index.html</link><guid isPermaLink="true">https://vitables.org/Docs/testimonials/index.html</guid><pubDate>Sun, 27 Aug 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[How to get it]]></title><description><![CDATA[<!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="Download ViTables 3.0 from here in a variety of formats: source packages, wheels and conda packages. Or get the latest sources from the repo.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>How to get it | ViTables</title>
-    <link rel="icon" type="image/png" href="../assets/img/favicon.ico" />
-    <link href="../assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
-    <link rel="canonical" href="https://vitables.org/index.html">
-    <meta name="theme-color" content="#5670d4">
-    <meta name="generator" content="Metalsmith (metalsmith.io)">
-    <meta name="author" content="Vicent Mas">
-    <meta property="og:site_name" content="ViTables">
-    <meta property="og:title" content="How to get it">
-    <meta property="og:url" content="https://vitables.org/index.html">
-    <meta property="og:description" content="Download ViTables 3.0 from here in a variety of formats: source packages, wheels and conda packages. Or get the latest sources from the repo.">
-    <meta property="og:type" content="article">
-    <meta property="article:published_time" content="Sun Aug 27 2017 02:00:00 GMT+0200 (Central European Summer Time)">
-    <meta property="article:tag" content="ViTables conda wheel sourceforge">
-</head>
-
-<body>
-    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
-
-    <!-- Menubar -->
-    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="https://vitables.org/"><img src="../assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
-            </div>
-            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
-                <div class="navbar-nav">
-                  
-                  
-                  
-                    <a class="nav-link" href="/">Home</a>
-                  
-                  
-                    <a class="nav-link" href="/Development">Development</a>
-                  
-                  
-                    <a class="nav-link active" href="/Download">Download</a>
-                  
-                  <div class="dropdown">
-                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" href="/Docs">What to Read</a>
-                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
-                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
-                    </div>
-                  </div>
-                  
-                    <a class="nav-link" href="/Screenshots">Screenshots</a>
-                  
-                </div>
-            </div>
-        </div>
-    </nav><!-- End of Menubar -->
-    <div class="container" id="content" role="main" style="padding-top:20px">
-        <h1>How to get it</h1>
-<h2>Stable versions</h2>
-<p>The stable versions of <em>ViTables</em> (source and wheel packages) are available in its
-<a href="https://sourceforge.net/projects/vitables/files/ViTables-3.0.0/">SourceForge page</a>.</p>
-<p>The latest version is also available as a <a href="https://anaconda.org/conda-forge/vitables">conda package</a> that can be installed with conda.</p>
-<h2>Sources repository</h2>
-<p>In addition, you can get the latest (and possibly buggiest ;-) sources from the git repository if you follow
-<a href="http://vitables.org/Docs/faq.html#how-can-i-use-the-latest-revision-from-the-git-repository">these instructions</a>.</p>
-<h2>GNU/Linux packages</h2>
-<p><em>ViTables</em> packages exist for several GNU/Linux distributions, although they
-aren't always up to date. Some of these distros are OpenSUSE, Mandriva,
-Arch Linux, Debian, Ubuntu, Gentoo, Trisquel and Fink. Just use the distro's
-package manager in order to find and install <em>ViTables</em>.</p>
-<h2>Other sources</h2>
-<p>Last but not least, <em>ViTables</em> is included in a couple of scientific-oriented
-Python distributions, <a href="https://winpython.github.io/">WinPython</a> and
-<a href="http://python-xy.github.io/">Python(x,y)</a>.
-Also you can get the Windows binaries (and many other binaries for interesting
-software) from Christoph Gohlke's <a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#vitables">website</a>.</p>
-
-        
-        <hr>
-                <footer id="footer">
-            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
-            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
-        </footer>
-
-
-    </div>
-    <script src="../assets/jquery/jquery.min.js"></script>
-    <script src="../assets/bootstrap/bootstrap.bundle.min.js"></script>
-    
-</body>
-</html>
-]]></description><link>https://vitables.org/Download/index.html</link><guid isPermaLink="true">https://vitables.org/Download/index.html</guid><pubDate>Sun, 27 Aug 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Screenshots]]></title><description><![CDATA[<!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="Screenshots showing some interesting functionalities of ViTables, like table queries, plugins or management of attributes.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Screenshots | ViTables</title>
-    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
-    <link href="/assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
-    <link rel="canonical" href="https://vitables.org/index.html">
-    <meta name="theme-color" content="#5670d4">
-    <meta name="generator" content="Metalsmith (metalsmith.io)">
-    <meta name="author" content="Vicent Mas">
-    <meta property="og:site_name" content="ViTables">
-    <meta property="og:title" content="Screenshots">
-    <meta property="og:url" content="https://vitables.org/index.html">
-    <meta property="og:description" content="Screenshots showing some interesting functionalities of ViTables, like table queries, plugins or management of attributes.">
-    <meta property="og:type" content="article">
-    <meta property="article:published_time" content="Sun Aug 27 2017 02:00:00 GMT+0200 (Central European Summer Time)">
-    <meta property="article:tag" content="ViTables screenshots video">
-</head>
-
-<body>
-    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
-
-    <!-- Menubar -->
-    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
-            </div>
-            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
-                <div class="navbar-nav">
-                  
-                  
-                  
-                    <a class="nav-link" href="/">Home</a>
-                  
-                  
-                    <a class="nav-link" href="/Development">Development</a>
-                  
-                  
-                    <a class="nav-link" href="/Download">Download</a>
-                  
-                  <div class="dropdown">
-                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" href="/Docs">What to Read</a>
-                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
-                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
-                    </div>
-                  </div>
-                  
-                    <a class="nav-link active" href="/Screenshots">Screenshots</a>
-                  
-                </div>
-            </div>
-        </div>
-    </nav><!-- End of Menubar -->
-    <div class="container" id="content" role="main" style="padding-top:20px">
-        <h1>Screenshots and Videos</h1>
-<p>Just for fun, in this video you can see the time evolution of the ViTables project.</p>
-<div class="py-3 mx-auto" style="width: 640px;">
-  <iframe src="https://player.vimeo.com/video/222206308" width="640" height="360" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-</div>
-<p>And here you are some screenshots from a <em>ViTables</em> session. They will help you to appreciate its simplicity, usefulness and power.</p>
-
-        
-          <div class="row">
-  <a href="/assets/img/Screenshots/the_user_attributes_dialog.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Editing user attributes" class="col-2">
-    <img src="/assets/img/Screenshots/the_user_attributes_dialog.thumbnail.png" class="img-fluid" alt="The User Attributes dialog">
-  </a>
-  <a href="/assets/img/Screenshots/the_plugins_configuration_page.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Extra features" class="col-2">
-    <img src="/assets/img/Screenshots/the_plugins_configuration_page.thumbnail.png" class="img-fluid" alt="The Plugins Configuration page">
-  </a>
-  <a href="/assets/img/Screenshots/filtering_data_of_a_table.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Querying a table" class="col-2">
-    <img src="/assets/img/Screenshots/filtering_data_of_a_table.thumbnail.png" class="img-fluid" alt="Filtering data on a table">
-  </a>
-  <a href="/assets/img/Screenshots/the_help_browser.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="The Users Guide browser" class="col-2">
-    <img src="/assets/img/Screenshots/the_help_browser.thumbnail.png" class="img-fluid" alt="The Help Browser window">
-  </a>
-  <a href="/assets/img/Screenshots/zooming_a_N_dimensional_cell.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Zooming N-dimensional cells" class="col-2">
-    <img src="/assets/img/Screenshots/zooming_a_N_dimensional_cell.thumbnail.png" class="img-fluid" alt="Zooming a N-dimensional cell">
-  </a>
-  <a href="/assets/img/Screenshots/a_common_working_session.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="A common working session" class="col-2">
-    <img src="/assets/img/Screenshots/a_common_working_session.thumbnail.png" class="img-fluid" alt="A common working session">
-  </a>
-</div>
-
-
-        
-        <hr>
-                <footer id="footer">
-            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
-            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
-        </footer>
-
-
-    </div>
-    <script src="/assets/jquery/jquery.min.js"></script>
-    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
-    
-            <script src="/assets/lightbox/ekko-lightbox.js"></script>
-    <script type="text/javascript">
-        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-            event.preventDefault();
-            $(this).ekkoLightbox({
-                showArrows: true,
-            });
-        });
-    </script>
-
-
-    
-</body>
-</html>
-]]></description><link>https://vitables.org/Screenshots/index.html</link><guid isPermaLink="true">https://vitables.org/Screenshots/index.html</guid><pubDate>Sun, 27 Aug 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[FAQ]]></title><description><![CDATA[<!DOCTYPE html>
+]]></description><link>https://vitables.org/Development/index.html</link><guid isPermaLink="true">https://vitables.org/Development/index.html</guid><pubDate>Thu, 23 Nov 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[FAQ]]></title><description><![CDATA[<!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
     <meta charset="utf-8">
@@ -727,7 +303,7 @@ software) from Christoph Gohlke's <a href="http://www.lfd.uci.edu/~gohlke/python
     <title>FAQ | ViTables</title>
     <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
     <link href="/assets/main.css" rel="stylesheet" type="text/css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     <link rel="canonical" href="https://vitables.org/index.html">
     <meta name="theme-color" content="#5670d4">
     <meta name="generator" content="Metalsmith (metalsmith.io)">
@@ -737,7 +313,7 @@ software) from Christoph Gohlke's <a href="http://www.lfd.uci.edu/~gohlke/python
     <meta property="og:url" content="https://vitables.org/index.html">
     <meta property="og:description" content="Questions and Answers commonly asked about ViTables: license, bugs, latest versions, Anaconda and so on.">
     <meta property="og:type" content="article">
-    <meta property="article:published_time" content="Thu Sep 14 2017 02:00:00 GMT+0200 (Central European Summer Time)">
+    <meta property="article:published_time" content="Thu Nov 23 2017 01:00:00 GMT+0100 (Central European Standard Time)">
     <meta property="article:tag" content="ViTables FAQ">
 </head>
 
@@ -889,4 +465,428 @@ these advices:</p>
     
 </body>
 </html>
-]]></description><link>https://vitables.org/Docs/faq/index.html</link><guid isPermaLink="true">https://vitables.org/Docs/faq/index.html</guid><pubDate>Thu, 14 Sep 2017 00:00:00 GMT</pubDate></item></channel></rss>
+]]></description><link>https://vitables.org/Docs/faq/index.html</link><guid isPermaLink="true">https://vitables.org/Docs/faq/index.html</guid><pubDate>Thu, 23 Nov 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[What to Read]]></title><description><![CDATA[<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Here you can find the available documentation about ViTables: FAQ, Users&#39; Guide (in PDF format) and testimonials.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>What to Read | ViTables</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
+    <link href="/assets/main.css" rel="stylesheet" type="text/css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <link rel="canonical" href="https://vitables.org/index.html">
+    <meta name="theme-color" content="#5670d4">
+    <meta name="generator" content="Metalsmith (metalsmith.io)">
+    <meta name="author" content="Vicent Mas">
+    <meta property="og:site_name" content="ViTables">
+    <meta property="og:title" content="What to Read">
+    <meta property="og:url" content="https://vitables.org/index.html">
+    <meta property="og:description" content="Here you can find the available documentation about ViTables: FAQ, Users&#39; Guide (in PDF format) and testimonials.">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="Thu Nov 23 2017 01:00:00 GMT+0100 (Central European Standard Time)">
+    <meta property="article:tag" content="ViTables FAQ PDF">
+</head>
+
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+    <!-- Menubar -->
+    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
+            </div>
+            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
+                <div class="navbar-nav">
+                  
+                  
+                  
+                    <a class="nav-link" href="/">Home</a>
+                  
+                  
+                    <a class="nav-link" href="/Development">Development</a>
+                  
+                  
+                    <a class="nav-link" href="/Download">Download</a>
+                  
+                  <div class="dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/Docs">What to Read</a>
+                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
+                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
+                    </div>
+                  </div>
+                  
+                    <a class="nav-link" href="/Screenshots">Screenshots</a>
+                  
+                </div>
+            </div>
+        </div>
+    </nav><!-- End of Menubar -->
+    <div class="container" id="content" role="main" style="padding-top:20px">
+        <h1>What to read</h1>
+<p><em>ViTables</em> documentation is available from the following sources:</p>
+<ul>
+<li>
+<p>The <a href="/Docs/faq">FAQ</a> is a strongly recommended reading for all users.</p>
+</li>
+<li>
+<p>See the <a href="/Docs/testimonials">Testimonials</a> to find out what people say about <em>ViTables</em>.</p>
+</li>
+<li>
+<p>Finally you can get the ViTables Users Guide in PDF format from <a href="https://sourceforge.net/projects/vitables/files/ViTables-3.0.0/">here</a>.</p>
+</li>
+</ul>
+
+        
+        <hr>
+                <footer id="footer">
+            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
+            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
+        </footer>
+
+
+    </div>
+    <script src="/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>
+]]></description><link>https://vitables.org/Docs/index.html</link><guid isPermaLink="true">https://vitables.org/Docs/index.html</guid><pubDate>Thu, 23 Nov 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Testimonials]]></title><description><![CDATA[<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Find out what people is saying about ViTables.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Testimonials | ViTables</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
+    <link href="/assets/main.css" rel="stylesheet" type="text/css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <link rel="canonical" href="https://vitables.org/index.html">
+    <meta name="theme-color" content="#5670d4">
+    <meta name="generator" content="Metalsmith (metalsmith.io)">
+    <meta name="author" content="Vicent Mas">
+    <meta property="og:site_name" content="ViTables">
+    <meta property="og:title" content="Testimonials">
+    <meta property="og:url" content="https://vitables.org/index.html">
+    <meta property="og:description" content="Find out what people is saying about ViTables.">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="Thu Nov 23 2017 01:00:00 GMT+0100 (Central European Standard Time)">
+    <meta property="article:tag" content="ViTables testimonials">
+</head>
+
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+    <!-- Menubar -->
+    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
+            </div>
+            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
+                <div class="navbar-nav">
+                  
+                  
+                  
+                    <a class="nav-link" href="/">Home</a>
+                  
+                  
+                    <a class="nav-link" href="/Development">Development</a>
+                  
+                  
+                    <a class="nav-link" href="/Download">Download</a>
+                  
+                  <div class="dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/Docs">What to Read</a>
+                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
+                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
+                    </div>
+                  </div>
+                  
+                    <a class="nav-link" href="/Screenshots">Screenshots</a>
+                  
+                </div>
+            </div>
+        </div>
+    </nav><!-- End of Menubar -->
+    <div class="container" id="content" role="main" style="padding-top:20px">
+        <p>This is a new section where I will collect the (good) things that users say about <em>ViTables</em>.
+If you want contribute a user quote just let me know and I'll add it.</p>
+<div class="card mb-3">
+  <div class="card-block">
+    <blockquote class="card-blockquote">
+      <p>ViTables has proved itself as an excellent solution for my research
+      using high-density electrical neuroimaging. The efficiency with which
+      it lets me graphically access HDF5 datasets, even extremely large ones,
+      is simply unparalleled. Highly recommended!
+      </p>
+      <footer class="blockquote-footer">
+        <cite>Gabriel J.L. Beckers<br>
+        Group Neurobiology of Behaviour, Max Planck Institute for Ornithology</cite>
+      </footer>
+    </blockquote>
+  </div>
+</div>
+<div class="card mb-3">
+  <div class="card-block">
+    <blockquote class="card-blockquote">
+      <p>Recently, I discovered the PyTables library which offers a convenient
+      way to store my numerical data -- mostly present in form of time series
+      -- in a HDF5 file. Through this storage format, I can preserve the properties
+      of the time series (associated dates and masks) while storing the data on
+      disk for later processing. ViTables offers an excellent way to inspect such
+      data sets visually and moreover to query and explore the data sets. The
+      developer is very responsive to questions and feature requests that improve
+      user experience. I can recommend it to anyone working with scientifc data sets.
+      </p>
+      <footer class="blockquote-footer">
+        <cite>Tim Michelsen</cite>
+      </footer>
+    </blockquote>
+  </div>
+</div>
+
+        
+        <hr>
+                <footer id="footer">
+            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
+            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
+        </footer>
+
+
+    </div>
+    <script src="/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>
+]]></description><link>https://vitables.org/Docs/testimonials/index.html</link><guid isPermaLink="true">https://vitables.org/Docs/testimonials/index.html</guid><pubDate>Thu, 23 Nov 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[How to get it]]></title><description><![CDATA[<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Download ViTables 3.0 from here in a variety of formats: source packages, wheels and conda packages. Or get the latest sources from the repo.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How to get it | ViTables</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
+    <link href="/assets/main.css" rel="stylesheet" type="text/css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <link rel="canonical" href="https://vitables.org/index.html">
+    <meta name="theme-color" content="#5670d4">
+    <meta name="generator" content="Metalsmith (metalsmith.io)">
+    <meta name="author" content="Vicent Mas">
+    <meta property="og:site_name" content="ViTables">
+    <meta property="og:title" content="How to get it">
+    <meta property="og:url" content="https://vitables.org/index.html">
+    <meta property="og:description" content="Download ViTables 3.0 from here in a variety of formats: source packages, wheels and conda packages. Or get the latest sources from the repo.">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="Thu Nov 23 2017 01:00:00 GMT+0100 (Central European Standard Time)">
+    <meta property="article:tag" content="ViTables conda wheel sourceforge">
+</head>
+
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+    <!-- Menubar -->
+    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
+            </div>
+            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
+                <div class="navbar-nav">
+                  
+                  
+                  
+                    <a class="nav-link" href="/">Home</a>
+                  
+                  
+                    <a class="nav-link" href="/Development">Development</a>
+                  
+                  
+                    <a class="nav-link active" href="/Download">Download</a>
+                  
+                  <div class="dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/Docs">What to Read</a>
+                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
+                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
+                    </div>
+                  </div>
+                  
+                    <a class="nav-link" href="/Screenshots">Screenshots</a>
+                  
+                </div>
+            </div>
+        </div>
+    </nav><!-- End of Menubar -->
+    <div class="container" id="content" role="main" style="padding-top:20px">
+        <h1>How to get it</h1>
+<h2>Stable versions</h2>
+<p>The stable versions of <em>ViTables</em> (source and wheel packages) are available in its
+<a href="https://sourceforge.net/projects/vitables/files/ViTables-3.0.0/">SourceForge page</a>.</p>
+<p>The latest version is also available as a <a href="https://anaconda.org/conda-forge/vitables">conda package</a> that can be installed with conda.</p>
+<h2>Sources repository</h2>
+<p>In addition, you can get the latest (and possibly buggiest ;-) sources from the git repository if you follow
+<a href="http://vitables.org/Docs/faq.html#how-can-i-use-the-latest-revision-from-the-git-repository">these instructions</a>.</p>
+<h2>GNU/Linux packages</h2>
+<p><em>ViTables</em> packages exist for several GNU/Linux distributions, although they
+aren't always up to date. Some of these distros are OpenSUSE, Mandriva,
+Arch Linux, Debian, Ubuntu, Gentoo, Trisquel and Fink. Just use the distro's
+package manager in order to find and install <em>ViTables</em>.</p>
+<h2>Other sources</h2>
+<p>Last but not least, <em>ViTables</em> is included in a couple of scientific-oriented
+Python distributions, <a href="https://winpython.github.io/">WinPython</a> and
+<a href="http://python-xy.github.io/">Python(x,y)</a>.
+Also you can get the Windows binaries (and many other binaries for interesting
+software) from Christoph Gohlke's <a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#vitables">website</a>.</p>
+
+        
+        <hr>
+                <footer id="footer">
+            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
+            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
+        </footer>
+
+
+    </div>
+    <script src="/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>
+]]></description><link>https://vitables.org/Download/index.html</link><guid isPermaLink="true">https://vitables.org/Download/index.html</guid><pubDate>Thu, 23 Nov 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Screenshots]]></title><description><![CDATA[<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Screenshots showing some interesting functionalities of ViTables, like table queries, plugins or management of attributes.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Screenshots | ViTables</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.ico" />
+    <link href="/assets/main.css" rel="stylesheet" type="text/css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <link rel="canonical" href="https://vitables.org/index.html">
+    <meta name="theme-color" content="#5670d4">
+    <meta name="generator" content="Metalsmith (metalsmith.io)">
+    <meta name="author" content="Vicent Mas">
+    <meta property="og:site_name" content="ViTables">
+    <meta property="og:title" content="Screenshots">
+    <meta property="og:url" content="https://vitables.org/index.html">
+    <meta property="og:description" content="Screenshots showing some interesting functionalities of ViTables, like table queries, plugins or management of attributes.">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="Thu Nov 23 2017 01:00:00 GMT+0100 (Central European Standard Time)">
+    <meta property="article:tag" content="ViTables screenshots video">
+</head>
+
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+    <!-- Menubar -->
+    <nav class="navbar navbar-toggleable-md navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="https://vitables.org/"><img src="/assets/img/logo_2.svg" width="200" alt="ViTables" id="logo"></a>
+            </div>
+            <div id="bs-navbar" class="collapse navbar-collapse justify-content-end">
+                <div class="navbar-nav">
+                  
+                  
+                  
+                    <a class="nav-link" href="/">Home</a>
+                  
+                  
+                    <a class="nav-link" href="/Development">Development</a>
+                  
+                  
+                    <a class="nav-link" href="/Download">Download</a>
+                  
+                  <div class="dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">Documentation</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="/Docs">What to Read</a>
+                      <a class="dropdown-item" href="/Docs/faq">FAQ</a>
+                      <a class="dropdown-item" href="/Docs/testimonials">Testimonials</a>
+                    </div>
+                  </div>
+                  
+                    <a class="nav-link active" href="/Screenshots">Screenshots</a>
+                  
+                </div>
+            </div>
+        </div>
+    </nav><!-- End of Menubar -->
+    <div class="container" id="content" role="main" style="padding-top:20px">
+        <h1>Screenshots and Videos</h1>
+<p>Just for fun, in this video you can see the time evolution of the ViTables project.</p>
+<div class="py-3 mx-auto" style="width: 640px;">
+  <iframe src="https://player.vimeo.com/video/222206308" width="640" height="360" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+</div>
+<p>And here you are some screenshots from a <em>ViTables</em> session. They will help you to appreciate its simplicity, usefulness and power.</p>
+
+        
+          <div class="row">
+  <a href="/assets/img/Screenshots/the_user_attributes_dialog.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Editing user attributes" class="col-2">
+    <img src="/assets/img/Screenshots/the_user_attributes_dialog.thumbnail.png" class="img-fluid" alt="The User Attributes dialog">
+  </a>
+  <a href="/assets/img/Screenshots/the_plugins_configuration_page.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Extra features" class="col-2">
+    <img src="/assets/img/Screenshots/the_plugins_configuration_page.thumbnail.png" class="img-fluid" alt="The Plugins Configuration page">
+  </a>
+  <a href="/assets/img/Screenshots/filtering_data_of_a_table.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Querying a table" class="col-2">
+    <img src="/assets/img/Screenshots/filtering_data_of_a_table.thumbnail.png" class="img-fluid" alt="Filtering data on a table">
+  </a>
+  <a href="/assets/img/Screenshots/the_help_browser.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="The Users Guide browser" class="col-2">
+    <img src="/assets/img/Screenshots/the_help_browser.thumbnail.png" class="img-fluid" alt="The Help Browser window">
+  </a>
+  <a href="/assets/img/Screenshots/zooming_a_N_dimensional_cell.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="Zooming N-dimensional cells" class="col-2">
+    <img src="/assets/img/Screenshots/zooming_a_N_dimensional_cell.thumbnail.png" class="img-fluid" alt="Zooming a N-dimensional cell">
+  </a>
+  <a href="/assets/img/Screenshots/a_common_working_session.png" data-toggle="lightbox" data-gallery="example-gallery" data-footer="A common working session" class="col-2">
+    <img src="/assets/img/Screenshots/a_common_working_session.thumbnail.png" class="img-fluid" alt="A common working session">
+  </a>
+</div>
+
+
+        
+        <hr>
+                <footer id="footer">
+            Contents © 2008-2019 <a href="mailto:vmas@vitables.org">Vicent Mas</a> - 
+            Powered by <a href="https://metalsmith.io/" rel="nofollow">Metalsmith</a>         
+        </footer>
+
+
+    </div>
+    <script src="/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
+    
+            <script src="/assets/lightbox/ekko-lightbox.js"></script>
+    <script type="text/javascript">
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox({
+                showArrows: true,
+            });
+        });
+    </script>
+
+
+    
+</body>
+</html>
+]]></description><link>https://vitables.org/Screenshots/index.html</link><guid isPermaLink="true">https://vitables.org/Screenshots/index.html</guid><pubDate>Thu, 23 Nov 2017 00:00:00 GMT</pubDate></item></channel></rss>
