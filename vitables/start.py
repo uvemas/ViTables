@@ -25,8 +25,6 @@ import os.path
 import logging
 import traceback
 
-import sip
-
 import qtpy.QtCore as qtcore
 from qtpy import QtWidgets
 
@@ -34,9 +32,6 @@ from vitables.vtapp import VTApp
 from vitables.preferences import vtconfig
 
 __docformat__ = 'restructuredtext'
-
-sip.setapi('QString', 2)
-sip.setapi('QVariant', 2)
 
 # Map number of -v's on command line to logging error level.
 _VERBOSITY_LOGLEVEL_DICT = {0: logging.ERROR, 1: logging.WARNING,
@@ -101,7 +96,6 @@ def _set_locale(app):
 
 def _parse_command_line():
     """Create parser and parse command line."""
-
     # Parse the command line optional arguments
     parser = argparse.ArgumentParser(usage='%(prog)s [option]... [h5file]...')
     h5files_group = parser.add_argument_group('h5files')

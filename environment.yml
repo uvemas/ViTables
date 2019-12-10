@@ -11,7 +11,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=2
+  - python=3
   - pytables=3.2
   - pyqt=5
   - pip:
