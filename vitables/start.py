@@ -27,7 +27,6 @@ import os.path
 import logging
 import traceback
 
-from qtpy import QtGui
 import qtpy.QtCore as qtcore
 from qtpy import QtWidgets
 
@@ -97,7 +96,7 @@ def _set_locale(app):
 
 def _parse_command_line():
     """Create parser and parse command line."""
-     # Parse the command line optional arguments
+    # Parse the command line optional arguments
     parser = argparse.ArgumentParser(usage='%(prog)s [option]... [h5file]...')
     h5files_group = parser.add_argument_group('h5files')
     logging_group = parser.add_argument_group('logging')
