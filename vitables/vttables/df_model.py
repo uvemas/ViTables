@@ -152,7 +152,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             Overrides should return 0 for valid indices if no children exist)
             or the number of the total *columns* exposed by the model.
         """
-        return 0 if index.isValid() else self.numcols
+        return 0 if index.isValid() else self.numcols + self._nheaders[1]
 
     def rowCount(self, index=QtCore.QModelIndex()):
         """
@@ -163,7 +163,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             or the number of the total *columns* exposed by the model.
         """
 
-        return 0 if index.isValid() else self.numrows
+        return 0 if index.isValid() else self.numrows + self._nheaders[0]
 
     def loadData(self, start, length):
         """Load the model with fresh chunk from the underlying leaf.
@@ -254,7 +254,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         if is_index:
             if role == Qt.DisplayRole:
-                val = df.index[row]
+                val = df.index[row - n_columns]
                 if n_index > 1:
                     val = val[col]
                 return str(val)
@@ -266,7 +266,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         if is_columns:
             if role == Qt.DisplayRole:
-                val = df.columns[col]
+                val = df.columns[col - n_index]
                 if n_columns > 1:
                     val = val[row]
                 return str(val)
