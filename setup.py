@@ -54,7 +54,7 @@ setup(name='ViTables',
       install_requires=['qtpy (>=1.2.1)', 'PyQt5 (>=5.5.1)', 'numpy (>=1.4.1)',
                         'numexpr (>=2.0)', 'tables (>=3.0)'],
       entry_points={
-          'gui_scripts': ['vitables = vitables.start:gui'],
+          'console_scripts': ['vitables = vitables.start:gui'],
           'vitables.plugins':
           [('columnar_org = '
             'vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer'),
