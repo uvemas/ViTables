@@ -14,11 +14,11 @@
    height="220"
    id="svg2516"
    sodipodi:version="0.32"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    version="1.0"
    sodipodi:docname="vitables_logo.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="C:\Users\vicente\Documents\GitHub\ViTables\vitables\icons\vitables_logo.png"
+   inkscape:export-filename="C:\Users\uvema\ViTables\GitHub\vitables\icons\vitables_logo.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    enable-background="new">
@@ -71,8 +71,8 @@
      id="namedview2520"
      height="220px"
      width="500px"
-     inkscape:window-width="1366"
-     inkscape:window-height="745"
+     inkscape:window-width="1600"
+     inkscape:window-height="877"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      showgrid="false"
@@ -85,7 +85,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -239,18 +239,19 @@
        y="203.3819" />
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        x="10.096598"
        y="17.543539"
-       id="text2806"
-       sodipodi:linespacing="100%"><tspan
+       id="text2806"><tspan
          sodipodi:role="line"
          id="tspan2420"
          x="10.096598"
-         y="17.543539">© 2005-2007 by Cárabos Coop. V.</tspan><tspan
+         y="17.543539"
+         style="font-size:12px;line-height:1">© 2005-2007 by Cárabos Coop. V.</tspan><tspan
          sodipodi:role="line"
          id="tspan2422"
          x="10.096598"
-         y="29.543539">© 2008-2019 by Vicent Mas</tspan></text>
+         y="29.543539"
+         style="font-size:12px;line-height:1">© 2008-2019 by Vicent Mas</tspan></text>
   </g>
 </svg>

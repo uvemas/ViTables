@@ -65,7 +65,7 @@ class VTSplash(QtWidgets.QSplashScreen):
         font = painter.font()
         font.setBold(True)
         painter.setFont(font)
-        painter.drawText(10, 215, self.msg)
+        painter.drawText(10, 200, self.msg)
 
     def drawMessage(self, msg):
         """
