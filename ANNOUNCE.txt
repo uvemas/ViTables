@@ -1,9 +1,9 @@
 =========================
-Announcing ViTables 3.0.0
+Announcing ViTables 3.0.1
 =========================
 
 After another long period retired from development activities I'm happy to come
-back and present ViTables 3.0.0, the latest release of this viewer for
+back and present ViTables 3.0.1, the latest release of this viewer for
 PyTables/HDF5 files. Definitely this release wouldn't have been possible without
 the invaluable help of a bunch of contributors so THANKS to all of them.
 
@@ -16,10 +16,8 @@ application, i.e., it runs flawlessly in Unix (and hence, GNU/Linux), Mac OS
 X and Windows. The fact that it runs on top of PyTables ensures its speed and
 memory efficiency.
 
-This release doesn't contain lots of new functionalities. There are bug fixes,
-some usability enhancements and new plugins included. The big news is that it
-supports the latest Python, PyTables and PyQt versions so major version has
-moved from 2 to 3.
+This is a bugfix release. I hope it will help to fix problems of conda-forge
+package on Windows.
 
 Platforms
 ---------
@@ -32,7 +30,7 @@ How to get it
 -------------
 Please, visit:
 
-http://vitables.org/Download
+https://vitables.org/Download
 
 and see what is available.
 

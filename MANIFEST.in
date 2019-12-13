@@ -1,1 +1,1 @@
-include *.txt *.yml VERSION
+include *.txt VERSION

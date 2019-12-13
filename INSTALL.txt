@@ -1,43 +1,17 @@
 System requirements
 -------------------
-
-ViTables 3.0.0 has been tested against the latest versions of Python (2 and 3),
+ViTables 3.0.1 has been tested against the latest versions of Python 3,
 PyTables and PyQt. You can try other versions at your own risk :).
 
 Installation on a conda environment
 -----------------------------------
-
 Using conda you should be able to run vitables on any system, let it
 be linux, mac or windows. The following are instructions for linux-like
 systems.
 
-Install conda:
-  http://www.conda.io
+Simply run::
 
-Clone vitables...
-```sh
-  git clone git@github.com:uvemas/ViTables.git
-  cd ViTables
-```
-...or download it
-```sh
-  wget https://github.com/uvemas/ViTables/archive/master.tar.gz
-  tar xzvf master.tar.gz
-  rm -f master.tar.gz
-  cd ViTables-master
-```
-
-You can use the provided ```environment.yml``` file to create a new
-environment with the minimal dependencies needed to run vitables:
-```sh
-  conda env create -n vitables -f environment.yml
-```
-
-Activate the environment whenever you want to run vitables
-```sh
-  source activate vitables
-  vitables [whatever.h5]
-```
+  $ conda install -c conda-forge vitables
 
 Installation on Windows and Mac OS X platforms
 ----------------------------------------------
@@ -47,14 +21,17 @@ described in the Linux section.
 
 Installation on Linux platforms
 -------------------------------
-
 The Python setuptools are used to build and install ViTables.
 
-The easiest way to install it is to download the binary package from the download area
+The easiest way to install it is to download it from PyPi::
+
+  $ pip install ViTables
+
+Alternatively, you can download the binary package from the download area
 (see vitables.org/Downloads for details), go to the directory where you have
 downloaded the file and issue the command::
 
-  $ pip install ViTables-3.0.0-py3-none-any.whl
+  $ pip install ViTables-3.0.1-py3-none-any.whl
 
 This should install the ViTables wheel. If you experience problems installing
 the binary package then you can install from sources (provided your system fulfills
