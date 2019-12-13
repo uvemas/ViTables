@@ -138,7 +138,7 @@ described in the Linux section.
 Further Reading
 ***************
 
-General information about `PyTables` can be found at `its project site <http://www.pytables.com>`_. For more information on `HDF5`, please visit its web site `www.hdfgroup.org/HDF5 <http://www.hdfgroup.org/HDF5>`_. Information about `ViTables` is available at `vitables.org <http://vitables.org>`_.
+General information about `PyTables` can be found at `its project site <https://vitables.org>`_.
 
 Questions and feedback can be mailed to the developers.
 

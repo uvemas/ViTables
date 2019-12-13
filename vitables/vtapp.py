@@ -1,5 +1,5 @@
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2017 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2019 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ class VTApp(QtCore.QObject):
         # Print the welcome message
         self.gui.logger.write(
             translate('VTApp',
-                      """ViTables {0}\nCopyright (c) 2008-2017 Vicent Mas."""
+                      """ViTables {0}\nCopyright (c) 2008-2019 Vicent Mas."""
                       """\nAll rights reserved.""",
                       'Application startup message').format(
                           vtconfig.getVersion()))
@@ -1171,7 +1171,7 @@ class VTApp(QtCore.QObject):
             stored in PyTables and HDF5 files. It is written using PyQt
             , the Python bindings for the Qt GUI toolkit.<p>
             For more information see
-            <b>http://www.vitables.org</b>.<p>
+            <b>https://vitables.org</b>.<p>
             Please send bug reports or feature requests to the
             <em>ViTables Users Group</em>.<p>
             ViTables uses third party software which is copyrighted by

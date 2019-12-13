@@ -2160,11 +2160,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="vitables/vtapp.py" line="160"/>
         <source>ViTables {0}
-Copyright (c) 2008-2017 Vicent Mas.
+Copyright (c) 2008-2019 Vicent Mas.
 All rights reserved.</source>
         <comment>Application startup message</comment>
         <translation>ViTables {0}
-Copyright (c) 2008-2017 Vicent Mas.
+Copyright (c) 2008-2019 Vicent Mas.
 Todos los derechos reservados.</translation>
     </message>
     <message>
@@ -2443,7 +2443,7 @@ Estás a punto de borrar el nodo:
             stored in PyTables and HDF5 files. It is written using PyQt
             , the Python bindings for the Qt GUI toolkit.&lt;p&gt;
             For more information see
-            &lt;b&gt;http://www.vitables.org&lt;/b&gt;.&lt;p&gt;
+            &lt;b&gt;https://vitables.org&lt;/b&gt;.&lt;p&gt;
             Please send bug reports or feature requests to the
             &lt;em&gt;ViTables Users Group&lt;/em&gt;.&lt;p&gt;
             ViTables uses third party software which is copyrighted by
@@ -2456,7 +2456,7 @@ Estás a punto de borrar el nodo:
             ViTables es una herramienta gráfica para ver conjuntos de datos
             almacenados en ficheros PyTables y HDF5. Está escrita en PyQt
             , los binding de Python para Qt.&lt;p&gt;
-            Para más información ver &lt;b&gt;http://www.vitables.org&lt;/b&gt;.&lt;p&gt;
+            Para más información ver &lt;b&gt;https://vitables.org&lt;/b&gt;.&lt;p&gt;
             Por favor, informa de los bugs que encuentres y de la funcionalidad
             que eches en falta al &lt;em&gt;Grupo de Usuarios de ViTables&lt;/em&gt;.&lt;p&gt;
             ViTables usa software de terceros, que tiene su propio copyright.

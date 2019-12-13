@@ -25,7 +25,7 @@ If you need more help just send an email to developers or ask to the `ViTables` 
 Five plugins are currently distributed along with the application:
 
   Time series formatter
-    formats time series in a human friendly way. It supports PyTables time datatypes and PyTables time series created via `pandas <http://pandas.pydata.org>`_ or the obsolete scikits.timeseries module. The format used for displaying times can be configured by user via the Preferences dialog or editing by hand the :file:`time_format.ini` configuration file.
+    formats time series in a human friendly way. It supports PyTables time datatypes and PyTables time series created via `pandas <https://pandas.pydata.org>`_ or the obsolete scikits.timeseries module. The format used for displaying times can be configured by user via the Preferences dialog or editing by hand the :file:`time_format.ini` configuration file.
 
   CSV Importer
     provides import capabilities from `CSV` files into PyTables datasets.

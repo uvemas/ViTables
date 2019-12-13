@@ -2022,7 +2022,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="vitables/vtapp.py" line="160"/>
         <source>ViTables {0}
-Copyright (c) 2008-2017 Vicent Mas.
+Copyright (c) 2008-2019 Vicent Mas.
 All rights reserved.</source>
         <comment>Application startup message</comment>
         <translation type="unfinished"></translation>
@@ -2277,7 +2277,7 @@ You are about to delete the node:
             stored in PyTables and HDF5 files. It is written using PyQt
             , the Python bindings for the Qt GUI toolkit.&lt;p&gt;
             For more information see
-            &lt;b&gt;http://www.vitables.org&lt;/b&gt;.&lt;p&gt;
+            &lt;b&gt;https://vitables.org&lt;/b&gt;.&lt;p&gt;
             Please send bug reports or feature requests to the
             &lt;em&gt;ViTables Users Group&lt;/em&gt;.&lt;p&gt;
             ViTables uses third party software which is copyrighted by
