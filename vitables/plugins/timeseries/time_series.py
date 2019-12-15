@@ -25,11 +25,6 @@ series contained in `PyTables` tables generated via ``scikits.timeseries`` and
 ``Pandas``.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '2.1'
-plugin_name = 'Time series formatter'
-comment = 'Display time series in a human friendly format'
-
 import time
 import os
 try:
@@ -54,6 +49,11 @@ from qtpy import QtWidgets
 
 import vitables.utils
 from vitables.plugins.timeseries.aboutpage import AboutPage
+
+__docformat__ = 'restructuredtext'
+__version__ = '2.1'
+plugin_name = 'Time series formatter'
+comment = 'Display time series in a human friendly format'
 
 translate = QtWidgets.QApplication.translate
 
@@ -324,7 +324,7 @@ class TSLeafModel(object):
         """
         row, col = index.row(), index.column()
 
-        if not index.isValid() or not (0 <= row < self.nrows):
+        if not index.isValid() or not (0 <= row < self.numrows):
             return None
 
         if role == QtCore.Qt.DisplayRole:
@@ -351,7 +351,7 @@ class TSLeafModel(object):
         """
         row, col = index.row(), index.column()
 
-        if not index.isValid() or not (0 <= row < self.nrows):
+        if not index.isValid() or not (0 <= row < self.numrows):
             return None
 
         if role == QtCore.Qt.DisplayRole:

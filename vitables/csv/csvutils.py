@@ -28,12 +28,15 @@ import logging
 import os
 import re
 import tempfile
-import traceback
 import vitables.utils
 
 import numpy
 from qtpy import QtWidgets
 import tables
+
+# https://github.com/numpy/numpy/issues/10990
+import warnings
+warnings.filterwarnings("ignore", category=numpy.VisibleDeprecationWarning)
 
 
 translate = QtWidgets.QApplication.translate
@@ -50,8 +53,8 @@ def getArray(buf):
     The lines read from the CSV file are stored in a temporary file which is
     passed to numpy.genfromtxt() in order to create a numpy array.
 
-    The dtypes of the numpy array are determined by the contents of each column.
-    Multidimensional columns will have string datatype.
+    The dtypes of the numpy array are determined by the contents of each
+    column. Multidimensional columns will have string datatype.
 
     Warning: the temporary file is written in binary mode so lines are stored
     as bytearrays (encoded as UTF-8). It means that strings in the numpy array
@@ -112,9 +115,9 @@ def heterogeneousTableInfo(input_handler, first_line, second_line):
     :Parameters:
 
     - `input_handler`: the file handler of the inspected `CSV` file
-    - `first_line`: a ``numpy`` array which contains the first line of the `CSV`
+    - `first_line`: ``numpy`` array which contains the first line of the `CSV`
       file
-    - `second_line`: a ``numpy`` array which contains the second line of the
+    - `second_line`: ``numpy`` array which contains the second line of the
       `CSV` file
     """
 
@@ -179,7 +182,7 @@ def homogeneousTableInfo(input_handler, first_line, second_line):
     - `input_handler`: the file handler of the inspected `CSV` file
     - `first_line`: a ``numpy`` array which contains the first line of the
       `CSV` file
-    - `second_line`: a ``numpy`` array which contains the second line of the 
+    - `second_line`: a ``numpy`` array which contains the second line of the
       `CSV` file
     """
 
