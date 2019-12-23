@@ -23,37 +23,31 @@
 
 import os
 
+import numpy as np
 import numpy.random as nr
-import pandas
+import pandas as pd
 
-## a test data frame with 3 column and 365 rows
-index = pandas.date_range('1/1/2009', periods=365, freq='D')
-df = pandas.DataFrame(nr.randn(365, 3), index=index, columns=['A', 'B', 'C'])
+# A multiindexed dataframe with 3 columns of data (including a time series)
+dti = list(pd.date_range('1/1/2019', periods=365, freq='D'))
+ordinal = list(np.arange(1, 6))
+iterables = [dti, ordinal]
+index = pd.MultiIndex.from_product(iterables, names=['first', 'second'])
+d = {'A': nr.randn(1825),
+     'B': nr.randn(1825),
+     'C': pd.date_range('1/1/2017', periods=1825)}
+df = pd.DataFrame(d, index=index)
 
-# Write to a PyTables file
+# Create an empty HDFStore
 output_dir = '../timeseries'
+hdf5_name = 'pandas_test3.hdf5'
+filepath_hdf5 = os.path.join(output_dir, hdf5_name)
 try:
     os.mkdir(output_dir)
 except OSError:
     pass
+finally:
+    store = pd.HDFStore(filepath_hdf5)
 
-hdf5_name = 'pandas_test3.hdf5'
-filepath_hdf5 = os.path.join(output_dir, hdf5_name)
-store = pandas.HDFStore(filepath_hdf5)
-
-# The following code create a group with 4 leaves (Array instances)
-# df
-#  |_ axis1 (the row index, a range of dates, shape is (365,))
-#  |_ axis0 (the column index, shape is (3,))
-#  |_ block0_values (the random array of values, shape is (365,3))
-#  |_ block0_items (identical to axis0)
-store['df'] = df
-
-# The following code stores the same information in a Table instance
-# df_table
-#        |_ table (field index contains the range of dates used as index, field
-#                  values_block0 contains the random array of values,
-#                  shape is (365,))
+# Store the dataframe as a PyTables Table under the group df_table
 store.append('df_table', df)
 store.close()
-

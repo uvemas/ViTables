@@ -19,7 +19,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 """
 This module implements a model (in the `MVC` sense) for the real data stored
-in a `tables.Leaf`.
+in a Pandas HDFStore.
 """
 
 __docformat__ = 'restructuredtext'
@@ -30,7 +30,6 @@ from qtpy import QtCore, QtGui
 from qtpy.QtCore import Qt
 
 from . import leaf_model
-
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +59,10 @@ def try_opening_as_dataframe(leaf):
             pytables._tables()
 
     pgroup = leaf._g_getparent()
-    assert pgroup._c_classid == 'GROUP', (leaf, pgroup)
+    try:
+        assert pgroup._c_classid == 'GROUP'
+    except AssertionError:
+        log('Parent of {0} is not a GROUP'.format(leaf))
 
     pandas_attr = getattr(pgroup._v_attrs, 'pandas_type', None)
     if pandas_attr in ['frame', 'frame_table']:
@@ -70,7 +72,7 @@ def try_opening_as_dataframe(leaf):
 
 
 def get_index_name(index, i, fallback_pattern):
-    """returns the name of a dataframe index."""
+    """Returns the name of a dataframe index."""
     val = i
     try:
         val = index.names[i]
@@ -91,10 +93,8 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
     :param parent:
         The parent of the model, passed as is in the superclass.
-    :attribute leaf:
+    :attribute _leaf:
         the underlying hdf5 data
-    :attribute rbuffer:
-        Code for chunking and inspecting the undelying data.
     :attribute leaf_numrows:
         the total number of rows in the underlying data
     :attribute numrows:
@@ -118,7 +118,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         self._hstore = hstore
         self.start = 0
 
-        ## The dataset number of rows is potentially huge but tables are
+        # The dataset number of rows is potentially huge but tables are
         #  kept small: just the data returned by a read operation of the
         #  buffer are displayed
         self.leaf_numrows = leaf.shape[0]
@@ -138,6 +138,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             except AttributeError:
                 return 1
 
+        # Number of levels in the index/columns indexes
         self._nheaders = tuple(count_multiindex(idx)
                                for idx
                                in (chunk.columns, chunk.index))
@@ -149,8 +150,9 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         The total number of columns, or number of children for the given index.
 
         :param index:
-            Overrides should return 0 for valid indices if no children exist)
-            or the number of the total *columns* exposed by the model.
+            Overrides should return 0 for valid indices (if no children exist)
+            or the number of the total *columns* (including row labels) exposed
+            by the model.
         """
         return 0 if index.isValid() else self.numcols + self._nheaders[1]
 
@@ -159,8 +161,9 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         The total number of rows, or number of children for the given index.
 
         :param index:
-            Overrides should return 0 for valid indices if no children exist)
-            or the number of the total *columns* exposed by the model.
+            Overrides should return 0 for valid indices (if no children exist)
+            or the number of the total *rows* (including column labels) exposed
+            by the model.
         """
 
         return 0 if index.isValid() else self.numrows + self._nheaders[0]
@@ -173,13 +176,17 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         :param length:
             The buffer size, i.e. the number of rows to be read.
         """
-        ## Enforce scroll limits.
+        # Enforce scroll limits.
         #
         start = max(start, 0)
         stop = min(start + length, self.leaf_numrows)
-        assert stop >= start, (self.numrows, start, stop, length)
+        try:
+            assert stop >= start
+        except AssertionError:
+            log(('Chunk: number of rows {0}, first row {1}, '
+                 'last row {2}').format(self.numrows, start, stop))
 
-        ## Ensure that the whole buffer will be filled.
+        # Ensure that the whole buffer will be filled.
         #
         actual_start = stop - self.numrows
         start = max(min(actual_start, start), 0)
@@ -209,10 +216,10 @@ class DataFrameModel(QtCore.QAbstractTableModel):
             return Qt.AlignRight | Qt.AlignVCenter
 
         n_columns, n_index = self._nheaders
-        is_header = ((orientation == Qt.Horizontal and
-                      section < n_index) or
-                     (orientation == Qt.Vertical and
-                      (self.start + section) < n_columns))
+        is_header = ((orientation == Qt.Horizontal
+                      and section < n_index)
+                     or (orientation == Qt.Vertical
+                         and (self.start + section) < n_columns))
 
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -226,7 +233,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
                 return str(self.start + section)
 
         if role == Qt.FontRole and is_header:
-                return _axis_label_font
+            return _axis_label_font
 
     def data(self, index, role=Qt.DisplayRole):
         """Returns the data stored under the given role for the item

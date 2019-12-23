@@ -26,33 +26,22 @@ import os
 import numpy as np
 import pandas as pd
 
-## A test series, the deprecated way (not supported by timeseries plugin)
-#startdate = pd.Period(freq='D', year=2009, month=1, day=1)
-#rng = pd.period_range(startdate, periods=365)
-#ts = pd.Series(np.arange(1, 366), index=rng)
-
-## A test series, the recommended way
-dti = pd.DatetimeIndex(start='1/1/2009', freq='D', periods=365)
+# Create a DataFrame with a DateTimeIndex and linear data
+dti = pd.date_range(start='1/1/2019', periods=365, name='Days')
 ts = pd.Series(np.arange(1, 366), index=dti)
-# Saving this time series in a HDFStore will add two arrays to the h5 file
-# one array with the index and other with the data
-# So we create a data frame in order to store all the information in a table
 df = pd.DataFrame(ts)
 
-# Write to a PyTables file
+# Create an empty HDFStore
 output_dir = '../timeseries'
+hdf5_name = 'pandas_test1.hdf5'
+filepath_hdf5 = os.path.join(output_dir, hdf5_name)
 try:
     os.mkdir(output_dir)
 except OSError:
     pass
+finally:
+    store = pd.HDFStore(filepath_hdf5)
 
-hdf5_name = 'pandas_test1.hdf5'
-filepath_hdf5 = os.path.join(output_dir, hdf5_name)
-store = pd.HDFStore(filepath_hdf5)
-
-# The following code create a group with 1 leaf (Table instance)
-# df
-#  |_ table
-store.append('one_column_ts', df)
+# Store the dataframe as a PyTables Table under the root group
+store.append('', df)
 store.close()
-

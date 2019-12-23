@@ -24,33 +24,26 @@
 import os
 import datetime
 
-import pandas
+import pandas as pd
 import pandas_datareader.data as web
 
-startdate = datetime.date(2002, 1, 5)
-enddate = datetime.date(2003, 12, 1)
+start = datetime.date(2002, 1, 5)
+end = datetime.date(2003, 12, 1)
 
-# Retrieve data from Google Finance
-# Data format is [(d, [open, high, low, close], volume), ...]
-google_f = web.DataReader('F', 'google', startdate, enddate)
+# Retrieve inflation data from FRED
+inflation = web.DataReader(['CPIAUCSL', 'CPILFESL'], 'fred', start, end)
 
-# Write to a PyTables file
+# Create an empty HDFStore
 output_dir = '../timeseries'
+hdf5_name = 'pandas_test2.hdf5'
+filepath_hdf5 = os.path.join(output_dir, hdf5_name)
 try:
     os.mkdir(output_dir)
 except OSError:
     pass
+finally:
+    store = pd.HDFStore(filepath_hdf5)
 
-hdf5_name = 'pandas_test2.hdf5'
-filepath_hdf5 = os.path.join(output_dir, hdf5_name)
-store = pandas.HDFStore(filepath_hdf5)
-
-# The following code stores the information in a Table instance
-# intc
-#    |_ table (field index contains the dates range used as index, field
-#              values_block0 contains [open, high, low, close, adj close],
-#              field values_block1 contains volume
-#              shape is (480,))
-store.append('google_f', google_f)
+# Store the extracted data as a PyTables Table under the group fred_inflation
+store.append('fred_inflation', inflation)
 store.close()
-

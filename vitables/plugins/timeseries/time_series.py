@@ -44,11 +44,15 @@ try:
 except ImportError:
     pd = None
 
-from qtpy import QtCore
+from qtpy import QtCore, QtGui
+from qtpy.QtCore import Qt
 from qtpy import QtWidgets
 
 import vitables.utils
 from vitables.plugins.timeseries.aboutpage import AboutPage
+
+_axis_font = QtGui.QFont()
+_axis_font.setBold(True)
 
 __docformat__ = 'restructuredtext'
 __version__ = '2.1'
@@ -86,16 +90,24 @@ def findTS(leaf, node_kind):
 
     time_types = ['time32', 'time64']
     if isinstance(leaf, tables.Table):
-        attrs = leaf._v_attrs
+        asi = leaf._v_attrs
         coltypes = leaf.coltypes
+        pgroup = leaf._g_getparent()
+
         # Check for Pandas timeseries
-        if pd and hasattr(attrs, 'index_kind') and \
-                (attrs.index_kind in ('datetime64', 'datetime32')):
-            return 'pandas_ts'
+        pandas_attr = getattr(pgroup._v_attrs, 'pandas_type', None)
+        if pd and pandas_attr in ['frame', 'frame_table']:
+            userattrs_names = asi._v_attrnamesuser
+            dtype_attrs = [n for n in userattrs_names if n.endswith('_dtype')]
+            dtype_attrs.append('index_kind')
+            for n in dtype_attrs:
+                if getattr(asi, n).startswith('datetime'):
+                    return 'pandas_ts'
+
         # Check for scikits.timeseries timeseries
-        if ts and hasattr(attrs, 'CLASS') and \
-                (attrs.CLASS == 'TimeSeriesTable'):
+        if ts and hasattr(asi, 'CLASS') and (asi.CLASS == 'TimeSeriesTable'):
             return 'scikits_ts'
+
         # Check for PyTables timeseries
         for name in leaf.colnames:
             if (name in coltypes) and (coltypes[name] in time_types):
@@ -105,8 +117,8 @@ def findTS(leaf, node_kind):
             (leaf.atom.shape == ()) and \
             (node_kind != 'vlarray'):
         return 'pytables_ts'
-    else:
-        return None
+
+    return None
 
 
 def tsPositions(ts_kind, leaf):
@@ -129,7 +141,26 @@ def tsPositions(ts_kind, leaf):
     if (ts_kind == 'scikits_ts'):
         positions.append(leaf.coldescrs['_dates']._v_pos)
     elif (ts_kind == 'pandas_ts'):
-        positions.append(leaf.coldescrs['index']._v_pos)
+        hstore = pd.HDFStore(leaf._v_file.filename)
+        pgroup = leaf._g_getparent()
+        df = hstore[pgroup._v_name]
+
+        # Inspect dataframe index
+        df_index = df.index
+        if isinstance(df_index, pd.MultiIndex):
+            nlevels = df_index.nlevels
+            for i, idx in enumerate(df_index.names):
+                dtime = 'datetime'
+                if df_index.get_level_values(i).dtype.name.startswith(dtime):
+                    positions.append(i)
+        elif df_index.dtype.name.startswith('datetime'):
+            nlevels = 1
+            positions.append(0)
+
+        # Inspect dataframe data
+        for i, dt in enumerate(df.dtypes):
+            if dt.name.startswith('datetime'):
+                positions.append(nlevels + i)
     elif ts_kind == 'pytables_ts':
         if isinstance(leaf, tables.Table):
             for name in leaf.colnames:
@@ -226,15 +257,19 @@ class TSFormatter(object):
             'ts_format': datetimeFormat(),
         }
         if isinstance(leaf, tables.Table):
-            leaf_kind = 'table'
+            if isinstance(model, vitables.vttables.df_model.DataFrameModel):
+                leaf_kind = 'dataframe'
+            else:
+                leaf_kind = 'table'
         else:
             leaf_kind = 'array'
         model_info = {
             'leaf_kind': leaf_kind,
             'model': model,
             'numrows': model.rowCount(),
-            'formatContent': model.formatContent,
         }
+        if leaf_kind in ['table', 'array']:
+            model_info['formatContent'] = model.formatContent
 
         # Add required attributes to model
         for k in ts_info:
@@ -301,13 +336,16 @@ class TSLeafModel(object):
         self.model = model_info['model']
         self.numrows = model_info['numrows']
         self.ts_cols = ts_info['ts_cols']
-        self.formatContent = model_info['formatContent']
+        if 'formatContent' in model_info:
+            self.formatContent = model_info['formatContent']
 
         self.tsFormatter = self.timeFormatter()
 
         leaf_kind = model_info['leaf_kind']
         if leaf_kind == 'table':
             self.data = self.table_data
+        elif leaf_kind == 'dataframe':
+            self.data = self.df_data
         else:
             self.data = self.array_data
 
@@ -337,6 +375,67 @@ class TSLeafModel(object):
             return QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
 
         return None
+
+    def df_data(self, index, role=QtCore.Qt.DisplayRole):
+        """Returns the data stored under the given role for the item
+        referred to by the index.
+
+        This is an overwritten method.
+
+        :Parameters:
+
+        - `index`: the index of a data item
+        - `role`: the role being returned
+        """
+        row, col = index.row(), index.column()
+        n_columns, n_index = self.model._nheaders
+        df = self.model._chunk
+
+        if not index.isValid() or not (0 <= row < (self.numrows + n_columns)):
+            return None
+
+        is_index = col < n_index
+        is_columns = (self.model.start + row) < n_columns
+
+        if is_index and is_columns:
+            return None
+
+        if is_index:
+            if role == Qt.DisplayRole:
+                val = df.index[row - n_columns]
+                if n_index > 1:
+                    val = val[col]
+                if col in self.ts_cols:
+                    return self.tsFormatter(val)
+                return str(val)
+            if role == Qt.FontRole:
+                return _axis_font
+            if role == Qt.TextAlignmentRole:
+                return int(Qt.AlignRight | Qt.AlignVCenter)
+            return
+
+        if is_columns:
+            if role == Qt.DisplayRole:
+                val = df.columns[col - n_index]
+                if n_columns > 1:
+                    val = val[row]
+                return str(val)
+            if role == Qt.FontRole:
+                return _axis_font
+            if role == Qt.TextAlignmentRole:
+                return int(Qt.AlignCenter | Qt.AlignBottom)
+            return
+
+        if role == Qt.DisplayRole:
+            val = self.model._chunk.iat[row - n_columns, col - n_index]
+            if col in self.ts_cols:
+                return self.tsFormatter(val)
+            return str(val)
+
+        # if role == Qt.TextAlignmentRole:
+        #     return int(Qt.AlignLeft|Qt.AlignTop)
+
+        return
 
     def array_data(self, index, role=QtCore.Qt.DisplayRole):
         """Returns the data stored under the given role for the item
@@ -400,10 +499,8 @@ class TSLeafModel(object):
 
         :Parameter content: the content of the table cell being formatted
         """
-        # ImportError if pandas not installed!
-        date = pd.Timestamp(int(content))
         try:
-            return date.strftime(self.ts_format)
+            return content.strftime(self.ts_format)
         except ValueError:
             return content
 
