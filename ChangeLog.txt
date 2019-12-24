@@ -1,5 +1,51 @@
 ViTables ChangeLog
 ==================
+** December 24, 2019 **
+Release 3.0.1 is ready to be published.
+
+** December 23, 2019 **
+Support for pandas time series has been updated.
+
+** December 15, 2019 **
+Fixed a couple of bugs in time_series.py.
+
+Ignore deprecation warnings coming from numpy in csvutils.py.
+
+** December 13, 2019 **
+Package version has been updated.
+
+Splash screen has been updated.
+
+Copyright and URLs have been updated.
+
+.txt files have been updated.
+
+** December 12, 2019 **
+Changed script entry point in setup.py.
+
+** December 10, 2019 **
+Small style changes applied to start.py and setup.py.
+
+** December 21, 2018 **
+Fixed sip imports and setup.py syntax.
+
+** September 26, 2018 **
+Fixed issue #88 (dataframe lost columns).
+
+** October 20, 2017 **
+Added support for multi-dim EArrays.
+
+** October 19, 2017 **
+Fixed issue #86 (showing large EArrays).
+
+Fixed issue #83, really.
+
+** October 5, 2017 **
+Fixed issue #83.
+
+** September 28, 2017 **
+Properly resolve nested links.
+
 ** September 25, 2017 **
 Added tests for the filenodes support.
 
@@ -67,7 +113,7 @@ Bug fixed: moving nodes to a different file raises a tables.ClosedNodeError.
 Bug fixed: files cannot be opened by drag and drop into the tree view.
 
 ** May 14, 2017 **
-Table queries slightly reworked: query ranges are now Python-like ranges i.e. 
+Table queries slightly reworked: query ranges are now Python-like ranges i.e.
 the meaning of the start, stop and step parameters is the same as for Python
 slices.
 
@@ -81,7 +127,7 @@ Bug fixed: tooltips for link nodes are not shown. Instead a verbose error
 message is logged.
 
 ** May 09, 2017 **
-Bug fixed: if we close the Logger in the current session it won't be opened in 
+Bug fixed: if we close the Logger in the current session it won't be opened in
 future sessions. And if we float the Logger in the current session it will
 automatically be floated in future sessions.
 
@@ -749,7 +795,7 @@ Fixed a bug in the datasheet.py module apparent with pyqt < 4.6.
 ** November 13, 2009 **
 Support for queries has been updated.
 
-dataSheet.py module has been refactored. 
+dataSheet.py module has been refactored.
 
 leafView.py module has been refactored.
 
@@ -913,9 +959,9 @@ Focus indicators for the logger and the tree panel have been improved.
 The support for time series has been fixed and improved.
 
 ** Feb 11, 2009**
-An ubiquitous misuse of the Python unicode() built-in has been fixed. 
+An ubiquitous misuse of the Python unicode() built-in has been fixed.
 
-The recent fix to the windows installer is now in the repository. 
+The recent fix to the windows installer is now in the repository.
 
 ** Jan 21, 2009**
 	Fixed a bug in the support for unicode filenames in Windows.
@@ -1152,7 +1198,7 @@ The recent fix to the windows installer is now in the repository.
 ** Sep 26, 2008 **
   Fixed some minor bugs regarding the enabled/disabled state of toolbar buttons
   and menu items.
-  
+
   Added new module inputNodeName.py. It is used instead of renameDlg.py for
   creating groups and entering the initial name in renaming operations.
 
@@ -1185,7 +1231,7 @@ The recent fix to the windows installer is now in the repository.
   part has been ported. Next step will be porting the code for attributes
   validation.
 
-** Jul 15, 2008 ** 
+** Jul 15, 2008 **
   Fixed a nasty bug that crashed the application every time a node was
   expanded in the tree viewer. The reported Qt4 error was:
 
@@ -1397,7 +1443,7 @@ The recent fix to the windows installer is now in the repository.
   * vitables/utils.py
   * vitables/vtsplash.py
   * vitables/vtSite.py
-  * vitables/vtgui.py 
+  * vitables/vtgui.py
     This module has been split in two modules: logger class is defined
     in a new module now.
   * vitables/logger.py
@@ -2207,7 +2253,7 @@ The recent fix to the windows installer is now in the repository.
   Management of PyTables scalar arrays improved in the buffer.py module.
 
 **Mar 20, 2207**
-  Fixed several minor issues in some help texts. 
+  Fixed several minor issues in some help texts.
 
   ViTables dependencies on numarray package are being removed. The numarray
   functionality is now provided by numpy. As a consequence numarray will not be

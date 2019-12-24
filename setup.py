@@ -29,6 +29,11 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
+install_requires = ['qtpy (>=1.2.1)', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
+                    'tables (>=3.0)']
+if 'CONDA_PREFIX' not in os.environ:
+    install_requires.append('PyQt5 (>=5.5.1)')
+
 setup(name='ViTables',
       version=read('VERSION'),
       description='A viewer for PyTables package',
@@ -51,8 +56,7 @@ setup(name='ViTables',
           'Programming Language :: Python',
           'Topic :: Scientific/Engineering'
       ],
-      install_requires=['qtpy (>=1.2.1)', 'PyQt5 (>=5.5.1)', 'numpy (>=1.4.1)',
-                        'numexpr (>=2.0)', 'tables (>=3.0)'],
+      install_requires=install_requires,
       entry_points={
           'console_scripts': ['vitables = vitables.start:gui'],
           'vitables.plugins':

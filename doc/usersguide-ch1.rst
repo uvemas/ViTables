@@ -138,11 +138,10 @@ described in the Linux section.
 Further Reading
 ***************
 
-General information about `PyTables` can be found at `its project site <https://vitables.org>`_.
+General information about `PyTables` can be found at `its project site <https://www.pytables.org>`_.
 
 Questions and feedback can be mailed to the developers.
 
 .. rubric:: Footnotes
 
 .. [#f1] Dataset editing capabilities have not yet been implemented.
-
