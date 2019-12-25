@@ -65,6 +65,8 @@ Other nice features include:
 
 - Support for doing complex table queries with a low memory footprint.
 
+- Import from CSV files.
+
 - Flexible plugins framework. A bunch of useful plugins are already included, see the :ref:`Appendix A<appendix-a>` for
   details.
 
@@ -80,7 +82,7 @@ Nevertheless, and just in case, we are providing this guide :-).
 System Requirements
 *******************
 
-To run `ViTables` you need to install recent versions of `Python` (2 or 3), `PyTables` (so you have to fulfil its own requirements) and `PyQt`. For instance, it runs smoothly with `Python` 3.6, `PyTables` 3.4 and `PyQt` 5.8.
+To run `ViTables` you need to install recent versions of `Python3`, `PyTables` (so you have to fulfil its own requirements) and `PyQt`. For instance, it runs smoothly with `Python` 3.6, `PyTables` 3.4 and `PyQt` 5.8.
 
 At the moment, `ViTables` has been fully tested on Linux and Windows 10 platforms. Other Unices should run just fine when using the Linux version because all the software that `ViTables` relies on (i.e. `Python`, `Qt`, `PyQt`, `HDF5` and `PyTables`) is known to run fine on many Unix platforms as well.
 
@@ -95,7 +97,7 @@ Linux
 The Python setuptools are used to build and install `ViTables`. You can install
 the package from PyPI issuing the command::
 
-  $ pip install vitables
+  $ pip install ViTables
 
 This should install the ViTables wheel. If you experience problems installing
 the binary package you can install from sources (provided your system fulfills

@@ -1,6 +1,6 @@
 System requirements
 -------------------
-ViTables 3.0.1 has been tested against the latest versions of Python 3,
+ViTables 3.0.2 has been tested against the latest versions of Python 3,
 PyTables and PyQt. You can try other versions at your own risk :).
 
 Installation on a conda environment
@@ -31,7 +31,7 @@ Alternatively, you can download the binary package from the download area
 (see vitables.org/Downloads for details), go to the directory where you have
 downloaded the file and issue the command::
 
-  $ pip install ViTables-3.0.1-py3-none-any.whl
+  $ pip install ViTables-3.0.2-py3-none-any.whl
 
 This should install the ViTables wheel. If you experience problems installing
 the binary package then you can install from sources (provided your system fulfills

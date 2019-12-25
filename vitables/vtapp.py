@@ -177,6 +177,9 @@ class VTApp(QtCore.QObject):
         # List of HelpBrowser instances in memory
         self.doc_browser = None
 
+        # Filenodes mappig
+        self.filenodes_map = {}
+
         # Restore last session
         if self.config.restore_last_session:
             splash.drawMessage(translate('VTApp', 'Recovering last session...',
@@ -201,9 +204,6 @@ class VTApp(QtCore.QObject):
                 t_f = time.time()
         splash.finish(self.gui)
         del splash
-
-        # Filenodes mappig
-        self.filenodes_map = {}
 
         # Ensure that QActions have a consistent state
         self.gui.updateActions()

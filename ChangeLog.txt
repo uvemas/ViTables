@@ -1,5 +1,11 @@
 ViTables ChangeLog
 ==================
+** December 25, 2019 **
+Fixed the Xmas day bug in vtapp.py.
+
+Fixed a syntax error in the setup.py description that caused PyPI to refuse
+the package upload.
+
 ** December 24, 2019 **
 Release 3.0.1 is ready to be published.
 
