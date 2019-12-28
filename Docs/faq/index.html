@@ -91,9 +91,9 @@ Probably some subscriber (<em>ViTables</em> developer or user) will be able to h
 <h2>How can I use the latest revision from the git repository?</h2>
 <p>If you want to run the development version of <em>ViTables</em>, first of all
 you have to clone it from the git repository. For instance</p>
-<div class="card card-info" style="margin-bottom: 1em;">
-  <div class="card-block card-faq">
-    $ git clone http://github.com/uvemas/ViTables.git vitables_tip
+<div class="card card-shell" style="margin-bottom: 1em;">
+  <div class="card-block">
+    $ git clone https://github.com/uvemas/ViTables.git vitables_tip
   </div>
 </div>
 <p>will download the latest revision and put it in the <code>vitables_tip</code> directory.
@@ -101,8 +101,8 @@ You can use it as is or you can build the <em>ViTables</em> package from sources
 install it. Although packaging is not difficult it can be tricky because you
 may need to install the Sphinx documentation system. So packaging is not
 recommended. Instead, from the top level directory do the following</p>
-<div class="card card-info" style="margin-bottom: 1em;">
-  <div class="card-block card-faq">
+<div class="card card-shell" style="margin-bottom: 1em;">
+  <div class="card-block">
     $ cp scripts/start.py run_vitables.py<br>
     $ python run_vitables.py
   </div>
@@ -127,33 +127,33 @@ standard way for creating Desktop shortcuts on Linux. That's all.</p>
 <a href="https://help.ubuntu.com/community/UnityLaunchersAndDesktopFiles">this for Ubuntu Linux</a>.</p>
 <p><a name="anaconda3"></a></p>
 <h2>Can I use <em>ViTables</em> with Anaconda3?</h2>
-<p>Yes, you can. Basically two installation ways are available. The most convenient is, of course, install the
-<em>ViTables</em> package from conda-channel (I assume you are on a Windows machine here and the <code>Scripts</code> folder is in your <code>PATH</code>).
-You can install and run with</p>
-<div class="card card-info" style="margin-bottom: 1em;">
-  <div class="card-block card-faq">
-    (Anaconda3) > conda install -c conda-forge vitables=3.0.0<br>
-    (Anaconda3) > vitables
+<p>Yes. The easiest way is to install the <em>ViTables</em> package from conda-forge channel:</p>
+<div class="card card-shell" style="margin-bottom: 1em;">
+  <div class="card-block">
+    (Anaconda3) > conda install -c conda-forge vitables<br>
   </div>
 </div>
-<p>If this fails, you can install <em>ViTables</em> from sources. Download and untar the tarball (or clone the <code>GitHub</code> repo),
-go to the root directory and proceed as you do in a typical installation from sources</p>
-<div class="card card-info" style="margin-bottom: 1em;">
-  <div class="card-block card-faq">
-    (Anaconda3) > python setup.py install<br>
-    (Anaconda3) > vitables
+<p>If this fails, you can install <em>ViTables</em> from the PyPi repo. Please notice that, as stated in the <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#using-pip-in-an-environment">conda User guide</a>:</p>
+<p><q>Issues may arise when using conda and pip together. When combining conda and
+pip it is best to use an isolated conda environment. Only after conda has
+been used to install as many packages as possible should pip be used to
+install any remaining software.</q></p>
+<p>So the following should work:</p>
+<div class="card card-shell" style="margin-bottom: 1em;">
+  <div class="card-block">
+    (Anaconda3) > conda create --name vitables pytables pyqt<br>
+    (Anaconda3) > conda activate vitables<br>
+    (vitables) > pip install ViTables
   </div>
 </div>
-<p>Caveat emptor: as you know <em>ViTables</em> depends on <code>PyQt5</code>. Unfortunately the <code>pip</code> installed <code>PyQt5</code> package and the analogous
-package provided by <code>Anaconda3</code> are in conflict with each other (you can read more about this
-<a href="https://github.com/ContinuumIO/anaconda-issues/issues/1554">here</a>). In order to avoid problems I recommend you to follow
-these advices:</p>
-<ul>
-<li>if you have installed the package from the conda-forge channel, remove the <code>PyQt5</code> dependency from
-<code>Anaconda3\pkgs\vitables-3.0.0-0\Lib\site-packages\ViTables-3.0.0.egg-info\requires.txt</code></li>
-<li>if you are going to install from sources, <em>before you proceed</em>, remove the <code>PyQt5</code> dependency from the <code>install_requires</code> line in the
-<code>setup.py</code> file.</li>
-</ul>
+<p>If it still fails, download the tarball, uncompress it and proceed as you would do in a typical installation from sources:</p>
+<div class="card card-shell" style="margin-bottom: 1em;">
+  <div class="card-block">
+    (Anaconda3) > conda create --name vitables pytables pyqt<br>
+    (Anaconda3) > conda activate vitables<br>
+    (vitables) > python setup.py install
+  </div>
+</div>
 
         
         <hr>
