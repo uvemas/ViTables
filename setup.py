@@ -35,7 +35,7 @@ if 'CONDA_PREFIX' not in os.environ:
     install_requires.append('PyQt5 (>=5.5.1)')
 
 setup(name='ViTables',
-      version=read('VERSION'),
+      version=read('VERSION').rstrip('\r\n'),
       description='A viewer for PyTables package',
       long_description=read('README.txt'),
       author='Vicent Mas',
@@ -70,16 +70,12 @@ setup(name='ViTables',
       packages=find_packages(),
       # Include data files that belong to the vitables package
       package_data={
-                'vitables': ['LICENSE.html',
-                             'htmldocs/*', 'htmldocs/*/*',
-                             'icons/*', 'icons/*/*',
-                             '*/*.ui', 'plugins/*/*.ui',
-                             'plugins/*/*.ini',
-                             'i18n/*.qm'
-                             ]
-      },
-      # In order to include files that do not belong to any package we have to
-      # add them to MANIFEST.in AND set the include_package_data keyword to
-      # True
-      # include_package_data=True,
+            'vitables': ['LICENSE.html',
+                         'htmldocs/*', 'htmldocs/*/*',
+                         'icons/*', 'icons/*/*',
+                         '*/*.ui', 'plugins/*/*.ui',
+                         'plugins/*/*.ini',
+                         'i18n/*.qm'
+                         ]
+      }
       )
