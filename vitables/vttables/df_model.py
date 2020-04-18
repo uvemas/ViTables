@@ -59,10 +59,8 @@ def try_opening_as_dataframe(leaf):
             pytables._tables()
 
     pgroup = leaf._g_getparent()
-    try:
-        assert pgroup._c_classid == 'GROUP'
-    except AssertionError:
-        log('Parent of {0} is not a GROUP'.format(leaf))
+    if pgroup._c_classid != 'GROUP':
+        log.debug('Parent of %s is not a GROUP', leaf)
 
     pandas_attr = getattr(pgroup._v_attrs, 'pandas_type', None)
     if pandas_attr in ['frame', 'frame_table']:
@@ -180,11 +178,11 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         #
         start = max(start, 0)
         stop = min(start + length, self.leaf_numrows)
-        try:
-            assert stop >= start
-        except AssertionError:
-            log(('Chunk: number of rows {0}, first row {1}, '
-                 'last row {2}').format(self.numrows, start, stop))
+        if stop < start:
+            log.debug(
+                'Chunk: number of rows %s, first row %s, last row {2}',
+                self.numrows, start, stop
+            )
 
         # Ensure that the whole buffer will be filled.
         #
