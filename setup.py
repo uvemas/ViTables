@@ -30,7 +30,7 @@ def read(fname):
 
 
 install_requires = ['qtpy (>=1.2.1)', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
-                    'tables (>=3.0)']
+                    'tables (>=3.0)', 'setuptools']
 if 'CONDA_PREFIX' not in os.environ:
     install_requires.append('PyQt5 (>=5.5.1)')
 
