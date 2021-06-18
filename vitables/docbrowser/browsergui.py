@@ -29,17 +29,18 @@ __docformat__ = 'restructuredtext'
 
 import re
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables.utils
 from vitables.vtsite import DOCDIR
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
-class HelpBrowserGUI(QtGui.QMainWindow) :
+class HelpBrowserGUI(QtWidgets.QMainWindow) :
     """
     The main window of the documentation browser.
 
@@ -66,7 +67,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         self.browser = browser
 
         # The browser widget
-        self.text_browser = QtGui.QTextBrowser()
+        self.text_browser = QtWidgets.QTextBrowser()
         self.text_browser.setSearchPaths([DOCDIR])
         self.setCentralWidget(self.text_browser)
         self.text_browser.setAcceptRichText(True)
@@ -87,7 +88,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
 
         actions = {}
 
-        actions['exitBrowser'] = QtGui.QAction(
+        actions['exitBrowser'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', 'E&xit', 'File --> Exit'), self,
             shortcut=QtGui.QKeySequence.Quit,
             triggered=self.browser.exitBrowser,
@@ -95,7 +96,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Close Help Browser',
                     'Status bar text for the File --> Exit action'))
 
-        actions['zoomIn'] = QtGui.QAction(
+        actions['zoomIn'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', 'Zoom &in', 'View --> Zoom in'), self,
             shortcut=QtGui.QKeySequence.ZoomIn,
             triggered=self.browser.zoomIn,
@@ -103,7 +104,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Increases the font size',
                 'Status bar text for the View --> Zoom in action'))
 
-        actions['zoomOut'] = QtGui.QAction(
+        actions['zoomOut'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', 'Zoom &out', 'View --> Zoom out'),
             self,
             shortcut=QtGui.QKeySequence.ZoomOut,
@@ -112,7 +113,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Decreases the font size',
                 'Status bar text for the View --> Zoom out action'))
 
-        actions['goHome'] = QtGui.QAction(
+        actions['goHome'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&Home', 'Go --> Home'), self,
             shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.text_browser.home,
@@ -121,7 +122,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
                 'Go to the first visited page',
                 'Status bar text for the  Go --> Home action'))
 
-        actions['goBackward'] = QtGui.QAction(
+        actions['goBackward'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&Backward', ' Go --> Backward'),
             self,
             shortcut=QtGui.QKeySequence.Back,
@@ -130,7 +131,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Go to previous page',
                 'Status bar text for the  Go --> Backward action'))
 
-        actions['goForward'] = QtGui.QAction(
+        actions['goForward'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&Forward', ' Go --> Forward'), self,
             shortcut=QtGui.QKeySequence.Forward,
             triggered=self.text_browser.forward,
@@ -138,7 +139,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Go to next page',
                 'Status bar text for the  Go --> Forward action'))
 
-        actions['goReload'] = QtGui.QAction(
+        actions['goReload'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&Reload', 'Go --> Reload'), self,
             shortcut=QtGui.QKeySequence.Refresh,
             triggered=self.text_browser.reload,
@@ -146,7 +147,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Reload the current page',
                 'Status bar text for the  Go --> Reload action'))
 
-        actions['bookmarksAdd'] = QtGui.QAction(
+        actions['bookmarksAdd'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&Add bookmark',
                 'Bookmarks --> Add bookmark'),
             self,
@@ -156,7 +157,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Bookmark the current page',
                 'Status bar text for Bookmarks --> Add bookmark action'))
 
-        actions['bookmarksEdit'] = QtGui.QAction(
+        actions['bookmarksEdit'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&Edit bookmarks...',
                 'Bookmarks --> Edit bookmarks'),
             self,
@@ -166,7 +167,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'Edit bookmarks',
                 'Status bar text for Bookmarks --> Edit bookmarks action'))
 
-        actions['bookmarksClear'] = QtGui.QAction(
+        actions['bookmarksClear'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&Clear All',
                 'Bookmarks --> Clear bookmark'),
             self,
@@ -176,7 +177,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
                 'Clear all existing bookmarks',
                 'Status bar text for Bookmarks --> Add bookmark action'))
 
-        actions['about'] = QtGui.QAction(
+        actions['about'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', '&About HelpBrowser',
                 'Help --> About HelpBrowser'),
             self,
@@ -185,7 +186,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'About HelpBrowser',
                 'Status bar text for Help --> About HelpBrowser action'))
 
-        actions['aboutQt'] = QtGui.QAction(
+        actions['aboutQt'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', 'About &Qt', 'Help --> About Qt'),
             self,
             shortcut=QtGui.QKeySequence.UnknownKey,
@@ -193,7 +194,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
             statusTip=translate('HelpBrowserGUI', 'About Qt',
                 'Status bar text for the Help --> About Qt action'))
 
-        actions['clearSession'] = QtGui.QAction(
+        actions['clearSession'] = QtWidgets.QAction(
             translate('HelpBrowserGUI', 'Clear history', ''), self,
             shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.browser.clearHistory,
@@ -223,7 +224,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         # Create the View menu and toolbar
         view_menu = self.menuBar().addMenu(
             translate('HelpBrowserGUI', "&View", 'The View menu entry'))
-        view_toolbar = QtGui.QToolBar(
+        view_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'View operations', 'Toolbar title'),
             self)
         self.addToolBar(view_toolbar)
@@ -234,7 +235,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         # Create the Go menu and toolbar
         go_menu = self.menuBar().addMenu(translate('HelpBrowserGUI', "&Go",
             'The Go menu entry'))
-        go_toolbar = QtGui.QToolBar(
+        go_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'Go operations', 'Toolbar title'),
             self)
         self.addToolBar(go_toolbar)
@@ -246,7 +247,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         # Create the Bookmarks menu and toolbar
         self.bookmarks_menu = self.menuBar().addMenu(
             translate('HelpBrowserGUI', "&Bookmarks", 'Bookmarks menu entry'))
-        bookmarks_toolbar = QtGui.QToolBar(
+        bookmarks_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'Bookmarks operations',
             'Toolbar title'), self)
         self.addToolBar(bookmarks_toolbar)
@@ -264,20 +265,20 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         vitables.utils.addActions(help_menu, help_actions, self.actions)
 
         # Create the History toolbar
-        history_toolbar = QtGui.QToolBar(
+        history_toolbar = QtWidgets.QToolBar(
             translate('HelpBrowserGUI', 'History operations', 'Toolbar title'),
             self)
         self.addToolBar(history_toolbar)
         history_actions = ['clearSession']
         vitables.utils.addActions(history_toolbar, history_actions,
             self.actions)
-        go_selector = QtGui.QLabel(
+        go_selector = QtWidgets.QLabel(
             translate('HelpBrowserGUI', 'Go: ', 'Text of the Go: label'),
             history_toolbar)
         history_toolbar.addWidget(go_selector)
-        self.combo_history = QtGui.QComboBox(history_toolbar)
+        self.combo_history = QtWidgets.QComboBox(history_toolbar)
         self.combo_history.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
+            QtWidgets.QComboBox.AdjustToContents)
         history_toolbar.addWidget(self.combo_history)
 
 
@@ -321,7 +322,7 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         index = 0
         for filepath in self.browser.bookmarks:
             index += 1
-            action = QtGui.QAction('{0:>2}. {1}'.format(index, filepath),
+            action = QtWidgets.QAction('{0:>2}. {1}'.format(index, filepath),
                                     self.bookmarks_menu)
             action.setData(filepath)
             self.bookmarks_menu.addAction(action)
@@ -362,4 +363,4 @@ class HelpBrowserGUI(QtGui.QMainWindow) :
         # close button then history is not saved at all.
         # We fix this misbehavior by overwriting this method.
         self.browser.exitBrowser()
-        QtGui.QMainWindow.closeEvent(self, event)
+        QtWidgets.QMainWindow.closeEvent(self, event)

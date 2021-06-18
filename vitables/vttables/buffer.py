@@ -33,7 +33,7 @@ __docformat__ = 'restructuredtext'
 import warnings
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 import numpy
 import tables
@@ -41,7 +41,7 @@ import tables
 import vitables.utils
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 # Restrict the available flavors to 'numpy' so that reading a leaf
 # always return a numpy array instead of an object of the kind indicated
 # by the leaf flavor. For VLArrays the read data is returned as a list whose

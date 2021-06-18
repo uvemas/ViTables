@@ -34,24 +34,25 @@ import logging
 
 import tables
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
-from PyQt4.uic import loadUiType
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 from vitables.nodeprops import attreditor
 
-translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+translate = QtWidgets.QApplication.translate
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_AttrPropDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'attr_prop_dlg.ui'))[0]
 
 
 
-class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
+class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
     """
     Node properties dialog.
 
@@ -107,7 +108,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
 
         # Table of system attributes
         self.sysTable.horizontalHeader().setResizeMode(
-            QtGui.QHeaderView.Stretch)
+            QtWidgets.QHeaderView.Stretch)
         self.sysattr_model = QtGui.QStandardItemModel()
         self.sysattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
@@ -183,7 +184,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
 
         # Table of user attributes
         self.userTable.horizontalHeader().\
-                        setResizeMode(QtGui.QHeaderView.Stretch)
+                        setResizeMode(QtWidgets.QHeaderView.Stretch)
         self.userattr_model = QtGui.QStandardItemModel()
         self.userattr_model.setHorizontalHeaderLabels([
             translate('AttrPropDlg', 'Name',
@@ -207,7 +208,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             name_item = QtGui.QStandardItem(name)
             value_item = QtGui.QStandardItem(str(value))
             dtype_item = QtGui.QStandardItem()
-            dtypes_combo = QtGui.QComboBox()
+            dtypes_combo = QtWidgets.QComboBox()
             dtypes_combo.addItems(dtypes_list)
             dtypes_combo.setEditable(False)
             # In PyTables >=1.1 scalar attributes are stored as numarray arrays
@@ -251,7 +252,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         self.user_attrs_before = sorted(self.user_attrs_before[:])
 
         # The group of buttons Add, Delete, What's This
-        self.page_buttons = QtGui.QButtonGroup(self.userattrs_page)
+        self.page_buttons = QtWidgets.QButtonGroup(self.userattrs_page)
         self.page_buttons.addButton(self.addButton, 0)
         self.page_buttons.addButton(self.delButton, 1)
         self.page_buttons.addButton(self.helpButton, 2)
@@ -261,7 +262,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
             for uid in (0, 1):
                 self.page_buttons.button(uid).setEnabled(False)
 
-        self.helpButton.clicked.connect(QtGui.QWhatsThis.enterWhatsThisMode)
+        self.helpButton.clicked.connect(QtWidgets.QWhatsThis.enterWhatsThisMode)
 
 
     @QtCore.pyqtSlot("QModelIndex", name="on_sysTable_clicked")
@@ -346,10 +347,10 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         buttons = {
             'Delete':
                 (translate('AttrPropDlg', 'Delete', 'Button text'),
-                QtGui.QMessageBox.YesRole),
+                QtWidgets.QMessageBox.YesRole),
             'Cancel':
                 (translate('AttrPropDlg', 'Cancel', 'Button text'),
-                QtGui.QMessageBox.NoRole),
+                QtWidgets.QMessageBox.NoRole),
             }
 
         # Ask for confirmation
@@ -405,7 +406,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         # If the file is in read-only mode or the Attribute Set Instance
         # remains unchanged no attribute needs to be updated
         if (self.mode == 'read-only') or (not self.asiChanged()):
-            QtGui.QDialog.accept(self)
+            QtWidgets.QDialog.accept(self)
             return  # This is mandatory!
 
         # Check the editable attributes
@@ -417,7 +418,7 @@ class AttrPropDlg(QtGui.QDialog, Ui_AttrPropDialog):
         if attrs_are_ok == True:
             aeditor.setAttributes()
             del aeditor
-            QtGui.QDialog.accept(self)
+            QtWidgets.QDialog.accept(self)
             return
         # If not then keep the dialog opened
         else:

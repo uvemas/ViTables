@@ -28,9 +28,9 @@ __docformat__ = 'restructuredtext'
 
 import time
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtGui, QtCore, QtWidgets
 
-class VTSplash(QtGui.QSplashScreen):
+class VTSplash(QtWidgets.QSplashScreen):
     """
     The application splash screen.
 
@@ -72,7 +72,7 @@ class VTSplash(QtGui.QSplashScreen):
         :Parameter msg: the message to be displayed
         """
 
-        QtGui.qApp.processEvents()
+        QtWidgets.qApp.processEvents()
         self.msg = msg
         self.showMessage(self.msg)
         time.sleep(0.500)

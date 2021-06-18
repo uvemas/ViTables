@@ -36,20 +36,20 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-from PyQt4.uic import loadUiType
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
+from PyQt5.uic import loadUiType
 
 
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_TimeFormatterPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),
     'timeformatter_page.ui'))[0]
 
 
-class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
+class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
     """
     Widget for describing and customizing the Time series plugin.
 
@@ -84,7 +84,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
         self.desc_te.setText(desc['about_text'])
 
         # Configuration section of the page
-        self.save_button = self.buttons_box.button(QtGui.QDialogButtonBox.Save)
+        self.save_button = self.buttons_box.button(QtWidgets.QDialogButtonBox.Save)
         self.save_button.setText('Save format')
 
         # The absolute path of the INI file
@@ -115,7 +115,7 @@ class AboutPage(QtGui.QWidget, Ui_TimeFormatterPage):
                 if e.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
                     self.applyFormat()
                     return True
-        return QtGui.QWidget.eventFilter(self, w, e)
+        return QtWidgets.QWidget.eventFilter(self, w, e)
 
 
     def applyFormat(self):

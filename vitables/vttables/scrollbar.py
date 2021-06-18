@@ -33,10 +33,10 @@ datasets with a larger number of rows than that provided by the view widget.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
-class ScrollBar(QtGui.QScrollBar):
+class ScrollBar(QtWidgets.QScrollBar):
     """
     A specialised scrollbar for views of huge datasets.
 
@@ -70,4 +70,4 @@ class ScrollBar(QtGui.QScrollBar):
         if (e.type() == QtCore.QEvent.Wheel):
             self.view.wheelEvent(e)
             return True
-        return QtGui.QScrollBar.event(self, e)
+        return QtWidgets.QScrollBar.event(self, e)

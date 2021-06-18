@@ -31,8 +31,9 @@ import logging
 
 import tables
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables.utils
 import vitables.vtsplash
@@ -57,7 +58,7 @@ import vitables.vttables.datasheet as datasheet
 
 import vitables.vtgui as vtgui
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def makePage(content):
@@ -66,9 +67,9 @@ def makePage(content):
     :Parameter content: the text displayed on the page
     """
 
-    widget = QtGui.QWidget()
-    widget.setLayout(QtGui.QVBoxLayout())
-    text_edit = QtGui.QTextEdit(widget)
+    widget = QtWidgets.QWidget()
+    widget.setLayout(QtWidgets.QVBoxLayout())
+    text_edit = QtWidgets.QTextEdit(widget)
     text_edit.setReadOnly(1)
     text_edit.setAcceptRichText(True)
     text_edit.setText(content)
@@ -90,7 +91,7 @@ class VTApp(QtCore.QObject):
     # Convenience signals for the plugins. Usually new signals are added
     # when a new plugin is added to ViTables. They are the link between
     # the plugins and the core of the program
-    leaf_model_created = QtCore.pyqtSignal(QtGui.QMdiSubWindow,
+    leaf_model_created = QtCore.pyqtSignal(QtWidgets.QMdiSubWindow,
                                            name="leafModelCreated")
     dbtree_model_created = QtCore.pyqtSignal()
     pluginsLoaded = QtCore.pyqtSignal()
@@ -378,8 +379,8 @@ class VTApp(QtCore.QObject):
         """Create a new file."""
 
         # Launch the file selector
-        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen,
-                   'file_mode': QtGui.QFileDialog.AnyFile,
+        fs_args = {'accept_mode': QtWidgets.QFileDialog.AcceptOpen,
+                   'file_mode': QtWidgets.QFileDialog.AnyFile,
                    'history': self.file_selector_history,
                    'label': translate('VTApp', 'Create',
                                       'Accept button text for QFileDialog')}
@@ -434,8 +435,8 @@ class VTApp(QtCore.QObject):
             self.gui.dbs_tree_model.nodeFromIndex(current_index).filepath
 
         # Launch the file selector
-        fs_args = {'accept_mode': QtGui.QFileDialog.AcceptSave,
-                   'file_mode': QtGui.QFileDialog.AnyFile,
+        fs_args = {'accept_mode': QtWidgets.QFileDialog.AcceptSave,
+                   'file_mode': QtWidgets.QFileDialog.AnyFile,
                    'history': self.file_selector_history,
                    'label': translate('VTApp', 'Create',
                                       'Accept button text for QFileDialog')}
@@ -541,11 +542,11 @@ class VTApp(QtCore.QObject):
 
         # Make a copy of the selected file
         try:
-            QtGui.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+            QtWidgets.qApp.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
             dbdoc = self.gui.dbs_tree_model.getDBDoc(initial_filepath)
             dbdoc.copy_file(filepath)
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
 
         # Close the copied file (which is not necessarely selected in
         # the tree view because closing an overwritten file can change
@@ -601,8 +602,8 @@ class VTApp(QtCore.QObject):
 
         if not filepath:
             # Launch the file selector
-            fs_args = {'accept_mode': QtGui.QFileDialog.AcceptOpen,
-                'file_mode': QtGui.QFileDialog.ExistingFile,
+            fs_args = {'accept_mode': QtWidgets.QFileDialog.AcceptOpen,
+                'file_mode': QtWidgets.QFileDialog.ExistingFile,
                 'history': self.file_selector_history,
                 'label':
                     translate('VTApp', 'Open', 'Accept text for QFileDialog')}
@@ -742,7 +743,7 @@ class VTApp(QtCore.QObject):
 
         # tables.UnImplemented datasets cannot be read so are not opened
         if isinstance(leaf, tables.UnImplemented):
-            QtGui.QMessageBox.information(self.gui,
+            QtWidgets.QMessageBox.information(self.gui,
                 translate('VTApp',
                     'About UnImplemented nodes', 'A dialog caption'),
                 translate('VTApp',
@@ -938,7 +939,7 @@ class VTApp(QtCore.QObject):
             if not hasattr(leaf, 'target'):
                 leaf_buffer = rbuffer.Buffer(leaf)
                 if not leaf_buffer.isDataSourceReadable():
-                    QtGui.QMessageBox.information(self,
+                    QtWidgets.QMessageBox.information(self,
                         translate('VTApp', 'About unreadable datasets',
                             'Dialog caption'),
                         translate('VTApp',
@@ -1048,10 +1049,10 @@ class VTApp(QtCore.QObject):
             buttons = {
                 'Delete':
                     (translate('VTApp', 'Delete', 'Button text'),
-                    QtGui.QMessageBox.YesRole),
+                    QtWidgets.QMessageBox.YesRole),
                 'Cancel':
                     (translate('VTApp', 'Cancel', 'Button text'),
-                    QtGui.QMessageBox.NoRole),
+                    QtWidgets.QMessageBox.NoRole),
                 }
 
             # Ask for confirmation
@@ -1075,7 +1076,7 @@ class VTApp(QtCore.QObject):
         # Ensure that the new current node (if any) gets selected
         select_model = self.gui.dbs_tree_view.selectionModel()
         new_current = self.gui.dbs_tree_view.currentIndex()
-        select_model.select(new_current, QtGui.QItemSelectionModel.Select)
+        select_model.select(new_current, QtCore.QItemSelectionModel.Select)
 
 
     def nodeProperties(self):
@@ -1111,7 +1112,7 @@ class VTApp(QtCore.QObject):
 
         prefs =  preferences.Preferences()
         try:
-            if prefs.exec_() == QtGui.QDialog.Accepted:
+            if prefs.exec_() == QtWidgets.QDialog.Accepted:
                 self.config.loadConfiguration(prefs.new_prefs)
         finally:
             del prefs
@@ -1189,14 +1190,14 @@ class VTApp(QtCore.QObject):
         license_text = vitables.utils.getLicense()
 
         # Construct the dialog
-        about_dlg = QtGui.QDialog(self.gui)
+        about_dlg = QtWidgets.QDialog(self.gui)
         about_dlg.setWindowTitle(
             translate('VTApp', 'About ViTables {0}',
                 'Caption of the About ViTables dialog').\
                 format(vtconfig.getVersion()))
-        layout = QtGui.QVBoxLayout(about_dlg)
-        tab_widget = QtGui.QTabWidget(about_dlg)
-        buttons_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        layout = QtWidgets.QVBoxLayout(about_dlg)
+        tab_widget = QtWidgets.QTabWidget(about_dlg)
+        buttons_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         layout.addWidget(tab_widget)
         layout.addWidget(buttons_box)
 
@@ -1224,7 +1225,7 @@ class VTApp(QtCore.QObject):
         """
         Show a message box with the Qt About info.
         """
-        QtGui.QMessageBox.aboutQt(self.gui, translate('VTApp', 'About Qt',
+        QtWidgets.QMessageBox.aboutQt(self.gui, translate('VTApp', 'About Qt',
             'Caption of the About Qt dialog'))
 
 
@@ -1259,12 +1260,12 @@ class VTApp(QtCore.QObject):
                     'Part of the library not found text')
 
         # Construct the dialog
-        versions_dlg = QtGui.QDialog(self.gui)
+        versions_dlg = QtWidgets.QDialog(self.gui)
         versions_dlg.setWindowTitle(translate('VTApp', 'Version Numbers',
                                              'Caption of the Versions dialog'))
-        layout = QtGui.QVBoxLayout(versions_dlg)
-        versions_edit = QtGui.QTextEdit(versions_dlg)
-        buttons_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        layout = QtWidgets.QVBoxLayout(versions_dlg)
+        versions_edit = QtWidgets.QTextEdit(versions_dlg)
+        buttons_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         layout.addWidget(versions_edit)
         layout.addWidget(buttons_box)
 

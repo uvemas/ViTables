@@ -65,14 +65,15 @@ import logging
 import tables
 import numpy
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 
 import vitables.utils
 from vitables.plugins.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 TYPE_ERROR = translate(
     'ImportCSV', 'Please, make sure that you are importing a '
     'homogeneous dataset.', 'CSV file not imported error')
@@ -283,10 +284,10 @@ def askForHelp(first_line):
     buttons = {
         'Header':
         (translate('ImportCSV', 'Header', 'Button text'),
-         QtGui.QMessageBox.YesRole),
+         QtWidgets.QMessageBox.YesRole),
         'Data':
         (translate('ImportCSV', 'Data', 'Button text'),
-         QtGui.QMessageBox.NoRole),
+         QtWidgets.QMessageBox.NoRole),
         }
     return vitables.utils.questionBox(title, text, itext, dtext, buttons)
 
@@ -467,7 +468,7 @@ class ImportCSV(QtCore.QObject):
                                             'icons/document-import.png'))
         icon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.On)
 
-        self.import_submenu = QtGui.QMenu(
+        self.import_submenu = QtWidgets.QMenu(
             translate('ImportCSV', 'I&mport from CSV...',
                       'File -> Import CSV'))
         self.import_submenu.setSeparatorsCollapsible(False)
@@ -475,7 +476,7 @@ class ImportCSV(QtCore.QObject):
 
         # Create the actions
         actions = {}
-        actions['import_table'] = QtGui.QAction(
+        actions['import_table'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &Table...",
                       "Import table from CSV file"),
             self,
@@ -486,7 +487,7 @@ class ImportCSV(QtCore.QObject):
                 "Import Table from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import Table"))
 
-        actions['import_array'] = QtGui.QAction(
+        actions['import_array'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &Array...",
                       "Import array from CSV file"),
             self,
@@ -497,7 +498,7 @@ class ImportCSV(QtCore.QObject):
                 "Import Array from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import Array"))
 
-        actions['import_carray'] = QtGui.QAction(
+        actions['import_carray'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &CArray...",
                       "Import carray from CSV file"),
             self,
@@ -508,7 +509,7 @@ class ImportCSV(QtCore.QObject):
                 "Import CArray from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import CArray"))
 
-        actions['import_earray'] = QtGui.QAction(
+        actions['import_earray'] = QtWidgets.QAction(
             translate('ImportCSV', "Import &EArray...",
                       "Import earray from CSV file"),
             self,
@@ -519,7 +520,7 @@ class ImportCSV(QtCore.QObject):
                 "Import EArray from plain CSV file",
                 "Status bar text for File -> Import CSV... -> Import EArray"))
 
-        actions['separator'] = QtGui.QAction(self)
+        actions['separator'] = QtWidgets.QAction(self)
         actions['separator'].setSeparator(True)
 
         # Add actions to the Import submenu
@@ -574,8 +575,8 @@ class ImportCSV(QtCore.QObject):
             dfilter=translate('ImportCSV', """CSV Files (*.csv);;"""
                               """All Files (*)""",
                               'Filter for the Import from CSV dialog'),
-            settings={'accept_mode': QtGui.QFileDialog.AcceptOpen,
-                      'file_mode': QtGui.QFileDialog.ExistingFile,
+            settings={'accept_mode': QtWidgets.QFileDialog.AcceptOpen,
+                      'file_mode': QtWidgets.QFileDialog.ExistingFile,
                       'history': self.vtapp.file_selector_history,
                       'label': translate('ImportCSV', 'Import',
                                          'Accept button text for QFileDialog')}
@@ -620,8 +621,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             input_handler = open(filepath, 'r+')
             (nrows, descr, has_header) = tableInfo(input_handler)
 
@@ -657,7 +658,7 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
             input_handler.close()
 
     def csv2EArray(self):
@@ -673,8 +674,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
             (nrows, atom, array_shape) = earrayInfo(input_handler)
@@ -710,7 +711,7 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
             input_handler.close()
 
     def csv2CArray(self):
@@ -726,8 +727,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
             (atom, array_shape) = carrayInfo(input_handler)
@@ -766,7 +767,7 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
             input_handler.close()
 
     def csv2Array(self):
@@ -782,8 +783,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtGui.qApp.processEvents()
-            QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.qApp.processEvents()
+            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
             # The dtypes are determined by the contents of each column
             # Multidimensional columns will have string datatype
             data = numpy.genfromtxt(filepath, delimiter=',', dtype=None)
@@ -809,7 +810,7 @@ class ImportCSV(QtCore.QObject):
                 vitables.utils.formatExceptionInfo()
         finally:
             del data
-            QtGui.qApp.restoreOverrideCursor()
+            QtWidgets.qApp.restoreOverrideCursor()
 
     def helpAbout(self, parent):
         """Full description of the plugin.

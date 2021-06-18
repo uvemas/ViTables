@@ -31,11 +31,12 @@ rendered unselected.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 
-class LeafDelegate(QtGui.QStyledItemDelegate):
+class LeafDelegate(QtWidgets.QStyledItemDelegate):
     """
     A delegate for rendering selected cells.
 
@@ -65,7 +66,7 @@ class LeafDelegate(QtGui.QStyledItemDelegate):
         """
 
         # option.state is an ORed combination of flags
-        if (option.state & QtGui.QStyle.State_Selected):
+        if (option.state & QtWidgets.QStyle.State_Selected):
             model = index.model()
             buffer_start = model.rbuffer.start
             cell = index.model().selected_cell
@@ -85,6 +86,6 @@ class LeafDelegate(QtGui.QStyledItemDelegate):
                     model.data(index))
                 painter.restore()
             else:
-                QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+                QtWidgets.QStyledItemDelegate.paint(self, painter, option, index)
         else:
-            QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+            QtWidgets.QStyledItemDelegate.paint(self, painter, option, index)

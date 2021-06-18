@@ -30,19 +30,20 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_InputNodenameDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'nodename_dlg.ui'))[0]
 
-class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
+class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
     """
     Dialog for interactively entering a name for a given node.
 
@@ -79,7 +80,7 @@ class InputNodeName(QtGui.QDialog, Ui_InputNodenameDialog):
 
         # The Create/Rename button
         self.edit_button = self.buttonsBox.addButton(action,
-            QtGui.QDialogButtonBox.AcceptRole)
+            QtWidgets.QDialogButtonBox.AcceptRole)
 
         # Setup a validator for checking the entered node name
         validator = QtGui.QRegExpValidator(self)

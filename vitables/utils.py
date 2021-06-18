@@ -34,8 +34,9 @@ import functools
 
 import numpy
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables.vtwidgets.renamedlg as renamedlg
 from vitables.vtsite import ICONDIR, DOCDIR
@@ -53,7 +54,7 @@ def getVTApp():
     """
 
     vtapp = None
-    for widget in QtGui.qApp.topLevelWidgets():
+    for widget in QtWidgets.qApp.topLevelWidgets():
         if widget.objectName() == 'VTGUI':
             vtapp = widget.vtapp
             break
@@ -118,12 +119,12 @@ def long_action(message=None):
             status_bar = getGui().statusBar()
             if message is not None:
                 status_bar.showMessage(message)
-            QtGui.QApplication.setOverrideCursor(
+            QtWidgets.QApplication.setOverrideCursor(
                 QtGui.QCursor(QtCore.Qt.WaitCursor))
             try:
                 res = f(*args, **kwargs)
             finally:
-                QtGui.QApplication.restoreOverrideCursor()
+                QtWidgets.QApplication.restoreOverrideCursor()
                 if message is not None:
                     status_bar.clearMessage()
             return res
@@ -170,9 +171,9 @@ def insertInMenu(menu, entries, uid):
     if not isinstance(entries, collections.Iterable):
         entries = [entries]
 
-    if isinstance(entries[0], QtGui.QAction):
+    if isinstance(entries[0], QtWidgets.QAction):
         menu.insertEntry = menu.insertAction
-    elif isinstance(entries[0], QtGui.QMenu):
+    elif isinstance(entries[0], QtWidgets.QMenu):
         menu.insertEntry = menu.insertMenu
 
     for item in menu.actions():
@@ -198,9 +199,9 @@ def addToMenu(menu, entries):
     if not isinstance(entries, collections.Iterable):
         entries = [entries]
 
-    if isinstance(entries[0], QtGui.QAction):
+    if isinstance(entries[0], QtWidgets.QAction):
         menu.addEntry = menu.addAction
-    elif isinstance(entries[0], QtGui.QMenu):
+    elif isinstance(entries[0], QtWidgets.QMenu):
         menu.addEntry = menu.addMenu
 
     menu.addSeparator()
@@ -257,11 +258,11 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
         `history` (file selector history) , `accept_mode` and `file_mode`
     """
 
-    file_selector = QtGui.QFileDialog(parent, caption, '', dfilter)
+    file_selector = QtWidgets.QFileDialog(parent, caption, '', dfilter)
     # Misc. setup
     file_selector.setDirectory(settings['history'][-1])
     file_selector.setAcceptMode(settings['accept_mode'])
-    if settings['accept_mode'] == QtGui.QFileDialog.AcceptSave:
+    if settings['accept_mode'] == QtWidgets.QFileDialog.AcceptSave:
         file_selector.setConfirmOverwrite(False)
     file_selector.setFileMode(settings['file_mode'])
     file_selector.setHistory(settings['history'])
@@ -269,13 +270,13 @@ def getFileSelector(parent, caption, dfilter, filepath='', settings=None):
         file_selector.selectFile(filepath)
     if settings['label'] != '':
         file_selector.setLabelText(
-            QtGui.QFileDialog.Accept, settings['label'])
+            QtWidgets.QFileDialog.Accept, settings['label'])
 
     # Uncomment next line if you want native dialogs. Removing the comment
     # comes at the price of an annoying KDE warning in your console. See the
     # thread "A dire warning message" (July, 2011) in the pyQt4 mailing list
     # for details.
-    #file_selector.setOption(QtGui.QFileDialog.DontUseNativeDialog)
+    #file_selector.setOption(QtWidgets.QFileDialog.DontUseNativeDialog)
     return file_selector
 
 
@@ -453,7 +454,7 @@ def addActions(target, actions, actions_dict):
     for action in actions:
         if action is None:
             target.addSeparator()
-        elif isinstance(action, QtGui.QMenu):
+        elif isinstance(action, QtWidgets.QMenu):
             target.addMenu(action)
         else:
             target.addAction(actions_dict[action])
@@ -577,15 +578,15 @@ def questionBox(title='', text='', info='', detail='', buttons_def=''):
 
     """
 
-    qmbox = QtGui.QMessageBox()
-    qmbox.setIcon(QtGui.QMessageBox.Question)
+    qmbox = QtWidgets.QMessageBox()
+    qmbox.setIcon(QtWidgets.QMessageBox.Question)
     qmbox.setWindowTitle(title)
     qmbox.setText(text)
     if info:
         qmbox.setInformativeText(info)
     if detail:
         qmbox.setDetailedText(detail)
-    qmbox.setDefaultButton(QtGui.QMessageBox.NoButton)
+    qmbox.setDefaultButton(QtWidgets.QMessageBox.NoButton)
 
     buttons = {}
     for name, (text, role) in buttons_def.items():

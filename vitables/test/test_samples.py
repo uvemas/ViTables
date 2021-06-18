@@ -6,9 +6,9 @@ import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
-import PyQt4.QtGui as qtgui
-import PyQt4.QtCore as qtcore
-import PyQt4.QtTest as qtest
+import PyQt5.QtWidgets as qtwidget
+import PyQt5.QtCore as qtcore
+import PyQt5.QtTest as qtest
 
 import vitables.start as vtstart
 
@@ -176,7 +176,7 @@ class TestTableOpening:
     @classmethod
     def setup_class(cls):
         """Create app and store shortcuts to the application objects."""
-        cls.app = qtgui.QApplication(sys.argv)
+        cls.app = qtwidget.QApplication(sys.argv)
         cls.vtapp = VTApp(keep_splash=False)
         cls.vtgui = cls.vtapp.gui
         cls.model = cls.vtgui.dbs_tree_model

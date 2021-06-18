@@ -28,17 +28,18 @@ node of the tree contains the object tree of a `PyTables`/`HDF5` database.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 
 from vitables.h5db.nodeitemdelegate import NodeItemDelegate
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
-class DBsTreeView(QtGui.QTreeView):
+class DBsTreeView(QtWidgets.QTreeView):
     """
     A view for the databases tree model.
 
@@ -48,7 +49,7 @@ class DBsTreeView(QtGui.QTreeView):
     """
 
 
-    dbsTreeViewCreated = QtCore.pyqtSignal(QtGui.QTreeView)
+    dbsTreeViewCreated = QtCore.pyqtSignal(QtWidgets.QTreeView)
 
     def __init__(self, vtapp, model):
         """Create the view.
@@ -77,7 +78,7 @@ class DBsTreeView(QtGui.QTreeView):
                 QtGui.QPalette.WindowText)}
 
         # Setup drag and drop
-        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
@@ -85,7 +86,7 @@ class DBsTreeView(QtGui.QTreeView):
         # Misc. setup
         self.setRootIsDecorated(True)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setWhatsThis(translate('DBsTreeView',
             """<qt>
             <h3>The Tree of databases</h3>
@@ -139,7 +140,7 @@ class DBsTreeView(QtGui.QTreeView):
         :Parameter index: the index of the activated item
         """
 
-        modifiers = QtGui.QApplication.keyboardModifiers()
+        modifiers = QtWidgets.QApplication.keyboardModifiers()
         if (modifiers & QtCore.Qt.ShiftModifier) or \
                 (modifiers & QtCore.Qt.ControlModifier):
            return
@@ -166,7 +167,7 @@ class DBsTreeView(QtGui.QTreeView):
                 QtCore.Qt.DecorationRole)
         self.smodel.clearSelection()
         self.smodel.setCurrentIndex(index,
-            QtGui.QItemSelectionModel.SelectCurrent)
+            QtCore.QItemSelectionModel.SelectCurrent)
         self.update(index)
 
 
@@ -195,7 +196,7 @@ class DBsTreeView(QtGui.QTreeView):
                 node.updated = True
                 self.smodel.clearSelection()
                 self.smodel.setCurrentIndex(index,
-                    QtGui.QItemSelectionModel.SelectCurrent)
+                    QtCore.QItemSelectionModel.SelectCurrent)
 
 
     def createCustomContextMenu(self, pos):
@@ -234,7 +235,7 @@ class DBsTreeView(QtGui.QTreeView):
           - `previous`: the index model of the previous current item
         """
 
-        QtGui.QTreeView.currentChanged(self, current, previous)
+        QtWidgets.QTreeView.currentChanged(self, current, previous)
         self.vtgui.updateActions()
         self.vtgui.updateStatusBar()
 
@@ -256,7 +257,7 @@ class DBsTreeView(QtGui.QTreeView):
 
         self.smodel.clearSelection()
         self.smodel.setCurrentIndex(index,
-            QtGui.QItemSelectionModel.SelectCurrent)
+            QtCore.QItemSelectionModel.SelectCurrent)
 
 
     def mouseDoubleClickEvent(self, event):
@@ -303,7 +304,7 @@ class DBsTreeView(QtGui.QTreeView):
                 event.accept()
                 self.setFocus(True)
         else:
-            QtGui.QTreeView.dropEvent(self, event)
+            QtWidgets.QTreeView.dropEvent(self, event)
 
 
     def dragEnterEvent(self, event):
@@ -320,7 +321,7 @@ class DBsTreeView(QtGui.QTreeView):
             event.setDropAction(QtCore.Qt.CopyAction)
             event.acceptProposedAction()
         else:
-            QtGui.QTreeView.dragEnterEvent(self, event)
+            QtWidgets.QTreeView.dragEnterEvent(self, event)
 
 
     def dragMoveEvent(self, event):
@@ -339,7 +340,7 @@ class DBsTreeView(QtGui.QTreeView):
             event.setDropAction(QtCore.Qt.CopyAction)
             event.acceptProposedAction()
         else:
-            return QtGui.QTreeView.dragMoveEvent(self, event)
+            return QtWidgets.QTreeView.dragMoveEvent(self, event)
 
 
     def focusInEvent(self, event):
@@ -353,11 +354,11 @@ class DBsTreeView(QtGui.QTreeView):
         """
 
         self.setLineWidth(2)
-        self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
+        self.setFrameStyle(QtWidgets.QFrame.Panel|QtWidgets.QFrame.Plain)
         pal = self.palette()
         pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             QtCore.Qt.darkBlue)
-        QtGui.QTreeView.focusInEvent(self, event)
+        QtWidgets.QTreeView.focusInEvent(self, event)
 
 
     def focusOutEvent(self, event):
@@ -376,11 +377,11 @@ class DBsTreeView(QtGui.QTreeView):
         pal = self.palette()
         pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             self.frame_style['foreground'])
-        QtGui.QTreeView.focusOutEvent(self, event)
+        QtWidgets.QTreeView.focusOutEvent(self, event)
 
 if __name__ == '__main__':
     import sys
-    APP = QtGui.QApplication(sys.argv)
+    APP = QtWidgets.QApplication(sys.argv)
     TREE = DBsTreeView()
     TREE.show()
     APP.exec_()

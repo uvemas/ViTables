@@ -33,23 +33,24 @@ import logging
 
 import numpy
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
-from PyQt4.uic import loadUiType
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_QueryDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__), 'query_dlg.ui'))[0]
 
 
-class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
+class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
     """
     A dialog for filtering `tables.Table` nodes.
 
@@ -116,7 +117,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         #
         # Create the dialog and customise the content of some widgets
         #
-        super(QueryDlg, self).__init__(QtGui.qApp.activeWindow())
+        super(QueryDlg, self).__init__(QtWidgets.qApp.activeWindow())
         self.setupUi(self)
 
         self.setWindowTitle(translate('QueryDlg', 'New query on table: {0}',
@@ -144,7 +145,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         self.columnsComboBox.insertItems(0, sorted_fields)
         self.rstopLE.setText('{0}'.format(info['nrows']))
 
-        whatsthis_button = self.buttonBox.button(QtGui.QDialogButtonBox.Help)
+        whatsthis_button = self.buttonBox.button(QtWidgets.QDialogButtonBox.Help)
         whatsthis_button.setText("&What's this")
 
         #
@@ -159,7 +160,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
         # Connect signals to slots
         #
         self.buttonBox.helpRequested.connect(
-            QtGui.QWhatsThis.enterWhatsThisMode)
+            QtWidgets.QWhatsThis.enterWhatsThisMode)
         # Ensure that if the condition line edit is initialised with an
         # initial condition then the OK button will be enabled
         self.nameLE.textChanged.emit(self.nameLE.text())
@@ -347,7 +348,7 @@ class QueryDlg(QtGui.QDialog, Ui_QueryDialog):
                               'A logger info message'))
 
         # Enable/disable the OK button
-        ok_button = self.buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        ok_button = self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok)
         if status_ok:
             ok_button.setEnabled(1)
         else:

@@ -35,17 +35,17 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_DBsTreeSortPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),
                             'dbs_tree_sort_page.ui'))[0]
 
-class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
+class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
     """
     Widget for describing and customizing the Sorting of DBs Tree plugin.
 
@@ -103,9 +103,9 @@ class AboutPage(QtGui.QWidget, Ui_DBsTreeSortPage):
         self.algorithms_combobox.setCurrentIndex(current_index)
 
         # Connect signals to slots
-        self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Cancel).clicked.\
+        self.dlg_box_buttons.button(QtWidgets.QDialogButtonBox.Cancel).clicked.\
             connect(self.cancelAlgorithmChange)
-        self.dlg_box_buttons.button(QtGui.QDialogButtonBox.Ok).clicked.\
+        self.dlg_box_buttons.button(QtWidgets.QDialogButtonBox.Ok).clicked.\
             connect(self.saveAlgorithmChange)
 
 

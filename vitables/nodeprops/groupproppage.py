@@ -28,21 +28,22 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+translate = QtWidgets.QApplication.translate
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_GroupPropPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),'group_prop_page.ui'))[0]
 
 
 
-class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
+class GroupPropPage(QtWidgets.QWidget, Ui_GroupPropPage):
     """
     Group properties page.
 
@@ -104,7 +105,7 @@ class GroupPropPage(QtGui.QWidget, Ui_GroupPropPage):
 
         # The group's children table
         table = self.nchildrenTable
-        table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        table.horizontalHeader().setResizeMode(QtWidgets.QHeaderView.Stretch)
         background = table.palette().brush(QtGui.QPalette.Window).color()
         table.setStyleSheet("background-color: {0}".format(background.name()))
         self.children_model = QtGui.QStandardItemModel()

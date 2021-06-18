@@ -37,8 +37,8 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 
 import vitables
 from vitables.plugins.dbstreesort.aboutpage import AboutPage
@@ -47,7 +47,7 @@ from vitables.h5db import leafnode
 from vitables.h5db import linknode
 from vitables.h5db import dbstreemodel
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def customiseDBsTreeModel():

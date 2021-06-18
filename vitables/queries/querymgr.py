@@ -33,8 +33,8 @@ __docformat__ = 'restructuredtext'
 
 import logging
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 
 import vitables.utils
@@ -42,7 +42,7 @@ import vitables.queries.querydlg as querydlg
 import vitables.queries.query as query
 
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def getTableInfo(table):
@@ -201,7 +201,7 @@ class QueriesManager(QtCore.QObject):
         new_query = query.Query(tmp_h5file, table_uid, table,
                                 query_description)
         new_query.query_completed.connect(self.addQueryResult)
-        QtGui.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+        QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
         new_query.run()
 
     def getQueryInfo(self, info, table):
@@ -233,7 +233,7 @@ class QueriesManager(QtCore.QObject):
         finally:
             query_description = dict(query_dlg.query_info)
             del query_dlg
-            QtGui.qApp.processEvents()
+            QtWidgets.qApp.processEvents()
 
         if not query_description['condition']:
             return None
@@ -266,9 +266,9 @@ class QueriesManager(QtCore.QObject):
         dtext = ''
         buttons = {
             'Delete': (translate('QueriesManager', 'Delete', 'Button text'),
-                       QtGui.QMessageBox.YesRole),
+                       QtWidgets.QMessageBox.YesRole),
             'Cancel': (translate('QueriesManager', 'Cancel', 'Button text'),
-                       QtGui.QMessageBox.NoRole)}
+                       QtWidgets.QMessageBox.NoRole)}
         # Ask for confirmation
         answer = vitables.utils.questionBox(title, text, itext, dtext, buttons)
         if answer == 'Cancel':
@@ -300,7 +300,7 @@ class QueriesManager(QtCore.QObject):
         - `table_uid`: the UID of the table just queried
         """
 
-        QtGui.qApp.restoreOverrideCursor()
+        QtWidgets.qApp.restoreOverrideCursor()
         if not completed:
             self.logger.error(translate('QueriesManager',
                                         'Query on table {0} failed!',

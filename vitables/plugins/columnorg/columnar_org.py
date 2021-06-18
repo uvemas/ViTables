@@ -36,13 +36,14 @@ import os.path
 
 import tables
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 
 import vitables
 from vitables.plugins.aboutpage import AboutPage
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 _PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
 
@@ -107,9 +108,9 @@ class ArrayColsOrganizer(QtCore.QObject):
             leaf = pt_node
 
         if not isinstance(leaf, tables.Table):
-            cb = QtGui.QCheckBox(datasheet)
-            cb.setToolTip(translate('ArrayColsOrganizer', 
-                                    "Group Arrays into a unique view", 
+            cb = QtWidgets.QCheckBox(datasheet)
+            cb.setToolTip(translate('ArrayColsOrganizer',
+                                    "Group Arrays into a unique view",
                                     'Checkbox tooltip text'))
             datasheet.leaf_view.setCornerWidget(cb)
             # Attributes for retrieving the state of the checkbox from the
@@ -182,7 +183,7 @@ class MenuUpdater(QtCore.QObject):
                                     QtGui.QIcon.Normal,
                                     QtGui.QIcon.On)
 
-        self.group_action = QtGui.QAction(
+        self.group_action = QtWidgets.QAction(
             translate('MenuUpdater',
                       "&Group Arrays",
                       "Group separated arrays with the same number of rows"),
@@ -190,7 +191,7 @@ class MenuUpdater(QtCore.QObject):
             shortcut=QtGui.QKeySequence.UnknownKey,
             triggered=self.groupArrays,
             icon=object_group_icon,
-            statusTip=translate('MenuUpdater', 
+            statusTip=translate('MenuUpdater',
                 """Use a unique widget to display Arrays as if """
                 """they where columns of a Table""",
                 "Status bar text for the Node -> Group Arrays action"))
@@ -202,8 +203,8 @@ class MenuUpdater(QtCore.QObject):
                                       QtGui.QIcon.Normal,
                                       QtGui.QIcon.On)
 
-        self.ungroup_action = QtGui.QAction(
-            translate('MenuUpdater', 
+        self.ungroup_action = QtWidgets.QAction(
+            translate('MenuUpdater',
                       "&Ungroup Arrays",
                       "Ungroup previously grouped arrays."),
             self,
@@ -258,10 +259,10 @@ class MenuUpdater(QtCore.QObject):
             if numrows.count(numrows[0]) == len(numrows):
                 self.group_action.setEnabled(True)
             else:
-                print(translate('MenuUpdater', 
+                print(translate('MenuUpdater',
                                 """\nError: grouping arrays, operation cancelled. """
                                 """Not all the selected arrays have the same number """
-                                """of rows.""", 
+                                """of rows.""",
                                 'An error message in the ArraysColsOrganizer plugin'))
 
     def groupArrays(self):
@@ -275,7 +276,7 @@ class MenuUpdater(QtCore.QObject):
         GroupedArrays.ungroupArrays(self.checked_views[0])
 
 
-class GroupedArrays(QtGui.QMdiSubWindow):
+class GroupedArrays(QtWidgets.QMdiSubWindow):
     """A widget that contains a group of Arrays.
     """
 
@@ -328,9 +329,9 @@ class GroupedArrays(QtGui.QMdiSubWindow):
         """
 
         if not title:
-            title = QtGui.QLabel(datasheet.windowTitle())
+            title = QtWidgets.QLabel(datasheet.windowTitle())
         datasheet.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        vertical_layout = QtGui.QVBoxLayout()
+        vertical_layout = QtWidgets.QVBoxLayout()
         vertical_layout.addWidget(title)
         vertical_layout.addWidget(datasheet)
         container_layout.addLayout(vertical_layout)
@@ -349,10 +350,10 @@ class GroupedArrays(QtGui.QMdiSubWindow):
 
         self.pindex = QtCore.QModelIndex()
         # The widget of this MdiSubWindow
-        self.container = QtGui.QWidget()
+        self.container = QtWidgets.QWidget()
 
         # Fill the widget with Datasheets arranged in the container layout
-        container_layout = QtGui.QHBoxLayout()
+        container_layout = QtWidgets.QHBoxLayout()
         while self.arrays:
             # Extract the first datasheet and manipulate it conveniently:
             # get the title, remove the frame and put both of them in a
@@ -484,7 +485,7 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             layout.deleteLater()
 
         self.deleteLater()
-        QtGui.QMdiSubWindow.closeEvent(self, event)
+        QtWidgets.QMdiSubWindow.closeEvent(self, event)
         if self.vtgui.workspace.subWindowList() == []:
             self.vtgui.dbs_tree_view.setFocus(True)
 
@@ -507,9 +508,9 @@ class GroupedArrays(QtGui.QMdiSubWindow):
             datasheet.setParent(self.vtgui.workspace)
             datasheet.widget().verticalScrollBar().show()
             datasheet.widget().verticalHeader().show()
-            cb = QtGui.QCheckBox(datasheet)
-            cb.setToolTip(translate('GroupedArrays', 
-                                    "Group Arrays into a unique view", 
+            cb = QtWidgets.QCheckBox(datasheet)
+            cb.setToolTip(translate('GroupedArrays',
+                                    "Group Arrays into a unique view",
                                     'Checkbox tooltip'))
             datasheet.leaf_view.setCornerWidget(cb)
             # Attributes for retrieving the state of the checkbox from the

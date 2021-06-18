@@ -28,15 +28,15 @@ which is distributed along the source code in every supported platform.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 
 import vitables.utils
 from vitables.docbrowser import bookmarksdlg
 from vitables.docbrowser import browsergui
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class HelpBrowser(QtCore.QObject) :
@@ -267,7 +267,7 @@ class HelpBrowser(QtCore.QObject) :
         Shows a message box with the application `About` info.
         """
 
-        QtGui.QMessageBox.information(self.gui,
+        QtWidgets.QMessageBox.information(self.gui,
             translate('HelpBrowser', 'About HelpBrowser', 'A dialog caption'),
             translate('HelpBrowser', """<html><h3>HelpBrowser</h3>
                 HelpBrowser is a very simple tool for displaying the HTML
@@ -284,4 +284,4 @@ class HelpBrowser(QtCore.QObject) :
         """
 
         caption = translate('HelpBrowser', 'About Qt', 'A dialog caption')
-        QtGui.QMessageBox.aboutQt(self.gui, caption)
+        QtWidgets.QMessageBox.aboutQt(self.gui, caption)

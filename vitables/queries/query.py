@@ -31,12 +31,12 @@ __docformat__ = 'restructuredtext'
 import tables
 import numpy
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class Query(QtCore.QObject):
@@ -130,7 +130,7 @@ class Query(QtCore.QObject):
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
         for i in range(div+1):
-            QtGui.qApp.processEvents()
+            QtWidgets.qApp.processEvents()
             lstart = start + chunk_size*i
             if lstart > stop:
                 lstart = stop
@@ -186,7 +186,7 @@ class Query(QtCore.QObject):
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
         for i in range(div+1):
-            QtGui.qApp.processEvents()
+            QtWidgets.qApp.processEvents()
             lstart = start + chunk_size*i
             if lstart > stop:
                 lstart = stop

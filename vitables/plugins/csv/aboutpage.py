@@ -31,21 +31,21 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
 from vitables.vtsite import PLUGINSDIR
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_AboutPage = \
     loadUiType(os.path.join(PLUGINSDIR, 'about_page.ui'))[0]
 
-class AboutPage(QtGui.QWidget, Ui_AboutPage):
+class AboutPage(QtWidgets.QWidget, Ui_AboutPage):
     """
     Configure the About page for the csv plugin in the Preferences dialog.
 

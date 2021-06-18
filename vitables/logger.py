@@ -33,16 +33,17 @@ commands in the Logger.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import QtGui
 
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
-class Logger(QtGui.QTextEdit):
+class Logger(QtWidgets.QTextEdit):
     """
     Console that receives all informational application messages.
 
@@ -134,18 +135,18 @@ class Logger(QtGui.QTextEdit):
 
         vtapp = vitables.utils.getVTApp()
         # Make the menu
-        edit_menu = QtGui.QMenu(self)
-        # QtGui.Qpalette.Window constant is 10
+        edit_menu = QtWidgets.QMenu(self)
+        # QtGui.QPalette.Window constant is 10
         edit_menu.setStyleSheet("background-color: {0}".format(10))
 
-        self.copy_action = QtGui.QAction(
+        self.copy_action = QtWidgets.QAction(
             translate('Logger', "&Copy", 'Logger menu entry'), self,
             shortcut=QtGui.QKeySequence.Copy, triggered=vtapp.gui.makeCopy,
             statusTip=translate('Logger', 'Copy selected text to clipboard',
                 'Status bar text for the logger context menu -> Copy action'))
         edit_menu.addAction(self.copy_action)
 
-        self.clear_action = QtGui.QAction(
+        self.clear_action = QtWidgets.QAction(
             translate('Logger', "Cl&ear All", 'Logger menu entry'), self,
             triggered=self.clear,
             statusTip=translate('Logger', 'Empty the Logger',
@@ -153,7 +154,7 @@ class Logger(QtGui.QTextEdit):
         edit_menu.addAction(self.clear_action)
         edit_menu.addSeparator()
 
-        self.select_action = QtGui.QAction(
+        self.select_action = QtWidgets.QAction(
             translate('Logger', "Select &All", 'Logger menu entry'), self,
             triggered=self.selectAll,
             statusTip=translate('Logger', 'Select the whole Logger contents',
@@ -187,11 +188,11 @@ class Logger(QtGui.QTextEdit):
         """
 
         self.setLineWidth(2)
-        self.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Plain)
+        self.setFrameStyle(QtWidgets.QFrame.Panel|QtWidgets.QFrame.Plain)
         pal = self.palette()
         pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             QtCore.Qt.darkBlue)
-        QtGui.QTextEdit.focusInEvent(self, event)
+        QtWidgets.QTextEdit.focusInEvent(self, event)
 
 
     def focusOutEvent(self, event):
@@ -209,4 +210,4 @@ class Logger(QtGui.QTextEdit):
         pal = self.palette()
         pal.setColor(QtGui.QPalette.Active, QtGui.QPalette.WindowText,
             self.frame_style['foreground'])
-        QtGui.QTextEdit.focusOutEvent(self, event)
+        QtWidgets.QTextEdit.focusOutEvent(self, event)

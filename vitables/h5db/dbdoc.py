@@ -34,13 +34,13 @@ import uuid
 import logging
 
 import tables
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 class DBDoc(QtCore.QObject):

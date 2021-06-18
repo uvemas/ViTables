@@ -32,11 +32,11 @@ __docformat__ = 'restructuredtext'
 import tables
 import numpy
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
+translate = QtWidgets.QApplication.translate
 
 
 def checkSyntax(value):

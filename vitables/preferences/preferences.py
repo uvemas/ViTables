@@ -22,7 +22,7 @@
 """
 This module provides a dialog for changing ``ViTables`` settings at runtime.
 
-The dialog has 3 pages managed via QtGui.QStackedWidget: General settings
+The dialog has 3 pages managed via QtWidgets.QStackedWidget: General settings
 page, Look&Feel settings page and Plugins settings page.
 """
 
@@ -30,24 +30,25 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
-from PyQt4.uic import loadUiType
+from PyQt5.uic import loadUiType
 
 from vitables.vtsite import ICONDIR
 import vitables.utils
 
 
-translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dynamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+translate = QtWidgets.QApplication.translate
+# This method of the PyQt5.uic module allows for dynamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_SettingsDialog = \
     loadUiType(os.path.join(os.path.dirname(__file__),'settings_dlg.ui'))[0]
 
 
-class Preferences(QtGui.QDialog, Ui_SettingsDialog):
+class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
     """
     Create the Settings dialog.
 
@@ -85,7 +86,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         self.setupSelector()
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
-        styles = QtGui.QStyleFactory.keys()
+        styles = QtWidgets.QStyleFactory.keys()
         self.stylesCB.insertItems(0, styles)
 
         # The dictionary of current ViTables preferences
@@ -111,7 +112,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         # Connect SIGNALS to SLOTS
         self.buttonsBox.helpRequested.connect(
-            QtGui.QWhatsThis.enterWhatsThisMode)
+            QtWidgets.QWhatsThis.enterWhatsThisMode)
 
 
     def setupPluginsPage(self):
@@ -121,7 +122,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         nrows = len(self.all_plugins)
         self.plugins_model = QtGui.QStandardItemModel(nrows, 2, self)
         self.pluginsTV.setModel(self.plugins_model)
-        header = QtGui.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
+        header = QtWidgets.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
         header.setStretchLastSection(True)
         self.pluginsTV.setHeader(header)
         self.plugins_model.setHorizontalHeaderLabels(['Name', 'Comment'])
@@ -216,11 +217,11 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         :Parameter button: the clicked button.
         """
 
-        if button == self.buttonsBox.button(QtGui.QDialogButtonBox.Reset):
+        if button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Reset):
             self.resetPreferences()
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Help):
+        elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Help):
             pass
-        elif button == self.buttonsBox.button(QtGui.QDialogButtonBox.Cancel):
+        elif button == self.buttonsBox.button(QtWidgets.QDialogButtonBox.Cancel):
             self.reject()
         else:
             self.applySettings()
@@ -339,7 +340,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """Slot for setting the logger font."""
 
         new_font, is_ok = \
-            QtGui.QFontDialog.getFont(self.sampleTE.currentFont())
+            QtWidgets.QFontDialog.getFont(self.sampleTE.currentFont())
         # The selected font is applied to the sample text
         if is_ok:
             self.new_prefs['Logger/Font'] = new_font
@@ -353,7 +354,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         """Slot for setting the logger foreground color."""
 
         text_color = self.sampleTE.textColor()
-        color = QtGui.QColorDialog.getColor(text_color)
+        color = QtWidgets.QColorDialog.getColor(text_color)
         # The selected text color is applied to the sample text
         if color.isValid():
             self.new_prefs['Logger/Text'] = color
@@ -368,7 +369,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         stylesheet = self.sampleTE.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QtWidgets.QColorDialog.getColor(QtGui.QColor(background))
         # The selected paper color is applied to the sample text window
         if color.isValid():
             self.new_prefs['Logger/Paper'] = color
@@ -382,7 +383,7 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
 
         stylesheet = self.workspaceLabel.styleSheet()
         background = stylesheet[-7:]
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(background))
+        color = QtWidgets.QColorDialog.getColor(QtGui.QColor(background))
         # The selected color is applied to the sample label besides the button
         if color.isValid():
             self.new_prefs['Workspace/Background'] = QtGui.QBrush(color)
@@ -433,12 +434,12 @@ class Preferences(QtGui.QDialog, Ui_SettingsDialog):
         try:
             about_page = pg_instance.helpAbout(self.stackedPages)
         except AttributeError:
-            about_page = QtGui.QWidget(self.stackedPages)
-            label = QtGui.QLabel(translate(
+            about_page = QtWidgets.QWidget(self.stackedPages)
+            label = QtWidgets.QLabel(translate(
                 'Preferences',
                 'Sorry, there are no info available for this plugin',
                 'A text label'), about_page)
-            layout = QtGui.QVBoxLayout(about_page)
+            layout = QtWidgets.QVBoxLayout(about_page)
             layout.addWidget(label)
 
         self.stackedPages.addWidget(about_page)

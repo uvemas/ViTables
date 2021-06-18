@@ -25,8 +25,8 @@ Display recursively the content of a given cell of a view.
 
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 import vitables.utils
 
@@ -59,7 +59,7 @@ def getArrayDimensions(shape):
 
 
 
-class ZoomCell(QtGui.QMdiSubWindow):
+class ZoomCell(QtWidgets.QMdiSubWindow):
     """
     Display an array/table cell on its own view (table widget).
 
@@ -122,7 +122,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         self.dbt_leaf = leaf
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         # The internal widget
-        self.grid = QtGui.QTableWidget()
+        self.grid = QtWidgets.QTableWidget()
         self.setWidget(self.grid)
         # Configure the titlebar
         self.setWindowTitle(self.title)
@@ -146,17 +146,17 @@ class ZoomCell(QtGui.QMdiSubWindow):
         self.grid.setRowCount(nrows)
 
         # Setup grid editing
-        self.grid.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.grid.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
         # Setup grid horizontal header
         if self.field_names:
             for section in range(0, ncols):
-                item = QtGui.QTableWidgetItem()
+                item = QtWidgets.QTableWidgetItem()
                 item.setText(self.field_names[section])
                 self.grid.setHorizontalHeaderItem(section, item)
         else:
             for section in range(0, ncols):
-                item = QtGui.QTableWidgetItem()
+                item = QtWidgets.QTableWidgetItem()
                 item.setText('{0}'.format(section + 1))
                 self.grid.setHorizontalHeaderItem(section, item)
 
@@ -168,7 +168,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
 
         self.show()
 
-        rmode = QtGui.QHeaderView.Stretch
+        rmode = QtWidgets.QHeaderView.Stretch
         if self.grid.columnCount() == 1:
             self.grid.horizontalHeader().setResizeMode(rmode)
         if self.grid.rowCount() == 1:
@@ -251,7 +251,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
         for column in range(0, self.grid.columnCount()):
             content = self.data[self.field_names[column]]
             text = self.formatContent(content)
-            item = QtGui.QTableWidgetItem(text)
+            item = QtWidgets.QTableWidgetItem(text)
             self.grid.setItem(0, column, item)
 
 
@@ -264,14 +264,14 @@ class ZoomCell(QtGui.QMdiSubWindow):
         if num_rows == num_cols == 1:
             content = self.data
             text = self.formatContent(content)
-            item = QtGui.QTableWidgetItem(text)
+            item = QtWidgets.QTableWidgetItem(text)
             self.grid.setItem(0, 0, item)
         # 1-D arrays
         elif num_cols == 1:
             for row in range(0, num_rows):
                 content = self.data[row]
                 text = self.formatContent(content)
-                item = QtGui.QTableWidgetItem(text)
+                item = QtWidgets.QTableWidgetItem(text)
                 self.grid.setItem(row, 0, item)
         # N-D arrays
         else:
@@ -279,7 +279,7 @@ class ZoomCell(QtGui.QMdiSubWindow):
                 for column in range(0, num_cols):
                     content = self.data[row][column]
                     text = self.formatContent(content)
-                    item = QtGui.QTableWidgetItem(text)
+                    item = QtWidgets.QTableWidgetItem(text)
                     self.grid.setItem(row, column, item)
 
 

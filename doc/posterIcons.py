@@ -23,8 +23,8 @@
 #
 import sys
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 iconsDir = '/home/vmas/ViTables/hg_branches/vitables_tip/vitables/icons/'
 big_icons = [('file_rw', 'The root node (read-write)'),

@@ -28,21 +28,22 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-from PyQt4 import QtGui
-from PyQt4.uic import loadUiType
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5.uic import loadUiType
 
 import vitables.utils
 
-translate = QtGui.QApplication.translate
-# This method of the PyQt4.uic module allows for dinamically loading user
-# interfaces created by QtDesigner. See the PyQt4 Reference Guide for more
+translate = QtWidgets.QApplication.translate
+# This method of the PyQt5.uic module allows for dinamically loading user
+# interfaces created by QtDesigner. See the PyQt5 Reference Guide for more
 # info.
 Ui_LeafPropPage = \
     loadUiType(os.path.join(os.path.dirname(__file__),'leaf_prop_page.ui'))[0]
 
 
 
-class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
+class LeafPropPage(QtWidgets.QWidget, Ui_LeafPropPage):
     """
     Leaf properties page.
 
@@ -104,7 +105,7 @@ class LeafPropPage(QtGui.QWidget, Ui_LeafPropPage):
         if info.node_type == 'table':
             table = self.recordsTable
             # The Table's fields description
-            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+            table.horizontalHeader().setResizeMode(QtWidgets.QHeaderView.Stretch)
             # QtGui.QPalette.Window constant is 10
             bg_name = table.palette().brush(10).color().name()
             table.setStyleSheet("background-color: {0}".format(bg_name))
