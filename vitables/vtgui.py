@@ -714,7 +714,11 @@ class VTGUI(QtWidgets.QMainWindow):
                             'queryNew', 'queryDeleteAll'])
         enabled = set([])
 
-        model_rows = self.dbs_tree_model.rowCount(QtCore.QModelIndex())
+        try:
+            model_rows = self.dbs_tree_model.rowCount(QtCore.QModelIndex())
+        except AttributeError:
+            """ happens before setup """
+            model_rows = 0
         if model_rows <= 0:
             return
 
@@ -853,13 +857,21 @@ class VTGUI(QtWidgets.QMainWindow):
         """Update the permanent message of the status bar.
         """
 
-        current = self.dbs_tree_view.currentIndex()
-        if current.isValid():
-            tip = self.dbs_tree_model.data(current, QtCore.Qt.StatusTipRole)
-            message = tip
-        else:
+        try:
+            current = self.dbs_tree_view.currentIndex()
+            if current.isValid():
+                tip = self.dbs_tree_model.data(current, QtCore.Qt.StatusTipRole)
+                message = tip
+            else:
+                message = ''
+        except AttributeError:
             message = ''
-        self.sb_node_info.setText(message)
+        try:
+            self.sb_node_info.setText(message)
+        except AttributeError:
+            """ status bar has not been initialized
+            """
+            pass
 
     def popupContextMenu(self, kind, pos):
         """

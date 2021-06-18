@@ -243,10 +243,14 @@ class DBsTreeView(QtWidgets.QTreeView):
         # focus (giving focus to the workspace when a given item is
         # selected is counter intuitive)
         pcurrent = QtCore.QPersistentModelIndex(current)
-        for window in self.vtgui.workspace.subWindowList():
-            if pcurrent == window.pindex:
-                self.vtgui.workspace.setActiveSubWindow(window)
-                self.setFocus(True)
+        try:
+            for window in self.vtgui.workspace.subWindowList():
+                if pcurrent == window.pindex:
+                    self.vtgui.workspace.setActiveSubWindow(window)
+                    self.setFocus(True)
+        except AttributeError:
+            """ workspace is not initalized """
+            pass
 
 
     def selectNode(self, index):
