@@ -5,6 +5,8 @@ Here we create fixtures that are not directly required by test functions.
 
 import sys
 
+import os
+
 import pytest
 
 import tables
@@ -32,4 +34,7 @@ def launcher():
 
 @pytest.fixture(scope='module')
 def h5file():
-    return tables.open_file('testfile.h5', 'r')
+    if not os.path.exists('testfile.h5'):
+        import create_testfile
+    yield tables.open_file('testfile.h5', 'r')
+    os.remove('testfile.h5')
