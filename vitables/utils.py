@@ -149,7 +149,7 @@ def insertInMenu(menu, entries, uid):
     :return: None
     """
 
-    if not isinstance(entries, collections.Iterable):
+    if not isinstance(entries, collections.abc.Iterable):
         entries = [entries]
 
     if isinstance(entries[0], QtWidgets.QAction):
@@ -177,7 +177,7 @@ def addToMenu(menu, entries):
     :return: None
     """
 
-    if not isinstance(entries, collections.Iterable):
+    if not isinstance(entries, collections.abc.Iterable):
         entries = [entries]
 
     if isinstance(entries[0], QtWidgets.QAction):
