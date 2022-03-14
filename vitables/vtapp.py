@@ -27,6 +27,7 @@ import time
 import sys
 import logging
 
+import numpy
 import tables
 
 from qtpy import QtCore
@@ -1246,7 +1247,7 @@ class VTApp(QtCore.QObject):
                                'Caption of the Versions dialog'),
             'Python': pyversion,
             'PyTables': tables.__version__,
-            'NumPy': tables.numpy.__version__,
+            'NumPy': numpy.__version__,
             'Qt': QtCore.qVersion(),
             'PyQt': QtCore.PYQT_VERSION_STR,
             'ViTables': vtconfig.getVersion()
