@@ -1,14 +1,8 @@
 import sys
 import os.path
-import nose.tools as nt
-
-import sip
-sip.setapi('QString', 2)
-sip.setapi('QVariant', 2)
 
 from qtpy import QtWidgets
 from qtpy import QtCore
-import qtpy.QtTest as qtest
 
 import vitables.start as vtstart
 
@@ -40,7 +34,7 @@ def assert_path(test, path):
     if not path:
         return
     index = get_index(test.model, path[0])
-    nt.assert_false(index is None)
+    assert index is not None
     test.view.activateNode(index)
     assert_path(test, path[1:])
 
@@ -182,11 +176,16 @@ class TestTableOpening:
         cls.model = cls.vtgui.dbs_tree_model
         cls.view = cls.vtgui.dbs_tree_view
 
+    @classmethod
+    def teardown_class(cls):
+        del cls.vtapp
+        del cls.app
+
     def test_opening_files(self):
         """Generate tests for given data files."""
         for filepath, nodes in self.TEST_NODES.items():
             for node in nodes:
-                yield self.check_node_open, filepath, node
+                self.check_node_open(filepath, node)
 
     def check_node_open(self, filepath, nodepath):
         """Open file get access to a node and read all cells."""
