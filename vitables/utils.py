@@ -40,6 +40,11 @@ from PyQt4 import QtGui
 import vitables.vtwidgets.renamedlg as renamedlg
 from vitables.vtsite import ICONDIR, DOCDIR
 
+try:
+    from collections.abc import Iterable
+except ImportError:
+    from collections import Iterable
+
 
 ICONS_DICT = {}
 HB_ICONS_DICT = {}
@@ -167,7 +172,7 @@ def insertInMenu(menu, entries, uid):
     :return: None
     """
 
-    if not isinstance(entries, collections.Iterable):
+    if not isinstance(entries, Iterable):
         entries = [entries]
 
     if isinstance(entries[0], QtGui.QAction):
@@ -195,7 +200,7 @@ def addToMenu(menu, entries):
     :return: None
     """
 
-    if not isinstance(entries, collections.Iterable):
+    if not isinstance(entries, Iterable):
         entries = [entries]
 
     if isinstance(entries[0], QtGui.QAction):
