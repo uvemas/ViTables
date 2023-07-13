@@ -264,7 +264,7 @@ class ExportToCSV(QtCore.QObject):
             filepath, add_header = export_info
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             with open(filepath, 'ab') as out_handler:
                 if add_header:
                     from functools import reduce
@@ -280,7 +280,7 @@ class ExportToCSV(QtCore.QObject):
                 # we must explicitly ensure we get an integer
                 nchunks = numpy.floor_divide(nrows, chunk_size)
                 for i in numpy.arange(0, nchunks + 1):
-                    QtWidgets.qApp.processEvents()
+                    QtWidgets.QApplication.processEvents()
                     cstart = chunk_size * i
                     if cstart >= nrows:
                         break
@@ -292,4 +292,4 @@ class ExportToCSV(QtCore.QObject):
         except OSError:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()

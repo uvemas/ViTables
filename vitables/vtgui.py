@@ -151,8 +151,6 @@ class VTGUI(QtWidgets.QMainWindow):
 
         # The signal mapper used to keep the the Window menu updated
         self.window_mapper = QtCore.QSignalMapper(self)
-        self.window_mapper.mapped[QtWidgets.QWidget].connect(
-            self.workspace.setActiveSubWindow)
         self.workspace.installEventFilter(self)
         self.dbs_tree_view.clicked.connect(self.selection_changed)
 
@@ -678,7 +676,7 @@ class VTGUI(QtWidgets.QMainWindow):
 
         # Quit
         event.accept()
-        QtWidgets.qApp.quit()
+        QtWidgets.QApplication.quit()
 
     def makeCopy(self):
         """Copy text/leaf depending on which widget has focus.

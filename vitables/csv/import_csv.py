@@ -266,8 +266,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtWidgets.qApp.processEvents()
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.processEvents()
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             input_handler = open(filepath, 'r+')
             try:
                 (nrows, descr, has_header) = csvutils.tableInfo(input_handler)
@@ -306,7 +306,7 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
             input_handler.close()
 
     def csv2EArray(self):
@@ -322,8 +322,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtWidgets.qApp.processEvents()
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.processEvents()
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
             (nrows, atom, array_shape) = csvutils.earrayInfo(input_handler)
@@ -359,7 +359,7 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
             input_handler.close()
 
     def csv2CArray(self):
@@ -375,8 +375,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtWidgets.qApp.processEvents()
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.processEvents()
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             chunk_size = 10000
             input_handler = open(filepath, 'r+')
             (atom, array_shape) = csvutils.carrayInfo(input_handler)
@@ -415,7 +415,7 @@ class ImportCSV(QtCore.QObject):
         except:
             vitables.utils.formatExceptionInfo()
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
             input_handler.close()
 
     def csv2Array(self):
@@ -431,8 +431,8 @@ class ImportCSV(QtCore.QObject):
 
         # Import the CSV content
         try:
-            QtWidgets.qApp.processEvents()
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.processEvents()
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             # The dtypes are determined by the contents of each column
             # Multidimensional columns will have string datatype
             data = numpy.genfromtxt(filepath, delimiter=',', dtype=None)
@@ -458,4 +458,4 @@ class ImportCSV(QtCore.QObject):
                 vitables.utils.formatExceptionInfo()
         finally:
             del data
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()

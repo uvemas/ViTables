@@ -284,7 +284,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(
+            QtWidgets.QApplication.setOverrideCursor(
                 QtGui.QCursor(QtCore.Qt.WaitCursor))
             # Create the dbdoc
             try:
@@ -311,7 +311,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             self.links_delta = frozenset([])
             self.insertRows(0, 1)
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
         return db_doc
 
     def __createTempDB(self):
@@ -342,7 +342,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
             # Deletes the node from the database
             node.editor().delete(node.nodepath)
@@ -363,7 +363,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             except KeyError:
                 pass
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
 
     def copy_node(self, index):
         """Mark a node from the tree of databases view as copied.
@@ -372,7 +372,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
             self.ccni = {'is_copied': True,
                          'nodename': node.name,
@@ -380,7 +380,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                          'nodepath': node.nodepath,
                          'target': getattr(node, 'target', None)}
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
 
     def cutNode(self, index):
         """Cut a `tables.Node`.
@@ -391,7 +391,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
             self.ccni = {'is_copied': False,
                          'nodename': node.name,
@@ -414,7 +414,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                 current = self.index(position - 1, 0, parent)
             self.vtgui.dbs_tree_view.selectNode(current)
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
 
     def pasteNode(self, index, childname, overwrite=False):
         """Paste a tables.Node.
@@ -429,7 +429,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             parent = self.nodeFromIndex(index)
 
             # If the overwritten node (if any) exists in the tree of
@@ -454,7 +454,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Select the pasted node
             self.selectIndex(index, childname)
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
 
     def copiedNode(self):
         """The tables.Node currently copied/cut.
@@ -481,7 +481,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             parent = self.nodeFromIndex(index)
             # If the overwritten node (if any) exists in the tree of
             # databases view then delete it
@@ -498,7 +498,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             # Select the pasted node
             self.selectIndex(index, childname)
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
 
     def rename_node(self, index, new_name, overwrite=False):
         """Rename a node.
@@ -511,7 +511,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             node = self.nodeFromIndex(index)
             initial_nodepath = node.nodepath
             parent_index = self.parent(index)
@@ -534,7 +534,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             except KeyError:
                 pass
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
 
     def updateDBTree(self, index, new_name, node):
         """
@@ -595,7 +595,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         """
 
         try:
-            QtWidgets.qApp.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             parent_node = self.nodeFromIndex(parent_index)
             # full path of the destination database and new parent
             dst_filepath = parent_node.filepath
@@ -624,7 +624,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             movedname = editor.move(childpath, self.getDBDoc(dst_filepath),
                                     parentpath, nodename)
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
             return movedname
 
     def validateNodename(self, src_filepath, childpath, dst_filepath,

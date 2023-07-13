@@ -110,7 +110,7 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         QtWidgets.QMdiSubWindow.closeEvent(self, event)
 
         if not self.vtgui.workspace.subWindowList():
-            self.vtgui.dbs_tree_view.setFocus(True)
+            self.vtgui.dbs_tree_view.setFocus()
 
     def focusInEvent(self, event):
         """Specialised handler for focus events.
@@ -125,7 +125,7 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         # clicked is counter intuitive)
         QtWidgets.QMdiSubWindow.focusInEvent(self, event)
         self.syncTreeView()
-        self.setFocus(True)
+        self.setFocus()
 
     def syncTreeView(self):
         """

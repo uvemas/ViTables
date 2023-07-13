@@ -131,7 +131,7 @@ class Query(QtCore.QObject):
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
         for i in numpy.arange(0, div+1):
-            QtWidgets.qApp.processEvents()
+            QtWidgets.QApplication.processEvents()
             lstart = start + chunk_size*i
             if lstart > stop:
                 lstart = stop
@@ -187,7 +187,7 @@ class Query(QtCore.QObject):
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
         for i in numpy.arange(0, div+1):
-            QtWidgets.qApp.processEvents()
+            QtWidgets.QApplication.processEvents()
             lstart = start + chunk_size*i
             if lstart > stop:
                 lstart = stop
