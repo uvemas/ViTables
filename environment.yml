@@ -1,0 +1,5 @@
+name: vitables-dev
+dependencies:
+  - python=3.11
+  - h5py
+  - ipython
