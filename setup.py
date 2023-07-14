@@ -29,10 +29,8 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-install_requires = ['qtpy (>=1.2.1)', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
+install_requires = ['qtpy', 'pyqt6', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
                     'tables (>=3.0)', 'setuptools']
-if 'CONDA_PREFIX' not in os.environ:
-    install_requires.append('PyQt5 (>=5.5.1)')
 
 setup(name='ViTables',
       version=read('VERSION').rstrip('\r\n'),

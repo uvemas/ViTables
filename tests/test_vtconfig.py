@@ -20,7 +20,7 @@ class TestLogger(object):
         # Tear down code
         cfg.writeValue('Logger/Paper', QtGui.QColor("#ffffff"))
         cfg.writeValue('Logger/Text', QtGui.QColor("#000000"))
-        cfg.writeValue('Logger/Font', QtWidgets.qApp.font())
+        cfg.writeValue('Logger/Font', QtWidgets.QApplication.font())
         cfg.writeValue('Workspace/Background',
                        QtGui.QBrush(QtGui.QColor("#ffffff")))
         cfg.writeValue('Look/currentStyle', cfg.default_style)

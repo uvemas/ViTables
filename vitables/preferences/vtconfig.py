@@ -137,9 +137,9 @@ class Config(QtCore.QSettings):
         is UserScope.
         """
 
-        organization = QtWidgets.qApp.organizationName()
-        product = QtWidgets.qApp.applicationName()
-        version = QtWidgets.qApp.applicationVersion()
+        organization = QtWidgets.QApplication.organizationName()
+        product = QtWidgets.QApplication.applicationName()
+        version = QtWidgets.QApplication.applicationVersion()
         if sys.platform.startswith('win'):
             # organizationName() -> product
             # applicationName() -> version
@@ -206,7 +206,7 @@ class Config(QtCore.QSettings):
         """
 
         key = 'Logger/Font'
-        default_value = QtWidgets.qApp.font()
+        default_value = QtWidgets.QApplication.font()
         setting_value = self.value(key)
         if isinstance(setting_value, QtGui.QFont):
             return setting_value
@@ -570,7 +570,7 @@ class Config(QtCore.QSettings):
         if key in config:
             self.current_style = config[key]
             # Default style is provided by the underlying window manager
-            QtWidgets.qApp.setStyle(self.current_style)
+            QtWidgets.QApplication.setStyle(self.current_style)
 
         key = 'Plugins/Enabled'
         if key in config:

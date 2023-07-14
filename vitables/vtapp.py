@@ -550,12 +550,12 @@ class VTApp(QtCore.QObject):
 
         # Make a copy of the selected file
         try:
-            QtWidgets.qApp.setOverrideCursor(
+            QtWidgets.QApplication.setOverrideCursor(
                 QtGui.QCursor(QtCore.Qt.WaitCursor))
             dbdoc = self.gui.dbs_tree_model.getDBDoc(initial_filepath)
             dbdoc.copy_file(filepath)
         finally:
-            QtWidgets.qApp.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
 
         # Close the copied file (which is not necessarely selected in
         # the tree view because closing an overwritten file can change
