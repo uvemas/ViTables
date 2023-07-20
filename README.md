@@ -6,8 +6,6 @@
 
 ![Conda](https://anaconda.org/conda-forge/vitables/badges/version.svg) ![Conda_downloads](https://anaconda.org/conda-forge/vitables/badges/downloads.svg) ![PyPI](https://img.shields.io/pypi/v/vitables) ![PyPI_Downloads](https://static.pepy.tech/badge/vitables/month)
 
-![logo](doc/images/logo.svg)
-
 </div>
 
 # ViTables
@@ -39,10 +37,9 @@ PyTables and PyQt. You can try other versions at your own risk :).
 
 ```sh
 $ pip install ViTables
-$ vitables
 ```
 
-The second command launches vitables, but you may encounter `module 'collections' has no attribute 'Iterable'` error, if so, see [FAQ](#FAQ) for solution.
+If you may encounter `module 'collections' has no attribute 'Iterable'` error, simply change `collections.Iterable` to `collections.abc.Iterable` in line 152 and 180 of corresponding utils.py
 
 ### Install on a conda environment
 
@@ -54,15 +51,14 @@ Simply run
 
 ```sh
 $ conda install -c conda-forge vitables
-$ vitables
 ```
 
 For more details, see [INSTALL.txt](INSTALL.txt).
 
-### FAQ
+### Launch
 
-Q: Launch vitables failed due to error:
+```sh
+$ vitables [/path/to/hdf5/file]
+```
 
-  `module 'collections' has no attribute 'Iterable'`
-
-A: Change `collections.Iterable` to `collections.abc.Iterable` in line 152 and 180 of corresponding utils.py
+If `/path/to/hdf5/file` is given, vitables will load that file, otherwise, you need to select a file to open later. 
