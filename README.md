@@ -26,15 +26,7 @@ As a viewer, one of the greatest strengths of ViTables is its ability to display
 
 If you need a customized browser for managing your HDF5 data, ViTables is an excellent starting point.
 
-<div align=center>
-
-![propertiesDlg](doc/images/propertiesDlg.png)
-![editingUserAttrs](doc/images/editingUserAttrs.png)
-![groupCreation](doc/images/groupCreation.png)
-![helpBrowser](doc/images/helpBrowser.png)
-![treeSymbols](doc/images/treeSymbols.png)
-
-</div>
+Here are some [screenshots](doc/images).
 
 ## QuickStart
 
