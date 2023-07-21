@@ -303,7 +303,7 @@ p, li { white-space: pre-wrap; }
             <string/>
            </property>
            <property name="title">
-            <string>Available plugins</string>
+            <string>Available extensions</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
@@ -315,7 +315,7 @@ p, li { white-space: pre-wrap; }
                </sizepolicy>
               </property>
               <property name="whatsThis">
-               <string>The list of all available plugins. If a plugin is checked then it is enabled (but not necessarely loaded), if it is unchecked then it is disabled (but not necessarely unloaded). Please, note that changes in the check state of plugins will take effect the next time you start ViTables.</string>
+               <string>The list of extensions. If an extension is checked then it is enabled, if it is unchecked then it is disabled. Please, note that changes in the check state of extensions will take effect the next time you start ViTables.</string>
               </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>

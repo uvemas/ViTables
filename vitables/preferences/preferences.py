@@ -23,10 +23,11 @@
 This module provides a dialog for changing ``ViTables`` settings at runtime.
 
 The dialog has 3 pages managed via QtGui.QStackedWidget: General settings
-page, Look&Feel settings page and Plugins settings page.
+page, Look&Feel settings page and Extensions settings page.
 """
 
 import os
+import logging
 
 from qtpy import QtCore
 from qtpy import QtGui
@@ -36,6 +37,8 @@ from qtpy.uic import loadUiType
 
 from vitables.vtsite import ICONDIR
 import vitables.utils
+
+log = logging.getLogger(__name__)
 
 
 __docformat__ = 'restructuredtext'
@@ -64,7 +67,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         Initialize the preferences dialog.
 
         * initializes the dialog appearance according to current preferences
-        * connects dialog widgets to slots that provide them functionality
+        * connects dialog widgets to slots that provide them with functionality
         """
 
         self.vtapp = vitables.utils.getVTApp()
@@ -74,13 +77,12 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.setupUi(self)
 
         self.config = self.vtapp.config
-        self.pg_loader = self.vtapp.plugins_mgr
-        self.all_plugins = \
-            dict(item for item in self.pg_loader.all_plugins.items())
-        self.enabled_plugins = self.pg_loader.enabled_plugins[:]
-
-        # Setup the Plugins page
-        self.setupPluginsPage()
+        self.enabled_extensions = []
+        for k, v in self.vtapp.extensions_mgr.items():
+          if v:
+            self.enabled_extensions.append(k)
+        # Setup the Extensions page
+        self.setupExtensionsPage()
 
         # Setup the page selector widget
         self.setupSelector()
@@ -117,31 +119,31 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.buttonsBox.helpRequested.connect(
             QtWidgets.QWhatsThis.enterWhatsThisMode)
 
-    def setupPluginsPage(self):
-        """Populate the tree of plugins.
+    def setupExtensionsPage(self):
+        """Populate the tree of extensions.
         """
 
-        nrows = len(self.all_plugins)
-        self.plugins_model = QtGui.QStandardItemModel(nrows, 2, self)
-        self.pluginsTV.setModel(self.plugins_model)
+        nrows = len(self.vtapp.extensions_mgr.keys())
+        self.extensions_model = QtGui.QStandardItemModel(nrows, 2, self)
+        self.pluginsTV.setModel(self.extensions_model)
         header = QtWidgets.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
         header.setStretchLastSection(True)
         self.pluginsTV.setHeader(header)
-        self.plugins_model.setHorizontalHeaderLabels(['Name', 'Comment'])
+        self.extensions_model.setHorizontalHeaderLabels(['Name', 'Comment'])
 
         # Populate the model
         row = 0
-        for UID, desc in self.all_plugins.items():
-            name = desc['name']
-            comment = desc['comment']
+        for k, v in self.vtapp.extensions_details.items():
+            name = v['name']
+            comment = v['comment']
             nitem = QtGui.QStandardItem(name)
-            nitem.setData(UID)
+            nitem.setData(k)
             nitem.setCheckable(True)
-            if UID in self.enabled_plugins:
+            if k in self.enabled_extensions:
                 nitem.setCheckState(QtCore.Qt.Checked)
             citem = QtGui.QStandardItem(comment)
-            self.plugins_model.setItem(row, 0, nitem)
-            self.plugins_model.setItem(row, 1, citem)
+            self.extensions_model.setItem(row, 0, nitem)
+            self.extensions_model.setItem(row, 1, citem)
             row = row + 1
 
     def setupSelector(self):
@@ -171,25 +173,29 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         style_item.setTextAlignment(alignment)
         style_item.setFlags(flags)
 
-        self.plugins_item = QtGui.QStandardItem()
-        self.plugins_item.setIcon(QtGui.QIcon(os.path.join(
+        self.extensions_item = QtGui.QStandardItem()
+        self.extensions_item.setIcon(QtGui.QIcon(os.path.join(
             iconsdir, 'preferences-plugin.png')))
-        self.plugins_item.setText(translate('Preferences', "  Plugins  ",
+        self.extensions_item.setText(translate('Preferences', "  Extensions  ",
                                             "Text for page selector icon"))
-        self.plugins_item.setTextAlignment(alignment)
-        self.plugins_item.setFlags(flags)
+        self.extensions_item.setTextAlignment(alignment)
+        self.extensions_item.setFlags(flags)
 
-        for item in (general_item, style_item, self.plugins_item):
+        for item in (general_item, style_item, self.extensions_item):
             self.selector_model.appendRow(item)
 
-        # Add items for *loaded* plugins to the Plugins item
-        index = self.selector_model.indexFromItem(self.plugins_item)
+        # Add items for loaded extensions to the Extensions item
+        index = self.selector_model.indexFromItem(self.extensions_item)
         self.pageSelector.setExpanded(index, True)
-        for UID in self.vtapp.plugins_mgr.loaded_plugins.keys():
-            name = UID.split('#@#')[0]
-            item = QtGui.QStandardItem(name)
-            item.setData(UID)
-            self.plugins_item.appendRow(item)
+        for k, v in self.vtapp.extensions_mgr.items():
+            if v:
+              # uid = self.vtapp.extensions_details[k]['UID']
+              name = self.vtapp.extensions_details[k]['name']
+              # comment = self.vtapp.extensions_details[k]['comment']
+              item = QtGui.QStandardItem(name)
+              # item.setData('#@#'.join([uid, name, comment]))
+              item.setData(k)
+              self.extensions_item.appendRow(item)
 
     @QtCore.Slot("QModelIndex", name="on_pageSelector_clicked")
     def changeSettingsPage(self, index):
@@ -201,10 +207,10 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         # If top level item is clicked
         if not index.parent().isValid():
             self.stackedPages.setCurrentIndex(index.row())
-        # If a plugin item is clicked
-        elif index.parent() == self.plugins_item.index():
-            pluginID = self.selector_model.itemFromIndex(index).data()
-            self.aboutPluginPage(pluginID)
+        # If a extension item is clicked
+        elif index.parent() == self.extensions_item.index():
+            extensionID = self.selector_model.itemFromIndex(index).data()
+            self.aboutExtensionPage(extensionID)
 
     @QtCore.Slot("QAbstractButton *", name="on_buttonsBox_clicked")
     def executeButtonAction(self, button):
@@ -255,16 +261,16 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.stylesCB.setCurrentIndex(index)
 
         # The visual update done above is not enough, we must reset the
-        # new preferences dictionary and the list of enabled plugins
+        # new preferences dictionary and the list of enabled extensions
         self.new_prefs.clear()
         self.new_prefs.update(self.initial_prefs)
-        self.enabled_plugins = self.pg_loader.enabled_plugins[:]
-        self.all_plugins = \
-            dict(item for item in self.pg_loader.all_plugins.items())
-#        UIDs = self.all_plugins.keys()
-        for row in range(0, self.plugins_model.rowCount()):
-            item = self.plugins_model.item(row, 0)
-            if item.data() in self.enabled_plugins:
+        self.enabled_extensions = []
+        for k, v in self.vtapp.extensions_mgr.items():
+          if v:
+            self.enabled_extensions.append(k)
+        for row in range(0, self.extensions_model.rowCount()):
+            item = self.extensions_model.item(row, 0)
+            if item.data() in self.enabled_extensions:
                 item.setCheckState(2)
             else:
                 item.setCheckState(0)
@@ -276,13 +282,19 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         This method is a slot connected to the `accepted` signal. See
         ctor for details.
         """
-
+        log.error('BEFORE')
+        log.error(self.new_prefs)
         # Update the plugins manager
-        self.updatePluginsManager()
+        self.updateExtensionsManager()
 
         # Update the rest of settings
-        for key, value in self.new_prefs.items():
-            self.new_prefs[key] = value
+        #for key, value in self.new_prefs.items():
+        #    self.new_prefs[key] = value
+
+        log.error('AFTER')
+        log.error(self.new_prefs)
+        self.config.applyConfiguration(self.new_prefs)
+        self.config.saveConfiguration()
 
         self.accept()
 
@@ -391,42 +403,41 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         """
         self.new_prefs['Look/currentStyle'] = style_name
 
-    def updatePluginsManager(self):
-        """Update the plugins manager before closing the dialog.
+    def updateExtensionsManager(self):
+        """Update the extensions manager before closing the dialog.
 
-        When the Apply button is clicked the list of enabled plugins
+        When the Apply button is clicked the extensions state
         is refreshed.
         """
 
-        self.enabled_plugins = []
-        for row in range(self.plugins_model.rowCount()):
-            item = self.plugins_model.item(row, 0)
-            if item.checkState() == 2:
-                self.enabled_plugins.append(item.data())
+        for row in range(self.extensions_model.rowCount()):
+          item = self.extensions_model.item(row, 0)
+          if item.checkState() == 2:
+            self.vtapp.extensions_mgr[item.data()] = True
+          else:
+            self.vtapp.extensions_mgr[item.data()] = False
 
-        self.pg_loader.enabled_plugins = self.enabled_plugins[:]
+    def aboutExtensionPage(self, extensionID):
+        """A page with info about the extension clicked in the selector widget.
 
-    def aboutPluginPage(self, pluginID):
-        """A page with info about the plugin clicked in the selector widget.
-
-        :Parameter pluginID: a unique ID for getting the proper plugin
+        :Parameter extensionID: a unique ID for getting the proper extension
         """
 
         # Refresh the Preferences dialog pages. There is at most one
-        # About Plugin page at any given time
+        # About Extension page at any given time
         while self.stackedPages.count() > 3:
             about_page = self.stackedPages.widget(3)
             self.stackedPages.removeWidget(about_page)
             del about_page
 
-        pg_instance = self.vtapp.plugins_mgr.loaded_plugins[pluginID]
+        ext_instance = self.vtapp.instances[extensionID]
         try:
-            about_page = pg_instance.helpAbout(self.stackedPages)
+            about_page = ext_instance.helpAbout(self.stackedPages)
         except AttributeError:
             about_page = QtWidgets.QWidget(self.stackedPages)
             label = QtWidgets.QLabel(translate(
                 'Preferences',
-                'Sorry, there are no info available for this plugin',
+                'Sorry, there are no info available for this extension',
                 'A text label'), about_page)
             layout = QtWidgets.QVBoxLayout(about_page)
             layout.addWidget(label)

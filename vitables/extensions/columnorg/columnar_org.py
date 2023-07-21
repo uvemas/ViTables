@@ -16,7 +16,7 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 
-"""Plugin that provides columnar organizations for arrays
+"""Extension that provides columnar organizations for arrays
 
 The plugin let the users to mark several array views (all of them with the
 same number of rows) and then display those arrays using a unique widget, one
@@ -27,7 +27,7 @@ that the plugin will be useful to some users.
 
 __docformat__ = 'restructuredtext'
 __version__ = '1.1'
-plugin_name = 'Columnar organization of arrays'
+ext_name = 'Columnar organization of arrays'
 comment = ('Rearrange several arrays with the same number of rows and '
            'displays them in a unique widget')
 
@@ -41,14 +41,14 @@ from qtpy import QtWidgets
 
 import vitables
 from vitables.vttables.datasheet import DataSheet
-from vitables.plugins.aboutpage import AboutPage
+from vitables.extensions.aboutpage import AboutPage
 
 translate = QtWidgets.QApplication.translate
 
-_PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__))
+_EXTENSIONS_FOLDER = os.path.join(os.path.dirname(__file__))
 
 
-class ArrayColsOrganizer(QtCore.QObject):
+class ExtArrayColsOrganizer(QtCore.QObject):
     """The class which defines the plugin for columnar organization of arrays.
 
     It is connected to the core program so that ever time a new view
@@ -60,7 +60,7 @@ class ArrayColsOrganizer(QtCore.QObject):
     """
 
     UID = __name__
-    NAME = plugin_name
+    NAME = ext_name
     COMMENT = comment
 
     def __init__(self, parent=None):
@@ -71,7 +71,7 @@ class ArrayColsOrganizer(QtCore.QObject):
         they are arrays that can be grouped in a unique view.
         """
 
-        super(ArrayColsOrganizer, self).__init__(parent)
+        super(ExtArrayColsOrganizer, self).__init__(parent)
         self.vtapp = vitables.utils.getVTApp()
 
         # An specialized object will deal with the Node menu changes
@@ -140,14 +140,14 @@ class ArrayColsOrganizer(QtCore.QObject):
         :Parameter about_page: the container widget for the page
         """
 
-        # Plugin full description
+        # Extension full description
         desc = {'version': __version__,
                 'module_name': os.path.join(os.path.basename(__file__)),
                 'folder': os.path.join(os.path.dirname(__file__)),
                 'author': 'Vicent Mas <vmas@vitables.org>',
                 'comment': translate('ArrayColsOrganizer',
                                      """
-                    <qt><p>Plugin that provides an alternative view for
+                    <qt><p>Extension that provides an alternative view for
                     arrays with the same number of rows. <p>
                     The user has to open all the arrays she whishes to see in
                     a unique viewer, and tick their bottom-right corner
@@ -158,7 +158,7 @@ class ArrayColsOrganizer(QtCore.QObject):
                     <p>Note that all ticked arrays must have the same
                     dimensions for the `Group` menu item to enable.</qt>
                     """,
-                                     'Text of an About plugin message box')}
+                                     'Text of an About extension message box')}
         about_page = AboutPage(desc, parent)
         return about_page
 
@@ -183,7 +183,7 @@ class MenuUpdater(QtCore.QObject):
         """
 
         object_group_icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
+        pixmap = QtGui.QPixmap(os.path.join(_EXTENSIONS_FOLDER,
                                             'icons/object-group.png'))
         object_group_icon.addPixmap(pixmap,
                                     QtGui.QIcon.Normal,
@@ -204,7 +204,7 @@ class MenuUpdater(QtCore.QObject):
                                 "Status bar text for the Node -> Group Arrays action"))
 
         object_ungroup_icon = QtGui.QIcon()
-        pixmap = QtGui.QPixmap(os.path.join(_PLUGIN_FOLDER,
+        pixmap = QtGui.QPixmap(os.path.join(_EXTENSIONS_FOLDER,
                                             'icons/object-ungroup.png'))
         object_ungroup_icon.addPixmap(pixmap,
                                       QtGui.QIcon.Normal,
@@ -269,7 +269,7 @@ class MenuUpdater(QtCore.QObject):
                                 """\nError: grouping arrays, operation cancelled. """
                                 """Not all the selected arrays have the same number """
                                 """of rows.""",
-                                'An error message in the ArraysColsOrganizer plugin'))
+                                'An error message in the ArraysColsOrganizer extension'))
 
     def groupArrays(self):
         """Group a set of individual arrays into the same view widget.

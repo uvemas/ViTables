@@ -40,8 +40,11 @@ import vitables.vtsplash
 from vitables.vtsite import ICONDIR
 
 from vitables.preferences import vtconfig
-import vitables.preferences.pluginsloader as pluginsloader
 from vitables.preferences import preferences
+
+import importlib.resources
+import importlib.util
+import inspect
 
 import vitables.queries.querymgr as qmgr
 
@@ -96,7 +99,6 @@ class VTApp(QtCore.QObject):
     leaf_model_created = QtCore.Signal(QtWidgets.QMdiSubWindow,
                                        name="leafModelCreated")
     dbtree_model_created = QtCore.Signal()
-    pluginsLoaded = QtCore.Signal()
 
     def __init__(self, mode='', dblist='', h5files=None, keep_splash=True):
         """
@@ -128,11 +130,10 @@ class VTApp(QtCore.QObject):
                                      'A splash screen message'))
         self.gui = vtgui.VTGUI(self, vtconfig.getVersion())
 
-        # Apply the configuration stored on disk
+        # Instantiate a configurator object for the application
         splash.drawMessage(translate('VTApp', 'Configuration setup...',
                                      'A splash screen message'))
-
-        # Instantiate a configurator object for the application
+        self.extensions_mgr = {}
         self.config = vtconfig.Config()
         self.config.applyConfiguration(self.config.readConfiguration())
 
@@ -140,15 +141,36 @@ class VTApp(QtCore.QObject):
         self.csv_importer = importcsv.ImportCSV()
         self.csv_exporter = exportcsv.ExportToCSV()
 
-        # Load plugins.
-        # Some plugins modify existing menus so plugins must be loaded after
+        # Some extensions modify existing menus so they must be loaded after
         # creating the user interface.
-        # Some plugins modify the tree of databases or datasets displaying so
-        # plugins must be loaded before opening any file.
-        self.plugins_mgr = \
-            pluginsloader.PluginsLoader(self.config.enabled_plugins)
-        self.plugins_mgr.loadAll()
-        self.pluginsLoaded.emit()
+        # Some extensions modify the tree of databases or datasets displaying so
+        # they must be loaded before opening any file.
+
+        log.error(self.extensions_mgr)
+        self.extensions_details = {k: {"UID": None, "name": None, "comment": None} for k in self.extensions_mgr.keys()}
+        self.instance_counter = 0
+        self.instances = {}
+        for pkg in self.extensions_mgr:
+          pkg_name, pgk_module = pkg.split(".")
+          module_name = pgk_module + ".py"
+          # Resource that represents the package where the extension lives. It is a PosixPath object
+          ext_pkg = importlib.resources.files("vitables.extensions." + pkg_name)
+          with importlib.resources.as_file(ext_pkg) as ext_path:
+            for child in ext_path.iterdir():
+              if child.match("*.py") and not str(child).endswith(("__init__.py", "aboutpage.py")):
+                # Convert child (a PosixPath object) to module object
+                module_spec = importlib.util.spec_from_file_location(child.stem, child)
+                module = importlib.util.module_from_spec(module_spec)
+                module_spec.loader.exec_module(module)
+                class_name = [name for name, obj in inspect.getmembers(module) if inspect.isclass(obj) and name.startswith("Ext")]
+                target_class = getattr(module, class_name[0])
+                self.extensions_details[pkg]["UID"] = target_class.UID
+                self.extensions_details[pkg]["name"] = target_class.NAME
+                self.extensions_details[pkg]["comment"] = target_class.COMMENT
+                if self.extensions_mgr[pkg]:
+                  self.instances[pkg] = target_class()
+        log.error(self.extensions_details)
+                
         self.dbtree_model_created.emit()
 
         # The queries manager
@@ -178,7 +200,7 @@ class VTApp(QtCore.QObject):
         # List of HelpBrowser instances in memory
         self.doc_browser = None
 
-        # Filenodes mappig
+        # Filenodes mapping
         self.filenodes_map = {}
 
         # Restore last session

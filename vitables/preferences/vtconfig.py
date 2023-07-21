@@ -174,6 +174,8 @@ class Config(QtCore.QSettings):
                     self.default_style = item
                     break
 
+        self.enabled_extensions = []
+
     def loggerPaper(self):
         """
         Returns the logger background color.
@@ -407,14 +409,50 @@ class Config(QtCore.QSettings):
         else:
             return default_value
 
-    def enabledPlugins(self):
-        """Returns the list of enabled plugins.
+    def columnorgExt(self):
+        """
+        Returns the extension status: true (enabled) or false (disabled)
         """
 
-        key = 'Plugins/Enabled'
-        default_value = []
-        setting_value = self.value(key)
-        if isinstance(setting_value, list):
+        key = "Extensions/columnorg.columnar_org"
+        default_value = False
+        try:
+            setting_value = self.value(key, type=bool)
+        except TypeError:
+            setting_value = default_value
+        if setting_value in (False, True):
+            return setting_value
+        else:
+            return default_value
+
+    def dbstreesortExt(self):
+        """
+        Returns the extension status: true (enabled) or false (disabled)
+        """
+
+        key = "Extensions/dbstreesort.dbs_tree_sort"
+        default_value = False
+        try:
+            setting_value = self.value(key, type=bool)
+        except TypeError:
+            setting_value = default_value
+        if setting_value in (False, True):
+            return setting_value
+        else:
+            return default_value
+
+    def timeseriesExt(self):
+        """
+        Returns the extension status: true (enabled) or false (disabled)
+        """
+
+        key = "Extensions/timeseries.time_series"
+        default_value = False
+        try:
+            setting_value = self.value(key, type=bool)
+        except TypeError:
+            setting_value = default_value
+        if setting_value in (False, True):
             return setting_value
         else:
             return default_value
@@ -467,7 +505,9 @@ class Config(QtCore.QSettings):
         config['HelpBrowser/History'] = self.helpHistory()
         config['HelpBrowser/Bookmarks'] = self.helpBookmarks()
         config['Look/currentStyle'] = self.readStyle()
-        config['Plugins/Enabled'] = self.enabledPlugins()
+        config['Extensions/columnorg.columnar_org'] = self.columnorgExt()
+        config['Extensions/dbstreesort.dbs_tree_sort'] = self.dbstreesortExt()
+        config['Extensions/timeseries.time_series'] = self.timeseriesExt()
         return config
 
     def applyConfiguration(self, config):
@@ -572,9 +612,17 @@ class Config(QtCore.QSettings):
             # Default style is provided by the underlying window manager
             QtWidgets.QApplication.setStyle(self.current_style)
 
-        key = 'Plugins/Enabled'
+        key = 'Extensions/columnorg.columnar_org'
         if key in config:
-            self.enabled_plugins = config[key]
+            self.vtapp.extensions_mgr['columnorg.columnar_org'] = config[key]
+
+        key = 'Extensions/dbstreesort.dbs_tree_sort'
+        if key in config:
+            self.vtapp.extensions_mgr['dbstreesort.dbs_tree_sort'] = config[key]
+
+        key = 'Extensions/timeseries.time_series'
+        if key in config:
+            self.vtapp.extensions_mgr['timeseries.time_series'] = config[key]
 
     def saveConfiguration(self):
         """
@@ -621,9 +669,13 @@ class Config(QtCore.QSettings):
         self.writeValue('HelpBrowser/History', self.hb_history)
         # The Help Browser bookmarks
         self.writeValue('HelpBrowser/Bookmarks', self.hb_bookmarks)
-        # The list of enabled plugins
-        self.writeValue('Plugins/Enabled',
-                        self.vtapp.plugins_mgr.enabled_plugins)
+        # The list of enabled extensions
+        self.writeValue('Extensions/columnorg.columnar_org',
+                        self.vtapp.extensions_mgr['columnorg.columnar_org'])
+        self.writeValue('Extensions/dbstreesort.dbs_tree_sort',
+                        self.vtapp.extensions_mgr['dbstreesort.dbs_tree_sort'])
+        self.writeValue('Extensions/timeseries.time_series',
+                        self.vtapp.extensions_mgr['timeseries.time_series'])
         self.sync()
 
     def getSessionFilesNodes(self):
