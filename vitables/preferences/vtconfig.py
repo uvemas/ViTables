@@ -100,7 +100,7 @@ import vitables.vttables.datasheet as datasheet
 
 
 __docformat__ = 'restructuredtext'
-__version__ = '3.0.2'
+__version__ = '3.0.3'
 
 translate = QtWidgets.QApplication.translate
 

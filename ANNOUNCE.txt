@@ -1,9 +1,9 @@
 =========================
-Announcing ViTables 3.0.2
+Announcing ViTables 3.0.3
 =========================
 
 After another long period retired from development activities I'm happy to come
-back and present ViTables 3.0.2, the latest release of this viewer for
+back and present ViTables 3.0.3, the latest release of this viewer for
 PyTables/HDF5 files. Definitely this release wouldn't have been possible without
 the invaluable help of a bunch of contributors so THANKS to all of them.
 

@@ -1,5 +1,9 @@
 ViTables ChangeLog
 ==================
+** July 20, 2023 **
+Support PyQt6, this is useful for mac users who cant install
+PyQt5.
+
 ** January 03, 2019 **
 Added script to automatically generate the Users Guide.
 
