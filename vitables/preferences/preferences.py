@@ -22,8 +22,10 @@
 """
 This module provides a dialog for changing ``ViTables`` settings at runtime.
 
-The dialog has 3 pages managed via QtGui.QStackedWidget: General settings
-page, Look&Feel settings page and Extensions settings page.
+The settings dialog is created with Qt Designer.
+The dialog has two panes. The left/selector pane is aimed to choose the group of settings
+to be modified: General, Look&Feel or Extensions. The right pane is a QtGui.QStackedWidget
+with a stacked page for every group of settings present in the selector pane.
 """
 
 import os
@@ -53,20 +55,18 @@ Ui_SettingsDialog = \
 
 class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
     """
-    Create the Settings dialog.
+    Setup the Settings dialog.
 
-    By loading UI files at runtime we can:
-
-        - create user interfaces at runtime (without using pyuic)
-        - use multiple inheritance, MyParentClass(BaseClass, FormClass)
+    First the UI is loaded. Then the required functionality is provided to the
+    UI: models are setup, signals and slots are connected, etc.
 
     """
 
     def __init__(self):
         """
-        Initialize the preferences dialog.
+        Initialize the preferences dialog according to current preferences.
 
-        * initializes the dialog appearance according to current preferences
+        * setup models for widgets created in the ui file
         * connects dialog widgets to slots that provide them with functionality
         """
 
@@ -77,79 +77,52 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.setupUi(self)
 
         self.config = self.vtapp.config
-        self.enabled_extensions = []
-        for k, v in self.vtapp.extensions_mgr.items():
-          if v:
-            self.enabled_extensions.append(k)
-        # Setup the Extensions page
+
+        # The following preferences are applied to the Preferences dialog when
+        # it is created
+        self.init_prefs = {}
+        style_sheet = self.vtgui.logger.styleSheet()
+        paper = style_sheet[-7:]
+        self.init_prefs['Logger/Paper'] = QtGui.QColor(paper)
+        self.init_prefs['Logger/Text'] = self.vtgui.logger.textColor()
+        self.init_prefs['Logger/Font'] = self.vtgui.logger.font()
+        self.init_prefs['Workspace/Background'] = \
+            self.vtgui.workspace.background()
+        self.init_prefs['Look/currentStyle'] = self.config.current_style
+        self.init_prefs['Session/startupWorkingDir'] = \
+            self.config.initial_working_directory
+        self.init_prefs['Session/restoreLastSession'] = \
+            self.config.restore_last_session
+        
+        self.new_prefs = {}
+        self.new_prefs.update(self.init_prefs)
+
+        # Load the initial view of the Preferences dialog
+        self.setupSelector()
+        self.stackedPages.setCurrentIndex(0)
+
+        # Setup the Extensions stacked page
         self.setupExtensionsPage()
 
-        # Setup the page selector widget
-        self.setupSelector()
-
-        # Display the General Settings page
-        self.stackedPages.setCurrentIndex(0)
+        # Apply the current ViTables configuration to the Preferences dialog
+        self.resetPreferences()
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
         styles = QtWidgets.QStyleFactory.keys()
         self.stylesCB.insertItems(0, styles)
 
-        # The dictionary of current ViTables preferences
-        self.initial_prefs = {}
-        style_sheet = self.vtgui.logger.styleSheet()
-        paper = style_sheet[-7:]
-        self.initial_prefs['Logger/Paper'] = QtGui.QColor(paper)
-        self.initial_prefs['Logger/Text'] = self.vtgui.logger.textColor()
-        self.initial_prefs['Logger/Font'] = self.vtgui.logger.font()
-        self.initial_prefs['Workspace/Background'] = \
-            self.vtgui.workspace.background()
-        self.initial_prefs['Look/currentStyle'] = self.config.current_style
-        self.initial_prefs['Session/startupWorkingDir'] = \
-            self.config.initial_working_directory
-        self.initial_prefs['Session/restoreLastSession'] = \
-            self.config.restore_last_session
-
-        # The dictionary used to update the preferences
-        self.new_prefs = {}
-
-        # Apply the current ViTables configuration to the Preferences dialog
-        self.resetPreferences()
-
         # Connect SIGNALS to SLOTS
         self.buttonsBox.helpRequested.connect(
             QtWidgets.QWhatsThis.enterWhatsThisMode)
-
-    def setupExtensionsPage(self):
-        """Populate the tree of extensions.
-        """
-
-        nrows = len(self.vtapp.extensions_mgr.keys())
-        self.extensions_model = QtGui.QStandardItemModel(nrows, 2, self)
-        self.pluginsTV.setModel(self.extensions_model)
-        header = QtWidgets.QHeaderView(QtCore.Qt.Horizontal, self.pluginsTV)
-        header.setStretchLastSection(True)
-        self.pluginsTV.setHeader(header)
-        self.extensions_model.setHorizontalHeaderLabels(['Name', 'Comment'])
-
-        # Populate the model
-        row = 0
-        for k, v in self.vtapp.extensions_details.items():
-            name = v['name']
-            comment = v['comment']
-            nitem = QtGui.QStandardItem(name)
-            nitem.setData(k)
-            nitem.setCheckable(True)
-            if k in self.enabled_extensions:
-                nitem.setCheckState(QtCore.Qt.Checked)
-            citem = QtGui.QStandardItem(comment)
-            self.extensions_model.setItem(row, 0, nitem)
-            self.extensions_model.setItem(row, 1, citem)
-            row = row + 1
-
+        
     def setupSelector(self):
-        """Setup the page selector widget of the Preferences dialog.
+        """Populate the data model of the selector pane.
+
+        In the selector pane the user can choose the group of settings to be 
+        modified (General, Look&Feel or Extensions)
         """
 
+        
         iconsdir = os.path.join(ICONDIR, '64x64')
         self.selector_model = QtGui.QStandardItemModel(self)
         self.pageSelector.setModel(self.selector_model)
@@ -184,18 +157,81 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         for item in (general_item, style_item, self.extensions_item):
             self.selector_model.appendRow(item)
 
-        # Add items for loaded extensions to the Extensions item
+        # Add items for instantiated extensions to the Extensions item
         index = self.selector_model.indexFromItem(self.extensions_item)
         self.pageSelector.setExpanded(index, True)
-        for k, v in self.vtapp.extensions_mgr.items():
-            if v:
-              # uid = self.vtapp.extensions_details[k]['UID']
-              name = self.vtapp.extensions_details[k]['name']
-              # comment = self.vtapp.extensions_details[k]['comment']
-              item = QtGui.QStandardItem(name)
-              # item.setData('#@#'.join([uid, name, comment]))
-              item.setData(k)
-              self.extensions_item.appendRow(item)
+        for k in self.vtapp.all_instances.keys():
+          name = self.vtapp.all_extensions[k][1]['name']
+          item = QtGui.QStandardItem(name)
+          item.setData(k)
+          self.extensions_item.appendRow(item)
+
+    def setupExtensionsPage(self):
+        """Populate the data model of the extensions stacked page.
+        """
+
+        nrows = len(self.vtapp.all_extensions)
+        self.extensions_model = QtGui.QStandardItemModel(nrows, 2, self)
+        self.extensionsTV.setModel(self.extensions_model)
+        header = QtWidgets.QHeaderView(QtCore.Qt.Horizontal, self.extensionsTV)
+        header.setStretchLastSection(True)
+        self.extensionsTV.setHeader(header)
+        self.extensions_model.setHorizontalHeaderLabels(['Name', 'Comment'])
+
+        # Populate the model
+        row = 0
+        for k, v in self.vtapp.all_extensions.items():
+            name = v[1]['name']
+            nitem = QtGui.QStandardItem(name)
+            nitem.setData(k)
+            nitem.setCheckable(True)
+            if self.vtapp.extensions_state[k]:
+                nitem.setCheckState(QtCore.Qt.Checked)
+            else:
+                nitem.setCheckState(QtCore.Qt.Unchecked)
+            
+            self.extensions_model.setItem(row, 0, nitem)
+
+            comment = v[1]['comment']
+            citem = QtGui.QStandardItem(comment)
+            self.extensions_model.setItem(row, 1, citem)
+            row = row + 1
+
+    def resetPreferences(self):
+        """
+        Reset the Preferences dialog to its initial settings.
+        """
+
+        # Startup page
+        if self.config.initial_working_directory == 'last':
+            self.lastDirCB.setChecked(True)
+        else:
+            self.lastDirCB.setChecked(False)
+
+        self.restoreCB.setChecked(self.config.restore_last_session)
+
+        # Style page
+        self.sampleTE.selectAll()
+        self.sampleTE.setCurrentFont(self.vtgui.logger.font())
+        self.sampleTE.setTextColor(self.vtgui.logger.textColor())
+        self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
+        paper = self.vtgui.logger.styleSheet()[-7:]
+        self.sampleTE.setStyleSheet("background-color: {0}".format(
+            QtGui.QColor(paper).name()))
+
+        self.workspaceLabel.setStyleSheet('background-color: {0}'.format(
+            self.vtgui.workspace.background().color().name()))
+
+        index = self.stylesCB.findText(self.config.current_style)
+        self.stylesCB.setCurrentIndex(index)
+
+        for row in range(0, len(self.vtapp.extensions_state)):
+            item = self.extensions_model.item(row, 0)
+            extension = item.data()
+            if self.vtapp.extensions_state[extension]:
+                item.setCheckState(2)
+            else:
+                item.setCheckState(0)
 
     @QtCore.Slot("QModelIndex", name="on_pageSelector_clicked")
     def changeSettingsPage(self, index):
@@ -232,49 +268,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         else:
             self.applySettings()
 
-    def resetPreferences(self):
-        """
-        Apply the current ``ViTables`` configuration to the Preferences dialog.
-        """
-
-        # Startup page
-        if self.initial_prefs['Session/startupWorkingDir'] == 'last':
-            self.lastDirCB.setChecked(True)
-        else:
-            self.lastDirCB.setChecked(False)
-
-        self.restoreCB.setChecked(
-            self.initial_prefs['Session/restoreLastSession'])
-
-        # Style page
-        self.sampleTE.selectAll()
-        self.sampleTE.setCurrentFont(self.initial_prefs['Logger/Font'])
-        self.sampleTE.setTextColor(self.initial_prefs['Logger/Text'])
-        self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
-        self.sampleTE.setStyleSheet("background-color: {0}".format(
-            self.initial_prefs['Logger/Paper'].name()))
-
-        self.workspaceLabel.setStyleSheet('background-color: {0}'.format(
-            self.initial_prefs['Workspace/Background'].color().name()))
-
-        index = self.stylesCB.findText(self.initial_prefs['Look/currentStyle'])
-        self.stylesCB.setCurrentIndex(index)
-
-        # The visual update done above is not enough, we must reset the
-        # new preferences dictionary and the list of enabled extensions
-        self.new_prefs.clear()
-        self.new_prefs.update(self.initial_prefs)
-        self.enabled_extensions = []
-        for k, v in self.vtapp.extensions_mgr.items():
-          if v:
-            self.enabled_extensions.append(k)
-        for row in range(0, self.extensions_model.rowCount()):
-            item = self.extensions_model.item(row, 0)
-            if item.data() in self.enabled_extensions:
-                item.setCheckState(2)
-            else:
-                item.setCheckState(0)
-
     def applySettings(self):
         """
         Apply the current preferences to the application and close the dialog.
@@ -282,21 +275,31 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         This method is a slot connected to the `accepted` signal. See
         ctor for details.
         """
-        log.error('BEFORE')
-        log.error(self.new_prefs)
-        # Update the plugins manager
-        self.updateExtensionsManager()
+        # Update the extensions state
+        self.updateExtensionsCheckState()
 
-        # Update the rest of settings
-        #for key, value in self.new_prefs.items():
-        #    self.new_prefs[key] = value
-
-        log.error('AFTER')
-        log.error(self.new_prefs)
         self.config.applyConfiguration(self.new_prefs)
         self.config.saveConfiguration()
 
         self.accept()
+
+    #
+    # Methods that modify the current settings
+    #
+
+    def updateExtensionsCheckState(self):
+        """Update the extensions state before closing with the OK button.
+        """
+
+        for row in range(self.extensions_model.rowCount()):
+          item = self.extensions_model.item(row, 0)
+          extension = item.data()
+          if item.checkState() == QtCore.Qt.Checked:
+            self.vtapp.extensions_state[extension] = True
+            self.new_prefs['Extensions/{0}'.format(extension)] = True
+          else:
+            self.vtapp.extensions_state[extension] = False
+            self.new_prefs['Extensions/{0}'.format(extension)] = False
 
     @QtCore.Slot("bool", name="on_lastDirCB_toggled")
     def setInitialWorkingDirectory(self, cb_on):
@@ -403,20 +406,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         """
         self.new_prefs['Look/currentStyle'] = style_name
 
-    def updateExtensionsManager(self):
-        """Update the extensions manager before closing the dialog.
-
-        When the Apply button is clicked the extensions state
-        is refreshed.
-        """
-
-        for row in range(self.extensions_model.rowCount()):
-          item = self.extensions_model.item(row, 0)
-          if item.checkState() == 2:
-            self.vtapp.extensions_mgr[item.data()] = True
-          else:
-            self.vtapp.extensions_mgr[item.data()] = False
-
     def aboutExtensionPage(self, extensionID):
         """A page with info about the extension clicked in the selector widget.
 
@@ -430,7 +419,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.stackedPages.removeWidget(about_page)
             del about_page
 
-        ext_instance = self.vtapp.instances[extensionID]
+        ext_instance = self.vtapp.all_instances[extensionID]
         try:
             about_page = ext_instance.helpAbout(self.stackedPages)
         except AttributeError:

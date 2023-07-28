@@ -37,7 +37,7 @@
         </size>
        </property>
        <property name="whatsThis">
-        <string>Click an item in this tree to select the settings you want to change. Beware that the listed plugins are *loaded* plugins (i.e. the are working in the current ViTables session) not just enabled plugins.</string>
+        <string>Click an item in this tree to select the settings you want to change. Beware that the listed extensions are the *currently instantiated* extensions (i.e. the are working in the current ViTables session) not just enabled extensions.</string>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
@@ -289,7 +289,7 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="pluginsPage">
+       <widget class="QWidget" name="extensionsPage">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -307,7 +307,7 @@ p, li { white-space: pre-wrap; }
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <widget class="QTreeView" name="pluginsTV">
+             <widget class="QTreeView" name="extensionsTV">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
