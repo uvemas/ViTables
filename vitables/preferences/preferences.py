@@ -22,7 +22,9 @@
 """
 This module provides a dialog for changing ``ViTables`` settings at runtime.
 
-The settings dialog is created with Qt Designer.
+The settings dialog is created with Qt Designer. Data models of the dialog are initialized
+in this module.
+
 The dialog has two panes. The left/selector pane is aimed to choose the group of settings
 to be modified: General, Look&Feel or Extensions. The right pane is a QtGui.QStackedWidget
 with a stacked page for every group of settings present in the selector pane.
@@ -72,7 +74,6 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
 
         self.vtapp = vitables.utils.getVTApp()
         self.vtgui = self.vtapp.gui
-        # Create the Settings dialog and customize it
         super(Preferences, self).__init__(self.vtgui)
         self.setupUi(self)
 
@@ -94,18 +95,18 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.init_prefs['Session/restoreLastSession'] = \
             self.config.restore_last_session
         
+        # The following preferences are applied to the Preferences dialog when
+        # the OK button is clicked
         self.new_prefs = {}
         self.new_prefs.update(self.init_prefs)
 
-        # Load the initial view of the Preferences dialog
+        # Populate data models
         self.setupSelector()
-        self.stackedPages.setCurrentIndex(0)
-
-        # Setup the Extensions stacked page
         self.setupExtensionsPage()
 
         # Apply the current ViTables configuration to the Preferences dialog
         self.resetPreferences()
+        self.stackedPages.setCurrentIndex(0)
 
         # Style names can be retrieved with qt.QStyleFactory.keys()
         styles = QtWidgets.QStyleFactory.keys()
@@ -116,13 +117,10 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             QtWidgets.QWhatsThis.enterWhatsThisMode)
         
     def setupSelector(self):
-        """Populate the data model of the selector pane.
-
-        In the selector pane the user can choose the group of settings to be 
-        modified (General, Look&Feel or Extensions)
+        """Initialize the data model of the selector pane.
         """
 
-        
+
         iconsdir = os.path.join(ICONDIR, '64x64')
         self.selector_model = QtGui.QStandardItemModel(self)
         self.pageSelector.setModel(self.selector_model)
@@ -167,7 +165,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
           self.extensions_item.appendRow(item)
 
     def setupExtensionsPage(self):
-        """Populate the data model of the extensions stacked page.
+        """Initialize the data model of the extensions stacked page.
         """
 
         nrows = len(self.vtapp.all_extensions)
@@ -185,7 +183,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             nitem = QtGui.QStandardItem(name)
             nitem.setData(k)
             nitem.setCheckable(True)
-            if self.vtapp.extensions_state[k]:
+            if v[0]:
                 nitem.setCheckState(QtCore.Qt.Checked)
             else:
                 nitem.setCheckState(QtCore.Qt.Unchecked)
@@ -225,13 +223,15 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         index = self.stylesCB.findText(self.config.current_style)
         self.stylesCB.setCurrentIndex(index)
 
-        for row in range(0, len(self.vtapp.extensions_state)):
+        row = 0
+        for k, v in self.vtapp.all_extensions.items():
             item = self.extensions_model.item(row, 0)
             extension = item.data()
-            if self.vtapp.extensions_state[extension]:
-                item.setCheckState(2)
+            if v[0]:
+                item.setCheckState(QtCore.Qt.Checked)
             else:
-                item.setCheckState(0)
+                item.setCheckState(QtCore.Qt.Unchecked)
+            row = row + 1
 
     @QtCore.Slot("QModelIndex", name="on_pageSelector_clicked")
     def changeSettingsPage(self, index):
@@ -271,10 +271,8 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
     def applySettings(self):
         """
         Apply the current preferences to the application and close the dialog.
-
-        This method is a slot connected to the `accepted` signal. See
-        ctor for details.
         """
+
         # Update the extensions state
         self.updateExtensionsCheckState()
 
@@ -295,10 +293,10 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
           item = self.extensions_model.item(row, 0)
           extension = item.data()
           if item.checkState() == QtCore.Qt.Checked:
-            self.vtapp.extensions_state[extension] = True
+            self.vtapp.all_extensions[extension][0] = True
             self.new_prefs['Extensions/{0}'.format(extension)] = True
           else:
-            self.vtapp.extensions_state[extension] = False
+            self.vtapp.all_extensions[extension][0] = False
             self.new_prefs['Extensions/{0}'.format(extension)] = False
 
     @QtCore.Slot("bool", name="on_lastDirCB_toggled")

@@ -13,6 +13,7 @@ syntax: glob
 .pydevproject
 .settings
 .idea
+.vscode
 doc/api
 doc/html
 doc/index.rst

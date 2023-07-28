@@ -215,7 +215,6 @@ class VTApp(QtCore.QObject):
         """
 
         self.all_extensions = {}
-        self.extensions_state = {}
         ext_keys = [k for k in self.config.allKeys() if k.startswith('Extensions') ]
         for k in ext_keys:
             key = k[11:]
@@ -227,10 +226,6 @@ class VTApp(QtCore.QObject):
                 self.config.isEnabledExt(k), 
                 {"name": ext_class.NAME, "comment": ext_class.COMMENT}
             ]
-            if self.config.isEnabledExt(k):
-                self.extensions_state[key] = True
-            else:
-                self.extensions_state[key] = False
             
     def loadEnabledExtensions(self):
         """Instantiate enabled extensions
