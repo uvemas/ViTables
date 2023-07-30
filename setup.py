@@ -31,11 +31,13 @@ def read(fname):
 
 install_requires = ['qtpy', 'numpy (>=1.4.1)', 'numexpr (>=2.0)',
                     'tables (>=3.0)', 'setuptools']
+if 'CONDA_PREFIX' not in os.environ:
+    install_requires.append('PyQt5 (>=5.5.1)')
 
 setup(name='ViTables',
       version=read('VERSION').rstrip('\r\n'),
       description='A viewer for PyTables package',
-      long_description=read('README.txt'),
+      long_description=read('README.md'),
       author='Vicent Mas',
       author_email='vmas@vitables.org',
       maintainer='Vicent Mas',
