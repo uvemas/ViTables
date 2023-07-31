@@ -13,6 +13,9 @@ syntax: glob
 .pydevproject
 .settings
 .idea
+.projectile
+.vscode
+flit_data
 doc/api
 doc/html
 doc/index.rst
