@@ -1,12 +1,18 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "ViTables"
-authors = [{name = "Vicent Mas", email = "vmas@vitables.org"}]
+dynamic = ["version"]
+description = 'A viewer for HDF5 files.'
 readme = "README.md"
-license = {file = "LICENSE.txt"}
+requires-python = ">=3.7"
+license = "GPL-3.0-or-later"
+keywords = ["HDF5", "PyTables"]
+authors = [
+  { name = "Vicent Mas", email = "vmas@vitables.org" },
+]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: X11 Applications",
@@ -17,38 +23,157 @@ classifiers = [
   "Programming Language :: Python",
   "Topic :: Scientific/Engineering"
 ]
-dynamic = ["version", "description"]
-keywords = ["HDF5", "PyTables"]
-
 dependencies = [
-  "python >=3.6",
   "qtpy >=2.2",
   "tables >=3.0",
-  "setuptools >=65.0"
+  "setuptools >=65.0",
 ]
 
 [project.optional-dependencies]
-pyqt = [
-  "PyQt5 >=5.5.1",
-  "PyQt6 >=6.0", 
-  "PySide2 >=5.15.2",
-  "PySide6 >=6.4"
-]
+PyQt5 = ["PyQt5 >=5.5.1"]
+PyQt6 = ["PyQt6 >=6.0"] 
+PySide2 = ["PySide2 >=5.15.2"]
+PySide6 = ["PySide6 >=6.4"]
 
 [project.gui-scripts]
 vitables = "vitables.start:gui"
+
+[project.urls]
+Documentation = "https://github.com/uvemas/ViTables#readme"
+Issues = "https://github.com/uvemas/ViTables/issues"
+Source = "https://github.com/uvemas/ViTables"
+Home = "https://vitables.org"
 
 [project.entry-points."vitables.plugins"]
 columnar_org = "vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer"
 dbs_tree_sort = "vitables.plugins.dbstreesort.dbs_tree_sort:DBsTreeSort"
 time_series = "vitables.plugins.timeseries.time_series:TSFormatter"
 
-[project.urls]
-Home = "https://vitables.org"
+[tool.hatch.version]
+path = "vitables/__init__.py"
 
-[tool.flit.module]
-name = "vitables"
+[tool.hatch.build]
+exclude = ["makedoc.py"]
 
-[tool.flit.external-data]
-directory = "flit_data"
 
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "black>=23.1.0",
+  "mypy>=1.0.0",
+  "ruff>=0.0.243",
+]
+[tool.hatch.envs.lint.scripts]
+typing = "mypy --install-types --non-interactive {args:src/vitables tests}"
+style = [
+  "ruff {args:.}",
+  "black --check --diff {args:.}",
+]
+fmt = [
+  "black {args:.}",
+  "ruff --fix {args:.}",
+  "style",
+]
+all = [
+  "style",
+  "typing",
+]
+
+[tool.black]
+target-version = ["py37"]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+target-version = "py37"
+line-length = 120
+select = [
+  "A",
+  "ARG",
+  "B",
+  "C",
+  "DTZ",
+  "E",
+  "EM",
+  "F",
+  "FBT",
+  "I",
+  "ICN",
+  "ISC",
+  "N",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "Q",
+  "RUF",
+  "S",
+  "T",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105", "S106", "S107",
+  # Ignore complexity
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+]
+unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
+
+[tool.ruff.isort]
+known-first-party = ["vitables"]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]
+
+[tool.coverage.run]
+source_pkgs = ["vitables", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/vitables/__about__.py",
+]
+
+[tool.coverage.paths]
+vitables = ["src/vitables", "*/vitables/src/vitables"]
+tests = ["tests", "*/vitables/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
