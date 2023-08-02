@@ -43,7 +43,7 @@ installed in the system then ViTables might crush on some functions.
 There is a version of ViTables already installed in WinPython so if
 old version is enough one can skip the steps below.
 
-Applied to ViTable the procedure has the following steps:
+Applied to ViTables the procedure has the following steps:
 
 1. Download source a ViTables source distribution. It is also possible
    to make one from the develop branch by executing the following command:

@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'ViTables Users\' Guide'
-copyright = '2017, Vicent Mas'
+copyright = '2023, Vicent Mas'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

@@ -94,47 +94,22 @@ Installation
 Linux
 ^^^^^
 
-The Python setuptools are used to build and install `ViTables`. You can install
+A pyproject.toml (with `hatch` as a build-system) is used to build and install `ViTables`. You can install
 the package from PyPI issuing the command::
 
   $ pip install ViTables
 
-This should install the ViTables wheel. If you experience problems installing
-the binary package you can install from sources (provided your system fulfills
-the requirements listed in the above section). Just download the tarball from
-PyPI, uncompress it, change to the distribution directory and execute (as root)::
+If you don't have any version of `PyQt` installed you can pass it as an extra to the above command::
+  
+   $ pip install ViTables[PyQt5|PyQt6]
 
- $ python setup.py install
-
-If you are doing this on a MacOS X platform, please make sure that the
-DYLD_LIBRARY_PATH environment variable has been setup properly.
-
-By default `ViTables` will be installed in the system-protected area where
-your system installs third party Python packages so you will need superuser
-privileges. If you prefer to install the package in a different location
-(for instance, your home directory) so that the installation can be done by
-non privileged users, you can do it using the --prefix (or --home) tag::
-
- $ python setup.py install --prefix=/home/myuser/mystuff
-
-Please, remember that installing Python modules in non-standard locations
-makes it necessary to setup properly the PYTHONPATH environment variable so
-that the Python interpreter can find the new modules.
-
-If you need further customizations, please have a look to the output of the
-command::
-
- $python setup.py install --help
-
-to see all the available options. Complete information about them can be
-found in the Distutils documentation.
+In theory `PySide2` and `PySide6` should work too but they have not been tested.
 
 Windows and Mac OS X
 ^^^^^^^^^^^^^^^^^^^^
 
 Currently there are no graphical installers available for these platforms. You
-have to install `ViTables` from the command line, using one of the methods
-described in the Linux section.
+have to install `ViTables` from the command line, using the method described in the Linux section.
 
 
 Further Reading

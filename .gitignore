@@ -15,7 +15,7 @@ syntax: glob
 .idea
 .projectile
 .vscode
-flit_data
+config.toml
 doc/api
 doc/html
 doc/index.rst
