@@ -53,8 +53,15 @@ time_series = "vitables.plugins.timeseries.time_series:TSFormatter"
 path = "vitables/__init__.py"
 
 [tool.hatch.build]
-exclude = ["makedoc.py"]
-
+include = [
+  "*.txt",
+  "VERSION",
+  "pyproject.toml",
+  "vitables/**/*",
+]
+exclude = [
+  "requirements.txt"
+]
 
 [tool.hatch.envs.default]
 dependencies = [

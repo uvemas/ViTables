@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** August 04, 2023 **
 Users Guide and README.md updated.
 
+pyproject.toml updated in order to package the users guide too.
+
 ** August 02, 2023 **
 Updated the script that generates the users guide.
 
