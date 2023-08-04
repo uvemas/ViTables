@@ -1,5 +1,19 @@
 ViTables ChangeLog
 ==================
+** August 04, 2023 **
+Users Guide and README.md updated.
+
+** August 02, 2023 **
+Updated the script that generates the users guide.
+
+Users Guide updated.
+
+** July 31, 2023 **
+Package build system changed from setuptools to flit.
+
+** July 30, 2023 **
+setup.py and setup.cfg files changed to use the new README.md file.
+
 ** July 20, 2023 **
 Support PyQt6, this is useful for mac users who cant install
 PyQt5.

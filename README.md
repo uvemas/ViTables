@@ -1,6 +1,7 @@
 <div align=center>
 
-![title_page_plain](doc/images/title_page_plain.svg)
+![](https://raw.githubusercontent.com/uvemas/ViTables/074a2597866c8f73e78c73ab5606b215ddf7951e/doc/images/title_page_plain.svg)
+
 
 ![Platform](https://anaconda.org/conda-forge/vitables/badges/platforms.svg) ![License](https://anaconda.org/conda-forge/vitables/badges/license.svg)
 
@@ -16,7 +17,7 @@ ViTables capabilities include easy navigation through the data hierarchy, displa
 
 <div align=center>
 
-![mainWindow](doc/images/mainWindow.png)
+![](https://github.com/uvemas/ViTables/blob/master/doc/images/mainWindow.png?raw=true)
 
 </div>
 
@@ -24,23 +25,22 @@ As a viewer, one of the greatest strengths of ViTables is its ability to display
 
 If you need a customized browser for managing your HDF5 data, ViTables is an excellent starting point.
 
-Here are some [screenshots](doc/images).
+Here are some [screenshots](https://github.com/uvemas/ViTables/tree/master/doc/images).
 
 ## QuickStart
 
 ### System requirements
 
-ViTables 3.0.2 has been tested against the latest versions of Python 3,
+ViTables 3.0.3 has been tested against the latest versions of Python 3,
 PyTables and PyQt. You can try other versions at your own risk :).
 
 ### Install through pip (may need further manually debug)
 
 ```sh
-$ pip install ViTables
+$ pip install ViTables[PyQt5|PyQt6]
 ```
 
-If you may encounter `module 'collections' has no attribute 'Iterable'` error, simply change `collections.Iterable` to `collections.abc.Iterable` in line 152 and 180 of corresponding utils.py
-
+If you don't have PyQt installed you can install it as an extra as shown above.
 ### Install on a conda environment
 
 Using conda you should be able to run vitables on any system, let it
@@ -53,7 +53,7 @@ Simply run
 $ conda install -c conda-forge vitables
 ```
 
-For more details, see [INSTALL.txt](INSTALL.txt).
+For more details, see [INSTALL.txt](https://github.com/uvemas/ViTables/blob/master/INSTALL.txt).
 
 ### Launch
 
