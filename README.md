@@ -1,6 +1,7 @@
 <div align=center>
 
-![title_page_plain](doc/images/title_page_plain.svg)
+![](https://raw.githubusercontent.com/uvemas/ViTables/074a2597866c8f73e78c73ab5606b215ddf7951e/doc/images/title_page_plain.svg)
+
 
 ![Platform](https://anaconda.org/conda-forge/vitables/badges/platforms.svg) ![License](https://anaconda.org/conda-forge/vitables/badges/license.svg)
 
@@ -16,7 +17,7 @@ ViTables capabilities include easy navigation through the data hierarchy, displa
 
 <div align=center>
 
-![mainWindow](doc/images/mainWindow.png)
+![](https://github.com/uvemas/ViTables/blob/master/doc/images/mainWindow.png?raw=true)
 
 </div>
 
@@ -24,7 +25,7 @@ As a viewer, one of the greatest strengths of ViTables is its ability to display
 
 If you need a customized browser for managing your HDF5 data, ViTables is an excellent starting point.
 
-Here are some [screenshots](doc/images).
+Here are some [screenshots](https://github.com/uvemas/ViTables/tree/master/doc/images).
 
 ## QuickStart
 
@@ -53,7 +54,7 @@ Simply run
 $ conda install -c conda-forge vitables
 ```
 
-For more details, see [INSTALL.txt](INSTALL.txt).
+For more details, see [INSTALL.txt](https://github.com/uvemas/ViTables/blob/master/INSTALL.txt).
 
 ### Launch
 
