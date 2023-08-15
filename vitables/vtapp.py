@@ -40,8 +40,10 @@ import vitables.vtsplash
 from vitables.vtsite import ICONDIR
 
 from vitables.preferences import vtconfig
-import vitables.preferences.pluginsloader as pluginsloader
 from vitables.preferences import preferences
+
+import importlib
+import inspect
 
 import vitables.queries.querymgr as qmgr
 
@@ -90,13 +92,12 @@ class VTApp(QtCore.QObject):
     - `h5files`: a list of files to be open at startup
     - `dblist`: a file that contains a list of files to be open at startup
     """
-    # Convenience signals for the plugins. Usually new signals are added
-    # when a new plugin is added to ViTables. They are the link between
-    # the plugins and the core of the program
+    # Convenience signals for the extensions. Usually new signals are added
+    # when a new extension is added to ViTables. They are the link between
+    # the extension and the core of the program
     leaf_model_created = QtCore.Signal(QtWidgets.QMdiSubWindow,
                                        name="leafModelCreated")
     dbtree_model_created = QtCore.Signal()
-    pluginsLoaded = QtCore.Signal()
 
     def __init__(self, mode='', dblist='', h5files=None, keep_splash=True):
         """
@@ -128,27 +129,22 @@ class VTApp(QtCore.QObject):
                                      'A splash screen message'))
         self.gui = vtgui.VTGUI(self, vtconfig.getVersion())
 
-        # Apply the configuration stored on disk
+        # Configure the application
         splash.drawMessage(translate('VTApp', 'Configuration setup...',
                                      'A splash screen message'))
-
-        # Instantiate a configurator object for the application
         self.config = vtconfig.Config()
+        self.initExtensionsDicts()
         self.config.applyConfiguration(self.config.readConfiguration())
 
         # Add import/export CSV capabilities
         self.csv_importer = importcsv.ImportCSV()
         self.csv_exporter = exportcsv.ExportToCSV()
 
-        # Load plugins.
-        # Some plugins modify existing menus so plugins must be loaded after
+        # Some extensions modify existing menus so they must be loaded after
         # creating the user interface.
-        # Some plugins modify the tree of databases or datasets displaying so
-        # plugins must be loaded before opening any file.
-        self.plugins_mgr = \
-            pluginsloader.PluginsLoader(self.config.enabled_plugins)
-        self.plugins_mgr.loadAll()
-        self.pluginsLoaded.emit()
+        # Some extensions modify the tree of databases or datasets displaying so
+        # they must be loaded before opening any file.
+        self.loadEnabledExtensions()
         self.dbtree_model_created.emit()
 
         # The queries manager
@@ -178,7 +174,7 @@ class VTApp(QtCore.QObject):
         # List of HelpBrowser instances in memory
         self.doc_browser = None
 
-        # Filenodes mappig
+        # Filenodes mapping
         self.filenodes_map = {}
 
         # Restore last session
@@ -213,6 +209,37 @@ class VTApp(QtCore.QObject):
         self.gui.dbs_tree_model.rowsInserted.connect(self.gui.updateActions)
 
         self.gui.updateWindowMenu()
+    
+    def initExtensionsDicts(self):
+        """Populate the extensions dictionaries with initial values
+        """
+
+        self.all_extensions = {}
+        ext_keys = [k for k in self.config.allKeys() if k.startswith('Extensions') ]
+        for k in ext_keys:
+            key = k[11:]
+            module_path = "vitables.extensions.{0}".format(key)
+            module = importlib.import_module(module_path)
+            class_name = [name for name, obj in inspect.getmembers(module) if inspect.isclass(obj) and name.startswith("Ext")]
+            ext_class = getattr(module, class_name[0])
+            self.all_extensions[key] = [
+                self.config.isEnabledExt(k), 
+                {"name": ext_class.NAME, "comment": ext_class.COMMENT}
+            ]
+            
+    def loadEnabledExtensions(self):
+        """Instantiate enabled extensions
+        """
+
+        self.all_instances = {}
+        for pkg in self.all_extensions.keys():
+          if self.all_extensions[pkg][0]:
+            module_path = "vitables.extensions.{0}".format(pkg)
+            module = importlib.import_module(module_path)
+            class_name = [name for name, obj in inspect.getmembers(module) if inspect.isclass(obj) and name.startswith("Ext")]
+            ext_class = getattr(module, class_name[0])
+            self.all_instances[pkg] = ext_class()
+                
     # Databases are automatically opened at startup when:
     #
     #     * application is configured for recovering last session

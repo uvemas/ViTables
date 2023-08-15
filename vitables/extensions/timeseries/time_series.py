@@ -49,14 +49,14 @@ from qtpy.QtCore import Qt
 from qtpy import QtWidgets
 
 import vitables.utils
-from vitables.plugins.timeseries.aboutpage import AboutPage
+from vitables.extensions.timeseries.aboutpage import AboutPage
 
 _axis_font = QtGui.QFont()
 _axis_font.setBold(True)
 
 __docformat__ = 'restructuredtext'
 __version__ = '2.1'
-plugin_name = 'Time series formatter'
+ext_name = 'Time series formatter'
 comment = 'Display time series in a human friendly format'
 
 translate = QtWidgets.QApplication.translate
@@ -203,7 +203,7 @@ def datetimeFormat():
     return datetime_format
 
 
-class TSFormatter(object):
+class ExtTSFormatter(object):
     """Human friendly formatting of time series in a dataset.
 
     An inspector class intended for finding out if a `tables.Leaf` instance
@@ -211,7 +211,7 @@ class TSFormatter(object):
     """
 
     UID = __name__
-    NAME = plugin_name
+    NAME = ext_name
     COMMENT = comment
 
     def __init__(self):

@@ -37,7 +37,7 @@
         </size>
        </property>
        <property name="whatsThis">
-        <string>Click an item in this tree to select the settings you want to change. Beware that the listed plugins are *loaded* plugins (i.e. the are working in the current ViTables session) not just enabled plugins.</string>
+        <string>Click an item in this tree to select the settings you want to change. Beware that the listed extensions are the *currently instantiated* extensions (i.e. the are working in the current ViTables session) not just enabled extensions.</string>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
@@ -289,7 +289,7 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="pluginsPage">
+       <widget class="QWidget" name="extensionsPage">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -303,11 +303,11 @@ p, li { white-space: pre-wrap; }
             <string/>
            </property>
            <property name="title">
-            <string>Available plugins</string>
+            <string>Available extensions</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <widget class="QTreeView" name="pluginsTV">
+             <widget class="QTreeView" name="extensionsTV">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -315,7 +315,7 @@ p, li { white-space: pre-wrap; }
                </sizepolicy>
               </property>
               <property name="whatsThis">
-               <string>The list of all available plugins. If a plugin is checked then it is enabled (but not necessarely loaded), if it is unchecked then it is disabled (but not necessarely unloaded). Please, note that changes in the check state of plugins will take effect the next time you start ViTables.</string>
+               <string>The list of extensions. If an extension is checked then it is enabled, if it is unchecked then it is disabled. Please, note that changes in the check state of extensions will take effect the next time you start ViTables.</string>
               </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>

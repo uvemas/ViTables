@@ -20,6 +20,15 @@ setup.py and setup.cfg files changed to use the new README.md file.
 Support PyQt6, this is useful for mac users who cant install
 PyQt5.
 
+** July 28, 2023 **
+Implementation of extensions has been simplified.
+
+** July 23, 2023 **
+Implementation of extensions has been refactored.
+
+** July 21, 2023 **
+Plugins moved to extensions and implemented from scratch.
+
 ** January 03, 2019 **
 Added script to automatically generate the Users Guide.
 

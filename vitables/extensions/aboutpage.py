@@ -1,4 +1,4 @@
-"""Default plugin about page."""
+"""Default about page."""
 
 import os
 

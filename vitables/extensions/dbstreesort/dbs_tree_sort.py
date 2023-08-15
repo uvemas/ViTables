@@ -26,7 +26,7 @@ Once the plugin is enabled it works on any file opened after the enabling.
 
 __docformat__ = 'restructuredtext'
 __version__ = '1.2'
-plugin_name = 'Tree of DBs sorting'
+ext_name = 'Tree of DBs sorting'
 comment = 'Sorts the display of the databases tree'
 
 import logging
@@ -37,7 +37,7 @@ from vitables.h5db import dbstreemodel
 from vitables.h5db import groupnode
 from vitables.h5db import leafnode
 from vitables.h5db import linknode
-from vitables.plugins.dbstreesort.aboutpage import AboutPage
+from vitables.extensions.dbstreesort.aboutpage import AboutPage
 
 from qtpy import QtCore
 from qtpy import QtGui
@@ -185,12 +185,12 @@ def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
     return True
 
 
-class DBsTreeSort(object):
+class ExtDBsTreeSort(object):
     """Provides convenience methods and functions for sorting the tree of DBs.
     """
 
     UID = __name__
-    NAME = plugin_name
+    NAME = ext_name
     COMMENT = comment
 
     def __init__(self):
