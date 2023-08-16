@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 16,c 2023 **
+Fixed a bug in module vtapp.py
+
 ** July 28, 2023 **
 Implementation of extensions has been simplified.
 
