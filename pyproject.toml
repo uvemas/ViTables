@@ -44,11 +44,6 @@ Issues = "https://github.com/uvemas/ViTables/issues"
 Source = "https://github.com/uvemas/ViTables"
 Home = "https://vitables.org"
 
-[project.entry-points."vitables.plugins"]
-columnar_org = "vitables.plugins.columnorg.columnar_org:ArrayColsOrganizer"
-dbs_tree_sort = "vitables.plugins.dbstreesort.dbs_tree_sort:DBsTreeSort"
-time_series = "vitables.plugins.timeseries.time_series:TSFormatter"
-
 [tool.hatch.version]
 path = "vitables/__init__.py"
 

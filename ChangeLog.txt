@@ -1,7 +1,9 @@
 ViTables ChangeLog
 ==================
-** August 16,c 2023 **
+** August 16 2023 **
 Fixed a bug in module vtapp.py
+
+Removed plugins section from pyproject.toml.
 
 ** August 04, 2023 **
 Users Guide and README.md updated.
