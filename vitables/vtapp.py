@@ -214,8 +214,9 @@ class VTApp(QtCore.QObject):
         """Populate the extensions dictionaries with initial values
         """
 
+        config = self.config.readConfiguration()
         self.all_extensions = {}
-        ext_keys = [k for k in self.config.allKeys() if k.startswith('Extensions') ]
+        ext_keys = [k for k in config.keys() if k.startswith('Extensions')]
         for k in ext_keys:
             key = k[11:]
             module_path = "vitables.extensions.{0}".format(key)

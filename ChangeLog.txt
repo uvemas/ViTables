@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** August 16,c 2023 **
+Fixed a bug in module vtapp.py
+
 ** August 04, 2023 **
 Users Guide and README.md updated.
 
@@ -16,10 +19,6 @@ Package build system changed from setuptools to flit.
 ** July 30, 2023 **
 setup.py and setup.cfg files changed to use the new README.md file.
 
-** July 20, 2023 **
-Support PyQt6, this is useful for mac users who cant install
-PyQt5.
-
 ** July 28, 2023 **
 Implementation of extensions has been simplified.
 
@@ -28,6 +27,10 @@ Implementation of extensions has been refactored.
 
 ** July 21, 2023 **
 Plugins moved to extensions and implemented from scratch.
+
+** July 20, 2023 **
+Support PyQt6, this is useful for mac users who cant install
+PyQt5.
 
 ** January 03, 2019 **
 Added script to automatically generate the Users Guide.
