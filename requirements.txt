@@ -1,6 +1,0 @@
-Cython
-numexpr
-numpy
-tables
-PyQt5
-QtPy

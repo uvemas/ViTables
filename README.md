@@ -37,10 +37,15 @@ PyTables and PyQt. You can try other versions at your own risk :).
 ### Install through pip (may need further manually debug)
 
 ```sh
-$ pip install ViTables[PyQt5|PyQt6]
+$ pip install ViTables
 ```
 
-If you don't have PyQt installed you can install it as an extra as shown above.
+If you don't have PyQt installed you can install it as an extra as follows:
+
+```sh
+$ pip install 'ViTables[PyQt5|PyQt6]'
+```
+
 ### Install on a conda environment
 
 Using conda you should be able to run vitables on any system, let it

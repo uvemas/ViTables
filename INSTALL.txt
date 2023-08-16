@@ -33,31 +33,4 @@ downloaded the file and issue the command::
 
   $ pip install ViTables-3.0.3-py3-none-any.whl
 
-This should install the ViTables wheel. If you experience problems installing
-the binary package then you can install from sources (provided your system fulfills
-the requirements listed in the above section). Just download the tarball from
-the download area, uncompress it, change to the distribution directory and execute
-
- $ python setup.py install
-
-If you are doing this on a MacOS X platform, please make sure that the
-DYLD_LIBRARY_PATH environment variable has been setup properly.
-
-If you are installing with a system Python then you will need superuser privileges
-because ViTables will be installed in the system-protected area where
-your system installs third party Python packages. If you prefer to install the package
-in a different location (for instance, your home directory) so that the installation can be done by
-non privileged users, you can do it using the --prefix (or --home) tag
-
- $ python setup.py install --prefix=/home/myuser/mystuff
-
-Please, remember that installing Python modules in non-standard locations
-makes it necessary to setup properly the PYTHONPATH environment variable so
-that the Python interpreter can find the new modules.
-
-If you need further customizations, please have a look to the output of the
-command
-
- $python setup.py install --help
-
-to see all the available options.
+This should install the ViTables wheel.
