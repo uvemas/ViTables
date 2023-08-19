@@ -1,7 +1,12 @@
 ViTables ChangeLog
 ==================
+** August 19 2023 **
+Fixed a bug in module test_start.py.
+
+VERSION file removed because it is unneeded.
+
 ** August 16 2023 **
-Fixed a bug in module vtapp.py
+Fixed a bug in module vtapp.py.
 
 Removed plugins section from pyproject.toml.
 

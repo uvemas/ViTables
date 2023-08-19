@@ -20,6 +20,7 @@ doc/api
 doc/html
 doc/index.rst
 doc/_build
+vitables/htmldocs
 run_vitables.py
 MANIFEST
 TAGS
