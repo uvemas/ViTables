@@ -5,7 +5,7 @@ import argparse
 
 import pytest
 
-from vitables import start
+from vitables import start, __version__
 
 
 @pytest.mark.usefixtures('launcher')
@@ -28,8 +28,7 @@ class TestStart(object):
     def test_applicationVersion(self, launcher):
         start._set_credentials(launcher.app)
         applicationVersion = launcher.app.applicationVersion()
-        version = open('VERSION', 'r').read()[:-1]
-        assert applicationVersion == version
+        assert applicationVersion == __version__
 
     def test_l10n(self, launcher):
         # We must keep a reference to the translator or it will be destroyed
@@ -63,14 +62,14 @@ class TestStart(object):
             assert True
 
     def test_parseArgumentsCase5(self, launcher):
-        sys.argv = ['vitables', '-d', 'files_list']
+        sys.argv = ['vitables', '-d', 'tests/files_list.txt']
         args = start._parse_command_line()
-        assert (args.mode, args.dblist, args.h5file) == ('a', 'files_list', [])
+        assert (args.mode, args.dblist, args.h5file) == ('', 'tests/files_list.txt', [])
 
     def test_parseArgumentsCase6(self, launcher):
-        sys.argv = ['vitables', '-d', 'files_list', 'test.h5']
+        sys.argv = ['vitables', '-d', 'tests/files_list.txt', 'test.h5']
         args = start._parse_command_line()
-        assert (args.mode, args.dblist, args.h5file) == ('a', 'files_list', [])
+        assert (args.mode, args.dblist, args.h5file) == ('', 'tests/files_list.txt', [])
 
     def test_parseArgumentsCase7(self, launcher):
         sys.argv = ['vitables', 'db1.h5', 'db2.h5']

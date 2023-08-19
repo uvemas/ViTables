@@ -89,6 +89,7 @@ setting into the config file.
 
 import logging
 import sys
+from vitables import __version__
 from vitables.preferences import cfgexception
 import vitables.utils
 
@@ -100,7 +101,6 @@ import vitables.vttables.datasheet as datasheet
 
 
 __docformat__ = 'restructuredtext'
-__version__ = '3.0.3'
 
 translate = QtWidgets.QApplication.translate
 
