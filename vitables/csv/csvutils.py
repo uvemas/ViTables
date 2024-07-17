@@ -36,7 +36,7 @@ import tables
 
 # https://github.com/numpy/numpy/issues/10990
 import warnings
-warnings.filterwarnings("ignore", category=numpy.VisibleDeprecationWarning)
+warnings.filterwarnings("ignore", category=numpy.exceptions.VisibleDeprecationWarning)
 
 
 translate = QtWidgets.QApplication.translate

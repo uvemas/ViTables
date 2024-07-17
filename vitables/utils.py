@@ -453,7 +453,7 @@ def formatArrayContent(content):
     :Parameter content: the ``numpy`` array contained in the view cell
     """
 
-    if isinstance(content, numpy.string_):
+    if isinstance(content, numpy.bytes_):
         try:
             return content.decode(DEFAULT_ENCODING)
         except UnicodeDecodeError:

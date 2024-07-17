@@ -133,7 +133,7 @@ class AttrPropDlg(QtWidgets.QDialog, Ui_AttrPropDialog):
             # isinstance(asi.test, int) returns True
             # asi.test.shape returns ()
             # asi.test2 = "hello" ->
-            # type(asi.test2) returns numpy.string_
+            # type(asi.test2) returns numpy.bytes_
             # isinstance(asi.test2, str) returns True
             # asi.test2.shape returns ()
             # Beware that objects whose shape is () are not warranted
