@@ -415,7 +415,7 @@ def checkFilenameExtension(filepath):
     :Returns: the filepath with the proper extension
     """
 
-    if not re.search(r'\.(.+)$', os.path.basename(filepath)):
+    if not re.search(r"\.(\w+)$", os.path.basename(filepath)):
         ext = '.csv'
         filepath = filepath + ext
     return filepath

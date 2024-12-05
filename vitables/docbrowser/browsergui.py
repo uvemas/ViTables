@@ -316,7 +316,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
 
         # Clear the current bookmarks from the Bookmarks menu
         for action in self.bookmarks_menu.actions():
-            if re.search("^(\s?\d)", action.text()):
+            if re.search(r"^(\s?\d)", action.text()):
                 self.bookmarks_menu.removeAction(action)
         # and refresh it
         index = 0

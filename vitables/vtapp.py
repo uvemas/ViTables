@@ -518,7 +518,7 @@ class VTApp(QtCore.QObject):
                                     'Overwrite file dialog label').format(
                     trier_dirname)
                 template = \
-                    "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
+                    r"(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
                 pattern = template.format(trier_filename)
             elif is_initial_filepath:
                 info[1] = translate('VTApp',
@@ -527,7 +527,7 @@ class VTApp(QtCore.QObject):
                                     'Overwrite file dialog label').format(
                     trier_dirname)
                 template = \
-                    "(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
+                    r"(^{0}$)|[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
                 pattern = template.format(trier_filename)
             elif filename_in_sibling:
                 info[1] = translate('VTApp',
@@ -535,7 +535,7 @@ class VTApp(QtCore.QObject):
                                     """ already in use in that directory.\n""",
                                     'Overwrite file dialog label').format(
                     trier_dirname, trier_filename)
-                pattern = "[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
+                pattern = r"[a-zA-Z_]+[0-9a-zA-Z_]*(?:\.[0-9a-zA-Z_]+)?$"
 
             dialog = renamedlg.RenameDlg(trier_filename, pattern, info)
             if dialog.exec_():

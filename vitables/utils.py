@@ -331,7 +331,7 @@ def checkFileExtension(filepath):
     :Returns: the filepath with the proper extension.
     """
 
-    if not re.search('\.(.+)$', os.path.basename(filepath)):
+    if not re.search(r"\.(\w+)$", os.path.basename(filepath)):
         ext = '.h5'
         filepath = filepath + ext
     return filepath

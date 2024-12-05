@@ -1,5 +1,10 @@
 ViTables ChangeLog
 ==================
+** December 03 2024 **
+pyproject.toml updated in order to include numpy >=2 as a dependency.
+
+Several regular expressions changed to avoid SyntaxWarning messages.
+
 ** August 19 2023 **
 Fixed a bug in module test_start.py.
 

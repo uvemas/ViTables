@@ -26,6 +26,7 @@ classifiers = [
 dependencies = [
   "qtpy >=2.2",
   "tables >=3.0",
+  "numpy >=2.0"
 ]
 
 [project.optional-dependencies]
@@ -58,6 +59,11 @@ include = [
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
+  "qtpy >=2.2",
+  "tables >=3.0",
+  "numpy >=2",
+  "PySide6 >=6.4",
+  "setuptools"
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
@@ -72,7 +78,7 @@ cov = [
 ]
 
 [[tool.hatch.envs.all.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.lint]
 detached = true
@@ -141,6 +147,10 @@ ignore = [
   "S105", "S106", "S107",
   # Ignore complexity
   "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+  # Ignore bad-quotes-inline-string
+  "Q000", 
+  # Ignore PEP 8 recommendations about function names to follow snake_case
+  "N802",
 ]
 unfixable = [
   # Don't touch unused imports
