@@ -71,6 +71,6 @@ def filenodeTotalRows(leaf):
     # Warning: this is SLOW for large files
     counter = 0
     with filenode.open_node(leaf, 'r') as f:
-        for l in f:
+        for line in f:
             counter += 1
     return counter

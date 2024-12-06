@@ -50,7 +50,6 @@ class Poster(QtWidgets.QMainWindow) :
     def __init__(self) :
         super(QtWidgets.QMainWindow, self).__init__()
         w = QtWidgets.QWidget(self)
-        l = QtWidgets.QGridLayout(w)
         self.setCentralWidget(w)
         self.makePoster()
 

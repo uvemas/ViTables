@@ -64,8 +64,8 @@ fnode = filenode.new_node(h5file, where='/', name='filenode')
 # Fill the filenode
 counter = 0
 while counter < 10:
-    l = "This is a line inserted programmatically at position {}\n".format(counter)
-    fnode.write(l.encode("utf-8"))
+    line = "This is a line inserted programmatically at position {}\n".format(counter)
+    fnode.write(line.encode("utf-8"))
     counter += 1
 fnode.write(bytearray("This is the last line.\n", "utf-8"))
 fnode.attrs.author = "Vicent Mas"

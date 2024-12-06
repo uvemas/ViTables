@@ -112,11 +112,11 @@ vlarray11 = fileh.create_vlarray(root, 'vlarray11',
 
 k = 0
 for i in range(N):
-    l = []
+    vl = []
     for j in range(numpy.random.randint(N)):
-        l.append(numpy.random.randn(*shape))
+        vl.append(numpy.random.randn(*shape))
         k += 1
-    vlarray11.append(l)
+    vlarray11.append(vl)
 
 # Close the file.
 fileh.close()

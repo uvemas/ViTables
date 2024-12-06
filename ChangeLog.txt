@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** December 07 2024 **
 Fixed a couple of crashes due to compatibility problems between PyQt/PySide.
 
+Fixed ruff E741 errors.
+
 ** December 06 2024 **
 Fixed some compatibility problems between PyQt5, PyQt6 and PySide6.
 

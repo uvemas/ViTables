@@ -133,7 +133,8 @@ skip-string-normalization = true
 [tool.ruff]
 target-version = "py37"
 line-length = 120
-select = [
+[tool.lint.select]
+all = [
   "A",
   "ARG",
   "B",
@@ -160,7 +161,8 @@ select = [
   "W",
   "YTT",
 ]
-ignore = [
+[tool.lint.ignore]
+all = [
   # Allow non-abstract empty methods in abstract base classes
   "B027",
   # Allow boolean positional values in function calls, like `dict.get(... True)`
@@ -174,18 +176,19 @@ ignore = [
   # Ignore PEP 8 recommendations about function names to follow snake_case
   "N802",
 ]
-unfixable = [
+[tool.lint.unfixable]
+all = [
   # Don't touch unused imports
   "F401",
 ]
 
-[tool.ruff.isort]
+[tool.lint.isort]
 known-first-party = ["vitables"]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
-[tool.ruff.per-file-ignores]
+[tool.lint.per-file-ignores]
 # Tests can use magic values, assertions, and relative imports
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
 

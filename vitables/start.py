@@ -25,7 +25,7 @@ import os.path
 import logging
 import traceback
 
-import qtpy.QtCore as qtcore
+from qtpy import QtCore
 from qtpy import QtWidgets
 
 from vitables.vtapp import VTApp
@@ -87,8 +87,8 @@ def _set_locale(app):
     locale.setlocale(locale.LC_ALL, '')
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
-    locale_name = qtcore.QLocale.system().name()
-    translator = qtcore.QTranslator()
+    locale_name = QtCore.QLocale.system().name()
+    translator = QtCore.QTranslator()
     if translator.load('vitables_' + locale_name, _I18N_PATH):
         app.installTranslator(translator)
     return translator
