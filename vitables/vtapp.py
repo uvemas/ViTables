@@ -30,6 +30,7 @@ import logging
 import numpy
 import tables
 
+import qtpy
 from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
@@ -1276,8 +1277,8 @@ class VTApp(QtCore.QObject):
             'Python': pyversion,
             'PyTables': tables.__version__,
             'NumPy': numpy.__version__,
-            'Qt': QtCore.qVersion(),
-            'PyQt': QtCore.PYQT_VERSION_STR,
+            'Qt': QtCore.__version__,
+            'PyQt': vtconfig.getPyQtVersion(),
             'ViTables': vtconfig.getVersion()
         }
 
@@ -1318,7 +1319,7 @@ class VTApp(QtCore.QObject):
             <tr><td><b>LZO</b></td><td>{LZO}</td></tr>
             <tr><td><b>BZIP2</b></td><td>{BZIP2}</td></tr>
             <tr><td><b>Qt</b></td><td>{Qt}</td></tr>
-            <tr><td><b>PyQt</b></td><td>{PyQt}</td></tr>
+            <tr><td><b>{qtpyAPI}</b></td><td>{PyQt}</td></tr>
             <tr><td><b>ViTables</b></td><td>{ViTables}</td></tr>
             </table>
             </qt>""".format(
@@ -1327,6 +1328,7 @@ class VTApp(QtCore.QObject):
                 PyTables=libs_versions['PyTables'],
                 NumPy=libs_versions['NumPy'],
                 Qt=libs_versions['Qt'],
+                qtpyAPI=qtpy.API_NAME,
                 PyQt=libs_versions['PyQt'],
                 ViTables=libs_versions['ViTables'],
                 HDF5=libs_versions['HDF5'],

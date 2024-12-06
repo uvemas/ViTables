@@ -89,6 +89,8 @@ setting into the config file.
 
 import logging
 import sys
+
+import qtpy
 from vitables import __version__
 from vitables.preferences import cfgexception
 import vitables.utils
@@ -109,8 +111,15 @@ def getVersion():
     """The application version."""
     return __version__
 
+def getPyQtVersion():
+    """The PyQt or PySide version"""
 
-log = logging.getLogger(__name__)
+    return {
+        "PyQt5": qtpy.PYQT_VERSION,
+        "PyQt6": qtpy.PYQT_VERSION,
+        "PySide2": qtpy.PYSIDE_VERSION,
+        "PySide6": qtpy.PYSIDE_VERSION
+    }.get(qtpy.API_NAME)
 
 
 class Config(QtCore.QSettings):
@@ -124,7 +133,7 @@ class Config(QtCore.QSettings):
     """
 
     def __init__(self):
-        """
+        r"""
         Setup the application configurator.
 
         On Windows systems settings will be stored in the registry
@@ -454,13 +463,14 @@ class Config(QtCore.QSettings):
         - `value`: the value we want to assign to the property
         """
 
+        logger = logging.getLogger(__name__)
         try:
             self.setValue(key, value)
             if self.status():
                 raise cfgexception.ConfigFileIOException(
                     '{0}={1}'.format(key, value))
         except cfgexception.ConfigFileIOException as inst:
-            log.error(inst.error_message)
+            logger.error(inst.error_message)
 
     def readConfiguration(self):
         """

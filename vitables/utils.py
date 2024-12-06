@@ -209,10 +209,10 @@ def addActions(target, actions, actions_dict):
     for action in actions:
         if action is None:
             target.addSeparator()
-        elif isinstance(action, QtWidgets.QMenu):
-            target.addMenu(action)
+        elif type(action) is str:
+             target.addAction(actions_dict[action])
         else:
-            target.addAction(actions_dict[action])
+            target.addMenu(action)
 
 
 def addToLeafContextMenu(actions, enable_function=None):

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 06 2024 **
+Fixed some compatibility problems between PyQt5, PyQt6 and PySide6.
+
 ** December 03 2024 **
 pyproject.toml updated in order to include numpy >=2 as a dependency.
 
