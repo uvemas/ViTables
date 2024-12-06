@@ -466,7 +466,7 @@ class Config(QtCore.QSettings):
         logger = logging.getLogger(__name__)
         try:
             self.setValue(key, value)
-            if self.status():
+            if self.status() != QtCore.QSettings.NoError:
                 raise cfgexception.ConfigFileIOException(
                     '{0}={1}'.format(key, value))
         except cfgexception.ConfigFileIOException as inst:
