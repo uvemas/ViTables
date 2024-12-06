@@ -59,12 +59,34 @@ include = [
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
-  "qtpy >=2.2",
-  "tables >=3.0",
-  "numpy >=2",
-  "PySide6 >=6.4",
+  "PySide6",
   "setuptools"
 ]
+
+[tool.hatch.envs.pyqt6]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "PyQt6",
+  "setuptools"
+]
+
+[tool.hatch.envs.pyqt5]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "PyQt5",
+  "setuptools"
+]
+
+[tool.hatch.envs.pyside2]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "PySide2",
+  "setuptools"
+]
+
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
