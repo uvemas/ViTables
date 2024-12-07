@@ -53,7 +53,7 @@ group = fileh.create_group(root, "Particles")
 # Now, create and fill the tables in Particles group
 filters = tables.Filters(complevel=1, complib='lzo', shuffle=1)
 nrows = 10**7
-table = fileh.create_table("/Particles", "TParticle", Particle, 
+table = fileh.create_table("/Particles", "TParticle", Particle,
     "Sample set of particles ", filters, expectedrows = nrows)
 
 # Number of rows in buffer

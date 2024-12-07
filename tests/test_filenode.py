@@ -68,7 +68,7 @@ class TestFilenode:
         # The filenode buffer
         fnb = fnbuffer.FilenodeBuffer(fnode)
         fnb.readBuffer(0, 100)
-        assert fnb.chunk[0] == ('This is a line inserted programmatically ' 
+        assert fnb.chunk[0] == ('This is a line inserted programmatically '
                                 'at position 0\n')
         assert fnb.chunk[-1] == 'This is the last line.\n'
 
@@ -76,5 +76,5 @@ class TestFilenode:
         # The filenode buffer
         fnb = fnbuffer.FilenodeBuffer(fnode)
         fnb.readBuffer(0, 100)
-        assert fnb.getCell(2, 5) == ('This is a line inserted ' 
+        assert fnb.getCell(2, 5) == ('This is a line inserted '
                                      'programmatically at position 2\n')

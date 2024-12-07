@@ -39,7 +39,7 @@ hdfarray = fileh.create_array(root, 'array_int16', a, "Signed short array")
 # Create a scalar Array
 a = numpy.array(4, numpy.int16)
 # Save it on the HDF5 file
-hdfarray = fileh.create_array(root, 'scalar_array', a, 
+hdfarray = fileh.create_array(root, 'scalar_array', a,
     "Scalar signed short array")
 
 # Create a 3-d array of floats
@@ -62,7 +62,7 @@ hdfarray = fileh.create_array(root, 'array_int8', a, "Large array")
 # Create a set of arrays and save them on the HDF5 file
 basedim = 4
 group = root
-dtypes = [numpy.int8, numpy.uint8, numpy.int16, numpy.int, numpy.float32, 
+dtypes = [numpy.int8, numpy.uint8, numpy.int16, numpy.int, numpy.float32,
     numpy.float]
 i = 1
 for dtype in dtypes:

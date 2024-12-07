@@ -42,7 +42,7 @@ class Particle(tables.IsDescription):
 fileh = tables.open_file("MDobjects.h5", mode = "w")
 # Create the table with compression 'on' in order to reduce size as
 # much as possible
-table = fileh.create_table(fileh.root, 'table', Particle, "A table", 
+table = fileh.create_table(fileh.root, 'table', Particle, "A table",
     filters=tables.Filters(complevel=1))
 # Append several rows with default values
 for i in range(10):
@@ -54,13 +54,13 @@ atom1 = tables.IntAtom()
 shape1 = (2, 10, 10, 1)
 filters1 = tables.Filters(complevel=1)
 #(2, 10, 10, 3)
-array1 = fileh.create_carray(fileh.root, 'array1', atom1, shape1, 
+array1 = fileh.create_carray(fileh.root, 'array1', atom1, shape1,
     filters=filters1)
 atom2 = tables.FloatAtom()
 shape2 = (2, 10, 10, 3, 1)
 filters2 = tables.Filters(complevel=1)
 #(2, 10, 10, 3, 200)
-array2 = fileh.create_carray(fileh.root, 'array2', atom2, shape2, 
+array2 = fileh.create_carray(fileh.root, 'array2', atom2, shape2,
     filters=filters2)
 
 # Add multimensional attributes to the objects
@@ -74,7 +74,7 @@ array1.attrs.MD2 = numpy.arange(10, dtype="complex128").reshape(2, 5)
 
 # Strings will go in /array2
 array2.attrs.MD1 = numpy.array(['Hi', 'world!'], dtype='|S6')
-array2.attrs.MD2 = numpy.array([['Hi', 'world!'], 
+array2.attrs.MD2 = numpy.array([['Hi', 'world!'],
     ['Hola', 'mon!']], dtype='|S4')
 
 fileh.close()

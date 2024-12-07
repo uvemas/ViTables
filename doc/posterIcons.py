@@ -28,7 +28,7 @@ ICONSDIR = '../vitables/icons/'
 big_icons = [('file_rw', 'The root node (read-write)'),
     ('file_ro', 'The root node (read-only)'),
     ('dbfilters', 'The root node of the Query Results file  '),
-    ('folder', 'A collapsed group '), 
+    ('folder', 'A collapsed group '),
     ('document-open-folder', 'An expanded group ')]
 small_icons = [('table', 'A table (heterogeneus dataset) '),
     ('array', 'A regular array (homogeneus dataset) '),

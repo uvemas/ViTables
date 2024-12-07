@@ -45,7 +45,7 @@ root = fileh.root
 group = fileh.create_group(root, "newgroup")
 
 # Create a new table in newgroup group
-table = fileh.create_table(group, 'table', Particle, "A table", 
+table = fileh.create_table(group, 'table', Particle, "A table",
     tables.Filters(1))
 particle = table.row
 
@@ -149,7 +149,7 @@ table2.flush()
 gcolumns = fileh.create_group("/", "columns")
 pressure = [ p['pressure'] for p in table2.iterrows() ]
 # Create an array with this info under '/columns' having a 'list' flavor
-fileh.create_array(gcolumns, 'pressure', pressure, 
+fileh.create_array(gcolumns, 'pressure', pressure,
                    "Pressure column")
 
 # Do the same with TDCcount, but with a numpy object

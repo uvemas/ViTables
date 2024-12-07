@@ -212,7 +212,7 @@ class VTApp(QtCore.QObject):
             class_name = [name for name, obj in inspect.getmembers(module) if inspect.isclass(obj) and name.startswith("Ext")]
             ext_class = getattr(module, class_name[0])
             self.all_extensions[key] = [
-                self.config.isEnabledExt(k), 
+                self.config.isEnabledExt(k),
                 {"name": ext_class.NAME, "comment": ext_class.COMMENT}
             ]
 

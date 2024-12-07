@@ -18,5 +18,5 @@
 #       Author:  Vicent Mas - vmas@vitables.org
 
 __all__ = ["dbdoc", "dbstreemodel", "dbstreeview", "groupnode",
-"leafnode", "linknode", "nodeitemdelegate", "rootgroupnode", "tlink_editor", 
+"leafnode", "linknode", "nodeitemdelegate", "rootgroupnode", "tlink_editor",
 "tnode_editor"]

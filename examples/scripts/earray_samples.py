@@ -48,18 +48,18 @@ hdfarray.append(numpy.array(['c', 'b', 'c', 'd']))
 
 # Create an atom
 a = tables.UInt16Atom()
-hdfarray = fileh.create_earray(root, 'array_e', a, (2, 0, 3), 
+hdfarray = fileh.create_earray(root, 'array_e', a, (2, 0, 3),
     "Unsigned short array")
 
 # Create an enlargeable array
 a = tables.UInt8Atom()
-hdfarray = fileh.create_earray(root, 'array_b', a, (2, 0, 3), 
+hdfarray = fileh.create_earray(root, 'array_b', a, (2, 0, 3),
     "Unsigned byte array", tables.Filters(complevel = 1))
 
 # Append an array to this table
-hdfarray.append(numpy.array([[1, 2, 3], [3, 2, 1]], 
+hdfarray.append(numpy.array([[1, 2, 3], [3, 2, 1]],
     dtype=numpy.uint8).reshape(2, 1, 3))
-hdfarray.append(numpy.array([[1, 2, 3], [3, 2, 1], [2, 4, 6], [6, 4, 2]], 
+hdfarray.append(numpy.array([[1, 2, 3], [3, 2, 1], [2, 4, 6], [6, 4, 2]],
     dtype=numpy.uint8).reshape(2,2,3)*2)
 # The next should give a type error:
 #hdfarray.append(array([[1,0,1],[0,0,1]], dtype=Bool).reshape(2,1,3))
