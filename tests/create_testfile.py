@@ -46,7 +46,7 @@ table = h5file.create_table(group, 'Particles', Particle, "A table", tables.Filt
 particle = table.row
 for i in range(10):
     # First, assign the values to the Particle record
-    particle['name']  = 'Particle: {:6d}'.format(i)
+    particle['name']  = f'Particle: {i:6d}'
     particle['lati'] = i
     particle['longi'] = 10 - i
     particle['pressure'] = float(i*i)
@@ -64,7 +64,7 @@ fnode = filenode.new_node(h5file, where='/', name='filenode')
 # Fill the filenode
 counter = 0
 while counter < 10:
-    line = "This is a line inserted programmatically at position {}\n".format(counter)
+    line = f"This is a line inserted programmatically at position {counter}\n"
     fnode.write(line.encode("utf-8"))
     counter += 1
 fnode.write(bytearray("This is the last line.\n", "utf-8"))

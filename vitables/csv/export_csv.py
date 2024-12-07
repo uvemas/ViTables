@@ -268,7 +268,7 @@ class ExportToCSV(QtCore.QObject):
             with open(filepath, 'ab') as out_handler:
                 if add_header:
                     from functools import reduce
-                    header = reduce(lambda x, y: '{0}, {1}'.format(x, y),
+                    header = reduce(lambda x, y: f'{x}, {y}',
                                     leaf.colnames)
                     # To be consistent with numpy.savetxt use \n line breaks
                     out_handler.write(bytearray(header + '\n', 'UTF-8'))

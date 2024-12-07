@@ -322,7 +322,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         index = 0
         for filepath in self.browser.bookmarks:
             index += 1
-            action = QtWidgets.QAction('{0:>2}. {1}'.format(index, filepath),
+            action = QtWidgets.QAction(f'{index:>2}. {filepath}',
                                     self.bookmarks_menu)
             action.setData(filepath)
             self.bookmarks_menu.addAction(action)

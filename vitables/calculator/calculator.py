@@ -272,14 +272,14 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
                 QtWidgets.QMessageBox.critical(
                     self, translate('Calculator', 'Node not found'),
                     translate('Calculator',
-                              'Node "{0}" not found'.format(identifier)))
+                              f'Node "{identifier}" not found'))
                 return False
             if not isinstance(identifier_node_dict[identifier], tables.Leaf):
                 QtWidgets.QMessageBox.critical(
                     self, translate('Calculator', 'Node type'),
                     translate('Calculator',
-                              'Node "{0}" does not contain data. '
-                              'It is probably a group.'.format(identifier)))
+                              f'Node "{identifier}" does not contain data. '
+                              'It is probably a group.'))
                 return False
         return True
 
@@ -341,12 +341,9 @@ class CalculatorDialog(QtWidgets.QDialog, Ui_CalculatorDialog):
             QtWidgets.QMessageBox.critical(
                 self, translate('Calculator', 'Result name'),
                 translate('Calculator',
-                          'Node "{node}" already exists in group "{group}". '
-                          'File "{filename}". Choose another place to store '
-                          'results.'.format(
-                              node=result_name,
-                              group=result_group._v_pathname,
-                              filename=result_group._v_file.filename)))
+                          f'Node "{result_name}" already exists in group "{result_group._v_pathname}". '
+                          f'File "{result_group._v_file.filename}". Choose another place to store '
+                          'results.'))
             return None, None
         return result_group, result_name
 

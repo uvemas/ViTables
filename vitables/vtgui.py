@@ -804,7 +804,7 @@ class VTGUI(QtWidgets.QMainWindow):
         for item in self.vtapp.config.recent_files:
             index += 1
             (mode, filepath) = item.split('#@#')
-            action = QtWidgets.QAction('{0:>2} {1}.'.format(index, filepath),
+            action = QtWidgets.QAction(f'{index:>2} {filepath}.',
                                        self,
                                        triggered=self.vtapp.openRecentFile)
             action.setData(item)
@@ -853,7 +853,7 @@ class VTGUI(QtWidgets.QMainWindow):
         for window in windows_list:
             title = window.windowTitle()
             if counter < 10:
-                action = wmenu.addAction("&{0:d} {1}".format(counter, title))
+                action = wmenu.addAction(f"&{counter:d} {title}")
                 wmenu.action_group.addAction(action)
             elif counter == 10:
                 wmenu.addSeparator()

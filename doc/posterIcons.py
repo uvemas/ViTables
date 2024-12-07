@@ -63,7 +63,7 @@ class Poster(QtWidgets.QMainWindow) :
         for key in iconsDict.keys():
             for (name, caption) in iconsDict[key] :
                 pixmap = QtGui.QPixmap()
-                image_path = '{0}/{1}/{2}.png'.format(ICONSDIR, key, name)
+                image_path = f'{ICONSDIR}/{key}/{name}.png'
                 pixmap.load(image_path)
                 imLabel = QtWidgets.QLabel(widget)
                 imLabel.setPixmap(pixmap)

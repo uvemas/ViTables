@@ -68,9 +68,9 @@ class GroupNode(object):
         parentpath = parent.nodepath
         if parentpath.endswith('/'):
             parentpath = parentpath[:-1]
-        self.nodepath = '{0}/{1}'.format(parentpath, name)
+        self.nodepath = f'{parentpath}/{name}'
         self.filepath = parent.filepath
-        self.as_record = '{0}->{1}'.format(self.filepath, self.nodepath)
+        self.as_record = f'{self.filepath}->{self.nodepath}'
         icons = vitables.utils.getIcons()
         self.closed_folder = icons['folder']
         self.open_folder = icons['document-open-folder']

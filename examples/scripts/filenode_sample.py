@@ -32,7 +32,7 @@ fnode = filenode.new_node(h5file, where='/', name='fnode_test')
 
 counter = 0
 while counter < 100000:
-    line = "This is a line inserted programmatically at position {}\n".format(counter)
+    line = f"This is a line inserted programmatically at position {counter}\n"
     fnode.write(line.encode("utf-8"))
     counter += 1
 

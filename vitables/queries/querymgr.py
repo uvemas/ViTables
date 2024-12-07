@@ -93,12 +93,12 @@ def getTableInfo(table):
     index = 0
     for name in valid_fields.copy():
         if name.count(' '):
-            while ('col{0}'.format(index)) in valid_fields:
+            while (f'col{index}') in valid_fields:
                 index = index + 1
-            info['condvars']['col{0}'.format(index)] = \
+            info['condvars'][f'col{index}'] = \
                 table.cols._f_col(name)
             valid_fields.remove(name)
-            valid_fields.add('col{0} ({1})'.format(index, name))
+            valid_fields.add(f'col{index} ({name})')
             index = index + 1
     info['valid_fields'] = valid_fields
 
@@ -243,7 +243,7 @@ class QueriesManager(QtCore.QObject):
             # be used as separator
             components = name.split(' (')
             if len(components) > 1:
-                fieldname = '({0}'.format(components[-1])
+                fieldname = f'({components[-1]}'
                 title = title.replace(components[0], fieldname)
         query_description['title'] = title
 

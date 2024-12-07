@@ -214,11 +214,9 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         self.sampleTE.setTextColor(self.vtgui.logger.textColor())
         self.sampleTE.moveCursor(QtGui.QTextCursor.End)  # Unselect text
         paper = self.vtgui.logger.styleSheet()[-7:]
-        self.sampleTE.setStyleSheet("background-color: {0}".format(
-            QtGui.QColor(paper).name()))
+        self.sampleTE.setStyleSheet(f"background-color: {QtGui.QColor(paper).name()}")
 
-        self.workspaceLabel.setStyleSheet('background-color: {0}'.format(
-            self.vtgui.workspace.background().color().name()))
+        self.workspaceLabel.setStyleSheet(f'background-color: {self.vtgui.workspace.background().color().name()}')
 
         index = self.stylesCB.findText(self.config.current_style)
         self.stylesCB.setCurrentIndex(index)
@@ -294,10 +292,10 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
           extension = item.data()
           if item.checkState() == QtCore.Qt.Checked:
             self.vtapp.all_extensions[extension][0] = True
-            self.new_prefs['Extensions/{0}'.format(extension)] = True
+            self.new_prefs[f'Extensions/{extension}'] = True
           else:
             self.vtapp.all_extensions[extension][0] = False
-            self.new_prefs['Extensions/{0}'.format(extension)] = False
+            self.new_prefs[f'Extensions/{extension}'] = False
 
     @QtCore.Slot("bool", name="on_lastDirCB_toggled")
     def setInitialWorkingDirectory(self, cb_on):

@@ -64,9 +64,9 @@ def _get_node_tooltip(node):
     if not hasattr(node.node, 'target'):
         if hasattr(attrset, 'TITLE') and bool(str(attrset.TITLE)):
             tooltip_lines.append(attrset.TITLE)
-    tooltip_lines.append('{0}: {1}'.format(node.node_kind, node.name))
+    tooltip_lines.append(f'{node.node_kind}: {node.name}')
     tooltip_lines.extend(
-        ['{0}: {1}'.format(name, str(getattr(attrset, name)))
+        [f'{name}: {str(getattr(attrset, name))}'
          for name in attrset._v_attrnamesuser])
     return '\n'.join(tooltip_lines)
 
@@ -466,7 +466,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         else:
             dirname = self.getDBDoc(src_filepath).hidden_group
             basename = self.ccni['nodename']
-            src_nodepath = '{0}/{1}'.format(dirname, basename)
+            src_nodepath = f'{dirname}/{basename}'
 
         return self.getDBDoc(src_filepath).get_node(src_nodepath)
 
@@ -558,14 +558,14 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         old_nodepath = node.nodepath
         dirname = os.path.split(old_nodepath)[0]
         new_nodepath = \
-            ('{0}/{1}'.format(dirname, new_name)).replace('//', '/')
+            (f'{dirname}/{new_name}').replace('//', '/')
         self.setData(index, new_nodepath, QtCore.Qt.UserRole + 1)
         if hasattr(node, 'target'):
-            self.setData(index, '{0}'.format(node.node),
+            self.setData(index, f'{node.node}',
                          QtCore.Qt.StatusTipRole)
         else:
             self.setData(index,
-                         '{0}->{1}'.format(node.filepath, new_nodepath),
+                         f'{node.filepath}->{new_nodepath}',
                          QtCore.Qt.StatusTipRole)
 
         # Update the item children, if any
@@ -575,12 +575,11 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
                                                          new_nodepath, 1)
             self.setData(child_index, child_nodepath, QtCore.Qt.UserRole + 1)
             if hasattr(child_node, 'target'):
-                self.setData(child_index, '{0}'.format(child_node.node),
+                self.setData(child_index, f'{child_node.node}',
                              QtCore.Qt.StatusTipRole)
             else:
                 self.setData(child_index,
-                             '{0}->{1}'.format(child_node.filepath,
-                                               child_node.nodepath),
+                             f'{child_node.filepath}->{child_node.nodepath}',
                              QtCore.Qt.StatusTipRole)
 
     def move_node(self, src_filepath, childpath, parent_index, overwrite=False):

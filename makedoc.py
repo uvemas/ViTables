@@ -28,7 +28,7 @@ def _cleanup():
     """Cleanup the build directory."""
     try:
         os.remove('index.rst')
-        shutil.rmtree('{0}'.format(build_dir))
+        shutil.rmtree(f'{build_dir}')
     except FileNotFoundError as err:
         print(err)
 
@@ -38,19 +38,19 @@ if __name__ == '__main__':
     builder = args.builder
     build_dir = '_build'
     os.chdir('./doc')
-    shutil.copy2("indices/index_{0}.rst".format(builder), "index.rst")
+    shutil.copy2(f"indices/index_{builder}.rst", "index.rst")
     subprocess.run(["sphinx-build", "-b", builder, ".", build_dir])
 
     # Move documentation to its final destination
     if builder == 'html':
-        static_dir = '{0}/_static'.format(build_dir)
-        sources_dir = '{0}/_sources'.format(build_dir)
+        static_dir = f'{build_dir}/_static'
+        sources_dir = f'{build_dir}/_sources'
         htmldocs_dir = '../vitables/htmldocs'
-        shutil.move('{0}/basic.css'.format(static_dir),
-                    '{0}/classic.css'.format(static_dir))
-        shutil.rmtree('{0}'.format(sources_dir))
-        shutil.rmtree('{0}'.format(htmldocs_dir))
-        shutil.copytree(build_dir, '{0}'.format(htmldocs_dir))
+        shutil.move(f'{static_dir}/basic.css',
+                    f'{static_dir}/classic.css')
+        shutil.rmtree(f'{sources_dir}')
+        shutil.rmtree(f'{htmldocs_dir}')
+        shutil.copytree(build_dir, f'{htmldocs_dir}')
     elif builder == 'latex':
         os.chdir('./_build')
         subprocess.run('pdflatex UsersGuide.tex')

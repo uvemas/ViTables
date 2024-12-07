@@ -301,7 +301,7 @@ class AttrEditor(object):
                 continue
 
             if dtype == 'python':
-                value = eval('{0}'.format(value))
+                value = eval(f'{value}')
             elif dtype == 'bytes':
                 # Remove the prefix and enclosing quotes
                 value = value[2:-1]

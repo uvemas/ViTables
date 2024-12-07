@@ -39,8 +39,7 @@ class TestLogger(object):
         organization = launcher.app.organizationName()
         product = launcher.app.applicationName()
         version = launcher.app.applicationVersion()
-        reg_path = 'HKEY_CURRENT_USER\\Software\\{0}\\{1}'.format(product,
-                                                                  version)
+        reg_path = f'HKEY_CURRENT_USER\\Software\\{product}\\{version}'
 
         if sys.platform.startswith('win'):
             assert config.organizationName() == product

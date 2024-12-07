@@ -513,7 +513,7 @@ def formatExceptionInfo(limit=1):
 
     :Parameter limit: the number of stack trace entries to be printed
     """
-    log.error('{0}'.format(traceback.format_exc(limit)))
+    log.error(f'{traceback.format_exc(limit)}')
 
 #
 # Path related functions
@@ -655,11 +655,10 @@ def isDataSourceReadable(leaf):
         readable = False
         log.error(
             """Problems reading records. The dataset seems to be """
-            """compressed with the {0} library. Check that it is """
-            """installed in your system, please.\n{1}""".format(
-                leaf.filters.complib, e.message))
+            f"""compressed with the {leaf.filters.complib} library. Check that it is """
+            f"""installed in your system, please.\n{e.message}""")
     except ValueError as e:
         readable = False
-        log.error('Data read error: {}'.format(e.message))
+        log.error(f'Data read error: {e.message}')
     finally:
         return readable

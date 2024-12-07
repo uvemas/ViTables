@@ -74,9 +74,9 @@ class LinkNode(object):
         parentpath = parent.nodepath
         if parentpath.endswith('/'):
             parentpath = parentpath[:-1]
-        self.nodepath = '{0}/{1}'.format(parentpath, name)
+        self.nodepath = f'{parentpath}/{name}'
         self.filepath = parent.filepath
-        self.as_record = '{0}'.format(self.node)
+        self.as_record = f'{self.node}'
 
         # Set the node icon
         icons = vitables.utils.getIcons()

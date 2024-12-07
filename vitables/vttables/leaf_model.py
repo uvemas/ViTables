@@ -255,5 +255,5 @@ class LeafModel(QtCore.QAbstractTableModel):
         try:
             return self.rbuffer.getCell(row, col)
         except IndexError:
-            log.error('IndexError! buffer start: {0} row, column: '
-                      '{1}, {2}'.format(self.start, row, col))
+            log.error(f'IndexError! buffer start: {self.start} row, column: '
+                      f'{row}, {col}')

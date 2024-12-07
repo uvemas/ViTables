@@ -194,7 +194,7 @@ class ImportCSV(QtCore.QObject):
             dirname, filename = os.path.split(filepath)
             root = os.path.splitext(filename)[0]
             dest_filepath = vitables.utils.forwardPath(os.path.join(dirname,
-                                                                    '{0}.h5'.format(root)))
+                                                                    f'{root}.h5'))
             if csvutils.isValidFilepath(dest_filepath):
                 dbdoc = self.dbt_model.createDBDoc(dest_filepath)
         except:
@@ -279,9 +279,9 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = "imported_{0}".format(kind)
+            dataset_name = f"imported_{kind}"
             atitle = \
-                'Source CSV file {0}'.format(os.path.basename(filepath))
+                f'Source CSV file {os.path.basename(filepath)}'
             dataset = dbdoc.h5file.create_table(
                 '/', dataset_name, descr, title=atitle, filters=io_filters,
                 expectedrows=nrows)
@@ -333,8 +333,8 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = "imported_{0}".format(kind)
-            atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
+            dataset_name = f"imported_{kind}"
+            atitle = f'Source CSV file {os.path.basename(filepath)}'
             dataset = dbdoc.h5file.create_earray(
                 '/', dataset_name, atom, array_shape, title=atitle,
                 filters=io_filters, expectedrows=nrows)
@@ -386,8 +386,8 @@ class ImportCSV(QtCore.QObject):
             if dbdoc is None:
                 return
             io_filters = tables.Filters(complevel=9, complib='lzo')
-            dataset_name = "imported_{0}".format(kind)
-            atitle = 'Source CSV file {0}'.format(os.path.basename(filepath))
+            dataset_name = f"imported_{kind}"
+            atitle = f'Source CSV file {os.path.basename(filepath)}'
             dataset = dbdoc.h5file.create_carray(
                 '/', dataset_name, atom, array_shape, title=atitle,
                 filters=io_filters)
@@ -446,9 +446,8 @@ class ImportCSV(QtCore.QObject):
                 dbdoc = self.createDestFile(filepath)
                 if dbdoc is None:
                     return
-                array_name = "imported_{0}".format(kind)
-                title = 'Imported from CSV file {0}'.\
-                    format(os.path.basename(filepath))
+                array_name = f"imported_{kind}"
+                title = f'Imported from CSV file {os.path.basename(filepath)}'
                 dbdoc.h5file.create_array('/', array_name, data, title=title)
                 dbdoc.h5file.flush()
                 self.updateTree(dbdoc.filepath)

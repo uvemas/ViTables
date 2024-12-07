@@ -69,9 +69,9 @@ class LeafNode(object):
         parentpath = parent.nodepath
         if parentpath.endswith('/'):
             parentpath = parentpath[:-1]
-        self.nodepath = '{0}/{1}'.format(parentpath, name)
+        self.nodepath = f'{parentpath}/{name}'
         self.filepath = parent.filepath
-        self.as_record = '{0}->{1}'.format(self.filepath, self.nodepath)
+        self.as_record = f'{self.filepath}->{self.nodepath}'
 
         # Set the node icon
         icons = vitables.utils.getIcons()

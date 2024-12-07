@@ -59,7 +59,7 @@ def _check_versions():
     import tables
     if tables.__version__ < '3.0':
         sys.exit('FATAL: PyTables version 3.0 or above is required, '
-                 'installed version is {}'.format(tables.__version__))
+                 f'installed version is {tables.__version__}')
 
 
 def _set_credentials(app):
@@ -103,7 +103,7 @@ def _parse_command_line():
     # Options for the default group
     parser.add_argument(
         '--version', action='version',
-        version='%(prog)s {}'.format(vtconfig.getVersion()))
+        version=f'%(prog)s {vtconfig.getVersion()}')
     # Options for opening files
     h5files_group.add_argument(
         '-m', '--mode', choices=['r', 'a'], metavar='MODE',
@@ -154,8 +154,8 @@ def _setup_logger(args):
         logger.setLevel(_VERBOSITY_LOGLEVEL_DICT[args.verbose])
     else:
         logger.setLevel(logging.ERROR)
-        logger.error('Invalid verbosity level: {}, error level '
-                     'set to ERROR'.format(args.verbose))
+        logger.error(f'Invalid verbosity level: {args.verbose}, error level '
+                     'set to ERROR')
     return logger, temporary_stderr_handler
 
 

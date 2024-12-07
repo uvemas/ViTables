@@ -125,7 +125,7 @@ class Logger(QtWidgets.QTextEdit):
         edit_menu.setObjectName('logger_context_menu')
 
         # QtGui.Qpalette.Window constant is 10
-        edit_menu.setStyleSheet("background-color: {0}".format(10))
+        edit_menu.setStyleSheet(f"background-color: {10}")
 
         self.copy_action = QtWidgets.QAction(
             translate('Logger', "&Copy", 'Logger menu entry'), self,

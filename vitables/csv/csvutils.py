@@ -157,7 +157,7 @@ def heterogeneousTableInfo(input_handler, first_line, second_line):
     if has_header:
         descr = {}
         for i in range(0, first_line.size):
-            dtype = second_line.dtype.fields['f{0}'.format(i)][0]
+            dtype = second_line.dtype.fields[f'f{i}'][0]
             descr[first_line[i].decode('UTF-8')] = tables.Col.from_dtype(dtype,
                                                                          pos=i)
         for i in itemsizes:
@@ -167,7 +167,7 @@ def heterogeneousTableInfo(input_handler, first_line, second_line):
         descr = dict([(f, tables.Col.from_dtype(t[0])) for f, t in
                       second_line.dtype.fields.items()])
         for i in itemsizes:
-            descr['f{0}'.format(i)] = tables.StringCol(itemsizes[i])
+            descr[f'f{i}'] = tables.StringCol(itemsizes[i])
 
     return descr, has_header
 
@@ -234,10 +234,10 @@ def homogeneousTableInfo(input_handler, first_line, second_line):
                           for i in indices])
     else:
         if sldn.startswith('str') or sldn.startswith('bytes'):
-            descr = dict([('f{0}'.format(field), tables.StringCol(itemsize))
+            descr = dict([(f'f{field}', tables.StringCol(itemsize))
                           for field in indices])
         else:
-            descr = dict([('f{0}'.format(field),
+            descr = dict([(f'f{field}',
                            tables.Col.from_dtype(second_line.dtype))
                           for field in indices])
 
@@ -258,7 +258,7 @@ def askForHelp(first_line):
     itext = ''
     try:
         from functools import reduce
-        dtext = reduce(lambda x, y: '{0}, {1}'.format(x, y), first_line)
+        dtext = reduce(lambda x, y: f'{x}, {y}', first_line)
     except TypeError:
         # If first_line has only one field reduce raises a TypeError
         dtext = first_line.tostring()

@@ -96,8 +96,8 @@ class NodeItemDelegate(QtWidgets.QItemDelegate):
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
-        pattern = """(^{0}$)|""" \
-            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(self.current_name)
+        pattern = f"""(^{self.current_name}$)|""" \
+            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)"""
         info = [translate('NodeItemDelegate',
             'Renaming a node: name already in use',
             'A dialog caption'),

@@ -220,7 +220,7 @@ class VTApp(QtCore.QObject):
         ext_keys = [k for k in config.keys() if k.startswith('Extensions')]
         for k in ext_keys:
             key = k[11:]
-            module_path = "vitables.extensions.{0}".format(key)
+            module_path = f"vitables.extensions.{key}"
             module = importlib.import_module(module_path)
             class_name = [name for name, obj in inspect.getmembers(module) if inspect.isclass(obj) and name.startswith("Ext")]
             ext_class = getattr(module, class_name[0])
@@ -236,7 +236,7 @@ class VTApp(QtCore.QObject):
         self.all_instances = {}
         for pkg in self.all_extensions.keys():
           if self.all_extensions[pkg][0]:
-            module_path = "vitables.extensions.{0}".format(pkg)
+            module_path = f"vitables.extensions.{pkg}"
             module = importlib.import_module(module_path)
             class_name = [name for name, obj in inspect.getmembers(module) if inspect.isclass(obj) and name.startswith("Ext")]
             ext_class = getattr(module, class_name[0])
@@ -928,8 +928,8 @@ class VTApp(QtCore.QObject):
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
-        pattern = """(^{0}$)|""" \
-            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)""".format(child.name)
+        pattern = f"""(^{child.name}$)|""" \
+            """(^[a-zA-Z_]+[0-9a-zA-Z_ ]*)"""
         info = [translate('VTApp', 'Renaming a node: name already in use',
                           'A dialog caption'),
                 translate('VTApp',

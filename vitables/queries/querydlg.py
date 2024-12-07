@@ -121,7 +121,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         self.setWindowTitle(translate('QueryDlg', 'New query on table: {0}',
                                       'A dialog caption').format(info['name']))
 
-        self.nameLE.setText('FilteredTable_{0}'.format(counter))
+        self.nameLE.setText(f'FilteredTable_{counter}')
 
         self.indicesColumnLE.setEnabled(0)
 
@@ -191,7 +191,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
 
         :Parameter operator: is the operator in the combobox current item
         """
-        self.queryLE.insert(' {0} '.format(operator))
+        self.queryLE.insert(f' {operator} ')
 
     @QtCore.Slot("QString", name="on_columnsComboBox_activated")
     def insertField(self, field_id):

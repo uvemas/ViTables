@@ -153,8 +153,7 @@ class Config(QtCore.QSettings):
             # organizationName() -> product
             # applicationName() -> version
             super(Config, self).__init__(product, version)
-            self.reg_path = 'HKEY_CURRENT_USER\\Software\\{0}\\{1}'.format(
-                product, version)
+            self.reg_path = f'HKEY_CURRENT_USER\\Software\\{product}\\{version}'
             self.setPath(QtCore.QSettings.NativeFormat,
                          QtCore.QSettings.UserScope, self.reg_path)
         elif sys.platform.startswith('darwin'):
@@ -468,7 +467,7 @@ class Config(QtCore.QSettings):
             self.setValue(key, value)
             if self.status() != QtCore.QSettings.NoError:
                 raise cfgexception.ConfigFileIOException(
-                    '{0}={1}'.format(key, value))
+                    f'{key}={value}')
         except cfgexception.ConfigFileIOException as inst:
             logger.error(inst.error_message)
 

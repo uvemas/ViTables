@@ -81,7 +81,7 @@ class DataSheet(QtWidgets.QMdiSubWindow):
             title = str(leaf.title)
         else:
             title = leaf.title
-        wtitle = "{0}\t{1}".format(self.dbt_leaf.name, title)
+        wtitle = f"{self.dbt_leaf.name}\t{title}"
         self.setWindowTitle(wtitle)
         self.setWindowIcon(self.dbt_leaf.icon)
 
@@ -159,11 +159,9 @@ class DataSheet(QtWidgets.QMdiSubWindow):
         info = nodeinfo.NodeInfo(node)
         if node.node_kind == 'table':
             col = info.columns_names[column]
-            title = '{0}: {1}[{2}]'.format(node.name, col,
-                                           tmodel.start + row)
+            title = f'{node.name}: {col}[{tmodel.start + row}]'
         else:
-            title = '{0}: ({1},{2})'.format(node.name,
-                                            tmodel.start + row, column)
+            title = f'{node.name}: ({tmodel.start + row},{column})'
 
         zoom_cell.ZoomCell(data, title, self.vtgui.workspace,
                            self.dbt_leaf)

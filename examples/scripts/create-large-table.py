@@ -76,4 +76,4 @@ for i in range(0, nrows, nrowsbuf):
 fileh.close()
 
 tsec = round((time.time() - t0), 3)
-print('Last of the run: {0} s'.format(tsec))
+print(f'Last of the run: {tsec} s')
