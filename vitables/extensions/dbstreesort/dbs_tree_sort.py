@@ -181,7 +181,7 @@ def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
     return True
 
 
-class ExtDBsTreeSort(object):
+class ExtDBsTreeSort:
     """Provides convenience methods and functions for sorting the tree of DBs.
     """
 

@@ -32,7 +32,7 @@ from vitables.h5db import tlink_editor
 from vitables.nodeprops import linkpropdlg, nodeinfo
 
 
-class LinkNode(object):
+class LinkNode:
     """
     A leaf node in the tree of databases model.
 

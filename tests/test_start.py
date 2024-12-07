@@ -9,7 +9,7 @@ from vitables import __version__, start
 
 
 @pytest.mark.usefixtures('launcher')
-class TestStart(object):
+class TestStart:
     def test_organizationDomain(self, launcher):
         start._set_credentials(launcher.app)
         organizationDomain = launcher.app.organizationDomain()

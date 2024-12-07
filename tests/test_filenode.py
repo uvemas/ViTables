@@ -29,7 +29,7 @@ import vitables.vttables.filenodebuffer as fnbuffer
 
 
 @pytest.mark.usefixtures('launcher', 'h5file')
-class TestFilenode(object):
+class TestFilenode:
     """Test class for modules filenodutils and filenodebuffer."""
 
     @pytest.fixture()

@@ -7,7 +7,7 @@ from vitables import utils
 
 
 @pytest.mark.usefixtures('launcher')
-class TestUtils(object):
+class TestUtils:
     def test_getVTApp(self):
         vtapp = utils.getVTApp()
         assert vtapp.objectName() == 'VTApp'

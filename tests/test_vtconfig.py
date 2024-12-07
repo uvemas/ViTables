@@ -12,7 +12,7 @@ import vitables.utils
 
 
 @pytest.mark.usefixtures('launcher')
-class TestLogger(object):
+class TestLogger:
     @pytest.fixture()
     def config(self, launcher):
         cfg = launcher.vtapp_object.config

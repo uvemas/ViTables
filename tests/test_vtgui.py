@@ -7,7 +7,7 @@ from vitables import logger
 
 
 @pytest.mark.usefixtures('launcher')
-class TestVTGui(object):
+class TestVTGui:
     def test_dockWidget(self, launcher):
         logger_dock = launcher.gui.findChild(QtWidgets.QDockWidget,
                                              'LoggerDockWidget')

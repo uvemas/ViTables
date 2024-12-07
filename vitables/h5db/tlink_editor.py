@@ -34,7 +34,7 @@ import tables
 import vitables.utils
 
 
-class TLinkEditor(object):
+class TLinkEditor:
     """
     An editor for `tables.Link` instances.
     """

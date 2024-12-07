@@ -129,7 +129,7 @@ def checkValue(dtype, str_value):
     return str_value
 
 
-class AttrEditor(object):
+class AttrEditor:
     """
     Setup the attributes entered in the Properties dialog.
 

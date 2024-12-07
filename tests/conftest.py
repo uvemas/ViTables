@@ -14,7 +14,7 @@ import vitables.vtapp
 from vitables.preferences import vtconfig
 
 
-class Launcher(object):
+class Launcher:
     def __init__(self):
         self.app = QtWidgets.QApplication(sys.argv)
         self.app.setOrganizationDomain('vitables.org')

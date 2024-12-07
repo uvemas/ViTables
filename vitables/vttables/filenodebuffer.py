@@ -49,7 +49,7 @@ warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
 log = logging.getLogger(__name__)
 
 
-class FilenodeBuffer(object):
+class FilenodeBuffer:
     """Buffer used to access the real data contained in `PyTables` filenode.
 
     Note that the buffer number of rows **must** be at least equal to

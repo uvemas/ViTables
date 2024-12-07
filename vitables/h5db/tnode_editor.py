@@ -34,7 +34,7 @@ import tables
 import vitables.utils
 
 
-class TNodeEditor(object):
+class TNodeEditor:
     """
     An editor for `tables.Leaf` and `tables.Group` instances.
     """

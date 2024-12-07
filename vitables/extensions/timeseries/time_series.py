@@ -202,7 +202,7 @@ def datetimeFormat():
     return datetime_format
 
 
-class ExtTSFormatter(object):
+class ExtTSFormatter:
     """Human friendly formatting of time series in a dataset.
 
     An inspector class intended for finding out if a `tables.Leaf` instance
@@ -313,7 +313,7 @@ class ExtTSFormatter(object):
         return self.about_page
 
 
-class TSLeafModel(object):
+class TSLeafModel:
     """Provides a `data()` method to leaf models that contains time series.
 
     Formatting a table is more difficult than formatting an array because

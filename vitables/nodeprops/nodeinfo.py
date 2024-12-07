@@ -27,7 +27,7 @@ __docformat__ = 'restructuredtext'
 import os.path
 
 
-class NodeInfo(object):
+class NodeInfo:
     """Collects information about a given node.
 
     The following data and metadata can be collected:

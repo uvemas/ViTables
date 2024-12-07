@@ -33,7 +33,7 @@ from vitables.nodeprops import leafpropdlg, nodeinfo
 __docformat__ = 'restructuredtext'
 
 
-class LeafNode(object):
+class LeafNode:
     """
     A leaf node in the tree of databases model.
 

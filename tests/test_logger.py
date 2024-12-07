@@ -5,7 +5,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 
 @pytest.mark.usefixtures('launcher')
-class TestLogger(object):
+class TestLogger:
     @pytest.fixture()
     def logger(self, launcher):
         return launcher.gui.logger

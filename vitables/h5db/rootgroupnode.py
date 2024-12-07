@@ -31,7 +31,7 @@ from vitables.h5db import tnode_editor
 from vitables.nodeprops import grouppropdlg, nodeinfo
 
 
-class RootGroupNode(object):
+class RootGroupNode:
     """
     A root group node in the tree of databases model.
 

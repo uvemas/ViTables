@@ -16,7 +16,7 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
 
-class Ui_CalculatorDialog(object):
+class Ui_CalculatorDialog:
     def setupUi(self, CalculatorDialog):
         CalculatorDialog.setObjectName("CalculatorDialog")
         CalculatorDialog.resize(640, 480)
