@@ -350,7 +350,7 @@ class VTApp(QtCore.QObject):
                                 0, 0, QtCore.QModelIndex()))
                         self.updateRecentFiles(filepath, mode)
 
-            except IOError:
+            except OSError:
                 log.error(
                     translate('VTApp', 'List of HDF5 files not read',
                               'File not updated error'))

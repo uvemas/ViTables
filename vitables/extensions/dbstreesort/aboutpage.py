@@ -94,7 +94,7 @@ class AboutPage(QtWidgets.QWidget, Ui_DBsTreeSortPage):
         try:
             self.config.read_file(open(self.ini_filename))
             self.initial_sorting = self.config['DBsTreeSorting']['algorithm']
-        except (IOError, configparser.ParsingError):
+        except (OSError, configparser.ParsingError):
             self.initial_sorting = default_sorting
 
         # Fill the combo with values and choose the current sorting algorithm

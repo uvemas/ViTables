@@ -196,7 +196,7 @@ def datetimeFormat():
     try:
         config.read_file(open(ini_filename))
         datetime_format = config['Timeseries']['strftime']
-    except (IOError, configparser.ParsingError):
+    except (OSError, configparser.ParsingError):
         datetime_format = def_dtformat
 
     return datetime_format

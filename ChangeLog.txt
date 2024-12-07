@@ -11,7 +11,7 @@ Fixed ruff errors UP032 and UP009.
 
 Fixed ruff import errors I001.
 
-Fixed ruff errors W293, PLR1730, PLR0402, UP004, W291 and B009.
+Fixed ruff errors W293, PLR1730, PLR0402, UP004, W291, B009 and UP024.
 
 ** December 06 2024 **
 Fixed some compatibility problems between PyQt5, PyQt6 and PySide6.

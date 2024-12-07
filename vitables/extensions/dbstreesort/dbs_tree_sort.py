@@ -60,7 +60,7 @@ def customiseDBsTreeModel():
     try:
         config.read(ini_filename)
         initial_sorting = config.get('DBsTreeSorting', 'algorithm')
-    except (IOError, configparser.ParsingError):
+    except (OSError, configparser.ParsingError):
         log.error(
             translate('DBsTreeSort', 'The configuration file of the '
                       'dbs_tree_sort plugin cannot be read.',

@@ -85,7 +85,7 @@ def tableInfo(input_handler):
     first_line = getArray(input_handler.readline())
     try:
         second_line = getArray(input_handler.readline())
-    except IOError:
+    except OSError:
         # The second line cannot be read. We assume there is only on line
         second_line = first_line
 

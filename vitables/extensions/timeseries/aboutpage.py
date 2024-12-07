@@ -95,7 +95,7 @@ class AboutPage(QtWidgets.QWidget, Ui_TimeFormatterPage):
         try:
             self.config.read_file(open(self.ini_filename))
             self.tformat = self.config['Timeseries']['strftime']
-        except (IOError, configparser.ParsingError):
+        except (OSError, configparser.ParsingError):
             self.tformat = def_tformat
 
         self.tformat_editor.setText(self.tformat)
