@@ -93,9 +93,9 @@ import qtpy
 from qtpy import QtCore, QtGui, QtWidgets
 
 import vitables.utils
-from vitables.vttables import datasheet
 from vitables import __version__
 from vitables.preferences import cfgexception
+from vitables.vttables import datasheet
 
 __docformat__ = 'restructuredtext'
 

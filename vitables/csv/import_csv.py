@@ -60,8 +60,8 @@ import numpy
 import tables
 from qtpy import QtCore, QtGui, QtWidgets
 
-from vitables.csv import csvutils
 import vitables.utils
+from vitables.csv import csvutils
 
 __docformat__ = 'restructuredtext'
 

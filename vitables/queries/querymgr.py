@@ -32,9 +32,8 @@ import logging
 
 from qtpy import QtCore, QtWidgets
 
-from vitables.queries import query
-from vitables.queries import querydlg
 import vitables.utils
+from vitables.queries import query, querydlg
 
 __docformat__ = 'restructuredtext'
 

@@ -27,11 +27,10 @@ import logging
 
 from qtpy import QtCore, QtGui, QtWidgets
 
-from vitables.h5db import dbstreemodel
-from vitables.h5db import dbstreeview
-from vitables import logger
 import vitables.utils
+from vitables import logger
 from vitables.calculator import calculator
+from vitables.h5db import dbstreemodel, dbstreeview
 
 __docformat__ = 'restructuredtext'
 

@@ -39,14 +39,13 @@ import vitables.csv.import_csv as importcsv
 import vitables.filenodeutils as fnutils
 import vitables.queries.querymgr as qmgr
 import vitables.utils
-from vitables import vtgui
 import vitables.vtsplash
-from vitables.vttables import datasheet
-from vitables.vtwidgets import nodenamedlg
-from vitables.vtwidgets import renamedlg
+from vitables import vtgui
 from vitables.docbrowser import helpbrowser
 from vitables.preferences import preferences, vtconfig
 from vitables.vtsite import ICONDIR
+from vitables.vttables import datasheet
+from vitables.vtwidgets import nodenamedlg, renamedlg
 
 __docformat__ = 'restructuredtext'
 

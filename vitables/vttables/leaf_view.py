@@ -35,8 +35,7 @@ __docformat__ = 'restructuredtext'
 
 from qtpy import QtCore, QtGui, QtWidgets
 
-from vitables.vttables import leaf_delegate
-from vitables.vttables import scrollbar
+from vitables.vttables import leaf_delegate, scrollbar
 
 _aiv = QtWidgets.QAbstractItemView
 
