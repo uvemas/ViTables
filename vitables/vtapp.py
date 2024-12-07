@@ -39,11 +39,11 @@ import vitables.csv.import_csv as importcsv
 import vitables.filenodeutils as fnutils
 import vitables.queries.querymgr as qmgr
 import vitables.utils
-import vitables.vtgui as vtgui
+from vitables import vtgui
 import vitables.vtsplash
-import vitables.vttables.datasheet as datasheet
-import vitables.vtwidgets.nodenamedlg as nodenamedlg
-import vitables.vtwidgets.renamedlg as renamedlg
+from vitables.vttables import datasheet
+from vitables.vtwidgets import nodenamedlg
+from vitables.vtwidgets import renamedlg
 from vitables.docbrowser import helpbrowser
 from vitables.preferences import preferences, vtconfig
 from vitables.vtsite import ICONDIR

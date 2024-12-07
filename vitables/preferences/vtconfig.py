@@ -93,7 +93,7 @@ import qtpy
 from qtpy import QtCore, QtGui, QtWidgets
 
 import vitables.utils
-import vitables.vttables.datasheet as datasheet
+from vitables.vttables import datasheet
 from vitables import __version__
 from vitables.preferences import cfgexception
 

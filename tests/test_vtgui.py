@@ -3,7 +3,7 @@
 import pytest
 from qtpy import QtCore, QtWidgets
 
-import vitables.logger as logger
+from vitables import logger
 
 
 @pytest.mark.usefixtures('launcher')

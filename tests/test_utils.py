@@ -3,7 +3,7 @@
 import pytest
 from qtpy import QtGui, QtWidgets
 
-import vitables.utils as utils
+from vitables import utils
 
 
 @pytest.mark.usefixtures('launcher')

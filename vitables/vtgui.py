@@ -27,9 +27,9 @@ import logging
 
 from qtpy import QtCore, QtGui, QtWidgets
 
-import vitables.h5db.dbstreemodel as dbstreemodel
-import vitables.h5db.dbstreeview as dbstreeview
-import vitables.logger as logger
+from vitables.h5db import dbstreemodel
+from vitables.h5db import dbstreeview
+from vitables import logger
 import vitables.utils
 from vitables.calculator import calculator
 

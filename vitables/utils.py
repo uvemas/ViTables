@@ -35,7 +35,7 @@ import tables
 from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
 
-import vitables.vtwidgets.renamedlg as renamedlg
+from vitables.vtwidgets import renamedlg
 from vitables.vtsite import ICONDIR
 
 __docformat__ = 'restructuredtext'
