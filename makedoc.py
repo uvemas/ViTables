@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Automatically build documentation with Sphinx and copy it in the package."""
 

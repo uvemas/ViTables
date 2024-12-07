@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 #       Copyright (C) 2005, 2006, 2007 Carabos Coop. V. All rights reserved
 #       Copyright (C) 2008-2019 Vicent Mas. All rights reserved

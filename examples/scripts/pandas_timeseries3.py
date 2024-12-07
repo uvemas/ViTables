@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 #       Copyright (C) 2008-2019 Vicent Mas. All rights reserved
 #

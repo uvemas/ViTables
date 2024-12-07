@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # ViTables Users' Guide documentation build configuration file, created by
 # sphinx-quickstart on Tue Feb 15 19:12:51 2011.

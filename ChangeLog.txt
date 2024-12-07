@@ -7,7 +7,7 @@ Fixed ruff errors E741, F401, E714, E713, E712 and E402.
 
 pyproject.toml has been updated.
 
-Fixed ruff errors UP032.
+Fixed ruff errors UP032 and UP009.
 
 ** December 06 2024 **
 Fixed some compatibility problems between PyQt5, PyQt6 and PySide6.
