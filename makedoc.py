@@ -38,7 +38,10 @@ if __name__ == '__main__':
     build_dir = '_build'
     os.chdir('./doc')
     shutil.copy2(f"indices/index_{builder}.rst", "index.rst")
-    subprocess.run(["sphinx-build", "-b", builder, ".", build_dir])
+    try:
+        subprocess.run(["sphinx-build", "-b", builder, ".", build_dir], check=True)
+    except subprocess.CalledProcessError as err:
+        print(err)
 
     # Move documentation to its final destination
     if builder == 'html':
@@ -52,8 +55,11 @@ if __name__ == '__main__':
         shutil.copytree(build_dir, f'{htmldocs_dir}')
     elif builder == 'latex':
         os.chdir('./_build')
-        subprocess.run('pdflatex UsersGuide.tex')
-        subprocess.run('pdflatex UsersGuide.tex')
+        try:
+            subprocess.run('pdflatex UsersGuide.tex', check=True)
+            subprocess.run('pdflatex UsersGuide.tex', check=True)
+        except subprocess.CalledProcessError as err:
+            print(err)
         shutil.copy2('UsersGuide.pdf', '../../UsersGuide.pdf')
         os.chdir('..')
     # Cleanup the doc directory
