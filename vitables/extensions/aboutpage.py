@@ -2,7 +2,6 @@
 
 import os
 
-from qtpy import QtGui
 from qtpy import QtWidgets
 from qtpy import uic
 

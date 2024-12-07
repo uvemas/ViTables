@@ -35,7 +35,6 @@ from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 
-import vitables.utils
 
 __docformat__ = 'restructuredtext'
 

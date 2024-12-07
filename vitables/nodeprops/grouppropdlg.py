@@ -29,7 +29,6 @@ mode. Otherwise all shown information is read-only.
 
 __docformat__ = 'restructuredtext'
 
-from qtpy import QtGui
 from qtpy import QtWidgets
 
 from vitables.nodeprops import attrpropdlg

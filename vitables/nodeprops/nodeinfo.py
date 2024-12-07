@@ -27,7 +27,6 @@ __docformat__ = 'restructuredtext'
 
 import os.path
 
-import vitables.utils
 
 class NodeInfo(object):
     """Collects information about a given node.

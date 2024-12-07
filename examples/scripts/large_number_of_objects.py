@@ -21,7 +21,6 @@
 
 "This creates an HDF5 file with a potentially large number of objects"
 
-import sys
 import numpy
 import tables
 

@@ -29,7 +29,6 @@ which is distributed along the source code in every supported platform.
 __docformat__ = 'restructuredtext'
 
 from qtpy import QtCore
-from qtpy import QtGui
 from qtpy import QtWidgets
 
 import vitables.utils

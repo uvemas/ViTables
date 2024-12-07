@@ -24,7 +24,6 @@
 
 """Several simple Tables."""
 
-import sys
 
 import numpy
 import tables

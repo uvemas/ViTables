@@ -40,7 +40,6 @@ from vitables.h5db import linknode
 from vitables.extensions.dbstreesort.aboutpage import AboutPage
 
 from qtpy import QtCore
-from qtpy import QtGui
 from qtpy import QtWidgets
 try:
     import configparser

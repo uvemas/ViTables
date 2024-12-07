@@ -36,5 +36,6 @@ def launcher():
 def h5file():
     if not os.path.exists('testfile.h5'):
         import create_testfile
+        print(create_testfile)
     yield tables.open_file('testfile.h5', 'r')
     os.remove('testfile.h5')

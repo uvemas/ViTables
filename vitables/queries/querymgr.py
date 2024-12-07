@@ -35,7 +35,6 @@ import logging
 import vitables.utils
 
 from qtpy import QtCore
-from qtpy import QtGui
 from qtpy import QtWidgets
 
 import vitables.queries.query as query

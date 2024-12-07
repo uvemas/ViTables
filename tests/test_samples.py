@@ -4,10 +4,8 @@ import os.path
 from qtpy import QtWidgets
 from qtpy import QtCore
 
-import vitables.start as vtstart
 
 from vitables.vtapp import VTApp
-from vitables.preferences import vtconfig
 
 TABLES_PATH = os.path.join('examples', 'tables')
 

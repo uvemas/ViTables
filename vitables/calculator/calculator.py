@@ -3,12 +3,10 @@
 # pylint: disable=W0212
 
 import logging
-import os
 import re
 from vitables.calculator.calculator_dlg import Ui_CalculatorDialog
 
 from qtpy import QtCore
-from qtpy import QtGui
 from qtpy import QtWidgets
 import tables
 

@@ -33,7 +33,6 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-from qtpy import QtGui
 from qtpy import QtWidgets
 from qtpy.uic import loadUiType
 
