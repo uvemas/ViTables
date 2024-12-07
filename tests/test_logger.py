@@ -1,10 +1,7 @@
 """Test class for vtgui.py"""
 
 import pytest
-
-from qtpy import QtWidgets
-from qtpy import QtCore
-from qtpy import QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 
 @pytest.mark.usefixtures('launcher')

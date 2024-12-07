@@ -25,15 +25,13 @@ It collects information from the `New Query` dialog, processes it and then
 executes the query.
 """
 
-__docformat__ = 'restructuredtext'
-
-import tables
 import numpy
-
-from qtpy import QtCore
-from qtpy import QtWidgets
+import tables
+from qtpy import QtCore, QtWidgets
 
 import vitables.utils
+
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
 

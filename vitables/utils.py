@@ -21,21 +21,18 @@ This is the utilities module. It contains functions that perform
 tasks that are required at several parts of the application.
 """
 
-import sys
-import os
-import traceback
-import locale
-import re
-import logging
 import collections
 import functools
+import locale
+import logging
+import os
+import re
+import sys
+import traceback
 
 import numpy
 import tables
-
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
 
 import vitables.vtwidgets.renamedlg as renamedlg

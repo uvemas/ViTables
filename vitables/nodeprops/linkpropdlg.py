@@ -26,7 +26,6 @@ This module displays in a dialog the link information collected by the
 import os.path
 
 from qtpy import QtWidgets
-
 from qtpy.uic import loadUiType
 
 import vitables.utils

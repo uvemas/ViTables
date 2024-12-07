@@ -25,10 +25,7 @@ Here is defined the VTSplash class. It displays the splash screen during the
 
 import time
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
-
+from qtpy import QtCore, QtGui, QtWidgets
 
 __docformat__ = 'restructuredtext'
 

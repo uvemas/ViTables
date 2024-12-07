@@ -27,14 +27,12 @@ results` in the databases tree).
 
 import logging
 import os.path
-import vitables.utils
 
 import numpy
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.uic import loadUiType
 
+import vitables.utils
 
 __docformat__ = 'restructuredtext'
 

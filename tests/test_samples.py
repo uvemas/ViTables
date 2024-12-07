@@ -1,9 +1,7 @@
-import sys
 import os.path
+import sys
 
-from qtpy import QtWidgets
-from qtpy import QtCore
-
+from qtpy import QtCore, QtWidgets
 
 from vitables.vtapp import VTApp
 

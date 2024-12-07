@@ -3,14 +3,11 @@
 Here we create fixtures that are not directly required by test functions.
 """
 
+import os
 import sys
 
-import os
-
 import pytest
-
 import tables
-
 from qtpy import QtWidgets
 
 import vitables.vtapp

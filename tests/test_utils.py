@@ -1,9 +1,7 @@
 """Test class for utils.py"""
 
 import pytest
-
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtGui, QtWidgets
 
 import vitables.utils as utils
 

@@ -27,6 +27,7 @@
 import numpy
 import tables
 
+
 class Particle(tables.IsDescription):
     """Description of a table record.
     """

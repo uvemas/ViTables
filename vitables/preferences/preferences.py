@@ -29,17 +29,14 @@ to be modified: General, Look&Feel or Extensions. The right pane is a QtGui.QSta
 with a stacked page for every group of settings present in the selector pane.
 """
 
-import os
 import logging
+import os
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
-
+from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.uic import loadUiType
 
-from vitables.vtsite import ICONDIR
 import vitables.utils
+from vitables.vtsite import ICONDIR
 
 log = logging.getLogger(__name__)
 

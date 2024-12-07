@@ -32,8 +32,7 @@ datasets with a larger number of rows than that provided by the view widget.
 
 __docformat__ = 'restructuredtext'
 
-from qtpy.QtCore import Qt
-from qtpy.QtCore import QEvent
+from qtpy.QtCore import QEvent, Qt
 from qtpy.QtWidgets import QScrollBar
 
 

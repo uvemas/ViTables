@@ -25,9 +25,7 @@ A form with tables.Leaf information collected by the
 
 import os.path
 
-from qtpy import QtGui
-from qtpy import QtWidgets
-
+from qtpy import QtGui, QtWidgets
 from qtpy.uic import loadUiType
 
 import vitables.utils

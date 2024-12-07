@@ -29,12 +29,12 @@ Notes:
   missing values to be linearly interpolated rather than left empty in the plot
 """
 
-import os
 import datetime
+import os
 
-from matplotlib.finance import quotes_historical_yahoo
 import scikits.timeseries as ts
 import scikits.timeseries.lib.tstables as tstab
+from matplotlib.finance import quotes_historical_yahoo
 
 startdate = datetime.date(2002, 1, 5)
 enddate = datetime.date(2003, 12, 1)

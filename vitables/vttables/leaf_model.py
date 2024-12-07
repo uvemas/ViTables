@@ -26,12 +26,10 @@ in a `tables.Leaf`.
 import logging
 
 import tables
-
 from qtpy import QtCore
 
 import vitables.utils
-from vitables.vttables import buffer
-from vitables.vttables import filenodebuffer
+from vitables.vttables import buffer, filenodebuffer
 
 __docformat__ = 'restructuredtext'
 

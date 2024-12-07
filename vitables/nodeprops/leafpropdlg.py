@@ -30,8 +30,7 @@ __docformat__ = 'restructuredtext'
 
 from qtpy import QtWidgets
 
-from vitables.nodeprops import attrpropdlg
-from vitables.nodeprops import leafproppage
+from vitables.nodeprops import attrpropdlg, leafproppage
 
 translate = QtWidgets.QApplication.translate
 

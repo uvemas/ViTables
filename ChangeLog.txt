@@ -9,6 +9,8 @@ pyproject.toml has been updated.
 
 Fixed ruff errors UP032 and UP009.
 
+Fixed ruff import errors I001.
+
 ** December 06 2024 **
 Fixed some compatibility problems between PyQt5, PyQt6 and PySide6.
 

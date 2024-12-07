@@ -28,9 +28,7 @@ from tables.nodes import filenode
 
 import vitables.utils
 from vitables.h5db import tnode_editor
-from vitables.nodeprops import nodeinfo
-from vitables.nodeprops import leafpropdlg
-
+from vitables.nodeprops import leafpropdlg, nodeinfo
 
 __docformat__ = 'restructuredtext'
 

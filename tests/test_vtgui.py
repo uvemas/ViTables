@@ -1,9 +1,7 @@
 """Test class for vtgui.py"""
 
 import pytest
-
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
 
 import vitables.logger as logger
 

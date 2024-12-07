@@ -20,8 +20,8 @@
 
 """Create a PyTables file for testing purposes."""
 
-from tables.nodes import filenode
 import tables
+from tables.nodes import filenode
 
 
 class Particle(tables.IsDescription):

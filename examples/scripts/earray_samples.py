@@ -23,8 +23,8 @@
 
 """Several simple EArrays."""
 
-import tables
 import numpy
+import tables
 
 fileh = tables.open_file('earray_samples.h5', mode='w')
 

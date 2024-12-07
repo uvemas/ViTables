@@ -22,12 +22,11 @@
 Display recursively the content of a given cell of a view.
 """
 
-__docformat__ = 'restructuredtext'
-
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
 
 import vitables.utils
+
+__docformat__ = 'restructuredtext'
 
 def getArrayDimensions(shape):
     """

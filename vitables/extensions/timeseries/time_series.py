@@ -24,8 +24,9 @@ series contained in `PyTables` tables generated via ``scikits.timeseries`` and
 ``Pandas``.
 """
 
-import time
 import os
+import time
+
 try:
     import configparser
 except ImportError:
@@ -43,9 +44,8 @@ try:
 except ImportError:
     pd = None
 
-from qtpy import QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtCore import Qt
-from qtpy import QtWidgets
 
 import vitables.utils
 from vitables.extensions.timeseries.aboutpage import AboutPage

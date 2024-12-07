@@ -22,8 +22,7 @@
 #
 import sys
 
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtGui, QtWidgets
 
 ICONSDIR = '../vitables/icons/'
 big_icons = [('file_rw', 'The root node (read-write)'),

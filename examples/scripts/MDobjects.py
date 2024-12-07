@@ -24,8 +24,9 @@ multidimensional cells.
 It also works to check views of multidimensional attributes.
 """
 
-import tables
 import numpy
+import tables
+
 
 class Particle(tables.IsDescription):
     """Description of a table record."""

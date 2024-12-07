@@ -24,7 +24,6 @@ Example 3.
 import os
 
 import numpy as np
-
 import scikits.timeseries as ts
 import scikits.timeseries.lib.tstables as tstab
 

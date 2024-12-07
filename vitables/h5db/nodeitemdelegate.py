@@ -24,8 +24,7 @@ Here is defined the NodeItemDelegate class.
 
 __docformat__ = 'restructuredtext'
 
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
 
 import vitables.utils
 

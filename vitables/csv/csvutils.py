@@ -28,14 +28,16 @@ import logging
 import os
 import re
 import tempfile
-import vitables.utils
-
-import numpy
-from qtpy import QtWidgets
-import tables
 
 # https://github.com/numpy/numpy/issues/10990
 import warnings
+
+import numpy
+import tables
+from qtpy import QtWidgets
+
+import vitables.utils
+
 warnings.filterwarnings("ignore", category=numpy.exceptions.VisibleDeprecationWarning)
 
 

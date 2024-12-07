@@ -27,9 +27,9 @@ consequence, views (widgets showing a tabular representation of the dataset)
 are painted much faster too.
 """
 
+import linecache
 import logging
 import warnings
-import linecache
 
 import numpy
 import tables

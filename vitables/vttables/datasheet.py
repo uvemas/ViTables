@@ -25,13 +25,12 @@ When a leaf node is opened in the tree of databases view the data stored in
 that leaf will be displayed in the workspace using this wrapper widget.
 """
 
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
 
-from . import leaf_view, leaf_model, df_model
 from .. import utils as vtutils
 from ..nodeprops import nodeinfo
 from ..vtwidgets import zoom_cell
+from . import df_model, leaf_model, leaf_view
 
 __docformat__ = 'restructuredtext'
 

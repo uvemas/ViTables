@@ -28,8 +28,8 @@ linecache module helps a little with this problem but at a price: it holds the
 whole file in memory.
 """
 
-import tempfile
 import os
+import tempfile
 
 from tables.nodes import filenode
 

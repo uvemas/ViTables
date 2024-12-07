@@ -28,15 +28,13 @@ mode. Otherwise all shown information is read-only.
 
 import logging
 import os.path
-from vitables.nodeprops import attreditor
-import vitables.utils
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
-from qtpy.uic import loadUiType
 import tables
+from qtpy import QtCore, QtGui, QtWidgets
+from qtpy.uic import loadUiType
 
+import vitables.utils
+from vitables.nodeprops import attreditor
 
 __docformat__ = 'restructuredtext'
 

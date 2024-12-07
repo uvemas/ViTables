@@ -28,8 +28,9 @@ magnitude. F. Altet 2006-02-27
 """
 
 import time
-from numpy import arange
+
 import tables
+from numpy import arange
 
 t0 = time.time()
 

@@ -31,7 +31,6 @@ import warnings
 
 import numpy
 import tables
-
 from qtpy import QtWidgets
 
 from .. import utils as vtutils

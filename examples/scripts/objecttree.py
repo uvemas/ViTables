@@ -25,6 +25,7 @@
 
 import tables
 
+
 class Particle(tables.IsDescription):
     identity = tables.StringCol(itemsize=22, dflt=" ", pos=0)  # character String
     idnumber = tables.Int16Col(dflt=1, pos = 1)  # short integer

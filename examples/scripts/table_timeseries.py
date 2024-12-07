@@ -21,9 +21,10 @@
 
 import os
 import time
-import numpy
 
+import numpy
 import tables
+
 
 # Describe a particle record
 class Particle(tables.IsDescription):

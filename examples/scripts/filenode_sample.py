@@ -23,8 +23,8 @@
 
 """How to use the filenode module."""
 
-from tables.nodes import filenode
 import tables
+from tables.nodes import filenode
 
 h5file = tables.open_file('../misc/fnode.h5', 'w')
 fnode = filenode.new_node(h5file, where='/', name='fnode_test')

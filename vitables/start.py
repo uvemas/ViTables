@@ -18,18 +18,17 @@
 
 """This is the launcher script for the ViTables application."""
 
-import sys
-import locale
 import argparse
-import os.path
+import locale
 import logging
+import os.path
+import sys
 import traceback
 
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
 
-from vitables.vtapp import VTApp
 from vitables.preferences import vtconfig
+from vitables.vtapp import VTApp
 
 __docformat__ = 'restructuredtext'
 

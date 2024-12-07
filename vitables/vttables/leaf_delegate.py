@@ -28,11 +28,9 @@ should be rendered in the standard way. If it is not then it should always be
 rendered unselected.
 """
 
-__docformat__ = 'restructuredtext'
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+__docformat__ = 'restructuredtext'
 
 class LeafDelegate(QtWidgets.QStyledItemDelegate):
     """

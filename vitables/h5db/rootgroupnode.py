@@ -28,8 +28,8 @@ __docformat__ = 'restructuredtext'
 
 import vitables.utils
 from vitables.h5db import tnode_editor
-from vitables.nodeprops import nodeinfo
-from vitables.nodeprops import grouppropdlg
+from vitables.nodeprops import grouppropdlg, nodeinfo
+
 
 class RootGroupNode(object):
     """

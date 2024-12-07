@@ -28,14 +28,11 @@ that the plugin will be useful to some users.
 import os.path
 
 import tables
-
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 import vitables
-from vitables.vttables.datasheet import DataSheet
 from vitables.extensions.aboutpage import AboutPage
+from vitables.vttables.datasheet import DataSheet
 
 __docformat__ = 'restructuredtext'
 __version__ = '1.1'

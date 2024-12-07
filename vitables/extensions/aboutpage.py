@@ -2,8 +2,7 @@
 
 import os
 
-from qtpy import QtWidgets
-from qtpy import uic
+from qtpy import QtWidgets, uic
 
 Ui_AboutPage = uic.loadUiType(os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'about_page.ui'))[0]

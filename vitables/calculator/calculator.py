@@ -4,16 +4,14 @@
 
 import logging
 import re
-from vitables.calculator.calculator_dlg import Ui_CalculatorDialog
-
-from qtpy import QtCore
-from qtpy import QtWidgets
-import tables
 
 import numpy as np
+import tables
+from qtpy import QtCore, QtWidgets
+
 import vitables.calculator.evaluator as vtce
 import vitables.utils as vtu
-
+from vitables.calculator.calculator_dlg import Ui_CalculatorDialog
 
 translate = QtCore.QCoreApplication.translate
 

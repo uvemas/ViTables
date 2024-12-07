@@ -27,26 +27,17 @@ The model is populated using data structures defined in the
 
 __docformat__ = 'restructuredtext'
 
-import tempfile
-import os
-import sys
-import re
 import logging
+import os
+import re
+import sys
+import tempfile
 
 import tables
-
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 import vitables.utils
-from vitables.h5db import dbdoc
-from vitables.h5db import rootgroupnode
-from vitables.h5db import groupnode
-from vitables.h5db import leafnode
-from vitables.h5db import linknode
-from vitables.h5db import tnode_editor
-from vitables.h5db import tlink_editor
+from vitables.h5db import dbdoc, groupnode, leafnode, linknode, rootgroupnode, tlink_editor, tnode_editor
 
 translate = QtWidgets.QApplication.translate
 

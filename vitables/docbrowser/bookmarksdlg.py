@@ -26,12 +26,10 @@ This module provides a dialog for deleting bookmarks from the bookmarks list.
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import os.path
+import sys
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 translate = QtWidgets.QApplication.translate
 

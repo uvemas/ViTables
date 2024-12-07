@@ -4,12 +4,12 @@ import sys
 
 import pytest
 
-from qtpy import QtWidgets
 # from qtpy import QtCore
-from qtpy import QtGui
-# from qtpy.QtTest import QTest
+from qtpy import QtGui, QtWidgets
 
+# from qtpy.QtTest import QTest
 import vitables.utils
+
 
 @pytest.mark.usefixtures('launcher')
 class TestLogger(object):

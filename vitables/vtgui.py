@@ -24,16 +24,14 @@ toolbars, statusbars and `QActions` bound to both menus and toolbars.
 """
 
 import logging
-from vitables.calculator import calculator
-import vitables.utils
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 import vitables.h5db.dbstreemodel as dbstreemodel
 import vitables.h5db.dbstreeview as dbstreeview
 import vitables.logger as logger
+import vitables.utils
+from vitables.calculator import calculator
 
 __docformat__ = 'restructuredtext'
 

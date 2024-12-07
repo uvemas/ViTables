@@ -27,6 +27,7 @@ dialog selector pane.
 """
 
 import os.path
+
 try:
     import configparser
 except ImportError:

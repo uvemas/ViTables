@@ -22,43 +22,31 @@ controls the managers for specific tasks and contains the logic for reacting
 to user's input i.e. the slots connected to every menu entry are defined here.
 """
 
-import os
-import time
-import sys
-import logging
-
-import numpy
-import tables
-
-import qtpy
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
-
-import vitables.utils
-import vitables.filenodeutils as fnutils
-import vitables.vtsplash
-from vitables.vtsite import ICONDIR
-
-from vitables.preferences import vtconfig
-from vitables.preferences import preferences
-
 import importlib
 import inspect
+import logging
+import os
+import sys
+import time
 
+import numpy
+import qtpy
+import tables
+from qtpy import QtCore, QtGui, QtWidgets
+
+import vitables.csv.export_csv as exportcsv
+import vitables.csv.import_csv as importcsv
+import vitables.filenodeutils as fnutils
 import vitables.queries.querymgr as qmgr
-
+import vitables.utils
+import vitables.vtgui as vtgui
+import vitables.vtsplash
+import vitables.vttables.datasheet as datasheet
 import vitables.vtwidgets.nodenamedlg as nodenamedlg
 import vitables.vtwidgets.renamedlg as renamedlg
-
 from vitables.docbrowser import helpbrowser
-
-import vitables.vttables.datasheet as datasheet
-
-import vitables.csv.import_csv as importcsv
-import vitables.csv.export_csv as exportcsv
-
-import vitables.vtgui as vtgui
+from vitables.preferences import preferences, vtconfig
+from vitables.vtsite import ICONDIR
 
 __docformat__ = 'restructuredtext'
 

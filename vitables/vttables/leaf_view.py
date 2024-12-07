@@ -33,13 +33,10 @@ tabular way:
 
 __docformat__ = 'restructuredtext'
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 import vitables.vttables.leaf_delegate as leaf_delegate
 import vitables.vttables.scrollbar as scrollbar
-
 
 _aiv = QtWidgets.QAbstractItemView
 

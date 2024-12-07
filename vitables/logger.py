@@ -30,10 +30,7 @@ commands in the Logger.
     :Parameter parent: the parent widget of the Logger
 """
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
-
+from qtpy import QtCore, QtGui, QtWidgets
 
 __docformat__ = 'restructuredtext'
 

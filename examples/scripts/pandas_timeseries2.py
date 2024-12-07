@@ -20,8 +20,8 @@
 """Storing time series created with Pandas in PyTables. Example 2.
 """
 
-import os
 import datetime
+import os
 
 import pandas as pd
 import pandas_datareader.data as web

@@ -27,12 +27,10 @@ which is distributed along the source code in every supported platform.
 
 __docformat__ = 'restructuredtext'
 
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
 
 import vitables.utils
-from vitables.docbrowser import bookmarksdlg
-from vitables.docbrowser import browsergui
+from vitables.docbrowser import bookmarksdlg, browsergui
 
 translate = QtWidgets.QApplication.translate
 

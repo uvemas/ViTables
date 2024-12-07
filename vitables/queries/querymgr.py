@@ -28,17 +28,15 @@ currently being queried, in order to ensure that no more than 1 query at a time
 is executed on a given table.
 """
 
-__docformat__ = 'restructuredtext'
-
 import logging
-import vitables.utils
 
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
 
 import vitables.queries.query as query
 import vitables.queries.querydlg as querydlg
+import vitables.utils
 
+__docformat__ = 'restructuredtext'
 
 translate = QtWidgets.QApplication.translate
 

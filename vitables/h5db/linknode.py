@@ -29,8 +29,8 @@ import tables
 
 import vitables.utils
 from vitables.h5db import tlink_editor
-from vitables.nodeprops import nodeinfo
-from vitables.nodeprops import linkpropdlg
+from vitables.nodeprops import linkpropdlg, nodeinfo
+
 
 class LinkNode(object):
     """

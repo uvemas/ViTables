@@ -27,15 +27,13 @@ Once the plugin is enabled it works on any file opened after the enabling.
 import logging
 import os
 import re
-import vitables
-from vitables.h5db import dbstreemodel
-from vitables.h5db import groupnode
-from vitables.h5db import leafnode
-from vitables.h5db import linknode
-from vitables.extensions.dbstreesort.aboutpage import AboutPage
 
-from qtpy import QtCore
-from qtpy import QtWidgets
+from qtpy import QtCore, QtWidgets
+
+import vitables
+from vitables.extensions.dbstreesort.aboutpage import AboutPage
+from vitables.h5db import dbstreemodel, groupnode, leafnode, linknode
+
 try:
     import configparser
 except ImportError:

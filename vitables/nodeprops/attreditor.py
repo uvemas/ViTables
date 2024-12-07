@@ -28,9 +28,8 @@ about the error and the dialog remains open so the user can fix her mistake.
 
 __docformat__ = 'restructuredtext'
 
-import tables
 import numpy
-
+import tables
 from qtpy import QtWidgets
 
 import vitables.utils

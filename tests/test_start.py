@@ -1,11 +1,11 @@
 """Test class for start.py."""
 
-import sys
 import argparse
+import sys
 
 import pytest
 
-from vitables import start, __version__
+from vitables import __version__, start
 
 
 @pytest.mark.usefixtures('launcher')

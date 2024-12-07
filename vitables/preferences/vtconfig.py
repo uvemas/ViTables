@@ -90,16 +90,12 @@ import logging
 import sys
 
 import qtpy
+from qtpy import QtCore, QtGui, QtWidgets
+
+import vitables.utils
+import vitables.vttables.datasheet as datasheet
 from vitables import __version__
 from vitables.preferences import cfgexception
-import vitables.utils
-
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtWidgets
-
-import vitables.vttables.datasheet as datasheet
-
 
 __docformat__ = 'restructuredtext'
 

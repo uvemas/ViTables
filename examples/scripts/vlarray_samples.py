@@ -22,8 +22,8 @@
 
 import pickle
 
-import tables
 import numpy
+import tables
 
 # Create a VLArray:
 fileh = tables.open_file('vlarray_samples.h5', mode='w')

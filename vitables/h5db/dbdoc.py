@@ -29,11 +29,11 @@ contains methods for editing nodes (but not data stored in nodes).
 import logging
 import os
 import uuid
-import vitables.utils
 
-from qtpy import QtCore
-from qtpy import QtWidgets
 import tables
+from qtpy import QtCore, QtWidgets
+
+import vitables.utils
 
 __docformat__ = 'restructuredtext'
 

@@ -24,10 +24,9 @@ Example 1.
 import os
 
 import numpy as np
-
 import scikits.timeseries as ts
-import scikits.timeseries.lib.tstables as tstab
 import scikits.timeseries.lib.reportlib as rl
+import scikits.timeseries.lib.tstables as tstab
 
 ## a test series
 data = np.arange(1, 366)
