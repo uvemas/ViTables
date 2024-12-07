@@ -853,7 +853,7 @@ class VTApp(QtCore.QObject):
         #
         # Check if the entered nodename is already in use
         #
-        sibling = getattr(parent.node, '_v_children').keys()
+        sibling = parent.node._v_children.keys()
         pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
         info = [translate('VTApp',
                           'Creating a new group: name already in use',
@@ -911,7 +911,7 @@ class VTApp(QtCore.QObject):
         #
         # Check if the nodename is already in use
         #
-        sibling = getattr(parent.node, '_v_children').keys()
+        sibling = parent.node._v_children.keys()
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
@@ -1016,7 +1016,7 @@ class VTApp(QtCore.QObject):
         if cni['target']:
             link = self.gui.dbs_tree_model.copiedNode()
             try:
-                getattr(link, 'extfile')
+                link.extfile
             except AttributeError:
                 if parent.filepath != cni['filepath']:
                     return
@@ -1024,7 +1024,7 @@ class VTApp(QtCore.QObject):
         #
         # Check if the nodename is already in use
         #
-        sibling = getattr(parent.node, '_v_children').keys()
+        sibling = parent.node._v_children.keys()
         # Nodename pattern
         pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
         # Bad nodename conditions

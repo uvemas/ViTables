@@ -64,13 +64,13 @@ def _get_node_tooltip(node):
 
 # Map qt display role onto a function that gets data from a node.
 _ROLE_NODE_GET_FUNCTION_DICT = {
-    QtCore.Qt.DisplayRole: lambda n: getattr(n, 'name'),
+    QtCore.Qt.DisplayRole: lambda n: n.name,
     QtCore.Qt.ToolTipRole: _get_node_tooltip,
-    QtCore.Qt.StatusTipRole: lambda n: getattr(n, 'as_record'),
-    QtCore.Qt.DecorationRole: lambda n: getattr(n, 'icon'),
-    QtCore.Qt.UserRole: lambda n: getattr(n, 'filepath'),
-    QtCore.Qt.UserRole + 1: lambda n: getattr(n, 'nodepath'),
-    QtCore.Qt.UserRole + 2: lambda n: getattr(n, 'node_kind')
+    QtCore.Qt.StatusTipRole: lambda n: n.as_record,
+    QtCore.Qt.DecorationRole: lambda n: n.icon,
+    QtCore.Qt.UserRole: lambda n: n.filepath,
+    QtCore.Qt.UserRole + 1: lambda n: n.nodepath,
+    QtCore.Qt.UserRole + 2: lambda n: n.node_kind
 }
 
 
@@ -631,7 +631,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         nodename = os.path.basename(childpath)
         dst_dbdoc = self.getDBDoc(dst_filepath)
         parent = dst_dbdoc.get_node(parentpath)
-        sibling = getattr(parent, '_v_children').keys()
+        sibling = parent._v_children.keys()
 
         # Nodename pattern
         pattern = "[a-zA-Z_]+[0-9a-zA-Z_ ]*"
@@ -876,7 +876,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
             return True
         parent = self.nodeFromIndex(index)
         if hasattr(parent.node, '_v_nchildren'):
-            return getattr(parent.node, '_v_nchildren')
+            return parent.node._v_nchildren
         else:
             return False
 
@@ -957,9 +957,9 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         # names of the whole list of children
         model_children = frozenset([node.childAtRow(row).name
                                     for row in range(0, len(node))])
-        children_groups = frozenset(getattr(group, '_v_groups').keys())
-        children_leaves = frozenset(getattr(group, '_v_leaves').keys())
-        children_links = frozenset(getattr(group, '_v_links').keys())
+        children_groups = frozenset(group._v_groups.keys())
+        children_leaves = frozenset(group._v_leaves.keys())
+        children_links = frozenset(group._v_links.keys())
         self.gdelta = children_groups.difference(model_children)
         self.ldelta = children_leaves.difference(model_children)
         self.links_delta = children_links.difference(model_children)

@@ -90,7 +90,7 @@ class NodeItemDelegate(QtWidgets.QItemDelegate):
         #
         # Check if the nodename is already in use
         #
-        sibling = getattr(parent.node, '_v_children').keys()
+        sibling = parent.node._v_children.keys()
         # Note that current nodename is not allowed as new nodename.
         # Embedding it in the pattern makes unnecessary to pass it to the
         # rename dialog via method argument and simplifies the code
