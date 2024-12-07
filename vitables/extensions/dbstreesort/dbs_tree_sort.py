@@ -24,11 +24,6 @@ random order of nodes just disable the plugin.
 Once the plugin is enabled it works on any file opened after the enabling.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '1.2'
-ext_name = 'Tree of DBs sorting'
-comment = 'Sorts the display of the databases tree'
-
 import logging
 import os
 import re
@@ -46,6 +41,10 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
+__docformat__ = 'restructuredtext'
+__version__ = '1.2'
+ext_name = 'Tree of DBs sorting'
+comment = 'Sorts the display of the databases tree'
 
 translate = QtWidgets.QApplication.translate
 

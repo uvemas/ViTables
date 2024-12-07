@@ -176,7 +176,7 @@ class Config(QtCore.QSettings):
         styles = QtWidgets.QStyleFactory.keys()
         self.default_style = styles[0]
         self.vtapp = vitables.utils.getVTApp()
-        if not (self.vtapp is None):
+        if self.vtapp is not None:
             style_name = self.vtapp.gui.style().objectName()
             for item in styles:
                 if item.lower() == style_name:

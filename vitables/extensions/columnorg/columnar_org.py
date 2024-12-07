@@ -25,12 +25,6 @@ table. This seems quite strange to me but is a feature request so I assume
 that the plugin will be useful to some users.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '1.1'
-ext_name = 'Columnar organization of arrays'
-comment = ('Rearrange several arrays with the same number of rows and '
-           'displays them in a unique widget')
-
 import os.path
 
 import tables
@@ -42,6 +36,12 @@ from qtpy import QtWidgets
 import vitables
 from vitables.vttables.datasheet import DataSheet
 from vitables.extensions.aboutpage import AboutPage
+
+__docformat__ = 'restructuredtext'
+__version__ = '1.1'
+ext_name = 'Columnar organization of arrays'
+comment = ('Rearrange several arrays with the same number of rows and '
+           'displays them in a unique widget')
 
 translate = QtWidgets.QApplication.translate
 

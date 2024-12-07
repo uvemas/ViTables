@@ -980,7 +980,7 @@ class VTApp(QtCore.QObject):
 
         # Non readable leaves should not be copied
         dbs_tree_node = self.gui.dbs_tree_model.nodeFromIndex(current)
-        if not (dbs_tree_node.node_kind in ('root group', 'group')):
+        if dbs_tree_node.node_kind not in ('root group', 'group'):
             leaf = dbs_tree_node.node
             # tables.Leaf instances must be readable in order to be copied
             if not hasattr(leaf, 'target'):

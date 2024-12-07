@@ -230,7 +230,7 @@ class AttrEditor(object):
         names_list = []
         for row in rows_range:
             name = self.edited_attrs[row][0]
-            if not name in names_list:
+            if name not in names_list:
                 names_list.append(name)
             else:
                 return (False,
@@ -241,7 +241,7 @@ class AttrEditor(object):
         # Check for dtype, range and syntax correctness of scalar attributes
         for row in rows_range:
             name, value, dtype, multidim = self.edited_attrs[row]
-            if multidim == True:
+            if multidim:
                 continue
             if dtype == 'python':
                 # Check the syntax of the Python expression
@@ -297,7 +297,7 @@ class AttrEditor(object):
             # Scalar attributes are stored as
             # numpy scalar arrays of the proper type
             name, value, dtype, multidim = self.edited_attrs[row]
-            if multidim == True:
+            if multidim:
                 continue
 
             if dtype == 'python':
