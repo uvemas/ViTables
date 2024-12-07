@@ -88,7 +88,7 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
 
         if default_value:
             self.valueLE.setText(default_value)
-            
+
         # Make sure that buttons are in the proper activation state
         self.valueLE.textChanged.emit(self.valueLE.text())
 

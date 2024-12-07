@@ -99,8 +99,7 @@ class FilenodeBuffer(object):
         # The line numbers of files read by linecache start with 1
         if start == 0:
             start += 1
-        if stop > self.total_rows:
-            stop = self.total_rows
+        stop = min(stop, self.total_rows)
 
         data = []
         counter = start

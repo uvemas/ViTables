@@ -129,11 +129,9 @@ class Query(QtCore.QObject):
         for i in numpy.arange(0, div+1):
             QtWidgets.QApplication.processEvents()
             lstart = start + chunk_size*i
-            if lstart > stop:
-                lstart = stop
+            lstart = min(lstart, stop)
             lstop = lstart + chunk_size
-            if lstop > stop:
-                lstop = stop
+            lstop = min(lstop, stop)
             coordinates = self.table.get_where_list(
                 self.qdescr['condition'],
                 self.qdescr['condvars'],
@@ -185,11 +183,9 @@ class Query(QtCore.QObject):
         for i in numpy.arange(0, div+1):
             QtWidgets.QApplication.processEvents()
             lstart = start + chunk_size*i
-            if lstart > stop:
-                lstart = stop
+            lstart = min(lstart, stop)
             lstop = lstart + chunk_size
-            if lstop > stop:
-                lstop = stop
+            lstop = min(lstop, stop)
             selection = self.table.read_where(
                 self.qdescr['condition'],
                 self.qdescr['condvars'],

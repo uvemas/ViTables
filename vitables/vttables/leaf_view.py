@@ -615,8 +615,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             # The position of the new current row
             row = dataset_row - model.start - 1
-            if row < 0:
-                row = 0
+            row = max(row, 0)
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
@@ -646,8 +645,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             # The position of the new current row
             row = dataset_row - model.start - page_step - 1
-            if row < 0:
-                row = 0
+            row = max(row, 0)
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
@@ -678,8 +676,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             # The position of the new current row
             row = dataset_row - model.start + 1
-            if row > table_rows - 1:
-                row = table_rows - 1
+            row = min(row, table_rows - 1)
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,
@@ -710,8 +707,7 @@ class LeafView(QtWidgets.QTableView):
             self.updateView()
             # The position of the new current row
             row = dataset_row - model.start + page_step + 1
-            if row > table_rows - 1:
-                row = table_rows - 1
+            row = min(row, table_rows - 1)
             index = model.index(row, buffer_column)
             self.setCurrentIndex(index)
             self.scrollTo(index,

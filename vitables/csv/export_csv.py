@@ -272,8 +272,7 @@ class ExportToCSV(QtCore.QObject):
                     out_handler.write(bytearray(header + '\n', 'UTF-8'))
                 chunk_size = 10000
                 nrows = leaf.nrows
-                if chunk_size > nrows:
-                    chunk_size = nrows
+                chunk_size = min(chunk_size, nrows)
                 # Behavior of np.divide in Python 2 and Python 3 is different so
                 # we must explicitly ensure we get an integer
                 nchunks = numpy.floor_divide(nrows, chunk_size)
@@ -283,8 +282,7 @@ class ExportToCSV(QtCore.QObject):
                     if cstart >= nrows:
                         break
                     cstop = cstart + chunk_size
-                    if cstop > nrows:
-                        cstop = nrows
+                    cstop = min(cstop, nrows)
                     numpy.savetxt(out_handler, leaf.read(cstart, cstop, 1),
                                   fmt='%s', delimiter=',')
         except OSError:

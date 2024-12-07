@@ -198,7 +198,7 @@ class VTApp(QtCore.QObject):
         self.gui.dbs_tree_model.rowsInserted.connect(self.gui.updateActions)
 
         self.gui.updateWindowMenu()
-    
+
     def initExtensionsDicts(self):
         """Populate the extensions dictionaries with initial values
         """
@@ -216,7 +216,7 @@ class VTApp(QtCore.QObject):
                 self.config.isEnabledExt(k), 
                 {"name": ext_class.NAME, "comment": ext_class.COMMENT}
             ]
-            
+
     def loadEnabledExtensions(self):
         """Instantiate enabled extensions
         """
@@ -229,7 +229,7 @@ class VTApp(QtCore.QObject):
             class_name = [name for name, obj in inspect.getmembers(module) if inspect.isclass(obj) and name.startswith("Ext")]
             ext_class = getattr(module, class_name[0])
             self.all_instances[pkg] = ext_class()
-                
+
     # Databases are automatically opened at startup when:
     #
     #     * application is configured for recovering last session

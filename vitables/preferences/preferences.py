@@ -90,7 +90,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
             self.config.initial_working_directory
         self.init_prefs['Session/restoreLastSession'] = \
             self.config.restore_last_session
-        
+
         # The following preferences are applied to the Preferences dialog when
         # the OK button is clicked
         self.new_prefs = {}
@@ -111,7 +111,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
         # Connect SIGNALS to SLOTS
         self.buttonsBox.helpRequested.connect(
             QtWidgets.QWhatsThis.enterWhatsThisMode)
-        
+
     def setupSelector(self):
         """Initialize the data model of the selector pane.
         """
@@ -183,7 +183,7 @@ class Preferences(QtWidgets.QDialog, Ui_SettingsDialog):
                 nitem.setCheckState(QtCore.Qt.Checked)
             else:
                 nitem.setCheckState(QtCore.Qt.Unchecked)
-            
+
             self.extensions_model.setItem(row, 0, nitem)
 
             comment = v[1]['comment']
