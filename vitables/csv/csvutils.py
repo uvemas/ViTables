@@ -234,14 +234,13 @@ def homogeneousTableInfo(input_handler, first_line, second_line):
             descr = dict([(first_line[i].decode('UTF-8'),
                            tables.Col.from_dtype(second_line.dtype, pos=i))
                           for i in indices])
+    elif sldn.startswith('str') or sldn.startswith('bytes'):
+        descr = dict([(f'f{field}', tables.StringCol(itemsize))
+                      for field in indices])
     else:
-        if sldn.startswith('str') or sldn.startswith('bytes'):
-            descr = dict([(f'f{field}', tables.StringCol(itemsize))
-                          for field in indices])
-        else:
-            descr = dict([(f'f{field}',
-                           tables.Col.from_dtype(second_line.dtype))
-                          for field in indices])
+        descr = dict([(f'f{field}',
+                       tables.Col.from_dtype(second_line.dtype))
+                      for field in indices])
 
     return descr, has_header
 

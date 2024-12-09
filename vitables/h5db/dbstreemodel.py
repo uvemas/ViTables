@@ -57,7 +57,7 @@ def _get_node_tooltip(node):
             tooltip_lines.append(attrset.TITLE)
     tooltip_lines.append(f'{node.node_kind}: {node.name}')
     tooltip_lines.extend(
-        [f'{name}: {str(getattr(attrset, name))}'
+        [f'{name}: {getattr(attrset, name)!s}'
          for name in attrset._v_attrnamesuser])
     return '\n'.join(tooltip_lines)
 

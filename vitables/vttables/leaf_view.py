@@ -87,7 +87,7 @@ class LeafView(QtWidgets.QTableView):
         font = self.vheader.font()
         font.setBold(True)
         fmetrics = QtGui.QFontMetrics(font)
-        max_width = fmetrics.width(f" {str(leaf_numrows)} ")
+        max_width = fmetrics.width(f" {leaf_numrows!s} ")
         self.vheader.setMinimumWidth(max_width)
         self.vheader.setSectionsClickable(True)
 

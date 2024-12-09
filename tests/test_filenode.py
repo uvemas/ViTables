@@ -48,7 +48,7 @@ class TestFilenode:
         file = fnutils.filenodeToFile(fnode)
         assert os.path.isfile(file)
 
-        with open(file, 'r') as f:
+        with open(file) as f:
             lines = f.readlines()
         assert lines[-1] == 'This is the last line.\n'
 

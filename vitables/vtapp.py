@@ -328,7 +328,7 @@ class VTApp(QtCore.QObject):
         # If a list of files is passed then parse the list and open the files
         if dblist:
             try:
-                input_file = open(dblist, 'r')
+                input_file = open(dblist)
                 lines = [i[:-1].split('#@#') for i in input_file.readlines()]
                 input_file.close()
                 for line in lines:

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 09 2024 **
+Fixed ruff errors PLR5501, RUF010, UP015, UP020 and RUF022.
+
 ** December 07 2024 **
 Fixed a couple of crashes due to compatibility problems between PyQt/PySide.
 
