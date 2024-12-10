@@ -24,6 +24,7 @@ random order of nodes just disable the plugin.
 Once the plugin is enabled it works on any file opened after the enabling.
 """
 
+import configparser
 import logging
 import os
 import re
@@ -33,11 +34,6 @@ from qtpy import QtCore, QtWidgets
 import vitables
 from vitables.extensions.dbstreesort.aboutpage import AboutPage
 from vitables.h5db import dbstreemodel, groupnode, leafnode, linknode
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
 
 __docformat__ = 'restructuredtext'
 __version__ = '1.2'

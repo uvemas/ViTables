@@ -26,13 +26,9 @@ The widget is displayed when the plugin is selected in the Preferences
 dialog selector tree.
 """
 
+import configparser
 import datetime
 import os.path
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
 
 from qtpy import QtCore, QtWidgets
 from qtpy.uic import loadUiType

@@ -24,13 +24,9 @@ series contained in `PyTables` tables generated via ``scikits.timeseries`` and
 ``Pandas``.
 """
 
+import configparser
 import os
 import time
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
 
 import tables
 

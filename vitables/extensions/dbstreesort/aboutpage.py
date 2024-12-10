@@ -26,12 +26,8 @@ The widget is displayed when the plugin is selected in the Preferences
 dialog selector pane.
 """
 
+import configparser
 import os.path
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
 
 from qtpy import QtWidgets
 from qtpy.uic import loadUiType
