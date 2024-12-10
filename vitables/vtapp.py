@@ -34,8 +34,8 @@ import qtpy
 import tables
 from qtpy import QtCore, QtGui, QtWidgets
 
-import vitables.csv.export_csv as exportcsv
-import vitables.csv.import_csv as importcsv
+import vitables.vtcsv.export_csv as exportcsv
+import vitables.vtcsv.import_csv as importcsv
 import vitables.filenodeutils as fnutils
 import vitables.queries.querymgr as qmgr
 import vitables.utils

@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** December 10 2024 **
 The Python2 module ConfigParser is not imported anymore.
 
+Refactoring done. csv folder has been renamed to vtcsv.
+
 ** December 09 2024 **
 Fixed ruff errors PLR5501, RUF010, UP015, UP020 and RUF022.
 
