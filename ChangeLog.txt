@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 11 2024 **
+A new example of pandas support has been added.
+
 ** December 10 2024 **
 The Python2 module ConfigParser is not imported anymore.
 
