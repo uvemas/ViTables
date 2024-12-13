@@ -30,7 +30,7 @@ import re
 import sys
 import traceback
 
-import numpy
+import numpy as np
 import tables
 from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
@@ -450,13 +450,13 @@ def formatArrayContent(content):
     :Parameter content: the ``numpy`` array contained in the view cell
     """
 
-    if isinstance(content, numpy.bytes_):
+    if isinstance(content, np.bytes_):
         try:
             return content.decode(DEFAULT_ENCODING)
         except UnicodeDecodeError:
             pass
 
-    ret = numpy.array2string(content, separator=',')
+    ret = np.array2string(content, separator=',')
     return ret
 
 

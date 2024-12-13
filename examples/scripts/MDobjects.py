@@ -24,7 +24,7 @@ multidimensional cells.
 It also works to check views of multidimensional attributes.
 """
 
-import numpy
+import numpy as np
 import tables
 
 
@@ -65,16 +65,16 @@ array2 = fileh.create_carray(fileh.root, 'array2', atom2, shape2,
 
 # Add multimensional attributes to the objects
 # Integers will go in /table
-table.attrs.MD1 = numpy.arange(5, dtype="int8")
-table.attrs.MD2 = numpy.arange(10, dtype="int64").reshape(2, 5)
+table.attrs.MD1 = np.arange(5, dtype="int8")
+table.attrs.MD2 = np.arange(10, dtype="int64").reshape(2, 5)
 
 # Complex will go in /array1
-array1.attrs.MD1 = numpy.arange(5, dtype="complex128")
-array1.attrs.MD2 = numpy.arange(10, dtype="complex128").reshape(2, 5)
+array1.attrs.MD1 = np.arange(5, dtype="complex128")
+array1.attrs.MD2 = np.arange(10, dtype="complex128").reshape(2, 5)
 
 # Strings will go in /array2
-array2.attrs.MD1 = numpy.array(['Hi', 'world!'], dtype='|S6')
-array2.attrs.MD2 = numpy.array([['Hi', 'world!'],
+array2.attrs.MD1 = np.array(['Hi', 'world!'], dtype='|S6')
+array2.attrs.MD2 = np.array([['Hi', 'world!'],
     ['Hola', 'mon!']], dtype='|S4')
 
 fileh.close()

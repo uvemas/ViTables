@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 13 2024 **
+Use the conventional np alias when importing numpy.
+
 ** December 11 2024 **
 A new example of pandas support has been added.
 

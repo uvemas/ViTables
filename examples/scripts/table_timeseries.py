@@ -22,7 +22,7 @@
 import os
 import time
 
-import numpy
+import numpy as np
 import tables
 
 
@@ -64,13 +64,13 @@ table = h5file.create_table("/Particles", "TParticle", Particle,
 # Number of rows in buffer
 nrowsbuf = 1000
 # Fill the table with 10**N particles
-for i in numpy.arange(0, nrows, nrowsbuf, dtype=numpy.int64):
+for i in np.arange(0, nrows, nrowsbuf, dtype=np.int64):
     if i+nrowsbuf > nrows:
         nrapp = nrows-i
     else:
         nrapp = nrowsbuf
     # First, assign the values to the Particle record
-    Int64 = numpy.arange(i, i+nrapp)
+    Int64 = np.arange(i, i+nrapp)
     Time = Int64 + time.time()
     lati = Int64
     pressure = lati - 10.4

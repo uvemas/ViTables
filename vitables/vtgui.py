@@ -105,6 +105,7 @@ class VTGUI(QtWidgets.QMainWindow):
         self.logger_dock.setWidget(self.logger)
         # add self.logger as handler of main logger object
         vitables_logger = logging.getLogger('vitables')
+        vitables_logger.setLevel(logging.ERROR)
         stream_handler = logging.StreamHandler(self.logger)
         stream_handler.setFormatter(logging.Formatter(_GUI_LOG_FORMAT))
         vitables_logger.addHandler(stream_handler)

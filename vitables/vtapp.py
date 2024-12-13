@@ -29,16 +29,16 @@ import os
 import sys
 import time
 
-import numpy
+import numpy as np
 import qtpy
 import tables
 from qtpy import QtCore, QtGui, QtWidgets
 
-import vitables.vtcsv.export_csv as exportcsv
-import vitables.vtcsv.import_csv as importcsv
 import vitables.filenodeutils as fnutils
 import vitables.queries.querymgr as qmgr
 import vitables.utils
+import vitables.vtcsv.export_csv as exportcsv
+import vitables.vtcsv.import_csv as importcsv
 import vitables.vtsplash
 from vitables import vtgui
 from vitables.docbrowser import helpbrowser
@@ -1263,7 +1263,7 @@ class VTApp(QtCore.QObject):
                                'Caption of the Versions dialog'),
             'Python': pyversion,
             'PyTables': tables.__version__,
-            'NumPy': numpy.__version__,
+            'NumPy': np.__version__,
             'Qt': QtCore.__version__,
             'PyQt': vtconfig.getPyQtVersion(),
             'ViTables': vtconfig.getVersion()

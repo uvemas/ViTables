@@ -29,7 +29,7 @@ are painted much faster too.
 import logging
 import warnings
 
-import numpy
+import numpy as np
 import tables
 from qtpy import QtWidgets
 
@@ -81,7 +81,7 @@ class Buffer:
 
         self.leaf = leaf
         # The structure where read data will be stored.
-        self.chunk = numpy.array([])
+        self.chunk = np.array([])
 
         # The method used for reading data depends on the kind of node.
         # Setting the reader method at initialization time increases the
@@ -232,9 +232,9 @@ class Buffer:
         # chunk = [row0, row1, row2, ..., rowN]
         # and columns can be read from a given row using indexing notation
         # Get data for cell
-        cell_data = numpy.take(self.chunk, [row], axis=self.leaf.maindim)
+        cell_data = np.take(self.chunk, [row], axis=self.leaf.maindim)
         # Remove extra dimension
-        cell_data = numpy.squeeze(cell_data, axis=self.leaf.maindim)
+        cell_data = np.squeeze(cell_data, axis=self.leaf.maindim)
         return cell_data
 
     def arrayCell(self, row, col):

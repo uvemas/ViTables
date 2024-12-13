@@ -23,7 +23,7 @@
 
 """Several simple Arrays."""
 
-import numpy
+import numpy as np
 import tables
 
 # Open a new empty HDF5 file
@@ -32,29 +32,29 @@ fileh = tables.open_file("array_samples.h5", mode = "w")
 root = fileh.root
 
 # Create an Array
-a = numpy.array([-1, 2, 4], numpy.int16)
+a = np.array([-1, 2, 4], np.int16)
 # Save it on the HDF5 file
 hdfarray = fileh.create_array(root, 'array_int16', a, "Signed short array")
 
 # Create a scalar Array
-a = numpy.array(4, numpy.int16)
+a = np.array(4, np.int16)
 # Save it on the HDF5 file
 hdfarray = fileh.create_array(root, 'scalar_array', a,
     "Scalar signed short array")
 
 # Create a 3-d array of floats
-a = numpy.arange(120, dtype=numpy.float64).reshape(20, 3, 2)
+a = np.arange(120, dtype=np.float64).reshape(20, 3, 2)
 # Save it on the HDF5 file
 hdfarray = fileh.create_array(root, 'array_f3D', a, "3-D float array")
 
 # Create an array of floats
-a = numpy.array([1, 2.7182818284590451, 3.141592], numpy.float)
+a = np.array([1, 2.7182818284590451, 3.141592], np.float)
 # Save it on the HDF5 file
 hdfarray = fileh.create_array(root, 'array_f', a, "Float array")
 
 # Create a large array
 #a = reshape(array(range(2**16), "s"), (2,) * 16)
-a = numpy.ones((2,) * 8, numpy.int8)
+a = np.ones((2,) * 8, np.int8)
 
 # Save it on the HDF5 file
 hdfarray = fileh.create_array(root, 'array_int8', a, "Large array")
@@ -62,12 +62,12 @@ hdfarray = fileh.create_array(root, 'array_int8', a, "Large array")
 # Create a set of arrays and save them on the HDF5 file
 basedim = 4
 group = root
-dtypes = [numpy.int8, numpy.uint8, numpy.int16, numpy.int, numpy.float32,
-    numpy.float]
+dtypes = [np.int8, np.uint8, np.int16, np.int, np.float32,
+    np.float]
 i = 1
 for dtype in dtypes:
     # Create an array of dtype, with incrementally bigger ranges
-    a = numpy.ones((basedim,) * i, dtype)
+    a = np.ones((basedim,) * i, dtype)
     # Save it on the HDF5 file
     dsetname = 'array_' + a.dtype.char
     hdfarray = fileh.create_array(group, dsetname, a, "Large array")

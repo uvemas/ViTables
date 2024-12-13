@@ -28,7 +28,7 @@ about the error and the dialog remains open so the user can fix her mistake.
 
 __docformat__ = 'restructuredtext'
 
-import numpy
+import numpy as np
 import tables
 from qtpy import QtWidgets
 
@@ -108,18 +108,18 @@ def checkValue(dtype, str_value):
     """
 
     dtypes_map = {
-        'int8': numpy.int8, 'int16': numpy.int16,
-        'int32': numpy.int32, 'int64': numpy.int64,
-        'uint8': numpy.uint8, 'uint16': numpy.uint16,
-        'uint32': numpy.uint32, 'uint64': numpy.uint64,
-        'float32': numpy.float32, 'float64': numpy.float64,
+        'int8': np.int8, 'int16': np.int16,
+        'int32': np.int32, 'int64': np.int64,
+        'uint8': np.uint8, 'uint16': np.uint16,
+        'uint32': np.uint32, 'uint64': np.uint64,
+        'float32': np.float32, 'float64': np.float64,
         }
 
     # For Python objects and strings no overflow can occur
     if dtype not in dtypes_map:
         return str_value
 
-    new_array = numpy.array(str_value).astype(dtype)
+    new_array = np.array(str_value).astype(dtype)
     # Catches unexpected results from conversions
     # Examples: numpy.array('-23').astype('unint8') -> mismatch dtype
     # or numpy.array('99999').astype('int8') -> overflow
@@ -303,9 +303,9 @@ class AttrEditor:
             elif dtype == 'bytes':
                 # Remove the prefix and enclosing quotes
                 value = value[2:-1]
-                value = numpy.array(value).astype(dtype)[()]
+                value = np.array(value).astype(dtype)[()]
             else:
-                value = numpy.array(value).astype(dtype)[()]
+                value = np.array(value).astype(dtype)[()]
 
             # Updates the ASI
             try:

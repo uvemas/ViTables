@@ -30,7 +30,7 @@ Neither numpy scalar arrays are exported.
 import logging
 import os
 
-import numpy
+import numpy as np
 import tables
 from qtpy import QtCore, QtGui, QtWidgets
 
@@ -275,15 +275,15 @@ class ExportToCSV(QtCore.QObject):
                 chunk_size = min(chunk_size, nrows)
                 # Behavior of np.divide in Python 2 and Python 3 is different so
                 # we must explicitly ensure we get an integer
-                nchunks = numpy.floor_divide(nrows, chunk_size)
-                for i in numpy.arange(0, nchunks + 1):
+                nchunks = np.floor_divide(nrows, chunk_size)
+                for i in np.arange(0, nchunks + 1):
                     QtWidgets.QApplication.processEvents()
                     cstart = chunk_size * i
                     if cstart >= nrows:
                         break
                     cstop = cstart + chunk_size
                     cstop = min(cstop, nrows)
-                    numpy.savetxt(out_handler, leaf.read(cstart, cstop, 1),
+                    np.savetxt(out_handler, leaf.read(cstart, cstop, 1),
                                   fmt='%s', delimiter=',')
         except OSError:
             vitables.utils.formatExceptionInfo()

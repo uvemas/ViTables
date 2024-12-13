@@ -28,7 +28,7 @@ results` in the databases tree).
 import logging
 import os.path
 
-import numpy
+import numpy as np
 from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.uic import loadUiType
 
@@ -321,8 +321,8 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         if not (start_str and stop_str):
             status_ok = False
         else:
-            start = numpy.array(start_str).astype(numpy.int64)
-            stop = numpy.array(stop_str).astype(numpy.int64)
+            start = np.array(start_str).astype(np.int64)
+            stop = np.array(stop_str).astype(np.int64)
             if stop > self.num_rows:
                 status_ok = False
                 log.error(
@@ -396,9 +396,9 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
 
         # Get the range and convert it into a Python range
         self.query_info['rows_range'] = (
-            numpy.array(self.rstartLE.text()).astype(numpy.int64),
-            numpy.array(self.rstopLE.text()).astype(numpy.int64),
-            numpy.array(self.rstep.text()).astype(numpy.int64))
+            np.array(self.rstartLE.text()).astype(np.int64),
+            np.array(self.rstopLE.text()).astype(np.int64),
+            np.array(self.rstep.text()).astype(np.int64))
 
         # Exit
         self.accept()

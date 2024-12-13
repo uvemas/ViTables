@@ -24,7 +24,7 @@
 """Several simple Tables."""
 
 
-import numpy
+import numpy as np
 import tables
 
 
@@ -154,14 +154,14 @@ fileh.create_array(gcolumns, 'pressure', pressure,
 
 # Do the same with TDCcount, but with a numpy object
 TDC = [ p['TDCcount'] for p in table2.iterrows() ]
-fileh.create_array('/columns', 'TDC', numpy.array(TDC), "TDCcount column")
+fileh.create_array('/columns', 'TDC', np.array(TDC), "TDCcount column")
 
 # Do the same with name column
 names = [ p['name'] for p in table2.iterrows() ]
 fileh.create_array('/columns', 'name', names, "Name column")
 
 # Save a recarray object under detector
-r = numpy.rec.array("a"*300, formats='f4,3i4,a5,i2', shape=3)
+r = np.rec.array("a"*300, formats='f4,3i4,a5,i2', shape=3)
 recarrt = fileh.create_table("/detector", 'recarray', r, "RecArray example")
 r2 = r[0:3:2]
 # Change the byteorder property

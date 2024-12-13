@@ -56,7 +56,7 @@ import logging
 import os
 import traceback
 
-import numpy
+import numpy as np
 import tables
 from qtpy import QtCore, QtGui, QtWidgets
 
@@ -433,7 +433,7 @@ class ImportCSV(QtCore.QObject):
             QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             # The dtypes are determined by the contents of each column
             # Multidimensional columns will have string datatype
-            data = numpy.genfromtxt(filepath, delimiter=',', dtype=None)
+            data = np.genfromtxt(filepath, delimiter=',', dtype=None)
         except TypeError:
             data = None
             dbdoc = None

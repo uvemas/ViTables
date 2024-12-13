@@ -22,7 +22,7 @@
 
 import pickle
 
-import numpy
+import numpy as np
 import tables
 
 # Create a VLArray:
@@ -32,8 +32,8 @@ root = fileh.root
 vlarray = fileh.create_vlarray(root, 'vlarray1',
     tables.Int32Atom(), "ragged array of ints", filters=tables.Filters(1))
 # Append some (variable length) rows:
-vlarray.append(numpy.array([5, 6]))
-vlarray.append(numpy.array([5, 6, 7]))
+vlarray.append(np.array([5, 6]))
+vlarray.append(np.array([5, 6, 7]))
 vlarray.append([5, 6, 9, 8])
 
 # Now, do the same with native Python strings.
@@ -49,11 +49,11 @@ vlarray2.append(['5', '6', '9', '88'])
 # Test with lists of bidimensional vectors
 vlarray3 = fileh.create_vlarray(root, 'vlarray3', tables.Int64Atom(shape=(2,)),
     "Ragged array of vectors")
-a = numpy.array([[1, 2], [1, 2]], dtype=numpy.int64)
+a = np.array([[1, 2], [1, 2]], dtype=np.int64)
 vlarray3.append(a)
-vlarray3.append(numpy.array([[1, 2], [3, 4]], dtype=numpy.int64))
-vlarray3.append(numpy.zeros(dtype=numpy.int64, shape=(0, 2)))
-vlarray3.append(numpy.array([[5, 6]], dtype=numpy.int64))
+vlarray3.append(np.array([[1, 2], [3, 4]], dtype=np.int64))
+vlarray3.append(np.zeros(dtype=np.int64, shape=(0, 2)))
+vlarray3.append(np.array([[5, 6]], dtype=np.int64))
 # This makes an error (shape)
 #vlarray.append(array([[5], [6]], dtype=int64))
 # This makes an error (type)
@@ -72,7 +72,7 @@ vlarray5.append(["456", "3"])
 vlarray6 = fileh.create_vlarray(root, 'vlarray6', tables.UInt8Atom(),
     "pickled bytes")
 data = pickle.dumps((["123", "456"], "3"))
-vlarray6.append(numpy.ndarray(buffer=data, dtype=numpy.uint8, shape=len(data)))
+vlarray6.append(np.ndarray(buffer=data, dtype=np.uint8, shape=len(data)))
 
 # The next is a way of doing the same than before
 vlarray7 = fileh.create_vlarray(root, 'vlarray7', tables.ObjectAtom(),
@@ -105,15 +105,15 @@ vlarray10.append("para\u0140lel")
 # Still more vlarrays...
 N = 100
 shape = (3,3)
-numpy.random.seed(10)  # For reproductible results
+np.random.seed(10)  # For reproductible results
 vlarray11 = fileh.create_vlarray(root, 'vlarray11',
     tables.Float64Atom(shape=shape), "ragged array of arrays")
 
 k = 0
 for i in range(N):
     vl = []
-    for j in range(numpy.random.randint(N)):
-        vl.append(numpy.random.randn(*shape))
+    for j in range(np.random.randint(N)):
+        vl.append(np.random.randn(*shape))
         k += 1
     vlarray11.append(vl)
 

@@ -41,7 +41,7 @@ _FILE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 _I18N_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'i18n')
 
 
-_uncaught_exception_logger = logging.getLogger('vitables')
+_uncaught_exception_logger = logging.getLogger('uncaught_logger')
 
 
 def _uncaught_exception_hook(type_, value, tb):
@@ -128,7 +128,7 @@ def _parse_command_line():
 
 
 def _setup_logger(args):
-    """Setup logger output format, level and output file.
+    """Setup root logger output format, level and output file.
 
     Stderr logger is added to handle error that raise before the gui
     is launched. It better be removed before event loop starts.
@@ -170,10 +170,10 @@ def gui():
     _set_credentials(app)
     translator = _set_locale(app)  # must not be destroyed before app quits
     args = _parse_command_line()
-    logger, console_log_handler = _setup_logger(args)
+    root_logger, console_log_handler = _setup_logger(args)
     vtapp = VTApp(mode=args.mode, dblist=args.dblist, h5files=args.h5file)
     vtapp.gui.show()
-    logger.removeHandler(console_log_handler)
+    root_logger.removeHandler(console_log_handler)
     app.exec_()
 
 

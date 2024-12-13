@@ -23,7 +23,7 @@
 
 """Several simple EArrays."""
 
-import numpy
+import numpy as np
 import tables
 
 fileh = tables.open_file('earray_samples.h5', mode='w')
@@ -32,16 +32,16 @@ root = fileh.root
 a = tables.StringAtom(itemsize=8)
 # Use ``a`` as the object type for the enlargeable array.
 array_c = fileh.create_earray(root, 'array_c', a, (0,), "Chars")
-array_c.append(numpy.array(['a'*2, 'b'*4], dtype='S8'))
-array_c.append(numpy.array(['a'*6, 'b'*8, 'c'*10], dtype='S8'))
+array_c.append(np.array(['a'*2, 'b'*4], dtype='S8'))
+array_c.append(np.array(['a'*6, 'b'*8, 'c'*10], dtype='S8'))
 
 # Create an string atom
 a = tables.StringAtom(itemsize=1)
 # Use it as a type for the enlargeable array
 hdfarray = fileh.create_earray(root, 'array_char', a, (0,), "Character array")
-hdfarray.append(numpy.array(['a', 'b', 'c']))
+hdfarray.append(np.array(['a', 'b', 'c']))
 # The next is legal:
-hdfarray.append(numpy.array(['c', 'b', 'c', 'd']))
+hdfarray.append(np.array(['c', 'b', 'c', 'd']))
 # but these are not:
 #hdfarray.append(array([['c', 'b'], ['c', 'd']]))
 #hdfarray.append(array([[1,2,3],[3,2,1]], dtype=uint8).reshape(2,1,3))
@@ -57,10 +57,10 @@ hdfarray = fileh.create_earray(root, 'array_b', a, (2, 0, 3),
     "Unsigned byte array", tables.Filters(complevel = 1))
 
 # Append an array to this table
-hdfarray.append(numpy.array([[1, 2, 3], [3, 2, 1]],
-    dtype=numpy.uint8).reshape(2, 1, 3))
-hdfarray.append(numpy.array([[1, 2, 3], [3, 2, 1], [2, 4, 6], [6, 4, 2]],
-    dtype=numpy.uint8).reshape(2,2,3)*2)
+hdfarray.append(np.array([[1, 2, 3], [3, 2, 1]],
+    dtype=np.uint8).reshape(2, 1, 3))
+hdfarray.append(np.array([[1, 2, 3], [3, 2, 1], [2, 4, 6], [6, 4, 2]],
+    dtype=np.uint8).reshape(2,2,3)*2)
 # The next should give a type error:
 #hdfarray.append(array([[1,0,1],[0,0,1]], dtype=Bool).reshape(2,1,3))
 

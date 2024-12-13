@@ -31,7 +31,7 @@ import linecache
 import logging
 import warnings
 
-import numpy
+import numpy as np
 import tables
 
 from .. import utils as vtutils
@@ -72,7 +72,7 @@ class FilenodeBuffer:
 
         self.leaf = leaf
         # The structure where read data will be stored.
-        self.chunk = numpy.array([])
+        self.chunk = np.array([])
 
         vtapp = vtutils.getApp()
         self.temp_filenode, self.total_rows = vtapp.filenodes_map[leaf]

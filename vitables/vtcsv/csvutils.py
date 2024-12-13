@@ -32,13 +32,13 @@ import tempfile
 # https://github.com/numpy/numpy/issues/10990
 import warnings
 
-import numpy
+import numpy as np
 import tables
 from qtpy import QtWidgets
 
 import vitables.utils
 
-warnings.filterwarnings("ignore", category=numpy.exceptions.VisibleDeprecationWarning)
+warnings.filterwarnings("ignore", category=np.exceptions.VisibleDeprecationWarning)
 
 
 translate = QtWidgets.QApplication.translate
@@ -69,7 +69,7 @@ def getArray(buf):
         for line in buf:
             temp_file.write(bytearray(line, 'UTF-8'))
         temp_file.seek(0)
-        data = numpy.genfromtxt(temp_file, delimiter=',', dtype=None)
+        data = np.genfromtxt(temp_file, delimiter=',', dtype=None)
     return data
 
 
@@ -149,7 +149,7 @@ def heterogeneousTableInfo(input_handler, first_line, second_line):
                 temp_file.write(bytearray(line, 'UTF-8'))
             for field in itemsizes.keys():
                 temp_file.seek(0)
-                idata = numpy.genfromtxt(temp_file, delimiter=',',
+                idata = np.genfromtxt(temp_file, delimiter=',',
                                          usecols=(field,), dtype=None)
                 itemsizes[field] = max(itemsizes[field], idata.dtype.itemsize)
                 del idata

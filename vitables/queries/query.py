@@ -25,7 +25,7 @@ It collects information from the `New Query` dialog, processes it and then
 executes the query.
 """
 
-import numpy
+import numpy as np
 import tables
 from qtpy import QtCore, QtWidgets
 
@@ -126,7 +126,7 @@ class Query(QtCore.QObject):
         # Get the array of rows that fulfill the condition
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
-        for i in numpy.arange(0, div+1):
+        for i in np.arange(0, div+1):
             QtWidgets.QApplication.processEvents()
             lstart = start + chunk_size*i
             lstart = min(lstart, stop)
@@ -140,12 +140,12 @@ class Query(QtCore.QObject):
             if selection.shape == (0, ):
                 continue
 
-            coord_dtype = numpy.dtype(
+            coord_dtype = np.dtype(
                 [(str(self.qdescr['indices_field_name']), '<i8')])
-            new_dtype = numpy.dtype(
+            new_dtype = np.dtype(
                 coord_dtype.descr + selection.dtype.descr)
 
-            new_buffer = numpy.empty(selection.shape, dtype=new_dtype)
+            new_buffer = np.empty(selection.shape, dtype=new_dtype)
             for field in selection.dtype.fields:
                 new_buffer[field] = selection[field]
             new_buffer[str(self.qdescr['indices_field_name'])] = \
@@ -180,7 +180,7 @@ class Query(QtCore.QObject):
         # Get the array of rows that fulfill the condition
         # Selection is done in several steps. It saves a *huge*
         # amount of memory when querying large tables
-        for i in numpy.arange(0, div+1):
+        for i in np.arange(0, div+1):
             QtWidgets.QApplication.processEvents()
             lstart = start + chunk_size*i
             lstart = min(lstart, stop)
