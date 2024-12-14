@@ -106,8 +106,11 @@ class LeafView(QtWidgets.QTableView):
             self.tricky_vscrollbar.actionTriggered.connect(
                 self.navigateWithMouse)
 
-        ## Instead of invoking updateView().
-        self.setSpan(0, 0, *tmodel.get_corner_span())
+        (row_span, col_span) = tmodel.get_corner_span()
+        # Check the left corner span to avoid the annoying console message
+        # QTableView::setSpan: single cell span won't be added
+        if (row_span > 1) | (col_span > 1):
+            self.setSpan(0, 0, row_span, col_span)
 
     def mapSlider2Leaf(self):
         """Setup the interval size.
@@ -164,7 +167,11 @@ class LeafView(QtWidgets.QTableView):
         bottom_right = tmodel.index(tmodel.numrows - 1,
                                     tmodel.numcols - 1)
         self.dataChanged(top_left, bottom_right)
-        self.setSpan(0, 0, *tmodel.get_corner_span())
+        # Check the left corner span to avoid the annoying console message
+        # QTableView::setSpan: single cell span won't be added
+        (row_span, col_span) = tmodel.get_corner_span()
+        if (row_span > 1) | (col_span > 1):
+            self.setSpan(0, 0, row_span, col_span)
 
     def navigateWithMouse(self, slider_action):
         """Navigate the view with the mouse.
