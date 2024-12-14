@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2019 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2024 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ class VTSplash(QtWidgets.QSplashScreen):
         font = painter.font()
         font.setBold(True)
         painter.setFont(font)
-        painter.drawText(10, 200, self.msg)
+        painter.drawText(10, 215, self.msg)
 
     def drawMessage(self, msg):
         """

@@ -1,7 +1,7 @@
 Copyright Notice and License Agreement for ViTables Application Software
 
 Copyright 2005-2007 by Carabos Coop. V.
-Copyright 2008-2019 by Vicent Mas
+Copyright 2008-2024 by Vicent Mas
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

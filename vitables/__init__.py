@@ -1,6 +1,6 @@
 """A viewer for HDF5 files."""
 #       Copyright (C) 2005-2007 Carabos Coop. V. All rights reserved
-#       Copyright (C) 2008-2019 Vicent Mas. All rights reserved
+#       Copyright (C) 2008-2024 Vicent Mas. All rights reserved
 #
 #       This program is free software: you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__version__ = '3.0.3'
+__version__ = '3.0.4'
 __all__ = [
            "docbrowser",
            "h5db",

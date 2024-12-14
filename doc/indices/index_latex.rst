@@ -8,7 +8,7 @@ ViTables |version| Users' Guide version 1.0
 
 Copyright |copy| 2005-2007 Cárabos Coop. V. All rights reserved.
 
-Copyright |copy| 2008-2019 Vicent Mas. All rights reserved.
+Copyright |copy| 2008-2024 Vicent Mas. All rights reserved.
 
 **Copyright Notice and Statement for the ViTables User's Guide.**
 

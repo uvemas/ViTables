@@ -3,6 +3,8 @@ ViTables ChangeLog
 ** December 14 2024 **
 Get rid of annoying PyQt console message.
 
+Updated version.
+
 ** December 13 2024 **
 Use the conventional np alias when importing numpy.
 
