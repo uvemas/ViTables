@@ -94,7 +94,7 @@ Installation
 Linux
 ^^^^^
 
-A pyproject.toml (with `hatch` as a build-system) is used to build and install `ViTables`. You can install
+A pyproject.toml (with `hatch` as a build-system) is used to build `ViTables`. You can install
 the package from PyPI issuing the command::
 
   $ pip install ViTables

@@ -3,10 +3,12 @@
 """Automatically build documentation with Sphinx and copy it in the package."""
 
 import argparse
+import logging
 import os
 import shutil
 import subprocess
 
+logger = logging.getLogger()
 
 def _parse_command_line():
     """Parse the arguments passed to makedoc.py script."""
@@ -27,21 +29,22 @@ def _cleanup():
     """Cleanup the build directory."""
     try:
         os.remove('index.rst')
-        shutil.rmtree(f'{build_dir}')
+        shutil.rmtree(build_dir)
     except FileNotFoundError as err:
-        print(err)
+        logger.error(err)
 
 
 if __name__ == '__main__':
     args = _parse_command_line()
     builder = args.builder
+    doc_dir = './doc'
     build_dir = '_build'
-    os.chdir('./doc')
+    os.chdir(doc_dir)
     shutil.copy2(f"indices/index_{builder}.rst", "index.rst")
     try:
-        subprocess.run(["sphinx-build", "-b", builder, ".", build_dir], check=True)
+        subprocess.run(["/home/user/miniconda3/envs/leo/bin/sphinx-build", "-b", builder, ".", build_dir], check=True)
     except subprocess.CalledProcessError as err:
-        print(err)
+        logger.error(err)
 
     # Move documentation to its final destination
     if builder == 'html':
@@ -50,16 +53,17 @@ if __name__ == '__main__':
         htmldocs_dir = '../vitables/htmldocs'
         shutil.move(f'{static_dir}/basic.css',
                     f'{static_dir}/classic.css')
-        shutil.rmtree(f'{sources_dir}')
-        shutil.rmtree(f'{htmldocs_dir}')
-        shutil.copytree(build_dir, f'{htmldocs_dir}')
+        shutil.rmtree(sources_dir)
+        if os.path.isdir(htmldocs_dir):
+            shutil.rmtree(htmldocs_dir)
+        shutil.copytree(build_dir, htmldocs_dir)
     elif builder == 'latex':
-        os.chdir('./_build')
+        os.chdir(build_dir)
         try:
             subprocess.run('pdflatex UsersGuide.tex', check=True)
             subprocess.run('pdflatex UsersGuide.tex', check=True)
         except subprocess.CalledProcessError as err:
-            print(err)
+            logger.error(err)
         shutil.copy2('UsersGuide.pdf', '../../UsersGuide.pdf')
         os.chdir('..')
     # Cleanup the doc directory

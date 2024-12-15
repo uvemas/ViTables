@@ -286,7 +286,7 @@ class HelpBrowserGUI(QtWidgets.QMainWindow) :
         controller, :meth:`vitables.docbrowser.helpbrowser.HelpBrowser`.
         """
 
-        self.combo_history.activated[str].connect(self.browser.displaySrc)
+        self.combo_history.activated[int].connect(self.browser.displaySrc)
 
         # This is the most subtle connection. It encompasses source
         # changes coming from anywhere, including slots (home, backward

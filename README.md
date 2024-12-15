@@ -31,7 +31,7 @@ Here are some [screenshots](https://github.com/uvemas/ViTables/tree/master/doc/i
 
 ### System requirements
 
-ViTables 3.0.3 has been tested against the latest versions of Python 3,
+ViTables 3.0.4 has been tested against the latest versions of Python 3,
 PyTables and PyQt. You can try other versions at your own risk :).
 
 ### Install through pip (may need further manually debug)

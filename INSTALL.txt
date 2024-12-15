@@ -1,6 +1,6 @@
 System requirements
 -------------------
-ViTables 3.0.3 has been tested against the latest versions of Python 3,
+ViTables 3.0.4 has been tested against the latest versions of Python 3,
 PyTables and PyQt. You can try other versions at your own risk :).
 
 Installation on a conda environment
@@ -21,8 +21,6 @@ described in the Linux section.
 
 Installation on Linux platforms
 -------------------------------
-The Python setuptools are used to build and install ViTables.
-
 The easiest way to install it is to download it from PyPi::
 
   $ pip install ViTables
