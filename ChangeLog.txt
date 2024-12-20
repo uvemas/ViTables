@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** December 20 2024 **
+Last changes before packaging the new release. Hopefully.
+
 ** December 15 2024 **
 Updated the users guide and some text files.
 

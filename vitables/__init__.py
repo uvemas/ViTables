@@ -17,7 +17,7 @@
 #
 #       Author:  Vicent Mas - vmas@vitables.org
 
-__version__ = '3.0.4'
+__version__ = '3.1.0'
 __all__ = [
            "docbrowser",
            "h5db",

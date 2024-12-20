@@ -7,8 +7,7 @@ name = "ViTables"
 dynamic = ["version"]
 description = 'A viewer for HDF5 files.'
 readme = "README.md"
-requires-python = ">=3.7"
-license = "GPL-3.0-or-later"
+requires-python = ">=3.10"
 keywords = ["HDF5", "PyTables"]
 authors = [
   { name = "Vicent Mas", email = "vmas@vitables.org" },
@@ -48,43 +47,54 @@ Home = "https://vitables.org"
 path = "vitables/__init__.py"
 
 [tool.hatch.build]
+
+[tool.hatch.build.targets.sdist]
 include = [
   "*.txt",
-  "VERSION",
   "pyproject.toml",
+  "*.ts",
+  "vitables.pro",
+  "examples/**/*",
   "vitables/**/*",
+]
+artifacts = [
+    "vitables/htmldocs/**/*"
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+  "vitables/**/*",
+]
+artifacts = [
+    "vitables/htmldocs/**/*"
 ]
 
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]>=6.5",
-  "pytest",
-  "PySide6",
-  "setuptools"
-]
-
-[tool.hatch.envs.pyqt6]
-dependencies = [
-  "coverage[toml]>=6.5",
-  "pytest",
   "PyQt6",
-  "setuptools"
+  "setuptools >= 72.1"
 ]
 
 [tool.hatch.envs.pyqt5]
 dependencies = [
   "coverage[toml]>=6.5",
-  "pytest",
   "PyQt5",
-  "setuptools"
+  "setuptools >= 72.1"
 ]
 
 [tool.hatch.envs.pyside2]
 dependencies = [
   "coverage[toml]>=6.5",
-  "pytest",
   "PySide2",
-  "setuptools"
+  "setuptools >= 72.1"
+]
+
+[tool.hatch.envs.pyside6]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "PySide6",
+  "setuptools >= 72.1"
 ]
 
 [tool.hatch.envs.default.scripts]
@@ -100,7 +110,7 @@ cov = [
 ]
 
 [[tool.hatch.envs.all.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+python = ["3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.lint]
 detached = true

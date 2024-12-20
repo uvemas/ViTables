@@ -1,9 +1,9 @@
 =========================
-Announcing ViTables 3.0.3
+Announcing ViTables 3.1.0
 =========================
 
 After another long period retired from development activities I'm happy to come
-back and present ViTables 3.0.3, the latest release of this viewer for
+back and present ViTables 3.1.0, the latest release of this viewer for
 PyTables/HDF5 files. Definitely this release wouldn't have been possible without
 the invaluable help of a bunch of contributors so THANKS to all of them.
 
@@ -16,7 +16,7 @@ application, i.e., it runs flawlessly in Unix (and hence, GNU/Linux), Mac OS
 X and Windows. The fact that it runs on top of PyTables ensures its speed and
 memory efficiency.
 
-This is mainly a bugfix release with improved support for Pandas time series.
+This is mainly a bugfix release with added support for numpy>=2.
 
 Platforms
 ---------
