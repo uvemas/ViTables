@@ -42,6 +42,7 @@ __docformat__ = 'restructuredtext'
 translate = QtWidgets.QApplication.translate
 
 log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
 
 
 class ExportToCSV(QtCore.QObject):
@@ -185,21 +186,20 @@ class ExportToCSV(QtCore.QObject):
 
         return filepath, add_header
 
-    # def _try_exporting_dataframe(self, leaf):
-    #     ## FIXME: Hack to export to csv.
-    #     #
-    #     from ...vttables import df_model
-    #
-    #     leaf_model = df_model.try_opening_as_dataframe(leaf)
-    #     if not leaf_model:
-    #         return
-    #
-    #     export_info = self.getExportInfo(is_table=True)
-    #     if export_info is None:
-    #         return
-    #
-    #     leaf_model.to_csv(*export_info)
-    #     return True
+    def _try_exporting_dataframe(self, leaf):
+        ## FIXME: Hack to export dataframes to csv.
+        #
+        from vitables.vttables import df_model
+
+        leaf_model = df_model.try_opening_as_dataframe(leaf)
+        if not leaf_model:
+            return (None, None)
+
+        export_info = self.getExportInfo(is_table=True)
+        if export_info is None:
+            return (None, None)
+
+        return (leaf_model, export_info)
 
     def export(self):
         """Export a given dataset to a `CSV` file.
@@ -239,12 +239,17 @@ class ExportToCSV(QtCore.QObject):
                 'I can\'t export it to CSV format.'))
             return
 
+        # Try exporting dataframes as CSV files
+        leaf_model, export_info = self._try_exporting_dataframe(leaf)
+        is_dataframe = all([leaf_model, export_info])
+
+        if is_dataframe:
+            leaf_model.to_csv(*export_info)
+            return
+
         # Tables with Ndimensional fields aren't saved as CSV files
         is_table = isinstance(leaf, tables.Table)
         if is_table:
-            if self._try_exporting_dataframe(leaf):
-                return
-
             first_row = leaf[0]
             for item in first_row:
                 if item.shape != ():
@@ -286,6 +291,8 @@ class ExportToCSV(QtCore.QObject):
                     np.savetxt(out_handler, leaf.read(cstart, cstop, 1),
                                   fmt='%s', delimiter=',')
         except OSError:
+            vitables.utils.formatExceptionInfo()
+        except ValueError:
             vitables.utils.formatExceptionInfo()
         finally:
             QtWidgets.QApplication.restoreOverrideCursor()

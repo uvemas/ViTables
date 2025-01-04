@@ -179,8 +179,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         stop = min(start + length, self.leaf_numrows)
         if stop < start:
             log.debug(
-                'Chunk: number of rows %s, first row %s, last row {2}',
-                self.numrows, start, stop
+                f"Chunk: number of rows {self.numrows}, first row {start}, last row {stop}"
             )
 
         # Ensure that the whole buffer will be filled.

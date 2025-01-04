@@ -72,30 +72,30 @@ artifacts = [
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]>=6.5",
-  "PyQt6",
   "setuptools >= 72.1"
 ]
+features = ["PyQt6"]
 
 [tool.hatch.envs.pyqt5]
 dependencies = [
   "coverage[toml]>=6.5",
-  "PyQt5",
   "setuptools >= 72.1"
 ]
+features = ["PyQt5"]
 
 [tool.hatch.envs.pyside2]
 dependencies = [
   "coverage[toml]>=6.5",
-  "PySide2",
   "setuptools >= 72.1"
 ]
+features = ["PySide2"]
 
 [tool.hatch.envs.pyside6]
 dependencies = [
   "coverage[toml]>=6.5",
-  "PySide6",
   "setuptools >= 72.1"
 ]
+features = ["PySide6"]
 
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"

@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 04 2025 **
+Improved HDF5Store export to CSV.
+
 ** December 20 2024 **
 Last changes before packaging the new release. Hopefully.
 
