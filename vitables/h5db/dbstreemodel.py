@@ -971,7 +971,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         else:
             self.insertRows(0, new_children, index)
 
-    def insertRows(self, position=0, count=1, parent=QtCore.QModelIndex()):
+    def insertRows(self, position=0, count=1, parent=None):
         """Insert `count` rows before the given `position`.
 
         Inserted rows will be children of the item represented by the `parent`
@@ -991,6 +991,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Returns: True if the row is added. Otherwise it returns False.
         """
 
+        if parent is None:
+            parent = QtCore.QModelIndex()
         # Add rows to the model and update its underlaying data store
         self.layoutAboutToBeChanged.emit()
         first = position
@@ -1019,7 +1021,7 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
 
         return True
 
-    def remove_rows(self, position, count=1, parent=QtCore.QModelIndex()):
+    def remove_rows(self, position, count=1, parent=None):
         """Removes `count` rows before the given row.
 
         This method is called when an item is cut/deleted/D&D.
@@ -1033,6 +1035,8 @@ class DBsTreeModel(QtCore.QAbstractItemModel):
         :Returns: True if the row is removed. Otherwise it returns False.
         """
 
+        if parent is None:
+            parent = QtCore.QModelIndex()
         # Remove rows from the model and update its underlaying data store
         self.layoutAboutToBeChanged.emit()
         first = position

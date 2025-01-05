@@ -76,7 +76,7 @@ def customiseDBsTreeModel():
                       'DBsTreeSort error message').format(initial_sorting))
 
 
-def alphabeticalSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
+def alphabeticalSort(self, position=0, count=1, parent=None):
     """Sort nodes alphabetically.
 
     This method is called during nodes population and when files are
@@ -91,6 +91,8 @@ def alphabeticalSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
      :Returns: True if the row is added. Otherwise it returns False.
      """
 
+    if parent is None:
+        parent = QtCore.QModelIndex()
     # Add rows to the model and update its underlaying data store
     self.layoutAboutToBeChanged.emit()
     first = position
@@ -131,7 +133,7 @@ def alphanum_key(key):
     return [convert(c) for c in re.split(r'(\d+)', key)]
 
 
-def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
+def humanSort(self, position=0, count=1, parent=None):
     """Sort nodes using a human sort algorithm.
 
     This method is called during nodes population and when files are
@@ -146,6 +148,8 @@ def humanSort(self, position=0, count=1, parent=QtCore.QModelIndex()):
     :Returns: True if the row is added. Otherwise it returns False.
     """
 
+    if parent is None:
+        parent = QtCore.QModelIndex()
     # Add rows to the model and update its underlying data store
     self.layoutAboutToBeChanged.emit()
     first = position

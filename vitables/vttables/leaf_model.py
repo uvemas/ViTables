@@ -133,7 +133,7 @@ class LeafModel(QtCore.QAbstractTableModel):
 
         super(LeafModel, self).__init__(parent)
 
-    def columnCount(self, index=QtCore.QModelIndex()):
+    def columnCount(self, parent=None):
         """The number of columns of the given model index.
 
         Overridden to return 0 for valid indices because they have no children;
@@ -143,18 +143,22 @@ class LeafModel(QtCore.QAbstractTableModel):
             the model index being inspected.
         """
 
-        return 0 if index.isValid() else self.numcols
+        if parent is None:
+            parent = QtCore.QModelIndex()
+        return 0 if parent.isValid() else self.numcols
 
-    def rowCount(self, index=QtCore.QModelIndex()):
-        """The number of columns for the children of the given index.
+    def rowCount(self, parent=None):
+        """The number of columns for the children under the given parent.
 
         Overridden to return 0 for valid indices because they have no children;
         otherwise return the total number of *rows* exposed by the model.
 
-        :Parameter index: the model index being inspected.
+        :Parameter parent: the model index being inspected.
         """
 
-        return 0 if index.isValid() else self.numrows
+        if parent is None:
+            parent = QtCore.QModelIndex()
+        return 0 if parent.isValid() else self.numrows
 
     def loadData(self, start, length):
         """Load the model with fresh data from the buffer.

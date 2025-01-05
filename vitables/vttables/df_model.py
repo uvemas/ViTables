@@ -142,28 +142,33 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         super(DataFrameModel, self).__init__(parent)
 
-    def columnCount(self, index=QtCore.QModelIndex()):
+    def columnCount(self, parent=None):
         """
         The total number of columns, or number of children for the given index.
 
-        :param index:
-            Overrides should return 0 for valid indices (if no children exist)
+        :param parent:
+            Overrides should return 0 for valid indices (because no children exist)
             or the number of the total *columns* (including row labels) exposed
             by the model.
         """
-        return 0 if index.isValid() else self.numcols + self._nheaders[1]
 
-    def rowCount(self, index=QtCore.QModelIndex()):
+        if parent is None:
+            parent = QtCore.QModelIndex()
+        return 0 if parent.isValid() else self.numcols + self._nheaders[1]
+
+    def rowCount(self, parent=None):
         """
-        The total number of rows, or number of children for the given index.
+        The total number of rows, or number of children under the given parent.
 
-        :param index:
-            Overrides should return 0 for valid indices (if no children exist)
+        :param parent:
+            Overrides should return 0 for valid indices (because no children exist)
             or the number of the total *rows* (including column labels) exposed
             by the model.
         """
 
-        return 0 if index.isValid() else self.numrows + self._nheaders[0]
+        if parent is None:
+            parent = QtCore.QModelIndex()
+        return 0 if parent.isValid() else self.numrows + self._nheaders[0]
 
     def loadData(self, start, length):
         """Load the model with fresh chunk from the underlying leaf.
