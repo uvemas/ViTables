@@ -843,10 +843,10 @@ class VTApp(QtCore.QObject):
         self.gui.editing_dlg = True
         if dialog.exec_():
             suggested_nodename = dialog.node_name
-            self.gui.dbs_tree_view.setFocus(True)
+            self.gui.dbs_tree_view.setFocus()
             del dialog
         else:
-            self.gui.dbs_tree_view.setFocus(True)
+            self.gui.dbs_tree_view.setFocus()
             del dialog
             return
 
@@ -1150,14 +1150,14 @@ class VTApp(QtCore.QObject):
 
         self.gui.workspace.activeSubWindow().close()
         if not self.gui.workspace.subWindowList():
-            self.gui.dbs_tree_view.setFocus(True)
+            self.gui.dbs_tree_view.setFocus()
 
     def windowCloseAll(self):
         """Close all open windows."""
 
         for window in self.gui.workspace.subWindowList():
             window.close()
-        self.gui.dbs_tree_view.setFocus(True)
+        self.gui.dbs_tree_view.setFocus()
 
     def windowRestoreAll(self):
         """Restore every window in the workspace to its normal size."""

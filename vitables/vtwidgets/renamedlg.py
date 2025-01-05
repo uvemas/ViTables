@@ -121,9 +121,9 @@ class RenameDlg(QtWidgets.QDialog, Ui_RenameNodeDialog):
             QtWidgets.QDialogButtonBox.Cancel)
 
         # Setup a validator for checking the entered node name
-        validator = QtGui.QRegExpValidator(self)
-        qt_pattern = QtCore.QRegExp(pattern)
-        validator.setRegExp(qt_pattern)
+        validator = QtGui.QRegularExpressionValidator(self)
+        qt_pattern = QtCore.QRegularExpression(pattern)
+        validator.setRegularExpression(qt_pattern)
         self.valueLE.setValidator(validator)
         self.valueLE.setText(self.troubled_name)
 

@@ -29,9 +29,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-PyQt5 = ["PyQt5 >=5.5.1"]
 PyQt6 = ["PyQt6 >=6.0"] 
-PySide2 = ["PySide2 >=5.15.2"]
 PySide6 = ["PySide6 >=6.4"]
 
 [project.gui-scripts]
@@ -75,20 +73,6 @@ dependencies = [
   "setuptools >= 72.1"
 ]
 features = ["PyQt6"]
-
-[tool.hatch.envs.pyqt5]
-dependencies = [
-  "coverage[toml]>=6.5",
-  "setuptools >= 72.1"
-]
-features = ["PyQt5"]
-
-[tool.hatch.envs.pyside2]
-dependencies = [
-  "coverage[toml]>=6.5",
-  "setuptools >= 72.1"
-]
-features = ["PySide2"]
 
 [tool.hatch.envs.pyside6]
 dependencies = [
@@ -136,12 +120,12 @@ all = [
 ]
 
 [tool.black]
-target-version = ["py37"]
+target-version = ["py310"]
 line-length = 120
 skip-string-normalization = true
 
 [tool.ruff]
-target-version = "py37"
+target-version = "py310"
 line-length = 120
 [tool.ruff.lint]
 select = [

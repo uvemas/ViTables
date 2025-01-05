@@ -3,6 +3,9 @@ ViTables ChangeLog
 ** January 05 2025 **
 Removed function calls in default arguments.
 
+Found more compatibility issues between PyQt5 and PyQt6.
+Support for PyQt5/PySide2 has been dropped.
+
 ** January 04 2025 **
 Improved HDF5Store export to CSV.
 

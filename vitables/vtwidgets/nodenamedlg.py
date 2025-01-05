@@ -81,9 +81,9 @@ class InputNodeName(QtWidgets.QDialog, Ui_InputNodenameDialog):
             action, QtWidgets.QDialogButtonBox.AcceptRole)
 
         # Setup a validator for checking the entered node name
-        validator = QtGui.QRegExpValidator(self)
-        pattern = QtCore.QRegExp("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
-        validator.setRegExp(pattern)
+        validator = QtGui.QRegularExpressionValidator(self)
+        pattern = QtCore.QRegularExpression("[a-zA-Z_]+[0-9a-zA-Z_ ]*")
+        validator.setRegularExpression(pattern)
         self.valueLE.setValidator(validator)
 
         if default_value:

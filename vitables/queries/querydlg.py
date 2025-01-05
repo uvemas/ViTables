@@ -148,7 +148,7 @@ class QueryDlg(QtWidgets.QDialog, Ui_QueryDialog):
         #
         # Setup a validator for Range selectors section
         #
-        validator = QtGui.QRegExpValidator(QtCore.QRegExp("\\d*"), self)
+        validator = QtGui.QRegularExpressionValidator(QtCore.QRegularExpression("\\d*"), self)
         self.rstartLE.setValidator(validator)
         self.rstopLE.setValidator(validator)
         self.rstep.setValidator(validator)

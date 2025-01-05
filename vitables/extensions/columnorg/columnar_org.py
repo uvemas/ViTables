@@ -490,7 +490,7 @@ class GroupedArrays(QtWidgets.QMdiSubWindow):
         self.deleteLater()
         QtWidgets.QMdiSubWindow.closeEvent(self, event)
         if self.vtgui.workspace.subWindowList() == []:
-            self.vtgui.dbs_tree_view.setFocus(True)
+            self.vtgui.dbs_tree_view.setFocus()
 
     def ungroupArrays(self):
         """Break-up a GroupedArrays object into its individual components.

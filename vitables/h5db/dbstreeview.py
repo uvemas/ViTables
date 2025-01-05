@@ -309,7 +309,7 @@ class DBsTreeView(QtWidgets.QTreeView):
                 mime_data, QtCore.Qt.CopyAction, -1, -1, self.currentIndex()):
                 event.setDropAction(QtCore.Qt.CopyAction)
                 event.accept()
-                self.setFocus(True)
+                self.setFocus()
         else:
             QtWidgets.QTreeView.dropEvent(self, event)
 
