@@ -278,8 +278,6 @@ class ExportToCSV(QtCore.QObject):
                 chunk_size = 10000
                 nrows = leaf.nrows
                 chunk_size = min(chunk_size, nrows)
-                # Behavior of np.divide in Python 2 and Python 3 is different so
-                # we must explicitly ensure we get an integer
                 nchunks = np.floor_divide(nrows, chunk_size)
                 for i in np.arange(0, nchunks + 1):
                     QtWidgets.QApplication.processEvents()

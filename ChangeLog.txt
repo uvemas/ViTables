@@ -1,5 +1,8 @@
 ViTables ChangeLog
 ==================
+** January 07 2025 **
+atexit hook added to cleanly close open files at ViTables exit.
+
 ** January 05 2025 **
 Removed function calls in default arguments.
 

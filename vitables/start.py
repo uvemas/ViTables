@@ -19,6 +19,7 @@
 """This is the launcher script for the ViTables application."""
 
 import argparse
+import atexit
 import locale
 import logging
 import os.path
@@ -158,6 +159,47 @@ def _setup_logger(args):
     return logger, temporary_stderr_handler
 
 
+def _close_open_files(verbose=None):
+    """Close all open files in the current HDF5 library.
+
+    This cleanup function is useful to avoid UnclosedFileWarning messages when
+    ViTables quits. It is called by the atexit module.
+
+    """
+
+    import tables
+
+    open_files = tables.file._open_files
+
+    are_open_files = len(open_files) > 0
+
+    if verbose and are_open_files:
+        sys.stderr.write("Closing remaining open files:")
+
+    if tables.__version__ >= "3.1.0":
+        # make a copy of the open_files.handlers container for the iteration
+        handlers = list(open_files.handlers)
+    else:
+        # for older versions of pytables, setup the handlers list from the
+        # keys
+        keys = open_files.keys()
+        handlers = []
+        for key in keys:
+            handlers.append(open_files[key])
+
+    for fileh in handlers:
+        if verbose:
+            sys.stderr.write(f"{fileh.filename}...")
+
+        fileh.close()
+
+        if verbose:
+            sys.stderr.write("done")
+
+    if verbose and are_open_files:
+        sys.stderr.write("\n")
+
+
 def gui():
     """The application launcher.
 
@@ -178,4 +220,5 @@ def gui():
 
 
 if __name__ == '__main__':
+    atexit.register(_close_open_files, False)
     gui()
