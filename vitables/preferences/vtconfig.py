@@ -110,9 +110,7 @@ def getPyQtVersion():
     """The PyQt or PySide version"""
 
     return {
-        "PyQt5": qtpy.PYQT_VERSION,
         "PyQt6": qtpy.PYQT_VERSION,
-        "PySide2": qtpy.PYSIDE_VERSION,
         "PySide6": qtpy.PYSIDE_VERSION
     }.get(qtpy.API_NAME)
 

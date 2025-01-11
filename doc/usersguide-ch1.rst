@@ -101,9 +101,9 @@ the package from PyPI issuing the command::
 
 If you don't have any version of `PyQt` installed you can pass it as an extra to the above command::
   
-   $ pip install ViTables[PyQt5|PyQt6]
+   $ pip install ViTables[PyQt6]
 
-In theory `PySide2` and `PySide6` should work too but they have not been tested.
+In theory `PySide6` should work too but it has not been tested.
 
 Windows and Mac OS X
 ^^^^^^^^^^^^^^^^^^^^

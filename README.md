@@ -11,7 +11,7 @@
 
 # ViTables
 
-ViTables is a component of the PyTables family. It is a GUI for browsing and editing files in both PyTables and HDF5 formats. It is developed using Python and PyQt5 (the Python bindings to Qt), so it can run on any platform that supports these components.
+ViTables is a component of the PyTables family. It is a GUI for browsing and editing files in both PyTables and HDF5 formats. It is developed using Python and PyQt (the Python bindings to Qt), so it can run on any platform that supports these components.
 
 ViTables capabilities include easy navigation through the data hierarchy, displaying of real data and its associated metadata, a simple, yet powerful, browsing of multidimensional data and much more.
 
@@ -43,7 +43,7 @@ $ pip install ViTables
 If you don't have PyQt installed you can install it as an extra as follows:
 
 ```sh
-$ pip install 'ViTables[PyQt5|PyQt6]'
+$ pip install 'ViTables[PyQt6]'
 ```
 
 ### Install on a conda environment
